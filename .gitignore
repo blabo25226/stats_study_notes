@@ -1,4 +1,5 @@
 # ディレクトリ全体を無視（末尾にスラッシュをつける）
+.obsidian/
 91_docs/
 90_data/
 # 特定のファイルを無視
@@ -6,3 +7,4 @@ daily_report.md
 計画書.txt
 AGENTS.md
 source.md
+
