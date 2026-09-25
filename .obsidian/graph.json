@@ -1,0 +1,30 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "stats-category:確率",
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": 0.1,
+  "nodeSizeMultiplier": 2.57552083333333,
+  "lineSizeMultiplier": 1.01875,
+  "collapse-forces": true,
+  "centerStrength": 0.515625,
+  "repelStrength": 10.3125,
+  "linkStrength": 1,
+  "linkDistance": 270,
+  "scale": 0.6582815571732438,
+  "close": false
+}
