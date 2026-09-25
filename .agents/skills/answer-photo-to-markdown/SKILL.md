@@ -23,8 +23,16 @@
 公式解答の標準参照先:
 
 ```text
-91_docs/materials/現代数理統計学の基礎/第n章/latex/answers.tex
+91_docs/materials/現代数理統計学の基礎/第n章/答え/answers.tex
 ```
+
+このTeXは、全章共通の
+
+```text
+91_docs/materials/現代数理統計学の基礎/解答/MathStat_Answers.pdf
+```
+
+から `official-answer-to-tex` Skill により章別生成される。
 
 ## Output
 
@@ -132,13 +140,21 @@ status:
 以下を優先して参照する。
 
 ```text
-91_docs/materials/現代数理統計学の基礎/第n章/latex/answers.tex
+91_docs/materials/現代数理統計学の基礎/第n章/答え/answers.tex
 ```
 
 必要な `問b` の部分を特定する。
 
-公式解答TeXがない場合は、
-`答え/` に元資料が存在するかを確認する。
+章別TeXがまだ存在しない場合は、
+全章共通の原本
+
+```text
+91_docs/materials/現代数理統計学の基礎/解答/MathStat_Answers.pdf
+```
+
+が存在するか確認し、必要なら先に
+`.agents/skills/official-answer-to-tex/SKILL.md`
+の手順で章別TeXを生成する。
 
 公式解答を確認できない場合は採点を推測せず、
 

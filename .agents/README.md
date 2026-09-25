@@ -50,6 +50,6 @@ Skillは「特定の入力が置かれたときに何をするか」を定義す
 
 - 答案写真が入る → `answer-photo-to-markdown`
 - 教科書ページが入る → `textbook-screenshot-to-tex`
-- 公式解答が入る → `official-answer-to-tex`
+- 全章共通の公式解答PDFを章別TeX化する → `official-answer-to-tex`
 
 同一タスクで複数Skillが関係する場合は、依存関係に従って必要なSkillを組み合わせる。

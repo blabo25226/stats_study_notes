@@ -49,10 +49,13 @@ AIは学習アシスタントとして、数学的正確性を最優先する。
 
 - `.agents/skills/textbook-screenshot-to-tex/SKILL.md`
 
-### 公式解答 → TeX
+### 公式解答PDF → 章別TeX
 
-`91_docs/materials/現代数理統計学の基礎/第n章/答え/`
-に公式解答の画像・PDF等が入った場合:
+『現代数理統計学の基礎』全体の公式解答PDF
+
+`91_docs/materials/現代数理統計学の基礎/解答/MathStat_Answers.pdf`
+
+を章ごとに読み分け、各章の `答え/` にTeX化する場合:
 
 - `.agents/skills/official-answer-to-tex/SKILL.md`
 

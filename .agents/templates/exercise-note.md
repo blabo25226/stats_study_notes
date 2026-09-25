@@ -1,5 +1,5 @@
 ---
-test-category: 
+test-category: 統計数理
 stats-category:
 difficulty: 中
 status:
