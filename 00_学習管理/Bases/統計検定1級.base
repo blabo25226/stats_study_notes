@@ -1,0 +1,38 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - or:
+        - 'test-category == "統計数理"'
+        - 'test-category == "統計応用"'
+properties:
+  file.name:
+    displayName: ノート
+  test-category:
+    displayName: 区分
+  stats-category:
+    displayName: 分野
+  difficulty:
+    displayName: 難易度
+  status:
+    displayName: 採点
+views:
+  - type: table
+    name: 全体
+    order:
+      - file.name
+      - test-category
+      - stats-category
+      - difficulty
+      - status
+  - type: table
+    name: 要確認
+    filters:
+      or:
+        - 'status == "不正解"'
+        - 'status == "部分的なミスあり"'
+    order:
+      - file.name
+      - test-category
+      - stats-category
+      - difficulty
+      - status

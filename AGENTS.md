@@ -49,6 +49,12 @@ AIは学習アシスタントとして、数学的正確性を最優先する。
 
 - `.agents/skills/textbook-screenshot-to-tex/SKILL.md`
 
+### Daily Report
+
+作業終了時、またはユーザーから日報更新の指示があった場合:
+
+- `.agents/skills/update-daily-report/SKILL.md`
+
 ### 公式解答PDF → 章別TeX
 
 『現代数理統計学の基礎』全体の公式解答PDF
@@ -71,3 +77,5 @@ AIは学習アシスタントとして、数学的正確性を最優先する。
 8. Obsidian互換Markdown/LaTeXを使用する。
 9. `現代数理統計学の基礎`、統計数理過去問、統計応用過去問では原則1問題1Markdownファイルとする。
 10. 公開ノート側に教科書や過去問の問題文を丸ごと転載しない。
+11. `daily_report.md` はAI作業ログとして、作業終了時またはユーザー指示時に既存内容を消さず追記する。
+12. `00_学習管理/Daily/` のObsidian Daily Noteとルートの `daily_report.md` を混同しない。

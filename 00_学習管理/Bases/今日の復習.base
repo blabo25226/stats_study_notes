@@ -1,0 +1,42 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'next-review'
+properties:
+  file.name:
+    displayName: 問題
+  status:
+    displayName: 採点
+  stats-category:
+    displayName: 分野
+  difficulty:
+    displayName: 難易度
+  review-count:
+    displayName: 復習回数
+  last-reviewed:
+    displayName: 前回
+  next-review:
+    displayName: 次回
+views:
+  - type: table
+    name: 今日まで
+    filters:
+      and:
+        - 'next-review <= today()'
+    order:
+      - file.name
+      - status
+      - stats-category
+      - difficulty
+      - review-count
+      - last-reviewed
+      - next-review
+  - type: table
+    name: 今後
+    filters:
+      and:
+        - 'next-review > today()'
+    order:
+      - file.name
+      - status
+      - next-review

@@ -1,0 +1,70 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - or:
+        - 'file.inFolder("01_現代数理統計学の基礎")'
+        - 'file.inFolder("02_統計数理過去問")'
+        - 'file.inFolder("03_統計応用医薬生物学過去問")'
+        - 'file.inFolder("04_統計応用理工学過去問")'
+        - 'file.inFolder("05_院試過去問")'
+properties:
+  file.name:
+    displayName: 問題
+  test-category:
+    displayName: 試験分類
+  stats-category:
+    displayName: 分野
+  difficulty:
+    displayName: 難易度
+  status:
+    displayName: 採点
+  next-review:
+    displayName: 次回復習
+views:
+  - type: table
+    name: 全問題
+    order:
+      - file.name
+      - test-category
+      - stats-category
+      - difficulty
+      - status
+      - next-review
+  - type: table
+    name: 正解
+    filters:
+      and:
+        - 'status == "正解"'
+    order:
+      - file.name
+      - stats-category
+      - difficulty
+      - next-review
+  - type: table
+    name: 部分的なミス
+    filters:
+      and:
+        - 'status == "部分的なミスあり"'
+    order:
+      - file.name
+      - stats-category
+      - difficulty
+      - next-review
+  - type: table
+    name: 不正解
+    filters:
+      and:
+        - 'status == "不正解"'
+    order:
+      - file.name
+      - stats-category
+      - difficulty
+      - next-review
+  - type: table
+    name: 回答なし
+    filters:
+      and:
+        - 'status == "回答なし"'
+    order:
+      - file.name
+      - stats-category

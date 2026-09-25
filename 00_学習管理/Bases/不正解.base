@@ -1,0 +1,24 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'status == "不正解"'
+properties:
+  file.name:
+    displayName: 問題
+  test-category:
+    displayName: 試験分類
+  stats-category:
+    displayName: 分野
+  difficulty:
+    displayName: 難易度
+  next-review:
+    displayName: 次回復習
+views:
+  - type: table
+    name: 不正解一覧
+    order:
+      - file.name
+      - test-category
+      - stats-category
+      - difficulty
+      - next-review
