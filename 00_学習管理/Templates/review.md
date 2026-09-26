@@ -1,19 +1,22 @@
 ---
 test-category:
 stats-category:
-difficulty: 中
+difficulty:
 status:
+tags:
+  - 
+source:
+created: {{date:YYYY-MM-DD}}
+updated: {{date:YYYY-MM-DD}}
 review-count: 0
 last-reviewed:
 next-review:
 ---
 
-# 問題・復習ノート
+# 第n章 問b
 
-## 解答
+## 問題の要約
 
-## 採点メモ
 
-## 関連
+## 答案
 
-- 

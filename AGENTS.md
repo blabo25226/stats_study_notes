@@ -11,6 +11,28 @@
 
 AIは学習アシスタントとして、数学的正確性を最優先する。
 
+## AI roles
+
+| AI | 担当範囲 | 読むルール |
+|---|---|---|
+| Claude（Claude Code） | すべての作業（教材処理・採点 + Obsidian Vault管理） | `AGENTS.md`、`.agents/`、`.claude/` |
+| Gemini | 教材処理・採点のみ | `AGENTS.md`、`.agents/` |
+
+Geminiの担当:
+- 手書き答案 → 問題ノート（`answer-photo-to-markdown`）
+- 教科書スクリーンショット → TeX（`textbook-screenshot-to-tex`）
+- 公式解答PDF → 章別TeX（`official-answer-to-tex`）
+- 数学的採点
+- `daily_report.md` への追記（`update-daily-report`）
+
+Geminiが行わないこと（Claudeの担当）:
+- `.claude/` 以下の編集
+- 内部リンク、MOC、Bases（`00_学習管理/`）、Daily Note（`00_学習管理/Daily/`）の作成・編集
+- 復習Properties（`review-count`, `last-reviewed`, `next-review`）の更新
+- Vault全体の整理（ノートの移動・改名、重複・孤立ノートの整理）
+
+これらが必要になった場合、Geminiは作業せずユーザーに「Claudeの担当」と伝える。
+
 ## Instruction structure
 
 詳細なルールは `.agents/` 以下に分割している。
@@ -21,12 +43,14 @@ AIは学習アシスタントとして、数学的正確性を最優先する。
 - `.agents/rules/math.md`
 - `.agents/rules/markdown-obsidian.md`
 - `.agents/rules/frontmatter.md`
+- `.agents/rules/problem-note.md`
 - `.agents/rules/files-and-paths.md`
 - `.agents/rules/copyright.md`
 - `.agents/rules/git.md`
 
 リポジトリ構成については以下を参照する。
 
+- `.agents/references/canonical-paths.md`（パスの唯一の基準）
 - `.agents/references/repository-map.md`
 - `.agents/references/taxonomy.md`
 - `.agents/references/grading-rubric.md`
@@ -37,7 +61,7 @@ AIは学習アシスタントとして、数学的正確性を最優先する。
 
 ### 手書き答案 → Markdown
 
-`91_docs/materials/現代数理統計学の基礎/第n章/回答/`
+`91_docs/materials/現代数理統計学の基礎/第n章/回答/`（n = 2〜7）
 に答案写真が入った場合:
 
 - `.agents/skills/answer-photo-to-markdown/SKILL.md`
@@ -76,6 +100,17 @@ AIは学習アシスタントとして、数学的正確性を最優先する。
 7. 公式解答を確認できない場合、推測で採点しない。
 8. Obsidian互換Markdown/LaTeXを使用する。
 9. `現代数理統計学の基礎`、統計数理過去問、統計応用過去問では原則1問題1Markdownファイルとする。
-10. 公開ノート側に教科書や過去問の問題文を丸ごと転載しない。
+10. 公開ノート側に教科書や過去問の問題文を丸ごと転載しない。問題ノートの「問題の要約」は要約であり転載に当たらないものとする。
 11. `daily_report.md` はAI作業ログとして、作業終了時またはユーザー指示時に既存内容を消さず追記する。
 12. `00_学習管理/Daily/` のObsidian Daily Noteとルートの `daily_report.md` を混同しない。
+13. 問題ノートのfrontmatterは `.agents/rules/frontmatter.md` の標準形に従う。
+    - キー順は `test-category` → `stats-category` → `difficulty` → `status` → `tags` → `source` → (`section`) → `created` → `updated` → (復習Properties)。
+    - 値はダブルクォートで囲まない（例: `status: 正解`）。
+    - `difficulty` は `易` / `中` / `難` のみ。
+    - `tags` は必須。汎用タグ（`数理統計学` など）は付けず、数学的トピックを付ける。
+14. 『現代数理統計学の基礎』で問題を解くのは第2章〜第7章のみ。
+15. 問題ノートの本文は `.agents/rules/problem-note.md` に従い、`## 問題の要約` と `## 答案` のみとする。
+    - 目次、採点・判定理由、解説・模範解答、講評、関連知識・発展事項は書かない。
+    - 採点結果はfrontmatterの `status` のみ。判定理由はユーザーへの報告と `daily_report.md` に書く。
+    - 回答なしの答案は `答案未提出` の1行とする。
+16. 内部リンク `[[...]]` の運用は保留中。問題ノートに `## 関連` 節や内部リンクを追加しない。
