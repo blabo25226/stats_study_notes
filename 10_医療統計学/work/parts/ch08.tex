@@ -1,4 +1,4 @@
-\chapter{縦断データ・ベースライン調整・混合モデル}\label{ch:08}
+\chapter[縦断データ・ベースライン調整・混合モデル]{縦断データ・ベースライン調整・\\混合モデル}\label{ch:08}
 
 \begin{goalbox}
 \begin{itemize}
@@ -44,7 +44,7 @@ $\hat\delta_a$ は $Y_i=\alpha+\delta_az_i+\rho X_i+\varepsilon_i$（傾き $\rh
 実際，正規方程式 $\sum(Y_i-\alpha-\delta_az_i-\rho X_i)=0$，$\sum z_i(Y_i-\alpha-\delta_az_i-\rho X_i)=0$ から
 $\hat\alpha=\bar Y_C-\rho\bar X_C$，$\hat\delta_a=\bar Y_T-\bar Y_C-\rho(\bar X_T-\bar X_C)$ となり，係数は $(c_1,c_2,c_3,c_4)=(1,-1,-\rho,\rho)$．
 
-\begin{meidai}[3推定量の分散]\label{prop:08-var}
+\begin{meidai}[3推定量の分散]\label[meidai]{prop:08-var}
 \begin{equation}
 \V[\hat\delta_d]=\frac{2\sigma^2}{n},\qquad
 \V[\hat\delta_c]=\frac{4\sigma^2(1-\rho)}{n},\qquad
@@ -55,7 +55,7 @@ $\hat\alpha=\bar Y_C-\rho\bar X_C$，$\hat\delta_a=\bar Y_T-\bar Y_C-\rho(\bar X
 群は独立．$\V[\bar Y_g-\bar X_g]=\frac{\sigma^2+\sigma^2-2\rho\sigma^2}{n}=\frac{2\sigma^2(1-\rho)}{n}$ を2群分足して $\V[\hat\delta_c]$．
 $\V[\bar Y_g-\rho\bar X_g]=\frac{\sigma^2+\rho^2\sigma^2-2\rho\cdot\rho\sigma^2}{n}=\frac{\sigma^2(1-\rho^2)}{n}$ から $\V[\hat\delta_a]$．
 \end{proof}
-\begin{meidai}[期待値と比較]\label{prop:08-compare}
+\begin{meidai}[期待値と比較]\label[meidai]{prop:08-compare}
 (1) $\E[\hat\delta_d]=\mu_T^Y-\mu_C^Y$，$\E[\hat\delta_c]=(\mu_T^Y-\mu_C^Y)-(\mu_T^X-\mu_C^X)$，$\E[\hat\delta_a]=(\mu_T^Y-\mu_C^Y)-\rho(\mu_T^X-\mu_C^X)$ であり，
 3つが一致するのはベースラインの母平均が等しい $\mu_T^X=\mu_C^X$ ときである（ランダム化試験では成り立つ）．\\
 (2) 相対分散は $\V[\hat\delta_c]/\V[\hat\delta_d]=2(1-\rho)$，$\V[\hat\delta_a]/\V[\hat\delta_d]=1-\rho^2$．
@@ -149,7 +149,7 @@ $\mathrm{AIC}=412.84+12=424.84$ 対 $409.74+18=427.74$ で Toeplitz が選ばれ
 \end{equation}
 $\bm\beta$ は\textbf{固定効果}（集団平均の構造），$\bm\gamma$ は\textbf{変量効果}（個体ごとの確率的なずれ）．
 \end{teigi}
-\begin{meidai}[周辺分布（\kakomon{2022}{3}〔1〕）]\label{prop:08-marginal}
+\begin{meidai}[周辺分布（\kakomon{2022}{3}〔1〕）]\label[meidai]{prop:08-marginal}
 $\E[\bm Y]=\bm X\bm\beta$，$\V[\bm Y]=\bm V=\bm Z\bm G\bm Z\transp+\bm R$．
 \end{meidai}
 \begin{proof}
@@ -158,7 +158,7 @@ $\V[\bm Y]=\V[\bm Z\bm\gamma]+\V[\bm\varepsilon]=\bm Z\E[\bm\gamma\bm\gamma\tran
 \end{proof}
 
 \subsection{一般化最小二乗推定}\label{subsec:08-gls}
-\begin{teiri}[GLS 推定量]\label{thm:08-gls}
+\begin{teiri}[GLS 推定量]\label[teiri]{thm:08-gls}
 $\bm V$ が既知なら $\bm\beta$ の最尤推定量（＝一般化最小二乗推定量）は
 \begin{equation}
 \hat{\bm\beta}=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}\bm Y,\qquad
@@ -220,7 +220,7 @@ $\V[\hat{\bm\beta}]=\bm A\bm V\bm A\transp$，$\bm A=(\bm X\transp\bm V^{-1}\bm 
 \item 前後2時点の RCT → ANCOVA（ベースラインを共変量）．
 \item 多時点・欠測あり → 混合モデル（MMRM：時点×群を固定効果，無構造共分散）．
 \item 個体差の構造そのものに関心 → 変量切片・変量傾きモデル．
-\item 2値・カウントの反復測定 → GEE または一般化線形混合モデル．
+\item 2 値・カウントの反復測定 → GEE または一般化線形混合モデル．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:08-err}

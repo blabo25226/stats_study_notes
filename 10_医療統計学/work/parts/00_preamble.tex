@@ -44,6 +44,8 @@
 \usepackage{bookmark}
 
 % ---------- 定理型環境 ----------
+% cleveref は \newtheorem より前に読み込む（共有カウンタの環境も正しい名前で参照される）
+\usepackage[nameinlink]{cleveref}
 \newtheorem{teigi}{定義}[chapter]
 \newtheorem{teiri}[teigi]{定理}
 \newtheorem{meidai}[teigi]{命題}
@@ -57,7 +59,6 @@
 \tcolorboxenvironment{reidai}{enhanced,breakable,colback=white,colframe=bkorange!80,
   boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt,borderline west={2pt}{0pt}{bkorange}}
 
-\usepackage[nameinlink]{cleveref}
 \crefname{teigi}{定義}{定義}
 \crefname{teiri}{定理}{定理}
 \crefname{meidai}{命題}{命題}

@@ -4,7 +4,7 @@
 \begin{itemize}
 \item 対応のある $t$ 検定と2標本 $t$ 検定を使い分け，それぞれの帰無仮説と仮定を述べられる．
 \item 符号検定・Wilcoxon符号付き順位検定・Wilcoxon順位和検定（Mann--Whitney検定）の帰無仮説，仮定，検定統計量を説明できる．
-\item 帰無仮説の下での順位統計量の期待値・分散を導出し，exactなP値と正規近似のP値を計算できる．
+\item 帰無仮説の下での順位統計量の期待値・分散を導出し，exactなP 値と正規近似のP 値を計算できる．
 \item 小標本で順位検定が有意になりえない（離散性）ことを具体的に示せる．
 \item 位置ずれモデルの下での順位和検定の検出力を $\Prob(X>Y)$ を用いて表せる．
 \end{itemize}
@@ -13,9 +13,9 @@
 \begin{exambox}
 \begin{itemize}
 \item \kakomon{2016}{1}：治療前後の差（$n=7$）に対応のある $t$ 検定・符号検定・符号付き順位検定を適用．
-      $\E[T\mid H_0],\V[T\mid H_0]$，符号検定のexact P値，$\E[W^+\mid H_0],\V[W^+\mid H_0]$ の導出と正規近似（外れ値の影響は公式解答の講評で言及）．
+      $\E[T\mid H_0],\V[T\mid H_0]$，符号検定のexact P 値，$\E[W^+\mid H_0],\V[W^+\mid H_0]$ の導出と正規近似（外れ値の影響は公式解答の講評で言及）．
 \item \kakomon{2019}{4}：3対3の2群比較で Student $t$ 検定（仮定3つ），Wilcoxon順位和検定のexact分布（20通り），
-      両側P値，第1種の過誤確率が0になる問題点．
+      両側P 値，第1種の過誤確率が0になる問題点．
 \item \kakomon{2025}{1}：一様分布の位置ずれモデルで $\E[R_X\mid H_0]$，$\Prob(X>Y)$，$R_X=\sum\sum I(X_i>Y_j)+n(n+1)/2$ を用いた $\E[R_X\mid H_1]$，検出力の式．
 \item \kakomon{2016}{5}（共通）：2標本 $t$ 検定と信頼区間（\cref{sec:01-overlap}）．
 \end{itemize}
@@ -68,9 +68,9 @@ $T=\#\{i:Z_i>0\}$（差が正の個数）を検定統計量とする検定を符
 \textbf{仮定}：観測値が互いに独立であること（と分布の連続性）だけで，分布の形（対称性・正規性）は仮定しない．
 差が0の観測は除いて $n$ を数え直すのが通例である．
 
-\paragraph{exactなP値}
-実現値 $t^*$ に対し，片側（$H_1:\theta>0$）P値は $\sum_{i=t^*}^{n}\binom ni2^{-n}$，
-\Youchui 離散分布の両側P値には複数の定義がある．本書では $p=\min\{1,\ 2\min(P_{\mathrm{lower}},P_{\mathrm{upper}})\}$（小さい方の片側P値の2倍，1で打ち切り）を用いる．ここで $P_{\mathrm{upper}}=\Prob(T\ge t^*\mid H_0)$，$P_{\mathrm{lower}}=\Prob(T\le t^*\mid H_0)$．このほか「観測値以下の確率をもつ値の確率の和」とする定義もあり，帰無分布が非対称なら両者は一致しない．符号検定の $\Bin(n,1/2)$ は対称なので，どちらの定義でも両側P値は片側P値の2倍になる．\kakomon{2016}{1} では $n=7$，$t^*=6$ で
+\paragraph{exactなP 値}
+実現値 $t^*$ に対し，片側（$H_1:\theta>0$）P 値は $\sum_{i=t^*}^{n}\binom ni2^{-n}$，
+\Youchui 離散分布の両側P 値には複数の定義がある．本書では $p=\min\{1,\ 2\min(P_{\mathrm{lower}},P_{\mathrm{upper}})\}$（小さい方の片側P 値の2倍，1で打ち切り）を用いる．ここで $P_{\mathrm{upper}}=\Prob(T\ge t^*\mid H_0)$，$P_{\mathrm{lower}}=\Prob(T\le t^*\mid H_0)$．このほか「観測値以下の確率をもつ値の確率の和」とする定義もあり，帰無分布が非対称なら両者は一致しない．符号検定の $\Bin(n,1/2)$ は対称なので，どちらの定義でも両側P 値は片側P 値の2倍になる．\kakomon{2016}{1} では $n=7$，$t^*=6$ で
 $(\binom76+\binom77)/2^7=8/128=0.0625$，両側 $0.125$．
 \paragraph{正規近似}
 $z=(T-n/2)/\sqrt{n/4}$．連続修正をするなら $|T-n/2|-1/2$ を分子に用いる．
@@ -84,7 +84,7 @@ $W^-=n(n+1)/2-W^+$ は負の差の順位和である．
 \textbf{帰無仮説と仮定}：$Z_i$ が互いに独立で，その分布が中央値 $\theta$ に関して\textbf{対称}な連続分布であるとし，$H_0:\theta=0$ を検定する．
 （対称性を仮定しているので，平均が存在すれば $\theta$ は平均でもある．）
 
-\begin{teiri}[$W^+$ の帰無分布の平均と分散]\label{thm:03-wplus}
+\begin{teiri}[$W^+$ の帰無分布の平均と分散]\label[teiri]{thm:03-wplus}
 $H_0$ の下で
 \begin{equation}
 \E[W^+]=\frac{n(n+1)}{4},\qquad \V[W^+]=\frac{n(n+1)(2n+1)}{24}.\label{eq:03-wplus}
@@ -105,7 +105,7 @@ $\E=14$，$\V=35$，$z=13/\sqrt{35}=2.197>1.96$ で有意となる．
 \paragraph{exact分布}
 $H_0$ の下で $(I_1,\dots,I_n)$ の $2^n$ 通りの値は等確率なので，
 $\Prob(W^+=w)=\#\{A\subseteq\{1,\dots,n\}:\sum_{k\in A}k=w\}/2^n$ である．
-分布は $n(n+1)/4$ に関して対称なので，上の定義による両側P値は（小さい方の）片側P値の2倍である．
+分布は $n(n+1)/4$ に関して対称なので，上の定義による両側P 値は（小さい方の）片側P 値の2倍である．
 小さい $n$ では，$W^-$（または $W^+$）が小さい側の部分集合を数え上げるのが速い．
 
 \begin{supbox}[補足：同順位と0の扱い]
@@ -120,7 +120,7 @@ $\V[W^+]=\frac{n(n+1)(2n+1)}{24}-\frac{1}{48}\sum_g(t_g^3-t_g)$（$t_g$ は各�
 典型的な対立仮説は位置ずれ $F_X(x)=F_Y(x-\delta)$，$\delta\ne0$ である（\kakomon{2025}{1}）．
 \textbf{仮定}：すべての観測が独立，分布が連続（同順位なし）．正規性や等分散は不要．
 
-\begin{teiri}[$W$ の帰無分布]\label{thm:03-ranksum}
+\begin{teiri}[$W$ の帰無分布]\label[teiri]{thm:03-ranksum}
 $H_0$ の下で，第1群の順位の集合は $\{1,\dots,N\}$ から大きさ $m$ の部分集合を等確率 $1/\binom Nm$ で選んだものと同じ分布に従い，
 \begin{equation}
 \E[W]=\frac{m(N+1)}{2},\qquad \V[W]=\frac{mn(N+1)}{12}.\label{eq:03-ranksum}
@@ -138,7 +138,7 @@ $H_0$ の下で $N$ 個の観測は i.i.d. の連続分布に従うので，順�
 \kakomon{2025}{1} のように $m=n$ のとき $\E[W]=n(2n+1)/2$，$\V[W]=n^2(2n+1)/12\approx n^3/6$ である．
 
 \subsection{Mann--Whitney統計量との関係}\label{subsec:03-mw}
-\begin{meidai}\label{prop:03-mw}
+\begin{meidai}\label[meidai]{prop:03-mw}
 $U=\sum_{i=1}^m\sum_{j=1}^n I(X_i>Y_j)$ とすると
 \begin{equation}
 W=U+\frac{m(m+1)}{2}.\label{eq:03-wu}
@@ -155,9 +155,9 @@ $\hat\theta$ は経験ROC曲線の曲線下面積（AUC）に一致する（\cre
 \subsection{exact分布と離散性}\label{subsec:03-exact}
 \Youchui $W$ のとる値の分布は，$\{1,\dots,N\}$ の $m$ 元部分集合の和の度数分布である．
 \kakomon{2019}{4} の $m=n=3$ では $\binom63=20$ 通りで，最大値15・最小値6の確率がそれぞれ $1/20$．
-両側P値の最小値は $2/20=0.1$ なので，\textbf{有意水準5\%ではどんなデータでも棄却されず，第1種の過誤確率は0}である．
+両側P 値の最小値は $2/20=0.1$ なので，\textbf{有意水準5\%ではどんなデータでも棄却されず，第1種の過誤確率は0}である．
 これは検出力も0であることを意味する．極端な小標本では，順位検定はそもそも有意になりえないことを設計段階で確認する必要がある．
-順位和の帰無分布も $m(N+1)/2$ に関して対称なので両側P値は片側の2倍であり，一般に最小の両側P値は $2/\binom{N}{m}$ である．
+順位和の帰無分布も $m(N+1)/2$ に関して対称なので両側P 値は片側の2倍であり，一般に最小の両側P 値は $2/\binom{N}{m}$ である．
 
 \section{数理：位置ずれモデルでの検出力}\label{sec:03-power}
 \Hinshutsu 対立仮説の下で $\E[U]=mn\theta$，$\theta=\Prob(X>Y)$ である．
@@ -223,8 +223,8 @@ $X\sim\Normal(\mu+\delta,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ なら $X-Y\s
 \item 符号付き順位検定に「仮定なし」と書く → 対称性を仮定している．仮定がないのは符号検定．
 \item 順位和検定の帰無仮説を「平均が等しい」と書く → 分布が等しい（$F_X=F_Y$）．
 \item $\V[W]$ を独立な和として $m(N^2-1)/12$ とする → 非復元抽出の有限母集団修正 $(N-m)/(N-1)$ を忘れている．
-\item 両側P値を片側P値のまま報告する．
-\item exact分布の最小P値を確認せずに小標本で順位検定を計画する．
+\item 両側P 値を片側P 値のまま報告する．
+\item exact分布の最小P 値を確認せずに小標本で順位検定を計画する．
 \end{itemize}
 \end{warnbox}
 
@@ -246,9 +246,9 @@ $2.1,\ -0.4,\ 3.5,\ 1.2,\ 0.8,\ 4.0,\ -1.5,\ 2.6$ であった
 （$\bar z=1.5375$，$s_z=1.890$）．$t_7(0.025)=2.365$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
 \item 対応のある $t$ 検定（両側5\%）を行え．
-\item 符号検定のexactな両側P値を求めよ．
+\item 符号検定のexactな両側P 値を求めよ．
 \item 符号付き順位統計量 $W^+$ を求め，正規近似による検定（両側5\%）を行え．
-\item $W^+$ のexactな両側P値を求めよ．
+\item $W^+$ のexactな両側P 値を求めよ．
 \end{enumerate}
 \end{reidai}
 
@@ -257,7 +257,7 @@ $2.1,\ -0.4,\ 3.5,\ 1.2,\ 0.8,\ 4.0,\ -1.5,\ 2.6$ であった
 \begin{enumerate}[label=(\arabic*)]
 \item A群の順位和 $W_A$ と Mann--Whitney 統計量 $U$，$\hat\theta=\widehat{\Prob}(X_A>X_B)$ を求めよ．
 \item $H_0$ の下での $W_A$ の期待値・分散を求めよ．
-\item $W_A$ のexactな片側P値（$H_1$：Aが大きい）と両側P値を求めよ．
+\item $W_A$ のexactな片側P 値（$H_1$：Aが大きい）と両側P 値を求めよ．
 \item この標本サイズで，両側5\%の順位和検定が有意になりうるかを答えよ．
 \end{enumerate}
 \end{reidai}
@@ -279,7 +279,7 @@ $n=4$ のとき，$H_0$ の下での $W^+$ の確率分布を求め，その平�
 \section{解答}\label{sec:03-sol}
 \begin{kaitou}{reidai:03-1}
 (1) $t=1.5375/(1.890/\sqrt8)=1.5375/0.6682=2.30<2.365$．有意水準5\%で有意でない．\\
-(2) 正の差は6個．$\Prob(T\ge6)=(\binom86+\binom87+\binom88)/2^8=(28+8+1)/256=37/256=0.1445$，両側P値 $0.289$．\\
+(2) 正の差は6個．$\Prob(T\ge6)=(\binom86+\binom87+\binom88)/2^8=(28+8+1)/256=37/256=0.1445$，両側P 値 $0.289$．\\
 (3) 絶対値の順位：$0.4(1,-)$，$0.8(2)$，$1.2(3)$，$1.5(4,-)$，$2.1(5)$，$2.6(6)$，$3.5(7)$，$4.0(8)$．
 $W^+=2+3+5+6+7+8=31$（$W^-=5$）．$\E=8\cdot9/4=18$，$\V=8\cdot9\cdot17/24=51$，
 $z=(31-18)/\sqrt{51}=13/7.141=1.82<1.96$ で有意でない．\\
@@ -314,13 +314,14 @@ $\E[(W^+-5)^2]=\frac1{16}\{2(25+16+9)+2\cdot2(4+1)\}=\frac{100+20}{16}=7.5$，
 一方 $n(n+1)(2n+1)/24=4\cdot5\cdot9/24=7.5$ で一致する．
 \end{kaitou}
 
+\enlargethispage{3\baselineskip}
 \begin{summarybox}
 \begin{itemize}
 \item 対応のある $t$：$t=\bar Z/(s_Z/\sqrt n)\sim t_{n-1}$．2標本 $t$：仮定は独立・正規・等分散．
 \item 符号検定：$T\sim\Bin(n,1/2)$，$\E=n/2$，$\V=n/4$．仮定は独立のみ．
 \item 符号付き順位：$W^+=\sum kI_k$，$\E=n(n+1)/4$，$\V=n(n+1)(2n+1)/24$．仮定は対称性．
 \item 順位和：$\E[W]=m(N+1)/2$，$\V[W]=mn(N+1)/12$（非復元抽出）．$W=U+m(m+1)/2$，$\E[U]=mn\Prob(X>Y)$．
-\item exact分布は部分集合の数え上げ．最小両側P値 $2/\binom Nm$ が $\alpha$ を超えると有意になりえない．
+\item exact分布は部分集合の数え上げ．最小両側P 値 $2/\binom Nm$ が $\alpha$ を超えると有意になりえない．
 \item 検出力 $\approx\Phi\bigl(mn(\theta-\frac12)/\sqrt{mn(N+1)/12}-z_\alpha\bigr)$．
 \end{itemize}
 \end{summarybox}

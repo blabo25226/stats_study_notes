@@ -46,7 +46,7 @@ Y=\min(T,C),\qquad J^*=\begin{cases}J&(T\le C)\\0&(T>C)\ \text{（打ち切り�
 \end{teigi}
 原因別ハザードは「時点 $t$ までにどのイベントも起こしていない人が，次の瞬間に原因 $j$ のイベントを起こす率」である．
 
-\begin{teiri}[基本関係式]\label{thm:11-relations}
+\begin{teiri}[基本関係式]\label[teiri]{thm:11-relations}
 \begin{align}
 \lambda_j(t)&=\frac{f_j(t)}{S(t)},\qquad f_j(t)=\lambda_j(t)S(t),\label{eq:11-fj}\\
 \lambda(t)&=\sum_{j=1}^m\lambda_j(t),\qquad S(t)=\exp\Bigl\{-\sum_{j=1}^m\Lambda_j(t)\Bigr\},\ \ \Lambda_j(t)=\int_0^t\lambda_j,\label{eq:11-sum}\\
@@ -63,7 +63,7 @@ $\lambda_j(t)=\lim\frac{\Prob(t\le T<t+\Delta,J=j)}{\Delta\,\Prob(T\ge t)}=f_j(t
 CIF は原因 $j$ のハザードだけでなく，$S(u)$ を通じて\textbf{他のすべての原因のハザードに依存する}．
 他の原因のハザードが大きいと，原因 $j$ のイベントを起こす前に他のイベントが起きやすいので $F_j$ は小さくなる．
 
-\begin{meidai}[\kakomon{2025}{3}〔2〕]\label{prop:11-Fj}
+\begin{meidai}[\kakomon{2025}{3}〔2〕]\label[meidai]{prop:11-Fj}
 $m\ge2$ で各原因の確率が正なら，$F_j(\infty)=\Prob(J=j)<1$ であり，$S_j(t)=\Prob(T>t,J=j)$ について $1-F_j(t)>S_j(t)$．
 \end{meidai}
 \begin{proof}
@@ -96,7 +96,7 @@ $\sum_j\hat F_j(t)=1-\hat S(t)$ が成り立つ．
 \subsection{\texorpdfstring{$1-\mathrm{KM}$}{1−KM} による過大推定}\label{subsec:11-bias}
 \Hinshutsu 競合イベントを打ち切りとみなして原因 $j$ だけの KM $\hat S_j^{\mathrm{KM}}$ を計算すると，
 各因子は $1-d_{ji}/n_i$ で，$1-\hat S_j^{\mathrm{KM}}(t)$ は $1-\exp\{-\Lambda_j(t)\}$ を推定する．
-\begin{meidai}\label{prop:11-overestimate}
+\begin{meidai}\label[meidai]{prop:11-overestimate}
 $F_j(t)\le1-e^{-\Lambda_j(t)}$．等号は $[0,t]$ 上で（$\lambda_j>0$ となる範囲で）他の原因の累積ハザードが0のときに限る．
 \end{meidai}
 \begin{proof}
@@ -267,6 +267,7 @@ CIF も低下しているが，その一部は他因死のハザードが上が�
 原因別ハザード・CIF・全死亡をあわせて評価すべきで，がん死の CIF の低下だけを根拠に治療を有益とは言えない．
 \end{kaitou}
 
+\enlargethispage{3\baselineskip}
 \begin{summarybox}
 \begin{itemize}
 \item 競合イベントは打ち切りではない．観測は $(T,J)$．

@@ -40,7 +40,7 @@ $H_0$ を採択 & 正しい（$1-\alpha$） & 第2種の過誤（確率 $\beta$�
 
 \section{数理：\texorpdfstring{$\mu=z_\alpha+z_\beta$}{μ = zα + zβ} の導出}\label{sec:12-core}
 \Hissu
-\begin{teiri}[基本公式]\label{thm:12-core}
+\begin{teiri}[基本公式]\label[teiri]{thm:12-core}
 検定統計量 $Z$ が $H_0$ の下で $\Normal(0,1)$，$H_1$ の下で $\Normal(\mu,1)$（$\mu>0$）に従い，$Z>z_\alpha$ で棄却するとき，
 検出力は $\Phi(\mu-z_\alpha)$ であり，検出力 $1-\beta$ を達成する条件は
 \begin{equation}
@@ -98,7 +98,7 @@ n=\frac{2\sigma^2(z_{\alpha/2}+z_\beta)^2}{\Delta^2}\quad\text{（各群）}.\la
 \item ベースラインで調整する ANCOVA：\cref{eq:12-means}に $1-\rho^2$ を掛ける（\cref{ch:08}）．
 \item 小標本では $z$ を $t$ に置き換えて反復計算する（数人増える程度）．
 \end{itemize}
-\subsection{2値アウトカム}
+\subsection{2 値アウトカム}
 比率 $\pi_1,\pi_0$，$\bar\pi=(\pi_1+\pi_0)/2$，各群 $n$ 人で，プール分散による検定（Pearson $\chi^2$）を用いるなら $v_0=2\bar\pi(1-\bar\pi)$，$v_1=\pi_1(1-\pi_1)+\pi_0(1-\pi_0)$ で
 \begin{equation}
 n=\frac{\bigl\{z_{\alpha/2}\sqrt{2\bar\pi(1-\bar\pi)}+z_\beta\sqrt{\pi_1(1-\pi_1)+\pi_0(1-\pi_0)}\bigr\}^2}{(\pi_1-\pi_0)^2}.\label{eq:12-prop}
@@ -161,7 +161,7 @@ $2\lambda\sum T_i\sim\chi^2_{2n}$ を用いた正確な検定では19人で検�
 \section{結果の解釈}\label{sec:12-interp}
 \begin{itemize}
 \item 「$n=122$ で検出力90\%」は，「真の差が $\Delta$ なら90\%の確率で有意になる」の意味．真の差が小さければ検出力は下がる．
-\item 試験後に観測された効果量で「事後の検出力」を計算しても，P値と1対1に対応するだけで新しい情報は与えない．非有意の解釈は信頼区間で行う．
+\item 試験後に観測された効果量で「事後の検出力」を計算しても，P 値と1対1に対応するだけで新しい情報は与えない．非有意の解釈は信頼区間で行う．
 \end{itemize}
 
 \section{手法選択}\label{sec:12-choice}

@@ -39,7 +39,7 @@
 例：検体の破損による欠測は MCAR．前回の測定値が悪い患者が来院しなくなるのは（前回値が観測されていれば）MAR．
 今回の症状が悪化したこと自体が来院しない理由なら MNAR．
 
-\begin{meidai}[MAR の下での尤度の無視可能性]\label{prop:16-ignor}
+\begin{meidai}[MAR の下での尤度の無視可能性]\label[meidai]{prop:16-ignor}
 MAR で，データのパラメータ $\theta$ と欠測メカニズムのパラメータ $\psi$ が別個（distinct）なら，
 観測データの尤度は $L(\theta,\psi)=f(\bm R\mid\bm Y_{\mathrm{obs}};\psi)\,f(\bm Y_{\mathrm{obs}};\theta)$ と分解され，
 $\theta$ の推測は欠測メカニズムをモデル化せずに $f(\bm Y_{\mathrm{obs}};\theta)$ だけで行える．
@@ -81,7 +81,7 @@ MAR なら第2因子は $\bm Y_{\mathrm{mis}}$ によらず積分の外に出せ
 \item \textbf{解析}：各データセットで通常の解析を行い，推定値 $\hat\theta_k$ とその分散推定値 $\hat\V[\hat\theta_k]$ を得る．
 \item \textbf{統合}：Rubin のルールで1つの推定値と分散にまとめる．
 \end{enumerate}
-\begin{teiri}[Rubin のルール \cite{rubin1987}]\label{thm:16-rubin}
+\begin{teiri}[Rubin のルール \cite{rubin1987}]\label[teiri]{thm:16-rubin}
 \begin{equation}
 \bar\theta=\frac1M\sum_{k=1}^M\hat\theta_k,\quad W=\frac1M\sum_{k=1}^M\hat\V[\hat\theta_k],\quad B=\frac{1}{M-1}\sum_{k=1}^M(\hat\theta_k-\bar\theta)^2,\quad
 T=W+\Bigl(1+\frac1M\Bigr)B.\label{eq:16-rubin}
@@ -100,7 +100,7 @@ $W=0.003774$，$B=\frac{0.01^2+0+0.01^2}{2}=0.0001$，$T=0.003774+\frac43\times0
 
 \subsection{補完間分散の性質}\label{subsec:16-B}
 以下の $M_T,M_C$ は欠測人数であり，補完回数 $M$ とは別である（過去問では補完回数を $K$ と書く）．
-\begin{meidai}[\kakomon{2024}{3}〔4〕〔5〕]\label{prop:16-B}
+\begin{meidai}[\kakomon{2024}{3}〔4〕〔5〕]\label[meidai]{prop:16-B}
 観測データを与えた下で $\hat\theta_1,\dots,\hat\theta_M$ が独立同分布なら $\E[B\mid\text{観測}]=\V[\hat\theta_k\mid\text{観測}]$．
 2群の改善割合の差の例で，$T$ 群の観測 $N_T$ 人中改善 $y_T^o$，欠測 $M_T$ 人の改善数を $Y_{Tk}^m\sim\Bin(M_T,y_T^o/N_T)$（$C$ 群も同様，独立）で補完すると
 \[
@@ -162,7 +162,7 @@ Eステップは「観測された A型の人数を，現在のパラメータ�
 \section{手法選択}\label{sec:16-choice}
 \begin{itemize}
 \item 連続アウトカムの反復測定で単調な脱落 → MMRM（MAR）．
-\item 2値アウトカム，最終時点のみ → MI（ロジスティック補完），または脱落を無効とする複合戦略（estimand に依存）．
+\item 2 値アウトカム，最終時点のみ → MI（ロジスティック補完），または脱落を無効とする複合戦略（estimand に依存）．
 \item MNAR が疑われる → デルタ調整・ティッピングポイントの感度分析．
 \end{itemize}
 
@@ -202,7 +202,7 @@ $M=5$ 回の補完で，推定値 $1.20,1.35,1.10,1.28,1.22$，分散推定値 $
 \end{reidai}
 
 \begin{reidai}[完全ケース解析の偏り]\label{reidai:16-3}
-2値の共変量 $X$（各50\%）で $\E[Y\mid X=0]=10$，$\E[Y\mid X=1]=20$．$Y$ の観測確率は $X=0$ で0.9，$X=1$ で0.5（$X$ は全員観測）．
+2 値の共変量 $X$（各50\%）で $\E[Y\mid X=0]=10$，$\E[Y\mid X=1]=20$．$Y$ の観測確率は $X=0$ で0.9，$X=1$ で0.5（$X$ は全員観測）．
 \begin{enumerate}[label=(\arabic*)]
 \item 欠測メカニズムは何か．
 \item 完全ケースでの $Y$ の平均の期待値を求め，真の平均15と比べよ．

@@ -1,12 +1,12 @@
-\chapter{2値データと分割表}\label{ch:04}
+\chapter{2 値データと分割表}\label{ch:04}
 
 \begin{goalbox}
 \begin{itemize}
-\item 2値データの確率モデル（二項・積二項・多項・超幾何）を研究デザインから選べる．
+\item 2 値データの確率モデル（二項・積二項・多項・超幾何）を研究デザインから選べる．
 \item $2\times2$ 表の Pearson $\chi^2$ 検定を，比率の差の $z$ 検定・スコア検定として導出できる．
 \item リスク差・リスク比・オッズ比の推定量と，デルタ法による分散・信頼区間を導出できる．
 \item $K$ 群の比率の一様性の検定と Cochran--Armitage 傾向性検定を導出し，使い分けられる．
-\item 対応のある2値データで McNemar 検定・差の信頼区間・尤度比検定を導出できる．
+\item 対応のある2 値データで McNemar 検定・差の信頼区間・尤度比検定を導出できる．
 \item 層別 $2\times2$ 表の Mantel--Haenszel 検定と共通オッズ比の推定量を書ける．
 \end{itemize}
 \end{goalbox}
@@ -22,7 +22,7 @@
 \end{itemize}
 \end{exambox}
 
-\flowline{2値\\独立／対応／層別}{RD・RR・OR\\一様性・傾向}{$\chi^2$・MH\\McNemar・CA}{二項・多項\\超幾何}{期待度数・分散\\デルタ法}{効果の向きと大きさ}
+\flowline{2 値\\独立／対応／層別}{RD・RR・OR\\一様性・傾向}{$\chi^2$・MH\\McNemar・CA}{二項・多項\\超幾何}{期待度数・分散\\デルタ法}{効果の向きと大きさ}
 
 \section{問題設定と確率モデル}\label{sec:04-model}
 \cref{tab:02-2x2}の記号（$a,b,c,d$，行和 $n_1,n_0$，列和 $m_1,m_0$，総数 $N$）を用いる．
@@ -59,7 +59,7 @@ $a,c$ は独立なので $\V[n_0a-n_1c]=n_0^2n_1\pi(1-\pi)+n_1^2n_0\pi(1-\pi)=n_
 \V\bigl[a-\hat E[a]\bigr]=\frac{n_1n_0\pi(1-\pi)}{N},\qquad
 \hat\V\bigl[a-\hat E[a]\bigr]=\frac{n_1n_0m_1m_0}{N^3}.
 \]
-\begin{meidai}[Pearson $\chi^2$ 統計量]\label{prop:04-pearson}
+\begin{meidai}[Pearson $\chi^2$ 統計量]\label[meidai]{prop:04-pearson}
 \begin{equation}
 X^2=\frac{(a-\hat E[a])^2}{\hat\V[a-\hat E[a]]}=\frac{N(ad-bc)^2}{n_1n_0m_1m_0}
 =\sum_{\text{4セル}}\frac{(O-E)^2}{E}=\frac{(\hat\pi_1-\hat\pi_0)^2}{\hat\pi(1-\hat\pi)(1/n_1+1/n_0)}\label{eq:04-pearson}
@@ -87,7 +87,7 @@ $\binom54\binom50/\binom{10}{4}=5/210=0.024$（片側）．
 
 \section{効果指標の推定とデルタ法}\label{sec:04-delta}
 \subsection{デルタ法}
-\begin{teiri}[多変量デルタ法]\label{thm:04-delta}
+\begin{teiri}[多変量デルタ法]\label[teiri]{thm:04-delta}
 $\sqrt n(\hat{\bm\theta}-\bm\theta)\xrightarrow{d}\Normal_k(\bm0,\bm\Sigma)$ で $g:\mathbb R^k\to\mathbb R$ が $\bm\theta$ で微分可能，
 $\nabla g(\bm\theta)\ne\bm0$ なら
 \begin{equation}
@@ -102,7 +102,7 @@ $g(\hat{\bm\theta})=g(\bm\theta)+\nabla g(\bm\theta)\transp(\hat{\bm\theta}-\bm\
 独立な推定量なら各成分の寄与の和 $\sum_j(\partial g/\partial\theta_j)^2\V[\hat\theta_j]$ になる．
 
 \subsection{各指標の分散}\label{subsec:04-var}
-\begin{meidai}\label{prop:04-var}
+\begin{meidai}\label[meidai]{prop:04-var}
 独立な $a\sim\Bin(n_1,\pi_1)$，$c\sim\Bin(n_0,\pi_0)$ について
 \begin{align}
 \V[\hat\pi_1-\hat\pi_0]&=\frac{\pi_1(1-\pi_1)}{n_1}+\frac{\pi_0(1-\pi_0)}{n_0},\\
@@ -151,7 +151,7 @@ $H_0$ の下で $p_i$ は独立に $\V[p_i]=\pi(1-\pi)/n_i$ なので，
 \V[\hat\beta\mid H_0]=\frac{\sum_in_i^2(x_i-\bar x)^2\,\pi(1-\pi)/n_i}{S_{xx}^2}=\frac{\pi(1-\pi)}{S_{xx}},\qquad
 \SE[\hat\beta\mid H_0]=\sqrt{\frac{p(1-p)}{S_{xx}}}.
 \]
-\begin{teiri}[Cochran--Armitage 傾向性検定]\label{thm:04-ca}
+\begin{teiri}[Cochran--Armitage 傾向性検定]\label[teiri]{thm:04-ca}
 \begin{equation}
 Y=\frac{\hat\beta^2}{p(1-p)/S_{xx}}=\frac{\bigl\{\sum_iy_i(x_i-\bar x)\bigr\}^2}{p(1-p)\sum_in_i(x_i-\bar x)^2}\ \xrightarrow{d}\ \chi^2_1\quad(H_0\text{ の下}).\label{eq:04-ca}
 \end{equation}
@@ -162,14 +162,14 @@ Y=\frac{\hat\beta^2}{p(1-p)/S_{xx}}=\frac{\bigl\{\sum_iy_i(x_i-\bar x)\bigr\}^2}
 これが \kakomon{2016}{2} で $X^2$ は $p=0.077$，$Y$ は $p=0.042$ となった理由である．
 ただし単調でない（例：中用量で最大）関係には傾向性検定は検出力が低い．
 
-\section{対応のある2値データと McNemar 検定}\label{sec:04-mcnemar}
+\section{対応のある2 値データと McNemar 検定}\label{sec:04-mcnemar}
 \Hissu\Hinshutsu
 \subsection{設定}
 $n$ 組のペア（または $n$ 人の被験者に2つの処置・検査）について，\cref{tab:04-paired}のように集計する．
 セル度数 $(n_{11},n_{12},n_{21},n_{22})$ は多項分布 $\mathrm{Mult}(n;\pi_{11},\pi_{12},\pi_{21},\pi_{22})$ に従う．
 \begin{table}[htbp]
 \centering\small
-\caption{対応のある2値データ（行：処置1，列：処置2）}\label{tab:04-paired}
+\caption{対応のある2 値データ（行：処置1，列：処置2）}\label{tab:04-paired}
 \begin{tabular}{@{}lccc@{}}
 \toprule
  & 処置2 有効 & 処置2 無効 & 計\\
@@ -185,7 +185,7 @@ $n$ 組のペア（または $n$ 人の被験者に2つの処置・検査）に�
 一致したペア（$n_{11},n_{22}$）は差に寄与しない．
 
 \subsection{差の分散と信頼区間}
-\begin{meidai}[\kakomon{2018}{2}〔1〕〔2〕]\label{prop:04-mcvar}
+\begin{meidai}[\kakomon{2018}{2}〔1〕〔2〕]\label[meidai]{prop:04-mcvar}
 $\hat\delta=(n_{12}-n_{21})/n$ について
 \begin{equation}
 \V[\hat\delta]=\frac{1}{n}\bigl\{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2\bigr\}.\label{eq:04-mcvar}
@@ -205,7 +205,7 @@ $\E[Z_i]=\pi_{10}-\pi_{01}$，$\E[Z_i^2]=\pi_{10}+\pi_{01}$ より $\V[Z_i]=(\pi
 $\hat\pi_X-\hat\pi_Y=\bar Z$ の分散は $\V[Z_i]/n$ となり同じ結果を得る．
 
 \subsection{McNemar 検定}
-\begin{teiri}[McNemar 検定]\label{thm:04-mcnemar}
+\begin{teiri}[McNemar 検定]\label[teiri]{thm:04-mcnemar}
 $H_0:\pi_{12}=\pi_{21}$（周辺確率が等しい）の下で $\V[Z_i]=\pi_{12}+\pi_{21}$ であり，これを $(n_{12}+n_{21})/n$ で推定すると
 \begin{equation}
 W=\frac{n\,\bar Z^2}{\hat\V_0[Z_i]}=\frac{(n_{12}-n_{21})^2}{n_{12}+n_{21}}\ \xrightarrow{d}\ \chi^2_1.\label{eq:04-mcnemar}
@@ -279,7 +279,7 @@ $N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい�
 \section{手法選択}\label{sec:04-choice}
 \begin{table}[htbp]
 \centering\small
-\caption{2値データの手法選択}\label{tab:04-choice}
+\caption{2 値データの手法選択}\label{tab:04-choice}
 \begin{tabular}{@{}L{55mm}L{85mm}@{}}
 \toprule
 状況 & 手法\\
@@ -298,7 +298,7 @@ $N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい�
 \section{よくある誤り}\label{sec:04-err}
 \begin{warnbox}
 \begin{itemize}
-\item 対応のある2値データを独立2群の $2\times2$ 表として $\chi^2$ 検定する．
+\item 対応のある2 値データを独立2群の $2\times2$ 表として $\chi^2$ 検定する．
 \item McNemar 統計量の分母に一致ペアを含める．
 \item Woolf の分散 $1/a+1/b+1/c+1/d$ を RR に使う（RR は $1/a-1/n_1+1/c-1/n_0$）．
 \item 一様性の検定の自由度を $K$ とする（正しくは $K-1$）．傾向性検定の自由度を $K-1$ とする（正しくは1）．

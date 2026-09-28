@@ -30,7 +30,7 @@ $\sigma_k^2$ は各研究の標本サイズから十分精度よく推定され�
 \begin{teigi}[固定効果（共通効果）モデル]\label{def:15-fe}
 $Y_k\sim\Normal(\theta,\sigma_k^2)$，$k=1,\dots,K$ 独立．すべての研究が共通の真の効果 $\theta$ をもつ．
 \end{teigi}
-\begin{meidai}[\kakomon{2023}{3}〔1〕〔2〕]\label{prop:15-fe}
+\begin{meidai}[\kakomon{2023}{3}〔1〕〔2〕]\label[meidai]{prop:15-fe}
 対数尤度 $l(\theta)=-\frac12\sum_k\{\log(2\pi\sigma_k^2)+w_k(y_k-\theta)^2\}$ を最大化して
 \begin{equation}
 \hat\theta=\frac{\sum_kw_kY_k}{\sum_kw_k},\qquad \E[\hat\theta]=\theta,\qquad \V[\hat\theta]=\frac{1}{\sum_kw_k}.\label{eq:15-fe}
@@ -48,7 +48,7 @@ $\V[\hat\theta]=\sum w_k^2\sigma_k^2/(\sum w_k)^2=\sum w_k/(\sum w_k)^2$．
 $Q=\sum_kw_k(Y_k-\hat\theta)^2$，$\hat\theta$ は固定効果推定量．
 \end{teigi}
 固定効果モデルの下で $Q\sim\chi^2_{K-1}$ であり，均一性（$\theta_1=\dots=\theta_K$）の検定に用いる．
-\begin{teiri}[$Q$ の期待値（\kakomon{2023}{3}〔3〕）]\label{thm:15-EQ}
+\begin{teiri}[$Q$ の期待値（\kakomon{2023}{3}〔3〕）]\label[teiri]{thm:15-EQ}
 任意の $\theta$ について $Q=\sum w_k(Y_k-\theta)^2-\sum w_k(\hat\theta-\theta)^2$ であり，$Y_k$ が独立で $\E[Y_k]=\theta$（変量効果モデルでは $\theta$ を $\mu$ と読む）のとき
 \begin{equation}
 \E[Q]=\sum_kw_k\V[Y_k]-\frac{\sum_kw_k^2\V[Y_k]}{\sum_kw_k}.\label{eq:15-EQ}
@@ -67,7 +67,7 @@ $\E[\sum w_k(Y_k-\theta)^2]=\sum w_k\V[Y_k]$，$\E[(\hat\theta-\theta)^2]=\V[\ha
 $Y_k=\theta_k+\varepsilon_k$，$\theta_k=\mu+\delta_k$，$\varepsilon_k\sim\Normal(0,\sigma_k^2)$，$\delta_k\sim\Normal(0,\tau^2)$，すべて独立．
 $\mu$ は研究間の真の効果の分布の平均，$\tau^2$ は研究間分散．
 \end{teigi}
-\begin{meidai}[\kakomon{2021}{4}]\label{prop:15-re}
+\begin{meidai}[\kakomon{2021}{4}]\label[meidai]{prop:15-re}
 (1) $Y_k\sim\Normal(\mu,\sigma_k^2+\tau^2)$．\\
 (2) 対数尤度 $\log L(\mu,\tau^2)=-\frac12\sum_k\bigl\{\log2\pi+\log(\sigma_k^2+\tau^2)+\frac{(y_k-\mu)^2}{\sigma_k^2+\tau^2}\bigr\}$．\\
 (3) $\tau^2$ を与えたときの MLE と分散は，$w_k^*=1/(\sigma_k^2+\tau^2)$ として
@@ -81,7 +81,7 @@ $\mu$ は研究間の真の効果の分布の平均，$\tau^2$ は研究間分�
 実際には $\tau^2$ を推定値 $\hat\tau^2$ で置き換える．$\tau^2$ の推定の不確かさは $\V[\hat\mu]$ に含まれないので，研究数が少ないと区間は狭すぎる傾向がある．
 
 \subsection{DerSimonian--Laird 推定量}\label{subsec:15-dl}
-\begin{teiri}[モーメント推定量（\kakomon{2023}{3}〔4〕，\cite{dl1986}）]\label{thm:15-dl}
+\begin{teiri}[モーメント推定量（\kakomon{2023}{3}〔4〕，\cite{dl1986}）]\label[teiri]{thm:15-dl}
 変量効果モデルで $\V[Y_k]=\tau^2+1/w_k$ を\cref{eq:15-EQ}に代入すると
 \[
 \E[Q]=K-1+\tau^2\Bigl(\sum_kw_k-\frac{\sum_kw_k^2}{\sum_kw_k}\Bigr).
@@ -165,7 +165,7 @@ $\mu$ の信頼区間が0を含まなくても，予測区間が0を含むこと
 \begin{itemize}
 \item 研究が同一のプロトコルで行われ異質性が小さい → 固定効果（MH 法，Peto 法を含む）．
 \item 異なる集団・条件の研究を統合し平均的効果を知りたい → 変量効果（DL，REML）．
-\item 2値データでイベントが稀 → Peto 法や MH 法（逆分散法はゼロセルに弱い）．
+\item 2 値データでイベントが稀 → Peto 法や MH 法（逆分散法はゼロセルに弱い）．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:15-err}
@@ -203,6 +203,7 @@ $K=5$ 研究がすべて同じ分散 $\sigma^2=0.05$ をもつ．$Q=12.0$ のと
 \end{reidai}
 
 \section{解答}\label{sec:15-sol}
+\enlargethispage{2\baselineskip}
 \begin{kaitou}{reidai:15-1}
 (1) $w=(25,50,11.11,33.33)$，$\sum w=119.44$，$\sum wY=-10-2.5-6.667+5=-14.17$．
 $\hat\theta=-14.17/119.44=-0.119$，$\SE=1/\sqrt{119.44}=0.0915$，95\%CI $(-0.298,\,0.061)$（OR で $(0.74,1.06)$）．\\

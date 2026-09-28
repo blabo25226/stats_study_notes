@@ -51,7 +51,7 @@ H(t)&=\int_0^th(u)\,\dd u\quad\text{（累積ハザード関数）}.
 \end{teigi}
 ハザードは「時点 $t$ まで生存した人が，次の瞬間にイベントを起こす率」であり，確率ではない（1を超えうる．単位は時間$^{-1}$）．
 
-\begin{teiri}[基本関係式]\label{thm:09-relations}
+\begin{teiri}[基本関係式]\label[teiri]{thm:09-relations}
 \begin{equation}
 h(t)=\frac{f(t)}{S(t)}=-\frac{\dd}{\dd t}\log S(t),\qquad H(t)=-\log S(t),\qquad S(t)=e^{-H(t)},\qquad f(t)=h(t)S(t).\label{eq:09-relations}
 \end{equation}
@@ -65,7 +65,7 @@ $f=-S'$ なので $h=-S'/S=-(\log S)'$．$S(0)=1$ より $H(t)=\int_0^t-(\log S)
 残りの2式はこれを書き直したもの．
 \end{proof}
 
-\begin{meidai}[$H(T)$ は標準指数分布（\kakomon{2017}{1}〔3〕）]\label{prop:09-HT}
+\begin{meidai}[$H(T)$ は標準指数分布（\kakomon{2017}{1}〔3〕）]\label[meidai]{prop:09-HT}
 $T$ が連続なら $\Prob(H(T)>t)=e^{-t}$，すなわち $H(T)\sim\Ex(1)$．同値に $S(T)\sim\Unif(0,1)$．
 \end{meidai}
 \begin{proof}
@@ -157,7 +157,7 @@ KM 曲線は右連続な階段関数で，イベント時点でのみ下がる�
 \end{figure}
 
 \subsection{Greenwood の分散公式}\label{subsec:09-greenwood}
-\begin{teiri}[Greenwood の公式]\label{thm:09-greenwood}
+\begin{teiri}[Greenwood の公式]\label[teiri]{thm:09-greenwood}
 \begin{equation}
 \widehat\V[\hat S(t)]=\hat S(t)^2\sum_{j:\,t_{(j)}\le t}\frac{d_j}{n_j(n_j-d_j)}.\label{eq:09-greenwood}
 \end{equation}
@@ -186,7 +186,7 @@ $\V[\log(-\log\hat S)]\approx\frac{\sum d_j/\{n_j(n_j-d_j)\}}{(\log\hat S)^2}$�
 分散の推定量は $\widehat\V[\hat H(t)]=\sum d_j/n_j^2$．
 \end{teigi}
 各時点のハザードの増分 $d_j/n_j$ を足し上げたものが累積ハザードの推定量で，$S=e^{-H}$ の関係から生存関数の推定量が得られる．
-\begin{meidai}[$\tilde S\ge\hat S$（\kakomon{2019}{1}〔2〕）]\label{prop:09-nage}
+\begin{meidai}[$\tilde S\ge\hat S$（\kakomon{2019}{1}〔2〕）]\label[meidai]{prop:09-nage}
 任意の $t$ で $\tilde S(t)\ge\hat S(t)$．
 \end{meidai}
 \begin{proof}
@@ -217,7 +217,7 @@ $H_0$ の下で周辺度数を固定すると，$d_{1j}$ は超幾何分布に�
 \begin{equation}
 E_{1j}=\E[d_{1j}]=d_j\frac{n_{1j}}{n_j},\qquad V_j=\V[d_{1j}]=\frac{d_j\,n_{1j}\,n_{0j}\,(n_j-d_j)}{n_j^2(n_j-1)}.\label{eq:09-lrmoments}
 \end{equation}
-\begin{teiri}[ログランク検定]\label{thm:09-logrank}
+\begin{teiri}[ログランク検定]\label[teiri]{thm:09-logrank}
 \begin{equation}
 U=\sum_j(d_{1j}-E_{1j})=O_1-E_1,\qquad V=\sum_jV_j,\qquad \chi^2_{\mathrm{LR}}=\frac{U^2}{V}\ \xrightarrow{d}\ \chi^2_1.\label{eq:09-logrank}
 \end{equation}

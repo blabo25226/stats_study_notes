@@ -21,10 +21,10 @@
 \end{itemize}
 \end{exambox}
 
-\flowline{2値アウトカム\\＋共変量}{調整OR\\予測確率}{ロジスティック\\回帰}{logit 線形\\独立}{最尤法\\Wald・LRT}{調整ORの解釈\\判別・較正}
+\flowline{2 値アウトカム\\＋共変量}{調整OR\\予測確率}{ロジスティック\\回帰}{logit 線形\\独立}{最尤法\\Wald・LRT}{調整ORの解釈\\判別・較正}
 
 \section{問題設定}\label{sec:06-setting}
-被験者 $i=1,\dots,n$ について，2値アウトカム $y_i\in\{0,1\}$ と共変量ベクトル $\bm x_i=(1,x_{i1},\dots,x_{ip})\transp$ が得られる．
+被験者 $i=1,\dots,n$ について，2 値アウトカム $y_i\in\{0,1\}$ と共変量ベクトル $\bm x_i=(1,x_{i1},\dots,x_{ip})\transp$ が得られる．
 目的は (a) 他の共変量を調整した曝露・治療の効果（調整オッズ比）の推定，(b) 発症確率の予測，のいずれかである．
 2群比較や層別表では足りない「複数の共変量（連続量を含む）の同時調整」を行うのがロジスティック回帰である．
 
@@ -36,8 +36,8 @@ $\pi_i=\Prob(Y_i=1\mid\bm x_i)$ について
 \pi_i=\frac{e^{\bm x_i\transp\bm\beta}}{1+e^{\bm x_i\transp\bm\beta}}.\label{eq:06-logit}
 \end{equation}
 \end{teigi}
-\begin{meidai}[係数は調整対数オッズ比（\kakomon{2018}{4}〔2〕）]\label{prop:06-coef}
-$x_1$ が2値（0/1）のとき，他の共変量 $x_2,\dots,x_p$ を固定すると
+\begin{meidai}[係数は調整対数オッズ比（\kakomon{2018}{4}〔2〕）]\label[meidai]{prop:06-coef}
+$x_1$ が2 値（0/1）のとき，他の共変量 $x_2,\dots,x_p$ を固定すると
 \[
 \log\left\{\frac{\Prob(Y=1\mid x_1=1,\cdot)/\Prob(Y=0\mid x_1=1,\cdot)}{\Prob(Y=1\mid x_1=0,\cdot)/\Prob(Y=0\mid x_1=0,\cdot)}\right\}=\beta_1.
 \]
@@ -60,7 +60,7 @@ $\beta_3\ne0$ は「$z$ による効果修飾」（\cref{sec:07-modification}）
 
 \section{数理：尤度・スコア・情報行列}\label{sec:06-likelihood}
 \subsection{対数尤度}
-\begin{meidai}[対数尤度（\kakomon{2018}{4}〔1〕）]\label{prop:06-loglik}
+\begin{meidai}[対数尤度（\kakomon{2018}{4}〔1〕）]\label[meidai]{prop:06-loglik}
 $Y_i$ が独立に $\mathrm{Bernoulli}(\pi_i)$ に従うとき，
 \begin{equation}
 \ell(\bm\beta)=\sum_{i=1}^n\{y_i\log\pi_i+(1-y_i)\log(1-\pi_i)\}=\sum_{i=1}^n\Bigl\{y_i\bm x_i\transp\bm\beta-\log\bigl(1+e^{\bm x_i\transp\bm\beta}\bigr)\Bigr\}.\label{eq:06-loglik}
@@ -78,7 +78,7 @@ $\ell=\sum_g\{y_g\,\bm x_g\transp\bm\beta-n_g\log(1+e^{\bm x_g\transp\bm\beta})\
 \]
 
 \subsection{スコアと情報行列}
-\begin{meidai}\label{prop:06-score}
+\begin{meidai}\label[meidai]{prop:06-score}
 \begin{align}
 \bm U(\bm\beta)&=\frac{\partial\ell}{\partial\bm\beta}=\sum_i\bm x_i(y_i-\pi_i)=\bm X\transp(\bm y-\bm\pi),\label{eq:06-score}\\
 \bm I(\bm\beta)&=-\frac{\partial^2\ell}{\partial\bm\beta\partial\bm\beta\transp}=\sum_i\pi_i(1-\pi_i)\bm x_i\bm x_i\transp=\bm X\transp\bm W\bm X,\label{eq:06-info}
@@ -94,7 +94,7 @@ $\bm\beta^{(t+1)}=\bm\beta^{(t)}+\bm I(\bm\beta^{(t)})^{-1}\bm U(\bm\beta^{(t)})
 MLE は漸近的に $\hat{\bm\beta}\approx\Normal(\bm\beta,\bm I(\bm\beta)^{-1})$ に従う．
 
 \subsection{2群の場合：\texorpdfstring{$2\times2$}{2×2} 表との一致}\label{subsec:06-2group}
-\begin{meidai}\label{prop:06-2group}
+\begin{meidai}\label[meidai]{prop:06-2group}
 $\logit\pi=\alpha+\beta x$（$x\in\{0,1\}$）を $2\times2$ 表（\cref{tab:02-2x2}）に当てはめると
 \[
 \hat\alpha=\log\frac cd,\qquad \hat\beta=\log\frac{ad}{bc}=\log\widehat{\OR},\qquad

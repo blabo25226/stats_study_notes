@@ -63,7 +63,7 @@ $X\ge c$ を陽性とする判定を考え，罹患者・非罹患者の $X$ の
 \Youchui 感度・特異度は「疾患の状態を条件とした検査結果の確率」，PPV・NPV は「検査結果を条件とした疾患の確率」である．
 臨床で患者が知りたいのは後者だが，後者は有病率に依存する．
 
-\begin{meidai}[Bayes の定理による的中率]\label{prop:05-bayes}
+\begin{meidai}[Bayes の定理による的中率]\label[meidai]{prop:05-bayes}
 感度 $Se$，特異度 $Sp$，有病率 $p$ とすると
 \begin{equation}
 \mathrm{PPV}=\frac{Se\,p}{Se\,p+(1-Sp)(1-p)},\qquad
@@ -120,7 +120,7 @@ ROC 上の点 $(u,v)$ から対角線への距離は $(v-u)/\sqrt2$ なので，
 
 \section{AUC とその確率的解釈}\label{sec:05-auc}
 \Hissu\Hinshutsu
-\begin{teiri}[AUC $=\Prob(X_1>X_0)$]\label{thm:05-auc}
+\begin{teiri}[AUC $=\Prob(X_1>X_0)$]\label[teiri]{thm:05-auc}
 $X_1\sim F_1$，$X_0\sim F_0$ が独立な連続確率変数なら，ROC 曲線下面積は
 \begin{equation}
 \mathrm{AUC}=\Prob(X_1>X_0).\label{eq:05-auc}
@@ -135,7 +135,7 @@ $u=\mathrm{FPF}(c)=1-F_0(c)$ とおくと $\dd u=-f_0(c)\,\dd c$ で，$c:+\inft
 2正規モデルでは $X_1-X_0\sim\Normal(\mu_1-\mu_0,\sigma_1^2+\sigma_0^2)$ より
 $\mathrm{AUC}=\Phi\bigl((\mu_1-\mu_0)/\sqrt{\sigma_1^2+\sigma_0^2}\bigr)$．
 
-\begin{meidai}[経験 AUC と Mann--Whitney 統計量（\kakomon{2018}{3}〔4〕〔5〕）]\label{prop:05-empauc}
+\begin{meidai}[経験 AUC と Mann--Whitney 統計量（\kakomon{2018}{3}〔4〕〔5〕）]\label[meidai]{prop:05-empauc}
 罹患者の値 $x_{11},\dots,x_{1n_1}$，非罹患者の値 $x_{01},\dots,x_{0n_0}$ に同順位がなければ，経験ROC曲線の下の面積は
 \begin{equation}
 \widehat{\mathrm{AUC}}=\frac{1}{n_1n_0}\sum_{i=1}^{n_1}\sum_{j=1}^{n_0}I(x_{1i}>x_{0j})=\frac{U}{n_1n_0}.\label{eq:05-empauc}
@@ -173,7 +173,7 @@ $\mathrm{AUC}=\sum_{k=1}^K\frac{(v_{k-1}+v_k)(u_k-u_{k-1})}{2}$．
 
 \section{推定・検定：2検査の比較}\label{sec:05-compare}
 \subsection{対応のある感度の比較}\label{subsec:05-sens}
-同一の罹患者に検査A・Bを行った場合，感度の差は罹患者での対応のある2値データの周辺比率の差である．
+同一の罹患者に検査A・Bを行った場合，感度の差は罹患者での対応のある2 値データの周辺比率の差である．
 不一致ペア（A陽性・B陰性の $n_{+-}$，A陰性・B陽性の $n_{-+}$）だけが情報を持ち，McNemar 検定（\cref{sec:04-mcnemar}）
 \[
 z=\frac{n_{+-}-s/2}{\sqrt{s/4}},\quad s=n_{+-}+n_{-+}

@@ -22,7 +22,7 @@
 \end{exambox}
 
 \section{問題設定}\label{sec:02-setting}
-2群（曝露あり／なし，または試験治療／対照）で2値アウトカム（発症・有効など）を比較する基本の $2\times2$ 表を
+2群（曝露あり／なし，または試験治療／対照）で2 値アウトカム（発症・有効など）を比較する基本の $2\times2$ 表を
 \cref{tab:02-2x2}とする．どの周辺度数が研究者によって固定されるかは研究デザインで決まり，
 それによって推定可能な指標が変わる．これが本章の中心的な論点である．
 \begin{table}[htbp]
@@ -133,7 +133,7 @@ RCT・コホート（追跡） & ○ & ○ & ○ & ○ & ○\\
 \end{itemize}
 
 \subsection{RR・OR・HRの関係}\label{subsec:02-relation}
-\begin{meidai}[ORとRRの関係]\label{prop:02-orrr}
+\begin{meidai}[ORとRRの関係]\label[meidai]{prop:02-orrr}
 \begin{equation}
 \OR=\RR\times\frac{1-\pi_0}{1-\pi_1}.\label{eq:02-orrr}
 \end{equation}
@@ -144,7 +144,7 @@ RCT・コホート（追跡） & ○ & ○ & ○ & ○ & ○\\
 \cref{eq:02-orrr}は定義から直ちに従う．$\RR>1$ なら $\pi_1>\pi_0$ で $(1-\pi_0)/(1-\pi_1)>1$ となり $\OR>\RR>1$．$\RR<1$ も同様．
 \end{proof}
 
-\begin{meidai}[ORの対称性：症例対照研究でORが推定できる理由]\label{prop:02-orsym}
+\begin{meidai}[ORの対称性：症例対照研究でORが推定できる理由]\label[meidai]{prop:02-orsym}
 曝露 $E$ と疾患 $D$ について
 \[
 \frac{\Prob(D\mid E)/\Prob(\bar D\mid E)}{\Prob(D\mid\bar E)/\Prob(\bar D\mid\bar E)}

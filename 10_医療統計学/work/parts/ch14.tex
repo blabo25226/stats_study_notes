@@ -35,7 +35,7 @@
 最終解析の情報量（ログランクならイベント数 $D$）に対する時点の情報量の割合を\emphx{情報時間} $t\in(0,1]$ とする（$t=L/D$）．
 情報時間 $t$ の標準化統計量を $Z(t)$，$B(t)=\sqrt t\,Z(t)$ とすると，$H_0$ の下で $B(t)$ は近似的に標準 Brown 運動になり，
 $\E[B(t)]=0$，$\Cov[B(t_1),B(t_2)]=\min(t_1,t_2)$（\kakomon{2017}{2}）．
-\begin{meidai}\label{prop:14-corr}
+\begin{meidai}\label[meidai]{prop:14-corr}
 $t_1<t_2$ のとき $\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$．
 \end{meidai}
 \begin{proof}
@@ -118,7 +118,7 @@ $m=2$，$\alpha=0.05$ で $0.0975$（\kakomon{2025}{4}），$m=3$，$\alpha=0.02
 \item \textbf{Bonferroni}：各検定を $\alpha/m$ で行う．Boole の不等式 $\Prob(\cup A_i)\le\sum\Prob(A_i)$ により，依存関係によらず強い制御．
 \item \textbf{Šidák}：独立なら $1-(1-\alpha_1)(1-\alpha_2)=\alpha$，等しく配分して $\alpha_k=1-(1-\alpha)^{1/m}$（$m=2$，$\alpha=0.05$ で $0.0253$）．Bonferroni よりわずかに大きい．
 \end{itemize}
-\begin{meidai}[正の相関と FWER（\kakomon{2025}{4}〔2〕）]\label{prop:14-rho}
+\begin{meidai}[正の相関と FWER（\kakomon{2025}{4}〔2〕）]\label[meidai]{prop:14-rho}
 $(Z_1,Z_2)$ が相関 $\rho\ge0$ の標準2変量正規分布に従い，各検定を $Z_k>z_\alpha$ で棄却するとき，
 $\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)$，$\phi(\rho)=\Prob(Z_1>z_\alpha,Z_2>z_\alpha)$ であり，$\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)=2\alpha-\alpha^2$．
 \end{meidai}
@@ -153,7 +153,7 @@ $\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)$，$\phi(\rho)=\Prob(Z_1>z_\alpha,Z_2>z_
 \end{figure}
 
 \subsection{閉検定手順とゲートキーピング}
-\begin{teiri}[閉検定手順]\label{thm:14-closed}
+\begin{teiri}[閉検定手順]\label[teiri]{thm:14-closed}
 族のすべての共通部分仮説 $H_I=\cap_{i\in I}H_i$ に水準 $\alpha$ の検定を用意し，
 $H_i$ を「$i$ を含むすべての $H_I$ が棄却されたとき」に棄却すると，FWER は強い意味で $\alpha$ 以下に制御される．
 \end{teiri}
@@ -171,7 +171,7 @@ Holm 法は各 $H_I$ を Bonferroni で検定する閉手順である．Simes �
 FWER が保証されるのは，すべての帰無仮説が真か，真の帰無仮説が高々1つの場合である．
 
 \subsection{多対1比較と Dunnett 法}
-\begin{meidai}[多対1比較の相関（\kakomon{2024}{4}〔4〕）]\label{prop:14-dunnett}
+\begin{meidai}[多対1比較の相関（\kakomon{2024}{4}〔4〕）]\label[meidai]{prop:14-dunnett}
 $Z_j=(\bar Y_j-\bar Y_0)/\sqrt{\sigma^2(1/n_j+1/n_0)}$ について，すべての帰無仮説が真のとき
 \[
 \Corr(Z_j,Z_k)=\sqrt{\frac{n_jn_k}{(n_j+n_0)(n_k+n_0)}}\quad(j\ne k),\qquad n_j=n_k=n_0\ \text{なら}\ \frac12.
@@ -200,9 +200,9 @@ Z_c=\frac{\sum_jc_j\bar Y_j}{\sqrt{\sigma^2\sum_jc_j^2/n_j}}\label{eq:14-contras
 \item \textbf{直線的な用量反応}（等間隔の用量，各群同数）：$\bm c\propto(-3,-1,1,3)$（中心化した用量）．
       正規化すると $(-3,-1,1,3)/\sqrt{20}$（\kakomon{2024}{4}〔5〕）．真の $\mu_j$ が直線なら，この対比が最も検出力が高い．
 \item \textbf{プラセボ対全用量の平均}：$(-3,1,1,1)$．
-\item 2値データでの直線対比の検定が Cochran--Armitage 傾向性検定（\cref{sec:04-trend}）である．
+\item 2 値データでの直線対比の検定が Cochran--Armitage 傾向性検定（\cref{sec:04-trend}）である．
 \end{itemize}
-\begin{meidai}[対比検定の相関（\kakomon{2024}{4}〔6〕）]\label{prop:14-contrastcorr}
+\begin{meidai}[対比検定の相関（\kakomon{2024}{4}〔6〕）]\label[meidai]{prop:14-contrastcorr}
 $H_0$ の下で $\Corr(Z_c,Z_d)=\dfrac{\sum c_jd_j/n_j}{\sqrt{\sum c_j^2/n_j}\sqrt{\sum d_j^2/n_j}}$．各群同数なら $\bm c$ と $\bm d$ のなす角の余弦．
 \end{meidai}
 $(-3,-1,1,3)$ と $(-3,1,1,1)$ では $\frac{9-1+1+3}{\sqrt{20}\sqrt{12}}=\frac{12}{\sqrt{240}}=\frac{3}{\sqrt{15}}\approx0.775$．

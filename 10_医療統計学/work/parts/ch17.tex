@@ -30,7 +30,7 @@
 Y\sim\Po(\lambda T),\qquad \Prob(Y=y)=\frac{e^{-\lambda T}(\lambda T)^y}{y!}
 \]
 とする．\kakomon{2025}{2} のように「1万人あたり $\Po(\theta)$」が独立なら，再生性により人口 $T$ 万人の死亡数は $\Po(T\theta)$ である．
-\begin{meidai}\label{prop:17-mle}
+\begin{meidai}\label[meidai]{prop:17-mle}
 $\hat\lambda=Y/T$，$\V[\hat\lambda]=\lambda/T$（推定値 $Y/T^2$），$\V[\log\hat\lambda]\approx1/(\lambda T)\approx1/Y$．
 複数の集団で共通の率なら $\hat\lambda=\sum Y_g/\sum T_g$．
 \end{meidai}
@@ -76,7 +76,7 @@ p(\tilde y\mid y)=\int p(\tilde y\mid\theta)\,p(\theta\mid y)\,\dd\theta
 
 \section{Beta--Binomial モデル}\label{sec:17-betabin}
 \Hissu
-\begin{teiri}[Beta--Binomial]\label{thm:17-betabin}
+\begin{teiri}[Beta--Binomial]\label[teiri]{thm:17-betabin}
 $Y\mid\pi\sim\Bin(n,\pi)$，$\pi\sim\Be(a,b)$ なら
 \begin{equation}
 \pi\mid y\sim\Be(a+y,\ b+n-y),\qquad \E[\pi\mid y]=\frac{a+y}{a+b+n}=\frac{n}{a+b+n}\cdot\frac yn+\frac{a+b}{a+b+n}\cdot\frac{a}{a+b}.\label{eq:17-betabin}
@@ -102,7 +102,7 @@ $Y$ の周辺分布は
 
 \paragraph{事後確率による判定}
 「$\Prob(\pi\ge\pi_0\mid y)\ge\gamma$ なら有効」とする判定では，一様事前分布の下で次の関係が便利である．
-\begin{meidai}\label{prop:17-betatail}
+\begin{meidai}\label[meidai]{prop:17-betatail}
 $\pi\mid y\sim\Be(y+1,n-y+1)$ のとき $\Prob(\pi>p\mid y)=\Prob(W\le y)$，$W\sim\Bin(n+1,p)$．
 \end{meidai}
 \begin{proof}
@@ -118,7 +118,7 @@ $y=4$ で $57/64=0.891$．よって $0.8$ 以上となる最小の $y$ は4．
 
 \section{Gamma--Poisson モデル}\label{sec:17-gampois}
 \Hissu
-\begin{teiri}[Gamma--Poisson]\label{thm:17-gampois}
+\begin{teiri}[Gamma--Poisson]\label[teiri]{thm:17-gampois}
 $Y\mid\theta\sim\Po(T\theta)$，$\theta\sim\Ga(a,b)$（形状・率）なら
 \begin{equation}
 \theta\mid y\sim\Ga(a+y,\ b+T),\qquad \E[\theta\mid y]=\frac{a+y}{b+T}=\frac{T}{b+T}\cdot\frac yT+\frac{b}{b+T}\cdot\frac ab.\label{eq:17-gampois}

@@ -46,14 +46,14 @@
 \section{数理：2つの片側検定（TOST）}\label{sec:13-tost}
 \Hissu
 $Y_1,\dots,Y_n\iid\Normal(\theta,\sigma^2)$（差の標本，$\sigma^2$ 未知），$\bar Y$，不偏分散 $s^2$ とする．
-\begin{meidai}[片側検定（\kakomon{2021}{2}〔1-2〕）]\label{prop:13-onesided}
+\begin{meidai}[片側検定（\kakomon{2021}{2}〔1-2〕）]\label[meidai]{prop:13-onesided}
 $H_{01}:\theta\le-\Delta$ 対 $H_{A1}:\theta>-\Delta$ は $T_1=\sqrt n(\bar Y+\Delta)/s>t_{n-1}(\alpha)$ で，
 $H_{02}:\theta\ge\Delta$ 対 $H_{A2}:\theta<\Delta$ は $T_2=\sqrt n(\bar Y-\Delta)/s<-t_{n-1}(\alpha)$ で棄却する．いずれも有意水準 $\alpha$ の検定である．
 \end{meidai}
 \begin{proof}
 $\theta=-\Delta$ で $T_1\sim t_{n-1}$ なので棄却確率は $\alpha$．$\theta<-\Delta$ なら $T_1$ は分布が左にずれ，棄却確率は $\alpha$ より小さい．$T_2$ も同様．
 \end{proof}
-\begin{teiri}[交差和検定（IUT）の有意水準（\kakomon{2021}{2}〔1-3〕）]\label{thm:13-iut}
+\begin{teiri}[交差和検定（IUT）の有意水準（\kakomon{2021}{2}〔1-3〕）]\label[teiri]{thm:13-iut}
 $H_0=H_{01}\cup H_{02}$ を，「$H_{01}$ と $H_{02}$ がともに有意水準 $\alpha$ で棄却されたときに棄却する」検定の第1種の過誤確率は $\alpha$ 以下である．
 \end{teiri}
 \begin{proof}
@@ -62,7 +62,7 @@ $\Prob(\text{両方棄却})\le\Prob(T_1\in R_1)\le\alpha$．$H_{02}$ が真の�
 \end{proof}
 \Youchui 各検定を $\alpha/2$ に調整する必要はない．$H_0$ の下で「両方棄却」が起こるには，真である方の帰無仮説を誤って棄却しなければならないからである．
 
-\begin{meidai}[信頼区間による判定]\label{prop:13-ci}
+\begin{meidai}[信頼区間による判定]\label[meidai]{prop:13-ci}
 TOST（各片側 $\alpha$）で $H_0$ を棄却することは，$100(1-2\alpha)\%$ 信頼区間
 $\bar Y\pm t_{n-1}(\alpha)s/\sqrt n$ が $(-\Delta,\Delta)$ に含まれることと同値である．
 \end{meidai}
@@ -88,7 +88,7 @@ $T_2<-t_{n-1}(\alpha)\iff\bar Y+t_{n-1}(\alpha)s/\sqrt n<\Delta$（上限 $<\Del
 \section{対数正規分布と生物学的同等性}\label{sec:13-be}
 \subsection{対数正規分布}\label{subsec:13-lognormal}
 \Hissu 薬物動態パラメータ（AUC，$C_{\max}$）は正の値をとり右に歪むので，$X\sim LN(\mu,\sigma^2)$，すなわち $Y=\log X\sim\Normal(\mu,\sigma^2)$ とモデル化する．
-\begin{meidai}[\kakomon{2016}{4}〔1〕〜〔4〕]\label{prop:13-ln}
+\begin{meidai}[\kakomon{2016}{4}〔1〕〜〔4〕]\label[meidai]{prop:13-ln}
 \begin{enumerate}[label=(\arabic*)]
 \item 中央値 $e^\mu$（$\log$ は単調なので $\Prob(X\le e^\mu)=\Prob(Y\le\mu)=1/2$）．
 \item 密度 $f(x)=\dfrac{1}{x\sqrt{2\pi}\sigma}\exp\Bigl\{-\dfrac{(\log x-\mu)^2}{2\sigma^2}\Bigr\}$（$x>0$）．
