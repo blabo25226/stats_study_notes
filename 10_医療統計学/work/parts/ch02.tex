@@ -1,0 +1,345 @@
+\chapter{研究デザインと効果指標}\label{ch:02}
+
+\begin{goalbox}
+\begin{itemize}
+\item ランダム化比較試験（並行群間・クロスオーバー），コホート研究，症例対照研究，マッチング研究，縦断研究，診断精度研究，メタアナリシスの特徴と，各デザインで推定できる効果指標を説明できる．
+\item リスク，率，オッズを区別し，リスク差・リスク比・オッズ比・ハザード比・率比を定義できる．
+\item オッズ比がリスク比を近似する条件と，その方向（OR は RR より1から遠い）を導出できる．
+\item 症例対照研究で曝露オッズ比が疾病オッズ比に一致することを示せる．
+\item オッズ比の非可縮性（交絡がなくても層別と併合で値が変わる）を説明できる．
+\item ICH E9(R1) の estimand の5要素を挙げられる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2017}{4}：症例対照研究（後ろ向き研究）の層別データで\textbf{曝露オッズ比}を推定．
+\item \kakomon{2019}{2}：コホート研究の粗リスク差と調整リスク差．
+\item \kakomon{2022}{2}：マッチしたペアの死亡データで粗リスク比・オッズ比とMH推定量を比較し，「交絡の有無」と「推定されるパラメータの違い」から説明（オッズ比の非可縮性）．
+\item \kakomon{2017}{5}（共通）：単純無作為化と偏りを抑える割付法の群サイズの分布．
+\item HRの解釈は\kakomon{2022}{1}，RRのメタアナリシスは\kakomon{2021}{4}．
+\end{itemize}
+\end{exambox}
+
+\section{問題設定}\label{sec:02-setting}
+2群（曝露あり／なし，または試験治療／対照）で2値アウトカム（発症・有効など）を比較する基本の $2\times2$ 表を
+\cref{tab:02-2x2}とする．どの周辺度数が研究者によって固定されるかは研究デザインで決まり，
+それによって推定可能な指標が変わる．これが本章の中心的な論点である．
+\begin{table}[htbp]
+\centering\small
+\caption{基本の $2\times2$ 表（度数）}\label{tab:02-2x2}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & 発症あり $D$ & 発症なし $\bar D$ & 計\\
+\midrule
+曝露あり $E$ & $a$ & $b$ & $n_1=a+b$\\
+曝露なし $\bar E$ & $c$ & $d$ & $n_0=c+d$\\
+\midrule
+計 & $m_1=a+c$ & $m_0=b+d$ & $N$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{研究デザイン}\label{sec:02-design}
+\subsection{ランダム化比較試験}\label{subsec:02-rct}
+\begin{description}
+\item[並行群間比較試験（parallel design）] 各被験者を1つの治療群に無作為に割り付けて並行に比較する．最も標準的．
+\item[クロスオーバー試験（crossover design）] 各被験者が複数の治療を時期を変えて受ける．2剤2期（AB/BA）が基本．
+      被験者内比較なので個人間変動が除かれ効率が高い．前の治療の効果が残る\emphx{持ち越し効果}（carryover）を防ぐため，
+      時期の間に\emphx{休薬期間}（washout）を置く．慢性で安定した疾患や生物学的同等性試験（\cref{ch:13}）に向き，
+      死亡や治癒のような不可逆なアウトカムには使えない．
+\item[盲検化（blinding）] 被験者・医師・評価者が割付を知らないようにする．二重盲検では被験者と医師の両方が知らない．
+      評価のバイアスとプラセボ効果の混入を防ぐ．
+\item[プラセボ（placebo）] 有効成分を含まない偽薬．プラセボ対照により，自然経過や心理的効果を除いた薬効を推定する．
+\end{description}
+
+\paragraph{割付の方法}
+\begin{itemize}
+\item \textbf{単純無作為化}：各被験者を独立に確率 $1/2$ で割り付ける．群サイズ $X\sim\Bin(n,1/2)$，$\V[X]=n/4$ で，小標本では不均衡が起こりうる．
+\item \textbf{置換ブロック法}：一定数（例：4人）ごとに各群同数になるよう割り付ける．
+\item \textbf{層別無作為化}：重要な予後因子の層ごとにブロック法で割り付ける．
+\item \textbf{偏りを抑える逐次割付}（最小化法，偏コイン法など）：それまでの不均衡を減らす方向の群に高い確率で割り付ける．
+      \kakomon{2017}{5} の方法2は，$A$ 群 $a$ 人，$B$ 群 $b$ 人のとき次を $A$ に確率 $b/(a+b)$ で割り付ける方式で，
+      群サイズの期待値は単純無作為化と同じ $n/2$ のまま分散が小さくなる．
+\end{itemize}
+
+\subsection{観察研究}\label{subsec:02-obs}
+\begin{description}
+\item[コホート研究] 曝露状態で分けた集団を追跡して発症を観察する（\cref{tab:02-2x2}で行和 $n_1,n_0$ を研究者が決める）．
+      リスク，率，RD，RR，OR，HR をすべて推定できる．前向き（prospective）と，記録を遡る後ろ向きコホートがある．
+\item[症例対照研究（case-control study）] 発症者（症例）と非発症者（対照）を集め，過去の曝露を調べる（列和 $m_1,m_0$ を研究者が決める）．
+      稀な疾患に効率的．\textbf{リスクもRRも直接は推定できず，推定できるのはオッズ比}である（\cref{prop:02-orsym}）．
+      「後ろ向き研究」とも呼ばれる（\kakomon{2017}{4}）．
+\item[マッチング研究] 背景因子の似た症例と対照（あるいは曝露者と非曝露者）を組にする．
+      ペアを層とみなす層別解析（McNemar型，条件付きオッズ比）で分析する（\cref{ch:04,ch:07}）．
+\item[横断研究] ある時点で曝露と疾患を同時に調べる．有病割合（prevalence）の比較になる．
+\end{description}
+
+\subsection{その他のデザイン}
+\begin{description}
+\item[縦断研究（longitudinal study）] 同一個体を複数時点で測定する．個体内相関を考慮した解析が必要（\cref{ch:08}）．
+\item[診断精度研究] 新しい検査と確定診断（ゴールドスタンダード）を同じ被験者に行い，感度・特異度などを推定する（\cref{ch:05}）．
+      同一被験者に2検査を行えば対応のある比較になる（\kakomon{2019}{3}，\kakomon{2024}{1}）．
+\item[メタアナリシス] 複数の研究の効果推定値を統合する（\cref{ch:15}）．
+\end{description}
+
+\begin{table}[htbp]
+\centering\small
+\caption{デザインと推定可能な指標}\label{tab:02-design}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+デザイン & リスク & RD & RR & OR & HR・率比\\
+\midrule
+RCT・コホート（追跡） & ○ & ○ & ○ & ○ & ○\\
+横断研究 & 有病割合 & 有病割合の差 & 有病割合の比 & ○ & ×\\
+症例対照研究 & × & × & ×（稀なら OR で近似） & ○ & ×\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{効果指標}\label{sec:02-measure}
+\subsection{リスク・率・オッズ}\label{subsec:02-risk}
+\begin{teigi}[リスク・オッズ・率]\label{def:02-risk}
+\begin{itemize}
+\item \textbf{リスク}（risk，累積発生割合）：一定期間内に発症する確率 $\pi$．無次元，$0\le\pi\le1$．
+\item \textbf{オッズ}（odds）：$\pi/(1-\pi)$．$0$ から $\infty$．
+\item \textbf{率}（rate，発生率）：単位人時間あたりの発生数 $\lambda=(\text{発生数})/(\text{観察人時間})$．次元は（時間）$^{-1}$．
+\end{itemize}
+\end{teigi}
+率は，人によって観察期間が異なる場合（途中参加・打ち切り）の標準的な要約である．
+一定のハザード $\lambda$ をもつ指数モデルでは，期間 $t$ のリスクは $1-e^{-\lambda t}$ で，$\lambda t$ が小さいとき $\approx\lambda t$ となる．
+
+\subsection{比較の指標}\label{subsec:02-effect}
+\begin{teigi}[効果指標]\label{def:02-effect}
+曝露群・非曝露群のリスクを $\pi_1,\pi_0$ とする．
+\begin{align*}
+\RD&=\pi_1-\pi_0\quad\text{（リスク差，risk difference）}\\
+\RR&=\pi_1/\pi_0\quad\text{（リスク比，risk ratio；相対リスク relative risk）}\\
+\OR&=\frac{\pi_1/(1-\pi_1)}{\pi_0/(1-\pi_0)}=\frac{\pi_1(1-\pi_0)}{\pi_0(1-\pi_1)}\quad\text{（オッズ比，odds ratio）}
+\end{align*}
+率 $\lambda_1,\lambda_0$ に対しては率比 $\lambda_1/\lambda_0$，率差 $\lambda_1-\lambda_0$．
+ハザード関数 $h_1(t),h_0(t)$（\cref{ch:09}）に対し $h_1(t)/h_0(t)$ が $t$ によらず一定のとき，その値をハザード比 $\HR$ という．
+\end{teigi}
+\cref{tab:02-2x2}の標本版は $\hat\pi_1=a/n_1$，$\hat\pi_0=c/n_0$，$\widehat{\OR}=ad/(bc)$ である．
+
+\paragraph{使い分け}
+\begin{itemize}
+\item \textbf{RD} は絶対的な効果で，公衆衛生・臨床的なインパクトを表す．その逆数 $1/|\RD|$ を\emphx{NNT}（number needed to treat）といい，
+      1人の発症を防ぐために治療が必要な人数を表す．
+\item \textbf{RR} は相対的な効果で直観的に解釈しやすい．
+\item \textbf{OR} は症例対照研究でも推定でき，ロジスティック回帰の係数と直結する（\cref{ch:06}）．
+\item \textbf{HR} は生存時間データの標準的な指標（\cref{ch:10}）．瞬間的な発生率の比であり，一定期間のリスク比とは異なる．
+\end{itemize}
+
+\subsection{RR・OR・HRの関係}\label{subsec:02-relation}
+\begin{meidai}[ORとRRの関係]\label{prop:02-orrr}
+\begin{equation}
+\OR=\RR\times\frac{1-\pi_0}{1-\pi_1}.\label{eq:02-orrr}
+\end{equation}
+したがって (i) $\RR>1\iff\OR>1$（方向は一致），(ii) $\RR>1$ のとき $\OR>\RR$，$\RR<1$ のとき $\OR<\RR$
+（OR は RR より1から遠い），(iii) $\pi_0,\pi_1$ がともに小さい（稀な疾患）とき $\OR\approx\RR$．
+\end{meidai}
+\begin{proof}
+\cref{eq:02-orrr}は定義から直ちに従う．$\RR>1$ なら $\pi_1>\pi_0$ で $(1-\pi_0)/(1-\pi_1)>1$ となり $\OR>\RR>1$．$\RR<1$ も同様．
+\end{proof}
+
+\begin{meidai}[ORの対称性：症例対照研究でORが推定できる理由]\label{prop:02-orsym}
+曝露 $E$ と疾患 $D$ について
+\[
+\frac{\Prob(D\mid E)/\Prob(\bar D\mid E)}{\Prob(D\mid\bar E)/\Prob(\bar D\mid\bar E)}
+=\frac{\Prob(E\mid D)/\Prob(\bar E\mid D)}{\Prob(E\mid\bar D)/\Prob(\bar E\mid\bar D)}.
+\]
+すなわち疾病オッズ比（コホートで定義されるOR）は曝露オッズ比（症例対照研究で推定できるOR）に等しい．
+\end{meidai}
+\begin{proof}
+両辺とも $\dfrac{\Prob(D,E)\Prob(\bar D,\bar E)}{\Prob(\bar D,E)\Prob(D,\bar E)}$ に等しい．
+症例対照研究では $\Prob(E\mid D)$ と $\Prob(E\mid\bar D)$ は推定できる（症例・対照は各疾患状態からの標本）が，
+症例・対照の比率を研究者が決めるので $\Prob(D\mid E)$ は推定できない．
+\end{proof}
+\kakomon{2017}{4} の「曝露オッズ比」は右辺であり，標本では同じく $ad/(bc)$ で計算される．
+
+\paragraph{HRとリスク比}
+指数分布で $h_1(t)=\lambda_1$，$h_0(t)=\lambda_0$ のとき $\HR=\lambda_1/\lambda_0$ であるが，
+時点 $t$ までのリスク比は
+\[
+\frac{1-e^{-\lambda_1t}}{1-e^{-\lambda_0t}}
+\]
+で，$t\to0$ のとき $\HR$ に近づき，$t\to\infty$ のとき1に近づく．
+「HR $=0.7$」は「どの時点でも，まだイベントを起こしていない人の瞬間的な発生率が0.7倍」という意味であって，
+「最終的にイベントを起こす人の割合が0.7倍」ではない．
+
+\subsection{可縮性と非可縮性}\label{subsec:02-collapse}
+\Youchui 層別変数 $Z$ があり，各層の効果指標が共通の値 $\theta$ をとるとする．
+$Z$ が曝露と独立（例：ランダム化試験や，\kakomon{2022}{2} のように各層に曝露者・非曝露者が1人ずつのマッチング）であっても，
+併合した表で計算した指標が $\theta$ に一致するとは限らない．一致する指標を\emphx{可縮}（collapsible）という．
+\begin{itemize}
+\item RD と RR は可縮：$Z$ と曝露が独立なら，併合リスク $\pi_x=\sum_k\Prob(Z=k)\pi_{xk}$ は層別リスクの同じ重みの平均だから，
+      層共通の RD（または RR）がそのまま併合でも成り立つ．
+\item OR は\textbf{非可縮}：層共通の OR があっても，併合 OR は一般に1に近い側へずれる（\cref{reidai:02-3}）．
+\end{itemize}
+したがって，交絡がなくても「粗OR $\ne$ 調整OR」は起こる．
+\kakomon{2022}{2} では粗RR $=$ MH-RR $=2.78$ であったが，粗OR $=2.79$ に対し MH-OR $=3.98$ であった．
+これは交絡バイアスではなく，推定しているパラメータ（周辺OR と層内の条件付きOR）が異なるためである．
+交絡による粗・調整の差（\cref{ch:07}）と非可縮性による差を区別することが重要である．
+
+\section{Estimand（推定対象）}\label{sec:02-estimand}
+\begin{supbox}[補足（出典：ICH E9(R1) \cite{ich:e9r1}）]
+ICH E9(R1)（2019年）は，臨床試験で推定すべき量（estimand）を次の5要素で規定することを求めている．
+\begin{enumerate}
+\item \textbf{対象集団}（population）：臨床的疑問が向けられる患者集団．
+\item \textbf{治療}（treatment）：比較する治療条件．
+\item \textbf{変数}（variable, endpoint）：各患者について得る評価項目．
+\item \textbf{中間事象}（intercurrent events）の扱い：治療開始後に起こり，評価項目の解釈や存在に影響する事象
+      （治療中止，救済治療の使用，死亡など）への対処戦略．
+      治療方針戦略（treatment policy），仮想戦略（hypothetical），複合変数戦略（composite），
+      治療下戦略（while on treatment），主要層戦略（principal stratum）の5つがある．
+\item \textbf{集団レベルの要約}（population-level summary）：RD，RR，HR，平均差など．
+\end{enumerate}
+欠測データの扱い（\cref{ch:16}）や，死亡を競合事象とみなすか（\cref{ch:11}）は，この枠組みの中で estimand として先に決めるべき事柄とされる．
+\end{supbox}
+
+\section{推定と検定の概要}\label{sec:02-inference}
+2つの独立な二項標本 $a\sim\Bin(n_1,\pi_1)$，$c\sim\Bin(n_0,\pi_0)$ に基づく標準的な推定を示す（導出は\cref{ch:04}）．
+\begin{align}
+\widehat{\V}[\widehat{\RD}]&=\frac{\hat\pi_1(1-\hat\pi_1)}{n_1}+\frac{\hat\pi_0(1-\hat\pi_0)}{n_0},\label{eq:02-varRD}\\
+\widehat{\V}[\log\widehat{\RR}]&=\frac{1-\hat\pi_1}{a}+\frac{1-\hat\pi_0}{c}=\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0},\label{eq:02-varRR}\\
+\widehat{\V}[\log\widehat{\OR}]&=\frac1a+\frac1b+\frac1c+\frac1d.\label{eq:02-varOR}
+\end{align}
+比の指標は対数スケールで $\log\hat\theta\pm z_{\alpha/2}\SE$ を作り指数変換する．
+帰無仮説 $\pi_1=\pi_0$ の検定は，どの指標を使っても Pearson $\chi^2$ 検定などで共通である．
+
+\section{仮定}\label{sec:02-assump}
+\begin{itemize}
+\item 二項モデル：各群内で個体が独立で，発症確率が一様．クラスタ（家族・施設）内相関があれば分散は過小評価される．
+\item 率の比較：発生率が観察期間中一定（ポアソン過程）であること．
+\item 症例対照研究：対照が症例の発生源集団から曝露と無関係に選ばれていること（選択バイアスがないこと）．
+\item 因果的解釈：交絡がない（ランダム化されている），または十分に調整されていること．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:02-interp}
+\begin{itemize}
+\item $\RR=2$：曝露群の発症リスクは非曝露群の2倍．「2倍増える」は「100\%増加」の意味．
+\item $\OR=2$：曝露群の発症オッズは2倍．リスクが小さいときのみ「リスクがおよそ2倍」と言い換えてよい．
+      リスクが大きいとき（例：$\pi_0=0.4$）にORをRRのように読むと効果を過大に述べることになる．
+\item $\RD=-0.05$，$\mathrm{NNT}=20$：20人を治療すると1人の発症を防げる．
+\item $\HR=0.7$：追跡期間中どの時点でも，死亡の瞬間的な発生率が30\%低い（比例ハザードの仮定の下で）．
+\end{itemize}
+
+\section{手法選択}\label{sec:02-choice}
+\begin{itemize}
+\item 症例対照研究 → オッズ比（層別なら MH-OR，共変量調整ならロジスティック回帰）．
+\item コホート・RCTでリスク（一定期間の割合）→ RD・RR（または OR）．
+\item 観察期間が不揃い → 率（ポアソン），または生存時間解析（HR）．
+\item マッチング → マッチを層とした解析（McNemar，条件付きOR，MH）．マッチを無視すると効率を失い，ORでは推定対象も変わる．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:02-err}
+\begin{warnbox}
+\begin{itemize}
+\item 症例対照研究でリスクやリスク比を計算する．
+\item 発症割合が大きいのにオッズ比を「リスクが〇倍」と解釈する．
+\item 「粗ORと調整ORが違う」ことを常に交絡のせいにする（非可縮性を忘れる）．
+\item ハザード比を「一定期間のリスク比」と同一視する．
+\item 率（人時間あたり）とリスク（割合）を混同する．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:02-link}
+\begin{linkbox}
+\begin{itemize}
+\item オッズの対数 $\log\{\pi/(1-\pi)\}$ は二項分布の自然母数である（『現代数理統計学の基礎』6.1.2項，例6.9）．
+      ロジスティック回帰の係数がオッズ比の対数になるのはこのためである（\cref{ch:06}）．
+\item $\log\hat\pi$ の漸近分散 $(1-\pi)/(n\pi)$ は同書第5章演習（2項比率の対数変換のデルタ法）の結果で，
+      \cref{eq:02-varRR}はこれを2群に適用したものである．
+\item 症例対照研究の尤度は曝露の条件付き分布 $\Prob(E\mid D)$ に基づくが，
+      ロジスティックモデルの傾き（log OR）は前向きでも後ろ向きでも同じ値になる（Prentice--Pyke の結果；\cref{ch:06}）．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:02-ex}
+\begin{reidai}[効果指標の計算]\label{reidai:02-1}
+ある前向きコホート研究で，曝露群200人中40人，非曝露群400人中40人が5年以内に発症した．
+\begin{enumerate}[label=(\arabic*)]
+\item リスク差，リスク比，オッズ比を求めよ．
+\item \cref{eq:02-orrr}が成り立つことを数値で確かめよ．
+\item 曝露を取り除いたとき1人の発症を防ぐために必要な人数（NNT に相当する量）を求めよ．
+\item 対数リスク比の標準誤差と，リスク比の95\%信頼区間を求めよ．
+      ただし $\log2=0.6931$，$\sqrt{0.0425}=0.2062$，$e^{0.2889}=1.335$，$e^{1.0973}=2.996$ を用いてよい．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[症例対照研究]\label{reidai:02-2}
+ある稀な疾患の症例100人と，同じ地域から選んだ対照200人について，過去の職業性曝露を調べたところ，
+症例の30人，対照の20人が曝露ありであった．
+\begin{enumerate}[label=(\arabic*)]
+\item 曝露オッズ比を求めよ．
+\item この値を「曝露者の発症リスクは非曝露者の何倍か」の推定値として用いてよい理由と，その条件を述べよ．
+\item 「症例の30\%が曝露者なので，曝露者の発症リスクは30\%」という主張の誤りを指摘せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[オッズ比の非可縮性]\label{reidai:02-3}
+ランダム化試験で，重症度 $Z$（軽症・重症が各50\%，治療割付とは独立）により層別すると，
+改善確率は次のとおりであった：軽症層で治療 $0.8$，対照 $0.5$；重症層で治療 $0.5$，対照 $0.2$．
+\begin{enumerate}[label=(\arabic*)]
+\item 各層のオッズ比，リスク比，リスク差を求めよ．
+\item 層を併合したときの改善確率，オッズ比，リスク差を求めよ．
+\item この試験に交絡はあるか．(1)と(2)の違いを説明せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[ハザード比とリスク比]\label{reidai:02-4}
+試験群・対照群の死亡までの時間がそれぞれ率 $\lambda_1=0.1$，$\lambda_0=0.2$（/年）の指数分布に従うとする．
+$e^{-0.5}=0.6065$，$e^{-1}=0.3679$ を用いよ．
+\begin{enumerate}[label=(\arabic*)]
+\item ハザード比を求めよ．
+\item 5年死亡割合の比（リスク比）を求め，ハザード比と比べよ．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:02-sol}
+\begin{kaitou}{reidai:02-1}
+(1) $\hat\pi_1=40/200=0.20$，$\hat\pi_0=40/400=0.10$．$\RD=0.10$，$\RR=2.0$，
+$\OR=\dfrac{40\times360}{160\times40}=\dfrac{14400}{6400}=2.25$．\\
+(2) $\RR\times(1-\pi_0)/(1-\pi_1)=2.0\times0.9/0.8=2.25$ で一致する．$\RR>1$ なので $\OR>\RR$．\\
+(3) $1/\RD=10$ 人．\\
+(4) \cref{eq:02-varRR}より $\widehat\V=\frac1{40}-\frac1{200}+\frac1{40}-\frac1{400}=0.025-0.005+0.025-0.0025=0.0425$，$\SE=0.2062$．
+$\log2=0.6931$ として $0.6931\pm1.96\times0.2062=0.6931\pm0.4042=(0.2889,\,1.0973)$．
+指数変換して $(1.335,\,2.996)$，すなわちおよそ $(1.34,\,3.00)$．
+\end{kaitou}
+
+\begin{kaitou}{reidai:02-2}
+(1) 症例：曝露30，非曝露70．対照：曝露20，非曝露180．$\OR=\dfrac{30\times180}{70\times20}=\dfrac{5400}{1400}=3.86$．\\
+(2) \cref{prop:02-orsym}より曝露オッズ比は疾病オッズ比に等しく，\cref{prop:02-orrr}より疾患が稀（両群とも発症リスクが小さい）ならリスク比に近い．
+対照が発生源集団から曝露と無関係に選ばれていることも必要である．\\
+(3) 30\%は $\Prob(E\mid D)$ であり，$\Prob(D\mid E)$ ではない．症例対照研究では症例と対照の人数比を研究者が決めるので，発症リスク自体は推定できない．
+\end{kaitou}
+
+\begin{kaitou}{reidai:02-3}
+(1) 軽症層：オッズは $0.8/0.2=4$，$0.5/0.5=1$ で $\OR=4$，$\RR=1.6$，$\RD=0.3$．
+重症層：オッズは $0.5/0.5=1$，$0.2/0.8=0.25$ で $\OR=4$，$\RR=2.5$，$\RD=0.3$．\\
+(2) 治療 $(0.8+0.5)/2=0.65$，対照 $(0.5+0.2)/2=0.35$．
+$\OR=\dfrac{0.65/0.35}{0.35/0.65}=\Bigl(\dfrac{0.65}{0.35}\Bigr)^2=1.857^2=3.45$，$\RD=0.30$．\\
+(3) $Z$ は割付と独立なので交絡はない．実際，層共通のRD（0.3）は併合しても0.3のまま（RDは可縮）．
+一方，ORは層共通で4なのに併合では3.45となる．これはORの非可縮性による違いで，
+層内の（条件付き）ORと集団全体の（周辺）ORは異なるパラメータだからである．
+\end{kaitou}
+
+\begin{kaitou}{reidai:02-4}
+(1) $\HR=0.1/0.2=0.5$．\\
+(2) $1-e^{-0.1\times5}=1-0.6065=0.3935$，$1-e^{-0.2\times5}=1-0.3679=0.6321$．
+リスク比 $=0.3935/0.6321=0.623$．5年リスク比はハザード比0.5より1に近い．
+イベントが累積すると両群のリスクはいずれも1に近づくので，長期のリスク比は1に近づく．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item リスク（割合），オッズ，率（人時間あたり）を区別する．
+\item $\OR=\RR\,(1-\pi_0)/(1-\pi_1)$：方向は一致し，OR は RR より1から遠い．稀な疾患では $\OR\approx\RR$．
+\item 症例対照研究では曝露オッズ比＝疾病オッズ比のみ推定可能．RR・リスクは推定できない．
+\item RD・RR は可縮，OR は非可縮．交絡がなくても粗ORと層別ORは異なりうる（\kakomon{2022}{2}）．
+\item HR は瞬間的な発生率の比で，一定期間のリスク比とは異なる．
+\item クロスオーバーは被験者内比較で効率的だが，持ち越し効果と休薬期間に注意．
+\item estimand は対象集団・治療・変数・中間事象の扱い・要約指標の5要素で定める．
+\end{itemize}
+\end{summarybox}

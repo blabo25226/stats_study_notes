@@ -1,0 +1,326 @@
+\chapter{連続アウトカムとノンパラメトリック法}\label{ch:03}
+
+\begin{goalbox}
+\begin{itemize}
+\item 対応のある $t$ 検定と2標本 $t$ 検定を使い分け，それぞれの帰無仮説と仮定を述べられる．
+\item 符号検定・Wilcoxon符号付き順位検定・Wilcoxon順位和検定（Mann--Whitney検定）の帰無仮説，仮定，検定統計量を説明できる．
+\item 帰無仮説の下での順位統計量の期待値・分散を導出し，exactなP値と正規近似のP値を計算できる．
+\item 小標本で順位検定が有意になりえない（離散性）ことを具体的に示せる．
+\item 位置ずれモデルの下での順位和検定の検出力を $\Prob(X>Y)$ を用いて表せる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2016}{1}：治療前後の差（$n=7$）に対応のある $t$ 検定・符号検定・符号付き順位検定を適用．
+      $\E[T\mid H_0],\V[T\mid H_0]$，符号検定のexact P値，$\E[W^+\mid H_0],\V[W^+\mid H_0]$ の導出と正規近似（外れ値の影響は公式解答の講評で言及）．
+\item \kakomon{2019}{4}：3対3の2群比較で Student $t$ 検定（仮定3つ），Wilcoxon順位和検定のexact分布（20通り），
+      両側P値，第1種の過誤確率が0になる問題点．
+\item \kakomon{2025}{1}：一様分布の位置ずれモデルで $\E[R_X\mid H_0]$，$\Prob(X>Y)$，$R_X=\sum\sum I(X_i>Y_j)+n(n+1)/2$ を用いた $\E[R_X\mid H_1]$，検出力の式．
+\item \kakomon{2016}{5}（共通）：2標本 $t$ 検定と信頼区間（\cref{sec:01-overlap}）．
+\end{itemize}
+\end{exambox}
+
+\flowline{連続値\\対応あり／独立}{平均差・中央値\\$\Prob(X>Y)$}{$t$ 検定\\順位検定}{正規性・対称性\\独立性}{exact／正規近似}{外れ値の影響\\離散性}
+
+\section{問題設定}\label{sec:03-setting}
+\begin{itemize}
+\item \textbf{1標本（対応あり）}：差 $Z_i=Y_i-X_i$ $(i=1,\dots,n)$ が独立に同一分布に従う．位置（平均 $\mu$ または中央値 $\theta$）が0かを調べる．
+\item \textbf{2標本（独立）}：$X_1,\dots,X_m\iid F_X$，$Y_1,\dots,Y_n\iid F_Y$ で，両者が独立．分布の違い（特に位置のずれ）を調べる．
+\end{itemize}
+$t$ 検定は平均に関する正規モデルの推測であり，順位検定は分布の形をほとんど仮定しない．
+
+\section{\texorpdfstring{$t$}{t} 検定}\label{sec:03-t}
+\subsection{対応のある \texorpdfstring{$t$}{t} 検定}\label{subsec:03-pairedt}
+$Z_i\iid\Normal(\mu,\sigma^2)$ とし $H_0:\mu=0$ を検定する．
+\begin{equation}
+t=\frac{\bar Z}{s_Z/\sqrt n}\sim t_{n-1}\quad(H_0\text{ の下})\label{eq:03-pairedt}
+\end{equation}
+\textbf{仮定}：(i) 差 $Z_i$ が互いに独立，(ii) 差の母集団分布が正規分布．
+$n$ がある程度大きく外れ値がなければ，中心極限定理により正規性からのずれには頑健である．
+
+\kakomon{2016}{1} では $\bar z=1.73$，$s=2.01$，$n=7$ で $t=1.73/(2.01/\sqrt7)=2.28<t_6(0.025)=2.447$ となり有意でない．
+一方，同じデータの符号付き順位検定（正規近似）は $z=2.197$ で有意となった．
+1人の大きな変化量（$5.6$）が $s$ を膨らませ，平均に基づく $t$ 検定がその影響を強く受けたためである．
+
+\subsection{2標本 \texorpdfstring{$t$}{t} 検定}\label{subsec:03-twot}
+$X_i\iid\Normal(\mu_1,\sigma^2)$，$Y_j\iid\Normal(\mu_2,\sigma^2)$ で $H_0:\mu_1=\mu_2$ を検定する．
+\begin{equation}
+t=\frac{\bar X-\bar Y}{s_p\sqrt{\frac1m+\frac1n}},\qquad s_p^2=\frac{(m-1)s_X^2+(n-1)s_Y^2}{m+n-2},\qquad t\sim t_{m+n-2}.\label{eq:03-twot}
+\end{equation}
+\textbf{仮定}（\kakomon{2019}{4}〔1〕）：(i) すべての測定値が互いに独立，(ii) 各群の母集団分布が正規分布，(iii) 2群の母分散が等しい．
+差の $100(1-\alpha)\%$ 信頼区間は $\bar X-\bar Y\pm t_{m+n-2}(\alpha/2)\,s_p\sqrt{1/m+1/n}$．
+
+\begin{supbox}[補足：Welch の検定]
+等分散を仮定しない場合は $t_W=(\bar X-\bar Y)/\sqrt{s_X^2/m+s_Y^2/n}$ を，
+自由度 $\nu=\dfrac{(s_X^2/m+s_Y^2/n)^2}{\frac{(s_X^2/m)^2}{m-1}+\frac{(s_Y^2/n)^2}{n-1}}$ の $t$ 分布で近似する（Welch--Satterthwaite）．
+群の大きさが等しければ等分散からのずれの影響は小さいが，大きさも分散も異なるとStudentの検定の有意水準は大きく狂う．
+\end{supbox}
+
+\section{符号検定}\label{sec:03-sign}
+\Hissu 差 $Z_i$ の分布が連続で中央値を $\theta$ とする．$H_0:\theta=0$ の下で $\Prob(Z_i>0)=1/2$ である．
+\begin{teigi}[符号検定]\label{def:03-sign}
+$T=\#\{i:Z_i>0\}$（差が正の個数）を検定統計量とする検定を符号検定という．$H_0$ の下で $T\sim\Bin(n,1/2)$ で
+\begin{equation}
+\E[T\mid H_0]=\frac n2,\qquad \V[T\mid H_0]=\frac n4.\label{eq:03-signmoments}
+\end{equation}
+\end{teigi}
+\textbf{仮定}：観測値が互いに独立であること（と分布の連続性）だけで，分布の形（対称性・正規性）は仮定しない．
+差が0の観測は除いて $n$ を数え直すのが通例である．
+
+\paragraph{exactなP値}
+実現値 $t^*$ に対し，片側（$H_1:\theta>0$）P値は $\sum_{i=t^*}^{n}\binom ni2^{-n}$，
+両側P値はその2倍（分布が対称なので）．\kakomon{2016}{1} では $n=7$，$t^*=6$ で
+$(\binom76+\binom77)/2^7=8/128=0.0625$，両側 $0.125$．
+\paragraph{正規近似}
+$z=(T-n/2)/\sqrt{n/4}$．連続修正をするなら $|T-n/2|-1/2$ を分子に用いる．
+
+\section{Wilcoxon符号付き順位検定}\label{sec:03-signrank}
+\Hissu\Hinshutsu
+\begin{teigi}[符号付き順位統計量]\label{def:03-wplus}
+$|Z_1|,\dots,|Z_n|$ に小さい順に順位 $1,\dots,n$ を付け，$Z_i>0$ である観測の順位の和を $W^+$ とする．
+$W^-=n(n+1)/2-W^+$ は負の差の順位和である．
+\end{teigi}
+\textbf{帰無仮説と仮定}：$Z_i$ が互いに独立で，その分布が中央値 $\theta$ に関して\textbf{対称}な連続分布であるとし，$H_0:\theta=0$ を検定する．
+（対称性を仮定しているので，平均が存在すれば $\theta$ は平均でもある．）
+
+\begin{teiri}[$W^+$ の帰無分布の平均と分散]\label{thm:03-wplus}
+$H_0$ の下で
+\begin{equation}
+\E[W^+]=\frac{n(n+1)}{4},\qquad \V[W^+]=\frac{n(n+1)(2n+1)}{24}.\label{eq:03-wplus}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$Z$ の分布が0に関して対称で連続なら，$\mathrm{sign}(Z)$ と $|Z|$ は独立で，$\Prob(Z>0)=1/2$ である．
+したがって $|Z|$ の順位が $k$ である観測が正かどうかの指示変数 $I_k$ $(k=1,\dots,n)$ は，
+順位の並びとは独立に $\mathrm{Bernoulli}(1/2)$ に従い互いに独立である．$W^+=\sum_{k=1}^n kI_k$ だから
+\[
+\E[W^+]=\frac12\sum_{k=1}^nk=\frac{n(n+1)}{4},\qquad
+\V[W^+]=\frac14\sum_{k=1}^nk^2=\frac14\cdot\frac{n(n+1)(2n+1)}{6}.
+\]
+\end{proof}
+\kakomon{2016}{1} のデータ（$n=7$）では，負の差は絶対値が最小の1つだけなので $W^+=28-1=27$，
+$\E=14$，$\V=35$，$z=13/\sqrt{35}=2.197>1.96$ で有意となる．
+
+\paragraph{exact分布}
+$H_0$ の下で $(I_1,\dots,I_n)$ の $2^n$ 通りの値は等確率なので，
+$\Prob(W^+=w)=\#\{A\subseteq\{1,\dots,n\}:\sum_{k\in A}k=w\}/2^n$ である．
+分布は $n(n+1)/4$ に関して対称で，両側P値は片側の2倍である．
+小さい $n$ では，$W^-$（または $W^+$）が小さい側の部分集合を数え上げるのが速い．
+
+\begin{supbox}[補足：同順位と0の扱い]
+差が0の観測は除く．$|Z_i|$ に同順位があれば平均順位を与え，分散を
+$\V[W^+]=\frac{n(n+1)(2n+1)}{24}-\frac{1}{48}\sum_g(t_g^3-t_g)$（$t_g$ は各同順位グループの大きさ）に修正する．
+\end{supbox}
+
+\section{Wilcoxon順位和検定とMann--Whitney検定}\label{sec:03-ranksum}
+\subsection{定義と帰無分布}
+\Hissu\Hinshutsu 2群をまとめた $N=m+n$ 個に順位 $1,\dots,N$ を付け，第1群（大きさ $m$）の順位の和を $W$ とする．
+\textbf{帰無仮説}は $H_0:F_X=F_Y$（2群の分布が等しい）であり（\kakomon{2019}{4}〔2〕），
+典型的な対立仮説は位置ずれ $F_X(x)=F_Y(x-\delta)$，$\delta\ne0$ である（\kakomon{2025}{1}）．
+\textbf{仮定}：すべての観測が独立，分布が連続（同順位なし）．正規性や等分散は不要．
+
+\begin{teiri}[$W$ の帰無分布]\label{thm:03-ranksum}
+$H_0$ の下で，第1群の順位の集合は $\{1,\dots,N\}$ から大きさ $m$ の部分集合を等確率 $1/\binom Nm$ で選んだものと同じ分布に従い，
+\begin{equation}
+\E[W]=\frac{m(N+1)}{2},\qquad \V[W]=\frac{mn(N+1)}{12}.\label{eq:03-ranksum}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$H_0$ の下で $N$ 個の観測は i.i.d. の連続分布に従うので，順位ベクトルは $N!$ 通りの順列上の一様分布に従う．
+よって第1群の順位 $R_1,\dots,R_m$ は $\{1,\dots,N\}$ からの非復元単純無作為抽出である．
+母集団 $\{1,\dots,N\}$ の平均は $(N+1)/2$，分散は $\sigma^2=\frac1N\sum k^2-\bigl(\frac{N+1}2\bigr)^2=\frac{N^2-1}{12}$．
+非復元抽出では $\V[R_i]=\sigma^2$，$\Cov(R_i,R_j)=-\sigma^2/(N-1)$ $(i\ne j)$ なので
+\[
+\V[W]=m\sigma^2-m(m-1)\frac{\sigma^2}{N-1}=m\sigma^2\frac{N-m}{N-1}=\frac{m n(N^2-1)}{12(N-1)}=\frac{mn(N+1)}{12}.
+\]
+\end{proof}
+\kakomon{2025}{1} のように $m=n$ のとき $\E[W]=n(2n+1)/2$，$\V[W]=n^2(2n+1)/12\approx n^3/6$ である．
+
+\subsection{Mann--Whitney統計量との関係}\label{subsec:03-mw}
+\begin{meidai}\label{prop:03-mw}
+$U=\sum_{i=1}^m\sum_{j=1}^n I(X_i>Y_j)$ とすると
+\begin{equation}
+W=U+\frac{m(m+1)}{2}.\label{eq:03-wu}
+\end{equation}
+\end{meidai}
+\begin{proof}
+第1群を小さい順に $X_{(1)}<\dots<X_{(m)}$ とすると，$X_{(k)}$ の全体での順位は
+「第1群で自分以下の個数 $k$」＋「$X_{(k)}$ より小さい第2群の個数 $\sum_jI(X_{(k)}>Y_j)$」である．$k$ について和をとればよい．
+\end{proof}
+$\theta=\Prob(X>Y)$ とおくと $\E[U]=mn\theta$ であり，$\hat\theta=U/(mn)$ は $\theta$ の不偏推定量である．
+$H_0$ の下で $\theta=1/2$ なので，順位和検定は $\Prob(X>Y)=1/2$ からのずれを検出する検定である（ただし帰無分布の導出には $F_X=F_Y$ を用いる）．
+$\hat\theta$ は経験ROC曲線の曲線下面積（AUC）に一致する（\cref{sec:05-auc}）．
+
+\subsection{exact分布と離散性}\label{subsec:03-exact}
+\Youchui $W$ のとる値の分布は，$\{1,\dots,N\}$ の $m$ 元部分集合の和の度数分布である．
+\kakomon{2019}{4} の $m=n=3$ では $\binom63=20$ 通りで，最大値15・最小値6の確率がそれぞれ $1/20$．
+両側P値の最小値は $2/20=0.1$ なので，\textbf{有意水準5\%ではどんなデータでも棄却されず，第1種の過誤確率は0}である．
+これは検出力も0であることを意味する．極端な小標本では，順位検定はそもそも有意になりえないことを設計段階で確認する必要がある．
+一般に，最小の両側P値は $2/\binom{N}{m}$ である．
+
+\section{数理：位置ずれモデルでの検出力}\label{sec:03-power}
+\Hinshutsu 対立仮説の下で $\E[U]=mn\theta$，$\theta=\Prob(X>Y)$ である．
+分散を帰無仮説の下の値 $\V_0=mn(N+1)/12$ で近似し，$U$ を正規近似する．$Z=(U-mn/2)/\sqrt{\V_0}$ として，片側検定（$Z>z_\alpha$ で棄却）の検出力は
+\begin{equation}
+1-\beta\approx\Phi\!\left(\frac{mn(\theta-\frac12)}{\sqrt{mn(N+1)/12}}-z_\alpha\right).\label{eq:03-power}
+\end{equation}
+\paragraph{一様分布の例（\kakomon{2025}{1}）}
+$Y\sim\Unif(0,1)$，$X\sim\Unif(\delta,1+\delta)$ $(0\le\delta<1)$ とする．$y\in[0,1]$ を固定すると
+$\Prob(X>y)=1$（$y\le\delta$），$=1+\delta-y$（$y>\delta$）なので
+\[
+\theta=\int_0^1\Prob(X>y)\,\dd y=\delta+\int_\delta^1(1+\delta-y)\,\dd y=\frac{1+2\delta-\delta^2}{2}.
+\]
+$m=n$，$\V_0\approx n^3/6$ とすると，$n^2(\theta-\tfrac12)=n^2(\delta-\delta^2/2)$ だから検出力は
+$\Phi\bigl(\sqrt{6n}(\delta-\delta^2/2)-z_\alpha\bigr)$ となる．
+
+\paragraph{正規分布の例}
+$X\sim\Normal(\mu+\delta,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ なら $X-Y\sim\Normal(\delta,2\sigma^2)$ より $\theta=\Phi\bigl(\delta/(\sqrt2\sigma)\bigr)$．
+
+\begin{supbox}[発展：漸近相対効率]
+正規分布の位置ずれでは，順位和検定の $t$ 検定に対する漸近相対効率（同じ検出力を得るのに必要な標本サイズの逆比）は $3/\pi\approx0.955$ である．
+すなわち正規分布でも損失は約5\%にすぎず，裾の重い分布では順位検定の方が効率がよい．
+符号検定の対応のある $t$ 検定に対する効率は正規分布で $2/\pi\approx0.637$ と低い．
+\end{supbox}
+
+\section{仮定のまとめ}\label{sec:03-assump}
+\begin{table}[htbp]
+\centering\small
+\caption{各検定の帰無仮説と仮定}\label{tab:03-assump}
+\begin{tabular}{@{}lL{38mm}L{70mm}@{}}
+\toprule
+検定 & 帰無仮説 & 主な仮定\\
+\midrule
+対応のある $t$ & 差の平均 $\mu=0$ & 差が独立，差が正規分布\\
+符号検定 & 差の中央値 $\theta=0$ & 差が独立（連続分布）．形の仮定なし\\
+符号付き順位 & 差の中央値 $\theta=0$ & 差が独立，中央値に関して対称な連続分布\\
+2標本 $t$（Student） & $\mu_1=\mu_2$ & 独立，各群正規，等分散\\
+順位和（Mann--Whitney） & $F_X=F_Y$ & 独立，連続分布（位置ずれを検出したいなら形が同じ）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{結果の解釈}\label{sec:03-interp}
+\begin{itemize}
+\item $t$ 検定と順位検定の結果が食い違ったら，外れ値・歪みの有無を確認する（\kakomon{2016}{1}）．
+      順位検定は外れ値に頑健であり，少数の極端な値に左右されない．
+\item 順位検定の有意は「分布が異なる（$X$ が確率的に大きい）」ことを示す．平均の差を示すわけではない．
+      位置ずれモデルを仮定すれば中央値の差と解釈できる．
+\item 小標本で順位検定が有意でないのは，離散性のため有意になりえない場合がある（\kakomon{2019}{4}）．
+\end{itemize}
+
+\section{手法選択}\label{sec:03-choice}
+\begin{itemize}
+\item 対応あり：差が正規 → 対応のある $t$；対称だが外れ値がある → 符号付き順位；非対称・順序尺度 → 符号検定．
+\item 独立2群：正規・等分散 → Student $t$；正規・不等分散 → Welch；非正規・外れ値・順序尺度 → 順位和検定．
+\item 3群以上：一元配置分散分析，順位なら Kruskal--Wallis 検定．
+\item 対数正規が想定される量（薬物動態のAUCなど）→ 対数変換して $t$ 型の方法（\cref{ch:13}）．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:03-err}
+\begin{warnbox}
+\begin{itemize}
+\item 符号付き順位検定に「仮定なし」と書く → 対称性を仮定している．仮定がないのは符号検定．
+\item 順位和検定の帰無仮説を「平均が等しい」と書く → 分布が等しい（$F_X=F_Y$）．
+\item $\V[W]$ を独立な和として $m(N^2-1)/12$ とする → 非復元抽出の有限母集団修正 $(N-m)/(N-1)$ を忘れている．
+\item 両側P値を片側P値のまま報告する．
+\item exact分布の最小P値を確認せずに小標本で順位検定を計画する．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:03-link}
+\begin{linkbox}
+\begin{itemize}
+\item $t$ 検定の根拠は，正規標本で $\bar X$ と不偏分散が独立で $(n-1)s^2/\sigma^2\sim\chi^2_{n-1}$ となること（『現代数理統計学の基礎』定理5.1）．
+      同書は1標本 $t$ 検定を本文で扱っていないが，2標本 $t$ 検定（7.2.2項）と同じ構成である．
+\item 順位は順序統計量（同書5.4節）とは別物である．順位検定の帰無分布は「順列の一様分布」から導かれ，
+      $\V[W]$ は超幾何分布と同じ有限母集団修正を含む．\kakomonSM{2023}{5} の並べ替え検定の分散 $\frac{N-m}{N-1}\frac{\sigma_N^2}{m}$ と同型である．
+\item Mann--Whitney の $U/(mn)$ は $\Prob(X>Y)$ の U 統計量であり，AUC の推定量でもある（\cref{ch:05}）．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:03-ex}
+\begin{reidai}[対応のあるデータの3つの検定]\label{reidai:03-1}
+8名の患者の治療後$-$治療前の変化量が
+$2.1,\ -0.4,\ 3.5,\ 1.2,\ 0.8,\ 4.0,\ -1.5,\ 2.6$ であった
+（$\bar z=1.5375$，$s_z=1.890$）．$t_7(0.025)=2.365$ を用いよ．
+\begin{enumerate}[label=(\arabic*)]
+\item 対応のある $t$ 検定（両側5\%）を行え．
+\item 符号検定のexactな両側P値を求めよ．
+\item 符号付き順位統計量 $W^+$ を求め，正規近似による検定（両側5\%）を行え．
+\item $W^+$ のexactな両側P値を求めよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[順位和検定のexact分布]\label{reidai:03-2}
+薬剤A群3名，薬剤B群4名の測定値は A：$5.1,\ 7.3,\ 8.8$，B：$2.2,\ 3.0,\ 4.7,\ 6.1$ であった．
+\begin{enumerate}[label=(\arabic*)]
+\item A群の順位和 $W_A$ と Mann--Whitney 統計量 $U$，$\hat\theta=\widehat{\Prob}(X_A>X_B)$ を求めよ．
+\item $H_0$ の下での $W_A$ の期待値・分散を求めよ．
+\item $W_A$ のexactな片側P値（$H_1$：Aが大きい）と両側P値を求めよ．
+\item この標本サイズで，両側5\%の順位和検定が有意になりうるかを答えよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[順位和検定の検出力]\label{reidai:03-3}
+2群（各 $n=50$）で，$X\sim\Normal(\mu+0.5\sigma,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ とする．
+$\Phi(0.354)=0.638$，$\Phi(0.42)=0.663$，$\Phi(0.54)=0.705$ を用いよ．
+\begin{enumerate}[label=(\arabic*)]
+\item $\theta=\Prob(X>Y)$ を求めよ．
+\item \cref{eq:03-power}を両側5\%（棄却限界に $z_{0.025}=1.96$ を用い，反対側で棄却される確率は無視する近似）に適用して，順位和検定の検出力を求めよ．
+\item 同じ状況の2標本 $z$ 検定（$\sigma$ 既知）の検出力と比べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[符号付き順位の分布の導出]\label{reidai:03-4}
+$n=4$ のとき，$H_0$ の下での $W^+$ の確率分布を求め，その平均と分散が\cref{eq:03-wplus}に一致することを確かめよ．
+\end{reidai}
+
+\section{解答}\label{sec:03-sol}
+\begin{kaitou}{reidai:03-1}
+(1) $t=1.5375/(1.890/\sqrt8)=1.5375/0.6682=2.30<2.365$．有意水準5\%で有意でない．\\
+(2) 正の差は6個．$\Prob(T\ge6)=(\binom86+\binom87+\binom88)/2^8=(28+8+1)/256=37/256=0.1445$，両側P値 $0.289$．\\
+(3) 絶対値の順位：$0.4(1,-)$，$0.8(2)$，$1.2(3)$，$1.5(4,-)$，$2.1(5)$，$2.6(6)$，$3.5(7)$，$4.0(8)$．
+$W^+=2+3+5+6+7+8=31$（$W^-=5$）．$\E=8\cdot9/4=18$，$\V=8\cdot9\cdot17/24=51$，
+$z=(31-18)/\sqrt{51}=13/7.141=1.82<1.96$ で有意でない．\\
+(4) $\Prob(W^+\ge31)=\Prob(W^-\le5)$．$\{1,\dots,8\}$ の部分集合で和が5以下のものは
+$\emptyset,\{1\},\{2\},\{3\},\{1,2\},\{4\},\{1,3\},\{5\},\{1,4\},\{2,3\}$ の10個．
+片側 $10/256=0.039$，両側 $0.078$．
+\end{kaitou}
+
+\begin{kaitou}{reidai:03-2}
+(1) 全体の順位は $2.2(1),3.0(2),4.7(3),5.1(4),6.1(5),7.3(6),8.8(7)$．$W_A=4+6+7=17$．
+\cref{eq:03-wu}より $U=17-3\cdot4/2=11$，$\hat\theta=11/12=0.917$．\\
+(2) $N=7$：$\E=3\times8/2=12$，$\V=3\times4\times8/12=8$．\\
+(3) $\binom73=35$ 通りのうち $W_A\ge17$ は $\{5,6,7\}$（18）と $\{4,6,7\}$（17）の2通り．片側 $2/35=0.057$，両側 $0.114$．\\
+(4) 最も極端な $\{5,6,7\}$ でも片側 $1/35$，両側 $2/35=0.057>0.05$ なので，両側5\%ではどのデータでも有意にならない．
+\end{kaitou}
+
+\begin{kaitou}{reidai:03-3}
+(1) $X-Y\sim\Normal(0.5\sigma,2\sigma^2)$ より $\theta=\Phi(0.5/\sqrt2)=\Phi(0.354)=0.638$．\\
+(2) $mn(\theta-1/2)=2500\times0.138=345$，$\sqrt{\V_0}=\sqrt{2500\times101/12}=\sqrt{21042}=145.1$．
+$345/145.1=2.38$，検出力 $\approx\Phi(2.38-1.96)=\Phi(0.42)=0.663$．\\
+(3) $z$ 検定では $\delta/(\sigma\sqrt{2/n})=0.5\times5=2.5$，検出力 $\Phi(2.5-1.96)=\Phi(0.54)=0.705$．
+順位和検定の検出力はやや低いが近い（$\delta=0.5\sigma$ は局所対立ではないので，漸近相対効率 $3/\pi$ とは目安として比べる）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:03-4}
+$\{1,2,3,4\}$ の16個の部分集合の和：
+0（$\emptyset$），1，2，3（$\{3\},\{1,2\}$），4（$\{4\},\{1,3\}$），5（$\{1,4\},\{2,3\}$），6（$\{1,2,3\},\{2,4\}$），
+7（$\{3,4\},\{1,2,4\}$），8（$\{1,3,4\}$），9（$\{2,3,4\}$），10（全体）．
+よって $\Prob(W^+=w)$ は $w=0,\dots,10$ に対し $\frac1{16}(1,1,1,2,2,2,2,2,1,1,1)$．
+対称性から平均は5で $n(n+1)/4=5$ に一致．
+$\E[(W^+-5)^2]=\frac1{16}\{2(25+16+9)+2\cdot2(4+1)\}=\frac{100+20}{16}=7.5$，
+一方 $n(n+1)(2n+1)/24=4\cdot5\cdot9/24=7.5$ で一致する．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 対応のある $t$：$t=\bar Z/(s_Z/\sqrt n)\sim t_{n-1}$．2標本 $t$：仮定は独立・正規・等分散．
+\item 符号検定：$T\sim\Bin(n,1/2)$，$\E=n/2$，$\V=n/4$．仮定は独立のみ．
+\item 符号付き順位：$W^+=\sum kI_k$，$\E=n(n+1)/4$，$\V=n(n+1)(2n+1)/24$．仮定は対称性．
+\item 順位和：$\E[W]=m(N+1)/2$，$\V[W]=mn(N+1)/12$（非復元抽出）．$W=U+m(m+1)/2$，$\E[U]=mn\Prob(X>Y)$．
+\item exact分布は部分集合の数え上げ．最小両側P値 $2/\binom Nm$ が $\alpha$ を超えると有意になりえない．
+\item 検出力 $\approx\Phi\bigl(mn(\theta-\frac12)/\sqrt{mn(N+1)/12}-z_\alpha\bigr)$．
+\end{itemize}
+\end{summarybox}

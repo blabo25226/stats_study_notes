@@ -1,0 +1,197 @@
+% !TEX program = lualatex
+% ============================================================
+%  統計検定1級 統計応用（医薬生物学）対策 医療統計学参考書
+%  単一ファイル版（LuaLaTeX + LuaTeX-ja でコンパイル）
+%    lualatex 医療統計学参考書.tex   （目次・相互参照のため2〜3回）
+% ============================================================
+\documentclass[a4paper,11pt,openany]{ltjsbook}
+\usepackage[haranoaji,deluxe]{luatexja-preset}
+\usepackage[top=24mm,bottom=24mm,left=22mm,right=22mm,headsep=8mm]{geometry}
+
+% ---------- 数式 ----------
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\allowdisplaybreaks[2]
+
+% ---------- 表・リスト・図 ----------
+\usepackage{booktabs,longtable,array,multirow,tabularx,makecell}
+\usepackage{enumitem}
+\setlist{itemsep=0.2\baselineskip,topsep=0.4\baselineskip}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usepackage{caption}
+\captionsetup{font=small,labelsep=quad}
+\usepackage[most]{tcolorbox}
+
+% ---------- 色 ----------
+\definecolor{bkblue}{HTML}{1F4E79}
+\definecolor{bkgreen}{HTML}{2E6B30}
+\definecolor{bkred}{HTML}{A12A2A}
+\definecolor{bkorange}{HTML}{B35C00}
+\definecolor{bkgray}{HTML}{555555}
+\definecolor{bkpurple}{HTML}{5B3A8C}
+
+% ---------- ハイパーリンク・相互参照 ----------
+\usepackage[unicode,bookmarksnumbered=true,colorlinks=true,
+  linkcolor=bkblue,citecolor=bkgreen,urlcolor=bkpurple,
+  pdftitle={統計検定1級 統計応用（医薬生物学）対策 医療統計学参考書},
+  pdfsubject={医療統計学},pdfkeywords={統計検定1級,医薬生物学,医療統計}]{hyperref}
+\usepackage{bookmark}
+
+% ---------- 定理型環境 ----------
+\newtheorem{teigi}{定義}[chapter]
+\newtheorem{teiri}[teigi]{定理}
+\newtheorem{meidai}[teigi]{命題}
+\newtheorem{reidai}{例題}[chapter]
+\tcolorboxenvironment{teigi}{enhanced,breakable,colback=bkblue!4,colframe=bkblue!70,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt}
+\tcolorboxenvironment{teiri}{enhanced,breakable,colback=bkgreen!4,colframe=bkgreen!70,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt}
+\tcolorboxenvironment{meidai}{enhanced,breakable,colback=bkgreen!4,colframe=bkgreen!70,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt}
+\tcolorboxenvironment{reidai}{enhanced,breakable,colback=white,colframe=bkorange!80,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt,borderline west={2pt}{0pt}{bkorange}}
+
+\usepackage[nameinlink]{cleveref}
+\crefname{teigi}{定義}{定義}
+\crefname{teiri}{定理}{定理}
+\crefname{meidai}{命題}{命題}
+\crefname{reidai}{例題}{例題}
+\crefname{table}{表}{表}
+\crefname{figure}{図}{図}
+\crefformat{equation}{#2式(#1)#3}
+\crefrangeformat{equation}{#3式(#1)#4〜#5(#2)#6}
+\crefmultiformat{equation}{#2式(#1)#3}{，#2(#1)#3}{，#2(#1)#3}{，#2(#1)#3}
+\crefformat{chapter}{#2第#1章#3}
+\crefformat{appendix}{#2付録#1#3}
+\crefformat{section}{#2#1節#3}
+\crefformat{subsection}{#2#1項#3}
+\crefformat{teigi}{#2定義#1#3}
+\crefformat{teiri}{#2定理#1#3}
+\crefformat{meidai}{#2命題#1#3}
+\crefformat{reidai}{#2例題#1#3}
+\crefformat{table}{#2表#1#3}
+\crefformat{figure}{#2図#1#3}
+\crefname{chapter}{章}{章}
+\crefname{section}{節}{節}
+\crefname{subsection}{項}{項}
+\crefname{appendix}{付録}{付録}
+\crefname{equation}{式}{式}
+\newcommand{\crefpairconjunction}{，}
+\newcommand{\crefmiddleconjunction}{，}
+\newcommand{\creflastconjunction}{，}
+\newcommand{\crefpairgroupconjunction}{，}
+\newcommand{\crefmiddlegroupconjunction}{，}
+\newcommand{\creflastgroupconjunction}{，}
+\crefmultiformat{chapter}{#2第#1章#3}{，#2第#1章#3}{，#2第#1章#3}{，#2第#1章#3}
+\crefrangeformat{chapter}{#3第#1章#4〜#5第#2章#6}
+\crefmultiformat{section}{#2#1節#3}{，#2#1節#3}{，#2#1節#3}{，#2#1節#3}
+\crefmultiformat{table}{#2表#1#3}{，#2表#1#3}{，#2表#1#3}{，#2表#1#3}
+\crefmultiformat{figure}{#2図#1#3}{，#2図#1#3}{，#2図#1#3}{，#2図#1#3}
+\crefmultiformat{teiri}{#2定理#1#3}{，#2定理#1#3}{，#2定理#1#3}{，#2定理#1#3}
+\crefmultiformat{reidai}{#2例題#1#3}{，#2例題#1#3}{，#2例題#1#3}{，#2例題#1#3}
+
+% 定理環境の見出しの後に改行を入れない・本文は立体
+\makeatletter
+\def\th@plain{\normalfont}
+\makeatother
+
+% ---------- 証明環境 ----------
+\newenvironment{proof}[1][証明]{\par\smallskip\noindent{\sffamily\bfseries #1}\quad\ignorespaces}{\nobreak\hfill$\square$\par\medskip}
+
+% ---------- 解答環境 ----------
+% \begin{kaitou}{reidai:label} ... \end{kaitou}
+\newenvironment{kaitou}[1]{%
+  \par\medskip\noindent
+  \begin{tcolorbox}[enhanced,breakable,colback=bkgray!3,colframe=bkgray!60,boxrule=0.4pt,
+    left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt,
+    title={\cref{#1}の解答},fonttitle=\bfseries\small,coltitle=white,colbacktitle=bkgray!80]}%
+  {\end{tcolorbox}\par}
+
+% ---------- 本書独自のボックス ----------
+\newtcolorbox{goalbox}{enhanced,breakable,colback=bkblue!3,colframe=bkblue,boxrule=0.6pt,arc=1pt,
+  title={この章でできるようになること},fonttitle=\bfseries,colbacktitle=bkblue,coltitle=white,
+  left=4pt,right=4pt}
+\newtcolorbox{exambox}{enhanced,breakable,colback=bkorange!3,colframe=bkorange,boxrule=0.6pt,arc=1pt,
+  title={過去問での出題},fonttitle=\bfseries,colbacktitle=bkorange,coltitle=white,
+  left=4pt,right=4pt}
+\newtcolorbox{pointbox}[1][要点]{enhanced,breakable,colback=bkgreen!3,colframe=bkgreen!80,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkgreen!80,coltitle=white,left=4pt,right=4pt}
+\newtcolorbox{warnbox}[1][よくある誤り]{enhanced,breakable,colback=bkred!3,colframe=bkred!80,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkred!80,coltitle=white,left=4pt,right=4pt}
+\newtcolorbox{linkbox}[1][数理統計との接続]{enhanced,breakable,colback=bkpurple!3,colframe=bkpurple!70,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkpurple!70,coltitle=white,left=4pt,right=4pt}
+% 補足・発展（過去問に直接ない内容。出典を併記する）
+\newtcolorbox{supbox}[1][補足]{enhanced,breakable,colback=white,colframe=bkgray!70,boxrule=0.4pt,arc=1pt,
+  borderline west={2pt}{0pt}{bkgray!70},title={#1},fonttitle=\bfseries\small,
+  colbacktitle=white,coltitle=bkgray,left=4pt,right=4pt,attach title to upper={\quad}}
+\newtcolorbox{summarybox}{enhanced,breakable,colback=bkblue!2,colframe=bkblue!60,boxrule=0.5pt,arc=1pt,
+  title={章末まとめ},fonttitle=\bfseries,colbacktitle=bkblue!60,coltitle=white,left=4pt,right=4pt}
+% 流れ図 データ構造→推定対象→手法→仮定→計算→解釈
+\newcommand{\flowline}[6]{%
+  \begin{center}\small
+  \begin{tikzpicture}[node distance=3mm,
+    box/.style={draw=bkblue,rounded corners=1pt,fill=bkblue!5,inner sep=2pt,align=center,
+      text width=21mm,minimum height=11mm,font=\scriptsize}]
+  \node[box](a){\textbf{データ構造}\\#1};
+  \node[box,right=of a](b){\textbf{推定対象}\\#2};
+  \node[box,right=of b](c){\textbf{手法}\\#3};
+  \node[box,right=of c](d){\textbf{仮定}\\#4};
+  \node[box,right=of d](e){\textbf{計算}\\#5};
+  \node[box,right=of e](f){\textbf{解釈}\\#6};
+  \foreach \x/\y in {a/b,b/c,c/d,d/e,e/f}\draw[-{Stealth[length=2mm]},bkblue](\x)--(\y);
+  \end{tikzpicture}\end{center}}
+
+% ---------- 重要度ラベル ----------
+\newcommand{\tagbox}[2]{\tcbox[on line,boxsep=0.5pt,left=2pt,right=2pt,top=0.5pt,bottom=0.5pt,
+  colframe=#1,colback=#1!10,boxrule=0.4pt,arc=1pt]{\scriptsize\bfseries\textcolor{#1}{#2}}}
+\newcommand{\Hissu}{\tagbox{bkred}{必須}}
+\newcommand{\Hinshutsu}{\tagbox{bkorange}{頻出}}
+\newcommand{\Youchui}{\tagbox{bkpurple}{要注意}}
+\newcommand{\Hatten}{\tagbox{bkgray}{発展}}
+% 過去問参照 \kakomon{2022}{2}
+\newcommand{\kakomon}[2]{\mbox{#1年 医薬 問#2}}
+\newcommand{\kakomonSM}[2]{\mbox{#1年 数理 問#2}}
+
+% ---------- 数式マクロ ----------
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\V}{\mathrm{V}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Corr}{\mathrm{Corr}}
+\newcommand{\Prob}{\mathrm{P}}
+\newcommand{\SE}{\mathrm{SE}}
+\newcommand{\SD}{\mathrm{SD}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\RR}{\mathrm{RR}}
+\newcommand{\RD}{\mathrm{RD}}
+\newcommand{\OR}{\mathrm{OR}}
+\newcommand{\HR}{\mathrm{HR}}
+\newcommand{\logit}{\operatorname{logit}}
+\newcommand{\indep}{\mathop{\perp\!\!\!\perp}}
+\newcommand{\iid}{\overset{\text{i.i.d.}}{\sim}}
+\newcommand{\Normal}{\mathrm{N}}
+\newcommand{\Bin}{\mathrm{Bin}}
+\newcommand{\Po}{\mathrm{Po}}
+\newcommand{\Ga}{\mathrm{Ga}}
+\newcommand{\Be}{\mathrm{Be}}
+\newcommand{\Ex}{\mathrm{Exp}}
+\newcommand{\NB}{\mathrm{NB}}
+\newcommand{\Unif}{\mathrm{U}}
+\newcommand{\chisq}{\chi^2}
+\newcommand{\transp}{^{\top}}
+\newcommand{\ind}{\mathbb{1}}
+\newcommand{\hatS}{\widehat{S}}
+
+% ---------- その他 ----------
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\emphx}[1]{\textbf{\textcolor{bkblue}{#1}}}

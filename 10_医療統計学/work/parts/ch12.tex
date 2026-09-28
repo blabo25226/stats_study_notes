@@ -1,0 +1,247 @@
+\chapter{検出力・症例数・イベント数設計}\label{ch:12}
+
+\begin{goalbox}
+\begin{itemize}
+\item 第1種の過誤・第2種の過誤・検出力・効果量の関係を説明できる．
+\item 「帰無仮説で $\Normal(0,1)$，対立仮説で $\Normal(\mu,1)$」の枠組みから $\mu=z_\alpha+z_\beta$ を導出し，任意の検定の症例数の式を作れる．
+\item 平均の差，比率の差，単群の比率，生存時間（イベント数）の症例数を計算できる．
+\item 生存時間試験では必要な\textbf{イベント数}が精度を決めることを説明し，症例数に換算できる．
+\item 分散を帰無仮説の下で評価するか対立仮説の下で評価するかで結果が変わることを理解する．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2018}{1}〔5〕：指数モデルの2群比較で，検出力 $1-\beta$ を満たす各群のイベント数 $r=2(z_{\alpha/2}+z_\beta)^2/(\log\lambda_1-\log\lambda_2)^2$ の導出．
+\item \kakomon{2023}{2}：単群試験（指数分布，打ち切りなし）．$H_0:Z\sim\Normal(0,1)$，$H_1:Z\sim\Normal(\mu,1)$ から $\mu=z_\alpha+z_\beta$，
+      Wald 型統計量 $Z=(\hat\lambda-\lambda_0)/\sqrt{I_n(\hat\lambda)^{-1}}$ による $n=\lambda_1^2(z_\alpha+z_\beta)^2/(\lambda_1-\lambda_0)^2$，回復率から $\lambda$ を定めて $n=32$．
+\item \kakomon{2025}{1}〔4〕：順位和検定の検出力 $\Phi(\sqrt{6n}(\delta-\delta^2/2)-z_\alpha)$（\cref{sec:03-power}）．
+\item \kakomon{2017}{5}〔5〕（共通）：信頼区間幅を一定以下にする確率が0.8以上となる $n$（二項分布の正規近似）．
+\item \kakomon{2017}{3}：二段階デザインの $\alpha,\beta$ を二項分布で正確に計算（\cref{ch:14}）．
+\end{itemize}
+\end{exambox}
+
+\flowline{デザイン\\主要評価項目}{効果量 $\Delta$\\分散}{$Z$ 検定の\\正規近似}{$\alpha$・$1-\beta$\\分散の見積もり}{$n=(z+z)^2v/\Delta^2$}{脱落・多重性\\の上乗せ}
+
+\section{問題設定と基本概念}\label{sec:12-basic}
+\begin{center}\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & $H_0$ が真 & $H_1$ が真\\
+\midrule
+$H_0$ を棄却 & 第1種の過誤（確率 $\alpha$） & 正しい（検出力 $1-\beta$）\\
+$H_0$ を採択 & 正しい（$1-\alpha$） & 第2種の過誤（確率 $\beta$）\\
+\bottomrule
+\end{tabular}
+\end{center}
+症例数設計では，(i) 有意水準 $\alpha$（片側・両側），(ii) 検出したい効果量 $\Delta$（臨床的に意味のある最小の差，または期待される差），
+(iii) 分散などの局外母数の見積もり，(iv) 目標検出力 $1-\beta$（通常0.8または0.9）を定め，必要な $n$ を求める．
+\Youchui 『現代数理統計学の基礎』では $\beta(\theta)$ を検出力関数そのものとして用いる．本書（と医療統計の慣習）では $\beta$ は第2種の過誤確率である．
+
+\section{数理：\texorpdfstring{$\mu=z_\alpha+z_\beta$}{μ = zα + zβ} の導出}\label{sec:12-core}
+\Hissu
+\begin{teiri}[基本公式]\label{thm:12-core}
+検定統計量 $Z$ が $H_0$ の下で $\Normal(0,1)$，$H_1$ の下で $\Normal(\mu,1)$（$\mu>0$）に従い，$Z>z_\alpha$ で棄却するとき，
+検出力は $\Phi(\mu-z_\alpha)$ であり，検出力 $1-\beta$ を達成する条件は
+\begin{equation}
+\mu=z_\alpha+z_\beta.\label{eq:12-core}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$1-\beta=\Prob(Z>z_\alpha\mid H_1)=\Prob(Z-\mu>z_\alpha-\mu)=1-\Phi(z_\alpha-\mu)=\Phi(\mu-z_\alpha)$．
+一方 $\Phi(z_\beta)=1-\beta$ なので，$\Phi$ の単調性から $\mu-z_\alpha=z_\beta$．
+\end{proof}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=110mm,height=45mm,xmin=-3.5,xmax=6.5,ymin=0,ymax=0.45,axis lines=middle,
+  xtick={0,1.96,2.8},xticklabels={$0$,$z_\alpha$,$\mu$},ytick=\empty,tick label style={font=\scriptsize},
+  samples=120,domain=-3.5:6.5]
+\addplot[name path=h0,thick,bkblue] {exp(-x^2/2)/sqrt(2*pi)};
+\addplot[name path=h1,thick,bkred] {exp(-(x-2.8)^2/2)/sqrt(2*pi)};
+\addplot[name path=axis,draw=none] {0};
+\addplot[fill=bkblue!30,draw=none] fill between[of=h0 and axis,soft clip={domain=1.96:6.5}];
+\addplot[fill=bkred!20,draw=none] fill between[of=h1 and axis,soft clip={domain=-3.5:1.96}];
+\draw[dashed] (axis cs:1.96,0)--(axis cs:1.96,0.42);
+\node[font=\scriptsize,bkblue] at (axis cs:-1.4,0.36) {$H_0:\Normal(0,1)$};
+\node[font=\scriptsize,bkred] at (axis cs:4.6,0.36) {$H_1:\Normal(\mu,1)$};
+\node[font=\scriptsize] at (axis cs:1.35,0.05) {$\beta$};
+\node[font=\scriptsize] at (axis cs:2.45,0.03) {$\alpha$};
+\draw[<->] (axis cs:0,0.41)--(axis cs:1.96,0.41) node[midway,above,font=\scriptsize]{$z_\alpha$};
+\draw[<->] (axis cs:1.96,0.41)--(axis cs:2.8,0.41) node[midway,above,font=\scriptsize]{$z_\beta$};
+\end{axis}
+\end{tikzpicture}
+\caption{$\mu=z_\alpha+z_\beta$ の意味：棄却限界 $z_\alpha$ が，$H_1$ の分布の下側 $100\beta\%$ 点 $\mu-z_\beta$ に一致する．}\label{fig:12-core}
+\end{figure}
+両側検定（$|Z|>z_{\alpha/2}$）では，反対側の棄却確率を無視して $\mu=z_{\alpha/2}+z_\beta$ とする．
+
+\paragraph{症例数の一般公式}
+推定量 $\hat\theta$ が $\hat\theta\approx\Normal(\theta,v/n)$（$v$ は1単位あたりの分散）で，$H_0:\theta=\theta_0$，対立仮説の値 $\theta_1$ に対して
+$Z=(\hat\theta-\theta_0)/\sqrt{v/n}$ を用いるなら $\mu=(\theta_1-\theta_0)\sqrt{n/v}$ だから
+\begin{equation}
+n=\frac{(z_\alpha+z_\beta)^2\,v}{(\theta_1-\theta_0)^2}.\label{eq:12-general}
+\end{equation}
+分散が $H_0$ と $H_1$ で異なり（$v_0,v_1$），棄却限界を $H_0$ の分散で決めるなら
+\begin{equation}
+n=\frac{\bigl(z_\alpha\sqrt{v_0}+z_\beta\sqrt{v_1}\bigr)^2}{(\theta_1-\theta_0)^2}.\label{eq:12-general2}
+\end{equation}
+（$\Prob(\hat\theta>\theta_0+z_\alpha\sqrt{v_0/n}\mid\theta_1)=1-\beta$ を解く．）
+
+\section{主な症例数の式}\label{sec:12-formulas}
+\subsection{連続アウトカム}
+\begin{itemize}
+\item 2群の平均の差（各群 $n$，共通 SD $\sigma$，差 $\Delta$）：$v=2\sigma^2$ より
+\begin{equation}
+n=\frac{2\sigma^2(z_{\alpha/2}+z_\beta)^2}{\Delta^2}\quad\text{（各群）}.\label{eq:12-means}
+\end{equation}
+\item 対応のある比較（差の SD $\sigma_D$）：$n=\sigma_D^2(z_{\alpha/2}+z_\beta)^2/\Delta^2$．
+\item ベースラインで調整する ANCOVA：\cref{eq:12-means}に $1-\rho^2$ を掛ける（\cref{ch:08}）．
+\item 小標本では $z$ を $t$ に置き換えて反復計算する（数人増える程度）．
+\end{itemize}
+\subsection{2値アウトカム}
+比率 $\pi_1,\pi_0$，$\bar\pi=(\pi_1+\pi_0)/2$，各群 $n$ 人で，プール分散による検定（Pearson $\chi^2$）を用いるなら $v_0=2\bar\pi(1-\bar\pi)$，$v_1=\pi_1(1-\pi_1)+\pi_0(1-\pi_0)$ で
+\begin{equation}
+n=\frac{\bigl\{z_{\alpha/2}\sqrt{2\bar\pi(1-\bar\pi)}+z_\beta\sqrt{\pi_1(1-\pi_1)+\pi_0(1-\pi_0)}\bigr\}^2}{(\pi_1-\pi_0)^2}.\label{eq:12-prop}
+\end{equation}
+簡便には $n=(z_{\alpha/2}+z_\beta)^2\{\pi_1(1-\pi_1)+\pi_0(1-\pi_0)\}/(\pi_1-\pi_0)^2$．
+
+\subsection{生存時間：イベント数}\label{subsec:12-events}
+\Hinshutsu
+\paragraph{指数モデル（\kakomon{2018}{1}）}
+$\V[\log\hat\lambda_g]\approx1/d_g$ より，各群 $r$ イベントなら $\log\widehat{\HR}$ の分散は $2/r$．\cref{eq:12-general}で $v/n\to2/r$ とおけば
+\begin{equation}
+r=\frac{2(z_{\alpha/2}+z_\beta)^2}{(\log\HR)^2}\quad\text{（各群）}.\label{eq:12-exp}
+\end{equation}
+\paragraph{ログランク検定（Schoenfeld の式）}
+割付比 $p:(1-p)$，総イベント数 $D$ のとき，$H_0$ 近傍で $\V[\log\widehat{\HR}]\approx1/\{Dp(1-p)\}$ なので
+\begin{equation}
+D=\frac{(z_{\alpha/2}+z_\beta)^2}{p(1-p)(\log\HR)^2},\qquad p=\tfrac12\ \text{なら}\ D=\frac{4(z_{\alpha/2}+z_\beta)^2}{(\log\HR)^2}.\label{eq:12-schoenfeld}
+\end{equation}
+1:1 割付なら $2r=D$ で\cref{eq:12-exp}と一致する．
+\paragraph{イベント数から症例数へ}
+必要症例数は $N=D/\Prob(\text{イベント})$ で，イベント確率は登録期間・追跡期間・ハザードから求める．
+\begin{supbox}[補足：一様登録の下でのイベント確率]
+登録期間 $a$ に一様に登録し，最終登録後さらに $f$ だけ追跡する．ハザード $\lambda$ の指数分布なら，1人がイベントを観察される確率は
+$\Prob=1-\dfrac{e^{-\lambda f}-e^{-\lambda(a+f)}}{\lambda a}$（$S(t)$ を追跡期間 $[f,a+f]$ で平均して1から引く）．
+\end{supbox}
+生存時間試験で「症例数を増やす」だけでなく「追跡を延ばす」ことで検出力が上がるのは，精度を決めるのがイベント数だからである．
+
+\subsection{単群試験（\kakomon{2023}{2}）}\label{subsec:12-single}
+打ち切りなしの指数分布で $H_0:\lambda=\lambda_0$ 対 $H_1:\lambda>\lambda_0$．
+$\hat\lambda=1/\bar T$，$I_n(\lambda)=n/\lambda^2$ で，$Z=(\hat\lambda-\lambda_0)/\sqrt{\lambda_1^2/n}$（情報量を $\lambda_1$ で評価）とすると
+$\mu=\sqrt n(\lambda_1-\lambda_0)/\lambda_1$，\cref{eq:12-core}から
+\begin{equation}
+n=\frac{\lambda_1^2(z_\alpha+z_\beta)^2}{(\lambda_1-\lambda_0)^2}.\label{eq:12-single}
+\end{equation}
+回復率 $F(5)$ が $H_0$ で0.5，$H_1$ で0.75なら $\lambda_0=\log2/5$，$\lambda_1=\log4/5=2\lambda_0$，
+$z_{0.025}=1.96$，$z_{0.2}=0.84$ から $n=4\times2.8^2=31.4$，すなわち32人．
+\begin{supbox}[発展：尺度の選び方で症例数が変わる]
+同じ問題でも，$\V[\log\hat\lambda]=1/n$ を使った $Z=\sqrt n(\log\hat\lambda-\log\lambda_0)$ なら $n=(z_\alpha+z_\beta)^2/(\log\lambda_1/\lambda_0)^2=7.84/0.480=16.3$，すなわち17人となる．
+$2\lambda\sum T_i\sim\chi^2_{2n}$ を用いた正確な検定では19人で検出力0.82となり，
+\cref{eq:12-single}の32人は保守的（検出力0.97），対数尺度の17人はやや楽観的（検出力0.77）である．
+正規近似の精度は統計量の尺度に依存するので，試験では「どの検定を用いるか」を先に決め，その検定に合わせた式を使う．
+\end{supbox}
+
+\section{その他の考慮}\label{sec:12-other}
+\begin{itemize}
+\item \textbf{脱落}：脱落率 $w$ を見込むなら $n/(1-w)$．
+\item \textbf{不均等割付}：$k:1$ 割付では，総数は均等割付の $(1+k)^2/(4k)$ 倍必要．
+\item \textbf{多重性}：複数の主要比較があれば $\alpha$ を分割して $z_{\alpha/(2m)}$ を用いる（\cref{ch:14}）．
+\item \textbf{中間解析}：群逐次デザインでは最大症例数がわずかに増える（\cref{ch:14}）．
+\item \textbf{同等性・非劣性}：対立仮説の側が変わるので式が異なる（\cref{ch:13}）．
+\end{itemize}
+
+\section{仮定}\label{sec:12-assump}
+\begin{itemize}
+\item 検定統計量の正規近似が成り立つ程度の標本サイズ．
+\item 分散・対照群のイベント率・相関などの見積もりが正しいこと（外れると検出力が大きく変わる）．
+\item 生存時間：比例ハザード，登録・追跡・脱落の見込み．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:12-interp}
+\begin{itemize}
+\item 「$n=122$ で検出力90\%」は，「真の差が $\Delta$ なら90\%の確率で有意になる」の意味．真の差が小さければ検出力は下がる．
+\item 試験後に観測された効果量で「事後の検出力」を計算しても，P値と1対1に対応するだけで新しい情報は与えない．非有意の解釈は信頼区間で行う．
+\end{itemize}
+
+\section{手法選択}\label{sec:12-choice}
+主解析で用いる検定と同じ統計量・同じ尺度で症例数を計算する．
+平均の比較なら\cref{eq:12-means}，比率なら\cref{eq:12-prop}，生存時間ならイベント数\cref{eq:12-schoenfeld}から症例数へ，
+順位検定なら $\Prob(X>Y)$ を用いた\cref{eq:03-power}，二段階デザインなら二項分布による正確計算．
+
+\section{よくある誤り}\label{sec:12-err}
+\begin{warnbox}
+\begin{itemize}
+\item 両側検定なのに $z_\alpha$（片側）を使う，またはその逆．$z_\beta$ と $z_{\beta/2}$ を混同する．
+\item 平均の差の式で係数2（2群分の分散）を落とす．結果を「総数」と「各群」で取り違える．
+\item 生存時間で症例数とイベント数を混同する．
+\item 端数を切り捨てる（必ず切り上げる）．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:12-link}
+\begin{linkbox}
+\begin{itemize}
+\item 検出力関数（『現代数理統計学の基礎』定義7.13）と Neyman--Pearson の補題（定理7.16）．同書の $\beta(\theta)$ は検出力である．
+\item \kakomonSM{2024}{1} では片側 $z$ 検定の検出力 $1-\Phi(z_\alpha-\beta_1/\SE)$ を2つの推定量で比べ，分散の小さい（有効な）推定量ほど検出力が高いことが問われた．
+      症例数設計は「分散を小さくする」ことと「$n$ を増やす」ことが同じ効果をもつことの定量化である．
+\item Wald 型の検定では情報量 $I_n(\theta)$ をどの $\theta$ で評価するかが近似の質を左右する（\cref{subsec:12-single}の発展）．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:12-ex}
+\begin{reidai}[平均の差]\label{reidai:12-1}
+主要評価項目の SD を12，臨床的に意味のある差を5とし，両側 $\alpha=0.05$，検出力90\%（$z_{0.10}=1.282$）で各群の症例数を求めよ．
+ベースラインとの相関0.5を利用して ANCOVA を行う場合はどうか．
+\end{reidai}
+
+\begin{reidai}[比率の差]\label{reidai:12-2}
+対照群の有効率0.45，試験群0.60を想定し，両側 $\alpha=0.05$，検出力80\%（$z_{0.20}=0.842$）とする．
+\cref{eq:12-prop}と簡便式で各群の症例数を求めよ（$\sqrt{0.49875}=0.7062$，$\sqrt{0.4875}=0.6982$）．
+\end{reidai}
+
+\begin{reidai}[イベント数]\label{reidai:12-3}
+HR $=0.7$ を両側 $\alpha=0.05$，検出力90\%で検出したい（1:1割付，$\log0.7=-0.3567$）．
+\begin{enumerate}[label=(\arabic*)]
+\item 必要な総イベント数を求めよ．
+\item 追跡期間中にイベントを起こす確率が両群平均で0.6と見込まれるとき，必要な総症例数を求めよ．
+\item 脱落を10\%見込むとどうなるか．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[検出力の計算]\label{reidai:12-4}
+各群50人，効果量 $\Delta/\sigma=0.5$ の2群比較を片側 $\alpha=0.025$ で行うときの検出力を求めよ（$\Phi(0.54)=0.705$）．
+検出力を90\%にするには各群何人必要か．
+\end{reidai}
+
+\section{解答}\label{sec:12-sol}
+\begin{kaitou}{reidai:12-1}
+$n=2\times144\times(1.960+1.282)^2/25=288\times10.51/25=121.1$，各群122人．
+ANCOVA では $1-\rho^2=0.75$ 倍で $90.8$，各群91人．
+\end{kaitou}
+
+\begin{kaitou}{reidai:12-2}
+$\bar\pi=0.525$．$1.96\times0.7062=1.384$，$0.842\times0.6982=0.588$，和 $1.972$，2乗 $3.889$．$n=3.889/0.0225=172.8$ → 各群173人．
+簡便式：$(2.802)^2\times0.4875/0.0225=7.851\times21.67=170.1$ → 171人．
+\end{kaitou}
+
+\begin{kaitou}{reidai:12-3}
+(1) $D=4\times(1.960+1.282)^2/0.3567^2=4\times10.51/0.1272=330.5$ → 331イベント．\\
+(2) $331/0.6=551.7$ → 552人．\\
+(3) $331/(0.6\times0.9)=613.0$ → 613人（途中で切り上げた $552/0.9$ を使えば614人．脱落が打ち切りとしてイベントを減らすことを見込む）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:12-4}
+$\mu=0.5\sqrt{50/2}=2.5$，検出力 $\Phi(2.5-1.96)=\Phi(0.54)=0.705$．
+90\%には $n=2(1.960+1.282)^2/0.25=84.1$ → 各群85人．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $H_0:\Normal(0,1)$，$H_1:\Normal(\mu,1)$ なら検出力 $\Phi(\mu-z_\alpha)$，条件は $\mu=z_\alpha+z_\beta$（両側は $z_{\alpha/2}$）．
+\item 一般：$n=(z_\alpha+z_\beta)^2v/\Delta^2$，分散が異なれば $(z_\alpha\sqrt{v_0}+z_\beta\sqrt{v_1})^2/\Delta^2$．
+\item 平均：各群 $2\sigma^2(z_{\alpha/2}+z_\beta)^2/\Delta^2$．比率：\cref{eq:12-prop}．
+\item 生存：総イベント数 $4(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$（指数なら各群 $2(\cdot)^2/(\log\HR)^2$）．症例数 $=$ イベント数/イベント確率．
+\item 単群指数：$n=\lambda_1^2(z_\alpha+z_\beta)^2/(\lambda_1-\lambda_0)^2$（\kakomon{2023}{2}）．尺度により結果が変わる．
+\end{itemize}
+\end{summarybox}

@@ -1,0 +1,304 @@
+\chapter{疫学研究・交絡・層別・マッチング}\label{ch:07}
+
+\begin{goalbox}
+\begin{itemize}
+\item 交絡の定義と条件を述べ，粗（crude）効果と調整（adjusted）効果の違いを説明できる．
+\item 交絡と効果修飾を区別し，層間の均一性を検定できる．
+\item 層別 $2\times2$ 表に Mantel--Haenszel 法・逆分散重み法・Peto の1段階推定を適用し，共通オッズ比とその信頼区間を計算できる．
+\item 直接標準化による調整リスクを計算できる．
+\item マッチングの目的と，マッチしたデータの正しい解析法を説明できる．
+\item 傾向スコアの定義とバランス特性を証明し，層別・重み付けによる調整を実行できる．
+\item Simpson のパラドックスを例示し，因果解釈上の注意を述べられる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2017}{4}：年齢3層の症例対照データ．層別の曝露OR，超幾何分布の $\E[y_{11k}],\V[y_{11k}]$，
+      $\widehat{\log\psi_k}=(y_{11k}-\E)/\V$ による推定，逆分散重みの共通 OR（$\hat\psi=6.22$）と分散 $1/\sum V_k$，95\%CI，均一性の確認方法（Breslow--Day）．
+\item \kakomon{2019}{2}：乳がん化学療法のコホート．粗リスク差の CI，4層の直接標準化による調整リスク差，
+      飽和ロジスティックモデルによる傾向スコアとバランス特性の確認，傾向スコア層別による調整リスク差，バランス特性の証明（繰り返し期待値）．
+\item \kakomon{2021}{3}〔3〕〔4〕：層別 Cochran 検定の導出と，性別で層別すると結論が変わる（Simpson のパラドックス）．
+\item \kakomon{2022}{2}：マッチしたペアでの粗 RR・OR と MH 推定量の比較，「交絡の有無」と「推定されるパラメータの違い」，間接比較によるシートベルトの効果．
+\end{itemize}
+\end{exambox}
+
+\flowline{層別2×2表\\共変量}{調整RR・OR\\標準化リスク}{MH・標準化\\PS・回帰}{均一性\\未測定交絡なし}{重み付き和\\超幾何分散}{粗と調整の差\\の理由}
+
+\section{問題設定}\label{sec:07-setting}
+観察研究では治療・曝露 $X$ の選択が患者の特性 $Z$ に依存する．$Z$ が結果 $Y$ にも影響するなら，
+$X$ と $Y$ の粗い関連には $Z$ を介した関連が混入する．
+本章では，層（$Z$ の値）ごとの $2\times2$ 表 $k=1,\dots,K$（$a_k,b_k,c_k,d_k$，行和 $n_{1k},n_{0k}$，列和 $m_{1k},m_{0k}$，総数 $N_k$）を
+主なデータ形式とする．
+
+\section{基本概念}\label{sec:07-basic}
+\subsection{交絡}\label{subsec:07-confound}
+\begin{teigi}[交絡因子]\label{def:07-confounder}
+次の3条件を満たす変数 $Z$ を交絡因子という．
+(i) 曝露 $X$ と関連する．(ii) 曝露がない集団でも結果 $Y$ の危険因子である．(iii) 曝露から結果への経路上の中間変数ではない．
+\end{teigi}
+\Youchui 中間変数（治療→血圧低下→脳卒中予防の「血圧」など）で調整すると，治療効果の一部を消してしまう．
+治療後に測定された変数で調整してはいけない．
+
+\begin{supbox}[補足：潜在結果による定式化]
+各個体に，治療を受けた場合の結果 $Y(1)$ と受けなかった場合の結果 $Y(0)$ を考える．
+平均因果効果は $\E[Y(1)]-\E[Y(0)]$ である．観測できるのは $Y=XY(1)+(1-X)Y(0)$ だけなので，
+$\E[Y\mid X=1]-\E[Y\mid X=0]$ が因果効果に等しいためには $\{Y(1),Y(0)\}\indep X$（交換可能性）が必要で，ランダム化はこれを保証する．
+観察研究では $Z$ を条件として $\{Y(1),Y(0)\}\indep X\mid Z$（未測定の交絡がない）と $0<\Prob(X=1\mid Z)<1$（正値性）を仮定し，
+$\E[Y(x)]=\E_Z\bigl[\E[Y\mid X=x,Z]\bigr]$ によって因果効果を識別する（標準化の公式）．
+\end{supbox}
+
+\subsection{粗効果と調整効果・Simpson のパラドックス}\label{subsec:07-simpson}
+\kakomon{2021}{3} では，併合表の OR は $0.90$（有意差なし）だったが，性別で層別すると男性 $4.09$，女性 $2.06$ で，Cochran 検定は $X_C=8.94$ と有意になった．
+新規治療群に女性（有効率が低い層）が多く，既存治療群に男性（有効率が高い層）が多かったためである．
+このように，併合した関連の向きや大きさが層別の関連と食い違う現象を Simpson のパラドックスという．
+
+\subsection{効果修飾}\label{sec:07-modification}
+\begin{teigi}[効果修飾]\label{def:07-modification}
+曝露の効果の大きさが $Z$ の値によって異なることを，$Z$ による効果修飾（effect modification；交互作用）という．
+\end{teigi}
+交絡は推定の\textbf{偏り}であり調整によって除くべきもの，効果修飾は\textbf{自然の性質}であり報告すべきものである．
+効果修飾があれば共通 OR を1つの数値で要約することは適切でなく，層ごとの効果を示す．
+また効果修飾の有無は尺度に依存する：RD が層間で一定なら，ベースラインが異なる層では RR や OR は一定でない．
+
+\section{数理：層別解析}\label{sec:07-strat}
+\subsection{Mantel--Haenszel 法}\label{subsec:07-mh}
+\Hissu\Hinshutsu MH 検定統計量と MH 推定量は\cref{sec:04-mh}で定義した．ここでは性質をまとめる．
+\begin{itemize}
+\item $\chi^2_{\mathrm{MH}}=\{\sum(a_k-\E[a_k])\}^2/\sum\V[a_k]$（超幾何分散）は，全層で $\OR=1$ の帰無仮説の検定．
+      各層の $O-E$ を足してから2乗するので，層間で効果の向きが揃っているときに検出力が高い．
+\item \kakomon{2021}{3} の Cochran 検定は分散に $n_{1k}n_{0k}m_{1k}m_{0k}/N_k^3$（積二項の条件なし分散）を用い，
+      各 $Y_k$ が漸近的に正規で層間独立なので $Y=\sum Y_k$ が漸近的に $\Normal(0,\sum\V[Y_k])$ に従うことから導かれる．
+\item $\widehat{\OR}_{\mathrm{MH}}=\sum(a_kd_k/N_k)/\sum(b_kc_k/N_k)$ は，層内の推定値 $a_kd_k/(b_kc_k)$ を重み $b_kc_k/N_k$ で平均したものとみなせる．
+      ゼロのセルがあっても計算でき，層が多数で各層が小さいときも一致推定量である．
+\end{itemize}
+\begin{supbox}[補足：MH オッズ比の分散（Robins--Breslow--Greenland \cite{rbg1986}）]
+$P_k=(a_k+d_k)/N_k$，$Q_k=(b_k+c_k)/N_k$，$R_k=a_kd_k/N_k$，$S_k=b_kc_k/N_k$，$R=\sum R_k$，$S=\sum S_k$ として
+\[
+\widehat\V[\log\widehat{\OR}_{\mathrm{MH}}]=\frac{\sum P_kR_k}{2R^2}+\frac{\sum(P_kS_k+Q_kR_k)}{2RS}+\frac{\sum Q_kS_k}{2S^2}.
+\]
+\end{supbox}
+
+\subsection{逆分散重み法と Peto の1段階推定}\label{subsec:07-peto}
+各層の対数 OR の推定値 $\hat\theta_k$ とその分散 $v_k$ があれば，共通の $\theta$ の推定量として
+\begin{equation}
+\hat\theta_w=\frac{\sum_kw_k\hat\theta_k}{\sum_kw_k},\qquad w_k=\frac1{v_k},\qquad \V[\hat\theta_w]=\frac{1}{\sum_kw_k}\label{eq:07-iv}
+\end{equation}
+が得られる（固定効果メタアナリシスと同じ；\cref{ch:15}）．$\hat\theta_k=\log(a_kd_k/b_kc_k)$，$v_k=1/a_k+1/b_k+1/c_k+1/d_k$ とするのが Woolf 法である．
+
+\paragraph{Peto の1段階推定（\kakomon{2017}{4}）}
+各層で周辺度数を固定した条件付き尤度（非心超幾何分布）の，$\theta=\log\OR$ に関するスコアと情報量は，$\theta=0$ で
+$U_k(0)=a_k-\E[a_k]$，$I_k(0)=\V[a_k]$（\cref{eq:04-hyper}）となる．$\theta=0$ から Newton 法を1回だけ行うと
+\begin{equation}
+\widehat{\log\psi_k}=\frac{a_k-\E[a_k]}{\V[a_k]},\qquad
+\widehat{\log\psi}=\frac{\sum_kV_k\cdot\frac{a_k-E_k}{V_k}}{\sum_kV_k}=\frac{\sum_k(a_k-E_k)}{\sum_kV_k},\qquad
+\V[\widehat{\log\psi}]=\frac{1}{\sum_kV_k}.\label{eq:07-peto}
+\end{equation}
+重みは $1/\V[\widehat{\log\psi_k}]=V_k$ である．分子は MH 検定の分子と同じで，$\widehat{\log\psi}^2\sum V_k=\chi^2_{\mathrm{MH}}$ となる．
+真の OR が1に近く，群の大きさが釣り合っているときに良い近似である．OR が1から遠い場合や群の大きさが大きく異なる場合には偏りが大きくなり，その向き（1に近づくか遠ざかるか）は一定しない（\kakomon{2017}{4} の第1層では1段階推定値 $31.9$ が層の OR $7.71$ を大きく上回る）．
+\kakomon{2017}{4} では $\sum(O-E)=96-48.18=47.82$，$\sum V=26.17$ から $\widehat{\log\psi}=1.827$，$\hat\psi=6.22$，
+95\%CI は $\exp(1.827\pm1.96/\sqrt{26.17})=(4.24,\,9.12)$．
+
+\subsection{均一性の検定}\label{subsec:07-homog}
+共通 OR の仮定（\kakomon{2017}{4}〔5〕）は，次のような方法で確認する．
+\begin{itemize}
+\item \textbf{Woolf の均一性検定}：$Q=\sum_kw_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$（\cref{sec:15-q}の Cochran の $Q$ と同じ）．
+\item \textbf{Breslow--Day 検定}：共通 $\widehat{\OR}_{\mathrm{MH}}$ の下での各層の期待度数と観測度数を比べる $\chi^2_{K-1}$ 検定．
+\item ロジスティック回帰で「曝露×層」の交互作用項を加えた尤度比検定（自由度 $K-1$）．
+\end{itemize}
+層数が少なく各層が小さいとこれらの検定は検出力が低いので，有意でないことは均一性の証明にならない．
+
+\section{標準化}\label{sec:07-standard}
+\subsection{直接標準化}
+\begin{teigi}[直接標準化]\label{def:07-direct}
+層 $k$ の曝露群 $x$ のリスクを $p_{xk}$，標準集団の層の割合を $w_k$（$\sum w_k=1$）として，
+$R_{xw}=\sum_kw_kp_{xk}$ を標準化リスクという．$R_{1w}-R_{0w}$，$R_{1w}/R_{0w}$ が標準化（調整）RD・RR．
+\end{teigi}
+両群に同じ重みを用いるので，$Z$ の分布の違いによる交絡が除かれる．
+標準集団に研究全体（両群を合わせた集団）を用いると，推定対象は（未測定の交絡がなければ）集団全体での平均因果効果 $\E[Y(1)]-\E[Y(0)]$ になる（前掲の補足の標準化公式）．
+\kakomon{2019}{2} では $w_k=(N_{0k}+N_{1k})/(N_0+N_1)$ として，粗 RD $0.27$ に対し標準化 RD は $0.026$ にまで小さくなった．
+化学療法は閉経後・進行がん（再発リスクが高い層）に多く行われており，粗 RD の大部分が交絡によるものだったことを示す．
+
+\subsection{間接標準化}
+\begin{supbox}[補足：標準化死亡比（SMR）]
+対象集団の層別人数 $n_k$ と参照集団の層別率 $\lambda_k^{\mathrm{ref}}$ から期待死亡数 $E=\sum n_k\lambda_k^{\mathrm{ref}}$ を求め，
+$\mathrm{SMR}=O/E$（観測死亡数/期待死亡数）とする．対象集団の層別率が不安定（小集団）なときに用いる．
+$O$ をポアソン分布とみなして検定・区間推定する（\cref{ch:17}）．
+\end{supbox}
+
+\section{マッチング}\label{sec:07-match}
+\Hinshutsu マッチングは，交絡因子の分布を群間でそろえるために，背景の似た個体を組にするデザインである．
+\begin{itemize}
+\item \textbf{マッチした症例対照研究}：症例と対照がペア．マッチングで対照のマッチ因子の分布が症例に近づき，マッチ因子が曝露と関連していれば対照の曝露分布も症例に近づくので，マッチを無視した粗 OR は通常1の方向に偏る．
+      ペアを層とする MH-OR（＝不一致ペアの比 $n_{10}/n_{01}$），McNemar 検定，条件付きロジスティック回帰で解析する．
+\item \textbf{マッチしたコホート}（\kakomon{2022}{2}）：同じ事故の運転者（着用）と同乗者（非着用）がペア．
+      事故状況 $Z$ の分布は両群で完全に等しく，$Z$ と曝露は独立なので，$Z$ による交絡はない．
+      それでも粗 OR $2.79$ と MH-OR $3.98$ が異なるのは OR の非可縮性（\cref{subsec:02-collapse}）による．
+      RR は可縮なので粗 RR $=$ MH-RR $=3074/1104=2.78$．
+\end{itemize}
+\paragraph{間接比較（\kakomon{2022}{2}〔5〕）}
+「着用の運転者 vs 非着用の同乗者」の RR（2.78）には座席の違いと着用の違いが混ざっている．
+両者とも非着用の事故データから座席の効果（同乗者/運転者の RR $=1.01$）を推定し，
+$2.78/1.01\approx2.75$（丸めずに計算すると $2.77$）を着用の効果（非着用/着用）の推定値とする．これは座席の効果と着用の効果が乗法的に独立（交互作用なし）という仮定に基づく．
+
+\section{傾向スコア}\label{sec:07-ps}
+\Hinshutsu
+\begin{teigi}[傾向スコア]\label{def:07-ps}
+共変量 $\bm Z$ をもつ個体が治療を受ける確率 $e(\bm z)=\Prob(X=1\mid\bm Z=\bm z)=\E[X\mid\bm Z=\bm z]$ を傾向スコア（propensity score）という．
+\end{teigi}
+\begin{teiri}[バランス特性（\kakomon{2019}{2}〔5〕）]\label{thm:07-balance}
+\[
+\Prob\bigl(X=1\mid\bm Z,e(\bm Z)\bigr)=\Prob\bigl(X=1\mid e(\bm Z)\bigr)=e(\bm Z).
+\]
+すなわち $X\indep\bm Z\mid e(\bm Z)$：傾向スコアが同じ個体の集団では，$\bm Z$ の分布が治療群と対照群で等しい．
+\end{teiri}
+\begin{proof}
+$e(\bm Z)$ は $\bm Z$ の関数なので $\Prob(X=1\mid\bm Z,e(\bm Z))=\Prob(X=1\mid\bm Z)=e(\bm Z)$．
+一方，繰り返し期待値の法則より
+\[
+\Prob(X=1\mid e(\bm Z))=\E[X\mid e(\bm Z)]=\E\bigl[\E[X\mid\bm Z,e(\bm Z)]\bigm| e(\bm Z)\bigr]=\E\bigl[e(\bm Z)\mid e(\bm Z)\bigr]=e(\bm Z).
+\]
+両者が等しいので，$e(\bm Z)$ を与えたとき $X$ の条件付き分布は $\bm Z$ に依存しない．
+\end{proof}
+さらに，$\bm Z$ を与えて未測定の交絡がない（$\{Y(1),Y(0)\}\indep X\mid\bm Z$）なら，$e(\bm Z)$ を与えても同じことが成り立つ．
+多次元の $\bm Z$ の調整を1次元のスコアの調整に縮約できるのが傾向スコアの利点である．
+
+\paragraph{推定と利用}
+$e(\bm z)$ は通常ロジスティック回帰で推定する．\kakomon{2019}{2} では2値の $\bm Z=(\text{閉経},\text{進行度})$ と交互作用を含む飽和モデルなので，
+推定値は各層の治療割合 $0.143,0.550,0.550,0.853$ に一致した．層2と層3で PS が等しく，この2層を合わせた集団では $\bm Z$ の分布が両群で一致する（$0.513:0.487$）．
+利用法には次がある．
+\begin{itemize}
+\item \textbf{層別}：PS の値（または5分位など）で層別し，標準化する．\kakomon{2019}{2}〔4〕では調整 RD $=0.026$ で，$\bm Z$ による直接標準化と一致した．
+\item \textbf{マッチング}：PS の近い治療者と非治療者を組にする．
+\item \textbf{逆確率重み付け（IPW）}：$\widehat{\E}[Y(1)]=\frac1n\sum\frac{X_iY_i}{\hat e(\bm Z_i)}$，$\widehat{\E}[Y(0)]=\frac1n\sum\frac{(1-X_i)Y_i}{1-\hat e(\bm Z_i)}$．
+      $XY=XY(1)$ と $Y(1)\indep X\mid\bm Z$ より $\E\bigl[XY/e(\bm Z)\bigr]=\E\bigl[\E[X\mid\bm Z]\E[Y(1)\mid\bm Z]/e(\bm Z)\bigr]=\E[Y(1)]$ による．
+\item \textbf{共変量としての調整}：回帰モデルに $\hat e(\bm Z)$ を共変量として加える．
+\end{itemize}
+
+\section{仮定}\label{sec:07-assump}
+\begin{itemize}
+\item \textbf{未測定の交絡がない}：調整した変数以外に交絡因子がない．データからは検証できない最大の仮定．
+\item \textbf{正値性}：どの層にも治療者と非治療者がいる（$0<e(\bm z)<1$）．PS が0や1に近い個体があると IPW の重みが不安定になる．
+\item \textbf{モデルの正しさ}：PS モデル・結果モデルの特定．
+\item MH 推定：層間で効果が均一．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:07-interp}
+\begin{itemize}
+\item 粗効果と調整効果が異なる理由として，(a) 交絡（\kakomon{2019}{2}，\kakomon{2021}{3}），(b) OR の非可縮性（\kakomon{2022}{2}），(c) 効果修飾による要約の違い，を区別して述べる．
+\item 調整しても，因果効果と言えるのは未測定の交絡がない場合に限られる．観察研究の結論には「測定されていない交絡因子の影響は否定できない」を添える．
+\item 層別の結果が逆向きなら共通の要約はせず，層別に報告する．
+\end{itemize}
+
+\section{手法選択}\label{sec:07-choice}
+\begin{table}[htbp]
+\centering\small
+\caption{交絡の調整法}\label{tab:07-choice}
+\begin{tabular}{@{}L{40mm}L{95mm}@{}}
+\toprule
+状況 & 方法\\
+\midrule
+デザイン段階 & ランダム化（最善），層別ランダム化，マッチング，限定（対象を1層に絞る）\\
+少数のカテゴリ交絡因子 & MH 検定・MH 推定量，直接標準化\\
+層が多く各層が小さい（ペアなど） & MH 推定量，条件付きロジスティック回帰（Woolf 法は不適）\\
+連続・多数の交絡因子 & ロジスティック回帰，傾向スコア（層別・マッチング・IPW）\\
+稀な疾患の症例対照研究 & マッチング＋条件付き解析，ロジスティック回帰による調整OR\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{よくある誤り}\label{sec:07-err}
+\begin{warnbox}
+\begin{itemize}
+\item 粗 OR と調整 OR の差をすべて交絡と解釈する（非可縮性を無視）．
+\item 効果修飾がある（層で OR が逆向き）のに共通 OR で要約する．
+\item 中間変数・治療後の変数で調整する．
+\item 傾向スコアで調整すれば未測定の交絡も除けると考える．
+\item バランス特性の確認で，周辺分布だけを比べる（本来は同時分布．\kakomon{2019}{2} では両者が同値になる特殊な場合であった）．
+\item 標準化の重みを群ごとに別々に取る（同じ重みを両群に使わないと調整にならない）．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:07-link}
+\begin{linkbox}
+\begin{itemize}
+\item バランス特性の証明は繰り返し期待値の法則（『現代数理統計学の基礎』式(4.4)）そのものである．
+\item Peto の1段階推定は，条件付き尤度のスコアと情報量による1回の Newton 法であり，MLE の1段階近似（one-step estimator）の典型例である．
+\item 逆分散重み付き平均が線形不偏推定量の中で分散最小であることは同書第6章演習（問9）．
+\item 超幾何分布の分散（同書 式(3.10)）が $\V[a_k]$ の源であり，条件付けによって局外母数（各層のベースラインリスク）が消えることが MH 法の要点である．
+\item \kakomonSM{2022}{2} では「条件付け（選択）によって見かけの相関が生じる」ことが問われた．これは選択バイアスや合流点での条件付けの数理的な原型である．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:07-ex}
+\begin{reidai}[Simpson のパラドックスと MH 法]\label{reidai:07-1}
+2病院で治療の有無と改善の有無を集計した．
+病院A（軽症中心）：治療100人中90人改善，無治療500人中400人改善．
+病院B（重症中心）：治療500人中300人改善，無治療100人中50人改善．
+\begin{enumerate}[label=(\arabic*)]
+\item 各病院の OR と，併合した表の OR を求めよ．
+\item MH 共通 OR を求めよ．
+\item MH 検定統計量を求め，有意水準5\%で検定せよ．各層の $\E[a_k]$，$\V[a_k]$ も示せ．
+\item Peto の1段階推定による共通 OR を求め，(2)と比べよ（$e^{0.508}=1.66$）．
+\item 併合した OR が層別の OR と逆向きになった理由を説明せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[直接標準化と IPW]\label{reidai:07-2}
+2値の交絡因子 $Z$ で層別したコホートで，
+$Z=0$：治療20人中4人発症，無治療80人中8人発症；$Z=1$：治療60人中30人発症，無治療40人中16人発症．
+\begin{enumerate}[label=(\arabic*)]
+\item 粗リスク差を求めよ．
+\item 研究集団全体を標準集団とする直接標準化リスク差を求めよ．
+\item 各層の傾向スコアを求め，IPW 推定量によるリスク差を求めよ．(2)と一致することを確かめよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[バランス特性の数値確認]\label{reidai:07-3}
+2値の共変量 $Z_1,Z_2$ による4層で，治療者数/非治療者数が $(Z_1,Z_2)=(0,0)$：$20/80$，$(0,1)$：$30/20$，$(1,0)$：$60/40$，$(1,1)$：$45/5$ であった．
+飽和モデルによる傾向スコアを求め，傾向スコアが等しい層を併合した集団で，$(Z_1,Z_2)$ の同時分布が治療群と非治療群で等しいことを示せ．
+\end{reidai}
+
+\section{解答}\label{sec:07-sol}
+\begin{kaitou}{reidai:07-1}
+(1) A：$\frac{90\times100}{10\times400}=2.25$．B：$\frac{300\times50}{200\times50}=1.50$．
+併合：治療600人中390人，無治療600人中450人で $\frac{390\times150}{210\times450}=0.62$．\\
+(2) A：$a_kd_k/N_k=9000/600=15$，$b_kc_k/N_k=4000/600=6.667$．B：$15000/600=25$，$10000/600=16.667$．
+$\widehat{\OR}_{\mathrm{MH}}=40/23.33=1.71$．\\
+(3) A：$E=100\times490/600=81.67$，$V=\frac{100\cdot500\cdot490\cdot110}{600^2\cdot599}=12.50$．
+B：$E=500\times350/600=291.67$，$V=\frac{500\cdot100\cdot350\cdot250}{600^2\cdot599}=20.29$．
+$\sum(O-E)=(90-81.67)+(300-291.67)=16.67$，$\sum V=32.79$，$\chi^2_{\mathrm{MH}}=16.67^2/32.79=8.47>3.841$ で有意．\\
+(4) $\widehat{\log\psi}=16.67/32.79=0.508$，$\hat\psi=1.66$．MH の1.71（条件付き最尤推定値は約1.69）より1にやや近い．
+Peto 法は OR が1に近く群の大きさが釣り合うときに良い近似で，本例は層内の群の大きさが100対500，500対100と大きく不均衡なため，他の推定量とずれが生じた（ずれの向きは一般には決まらない）．\\
+(5) 治療は重症（改善率の低い）病院Bに多く（500人），無治療は軽症の病院Aに多い．病院（重症度）が治療と改善の両方に関連する交絡因子で，
+併合すると「治療群は重症が多いから改善率が低い」という効果が治療の効果に混入し，向きが逆転した．
+\end{kaitou}
+
+\begin{kaitou}{reidai:07-2}
+(1) 治療 $34/80=0.425$，無治療 $24/120=0.200$，粗 RD $=0.225$．\\
+(2) 層別リスク：$Z=0$ で $0.2$ と $0.1$，$Z=1$ で $0.5$ と $0.4$．標準集団の重みは各層 $100/200=0.5$．
+$R_{1w}=0.5\times0.2+0.5\times0.5=0.35$，$R_{0w}=0.5\times0.1+0.5\times0.4=0.25$，標準化 RD $=0.10$．\\
+(3) $e(0)=20/100=0.2$，$e(1)=60/100=0.6$．
+$\widehat\E[Y(1)]=\frac{1}{200}\bigl(\frac{4}{0.2}+\frac{30}{0.6}\bigr)=\frac{20+50}{200}=0.35$，
+$\widehat\E[Y(0)]=\frac{1}{200}\bigl(\frac{8}{0.8}+\frac{16}{0.4}\bigr)=\frac{10+40}{200}=0.25$．RD $=0.10$ で(2)と一致する．
+（飽和 PS モデルの IPW は，研究集団を標準とする直接標準化と一致する．）
+\end{kaitou}
+
+\begin{kaitou}{reidai:07-3}
+PS は $(0,0)$：$0.2$，$(0,1)$：$30/50=0.6$，$(1,0)$：$60/100=0.6$，$(1,1)$：$0.9$．
+PS $=0.6$ の集団（層 $(0,1)$ と $(1,0)$）では，治療群 $30+60=90$ 人の内訳が $(0,1):(1,0)=30:60=1/3:2/3$，
+非治療群 $20+40=60$ 人の内訳も $20:40=1/3:2/3$ で一致し，$(0,0)$，$(1,1)$ はどちらの群でも0である．
+PS $=0.2$，$0.9$ の集団はそれぞれ1層のみなので，同時分布は自明に一致する．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 交絡因子：曝露と関連，結果の危険因子，中間変数でない．交絡は偏り，効果修飾は自然の性質．
+\item MH 検定 $\{\sum(a_k-E_k)\}^2/\sum V_k$，MH-OR $\sum a_kd_k/N_k\big/\sum b_kc_k/N_k$．
+\item Peto：$\widehat{\log\psi}=\sum(O-E)/\sum V$，$\V=1/\sum V$（OR が1に近いとき良い近似）．
+\item 均一性：Woolf の $Q$，Breslow--Day（自由度 $K-1$）．有意でなくても均一の証明ではない．
+\item 直接標準化 $R_{xw}=\sum w_kp_{xk}$（同じ重みを両群に）．
+\item 傾向スコア $e(\bm z)=\Prob(X=1\mid\bm z)$．バランス特性 $X\indep\bm Z\mid e(\bm Z)$ は繰り返し期待値で証明．
+\item 粗と調整の差の原因：交絡，非可縮性，効果修飾．調整しても未測定交絡は残る．
+\end{itemize}
+\end{summarybox}
