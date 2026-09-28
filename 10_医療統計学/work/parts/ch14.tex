@@ -67,7 +67,7 @@ $\alpha$ 消費関数法の利点は，解析の回数や時期をあらかじ�
 
 \begin{table}[htbp]
 \centering\small
-\caption{代表的な $\alpha$ 消費関数（全体の片側水準 $\alpha$）}\label{tab:14-spending}
+\caption{代表的な $\alpha$ 消費関数（$\alpha$ は全体の片側有意水準）}\label{tab:14-spending}
 \begin{tabular}{@{}llL{62mm}@{}}
 \toprule
 名称 & $\alpha(t)$ & 特徴\\
@@ -78,6 +78,7 @@ Pocock 型 & $\alpha\log\{1+(e-1)t\}$ & 各回ほぼ同じ限界値．早期中�
 \bottomrule
 \end{tabular}
 \end{table}
+\Youchui O'Brien--Fleming 型の式に $z_{\alpha/2}$ が現れるのは両側検定だからではない．O'Brien--Fleming 型の境界は $Z(t)>c/\sqrt t$，すなわち $B(t)>c$ であり，Brown 運動の鏡像原理から，時点 $t$ までに片側の水準 $c$ を越える確率は$\Prob(\max_{s\le t}B(s)\ge c)=2\{1-\Phi(c/\sqrt t)\}$ である．$t=1$ でこれを片側水準 $\alpha$ とおくと $c=z_{\alpha/2}$ となり，$\alpha(t)=2-2\Phi(z_{\alpha/2}/\sqrt t)$ を得る（$\alpha(1)=\alpha$）．たとえば片側 $\alpha=0.025$ なら $z_{\alpha/2}=z_{0.0125}=2.241$ を用いる．両側水準 $\alpha$ で対称な境界を設計する場合は，片側 $\alpha/2$ として同じ式を適用するのが一般的である（ソフトウェアによって $\alpha$ の意味が異なるので確認すること）．
 \begin{supbox}[補足：無効中止]
 効果が見込めないときの早期中止（無効中止）には，$\beta$ 消費関数による下側の境界や，条件付き検出力を用いる．
 無効中止の境界は第1種の過誤を増やさない（拘束的でなければ $\alpha$ の計算には入れない）．

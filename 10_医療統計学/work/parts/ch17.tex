@@ -163,7 +163,7 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \end{itemize}
 \begin{supbox}[補足：無情報事前分布]
 二項比率では一様分布 $\Be(1,1)$ のほか，Jeffreys 事前分布 $\Be(1/2,1/2)$（Fisher 情報量の平方根に比例）がよく用いられる．
-ポアソン率では $\Ga(1/2,0)$（非正則）が Jeffreys 事前分布にあたる．
+ポアソン率の Jeffreys 事前分布は $p(\lambda)\propto\lambda^{-1/2}$ で，全区間で積分が発散する非正則（improper）事前分布である（形式的に「$\Ga(1/2,0)$」と書かれることがあるが，率0のガンマ分布は正則な確率分布ではない）．データ $y$，人時間 $T$ を得た後の事後分布は $\Ga(y+1/2,\,T)$ で，$y\ge0$ なら正則になる．
 \end{supbox}
 
 \section{仮定}\label{sec:17-assump}

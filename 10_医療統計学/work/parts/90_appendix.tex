@@ -33,7 +33,7 @@
 \node[typ] (s) at (3.0,-2.8) {生存時間};
 \node[lst,anchor=west] (sl) at (4.3,-2.8) {%
 記述 → Kaplan--Meier（Greenwood），累積ハザード → Nelson--Aalen\\
-2群比較 → ログランク（比例ハザードで最適），早期差重視 → 一般化 Wilcoxon\\
+2群比較 → ログランク（比例ハザード型の対立で効率的），早期差重視 → 一般化 Wilcoxon\\
 調整・効果の大きさ → Cox（HR），ハザード一定 → 指数モデル，非比例 → RMST・層別 Cox\\
 競合イベント → CIF（Aalen--Johansen），原因別ハザード Cox / Fine--Gray};
 \node[typ] (m) at (3.0,-5.1) {反復測定};
@@ -104,7 +104,7 @@
 \bottomrule
 \endfoot
 \multicolumn{3}{@{}l}{\textbf{効果指標・分割表}}\\
-RD & $\hat\pi_1-\hat\pi_0$，$\V=\frac{\hat\pi_1(1-\hat\pi_1)}{n_1}+\frac{\hat\pi_0(1-\hat\pi_0)}{n_0}$ & 絶対的な効果，NNT $=1/|\RD|$\\
+RD & $\hat\pi_1-\hat\pi_0$，$\V=\frac{\hat\pi_1(1-\hat\pi_1)}{n_1}+\frac{\hat\pi_0(1-\hat\pi_0)}{n_0}$ & 絶対的な効果．NNT $=1/\mathrm{ARR}$（利益），NNH $=1/\mathrm{ARI}$（害）\\
 RR & $\frac{a/n_1}{c/n_0}$，$\V[\log\widehat{\RR}]=\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0}$ & コホート・RCTの相対効果\\
 OR & $\frac{ad}{bc}$，$\V[\log\widehat{\OR}]=\frac1a+\frac1b+\frac1c+\frac1d$ & 症例対照研究，ロジスティック\\
 OR と RR & $\OR=\RR\frac{1-\pi_0}{1-\pi_1}$ & 稀な疾患なら OR $\approx$ RR\\
@@ -178,7 +178,7 @@ Gamma--Poisson & $\Ga(a+y,b+T)$（形状・率），予測は $\NB\bigl(a+y,\fra
 \endhead
 \bottomrule
 \endfoot
-評価項目 & endpoint & 治療効果を評価する変数．主要評価項目は1つに事前に定める\\
+評価項目 & endpoint & 治療効果を評価する変数．主要評価項目は事前に規定する．複数（co-primary など）とする場合は，成功の条件と多重性の処理も事前に規定する\\
 代替評価項目 & surrogate endpoint & 真の評価項目（死亡など）の代わりに用いる検査値など\\
 イベント & event & 生存時間解析で観察する事象（死亡・再発）\\
 打ち切り & censoring & イベント前に観察が終わること．右側打ち切りが基本\\
@@ -226,7 +226,8 @@ AUC & area under the curve & ROC 曲線下面積 $=\Prob(X_1>X_0)$．薬物動�
 オッズ比 & odds ratio (OR) & オッズの比．症例対照研究で推定可能\\
 リスク比 & risk ratio (RR) & リスクの比．相対リスク\\
 リスク差 & risk difference (RD) & リスクの差\\
-NNT & number needed to treat & $1/|\RD|$．1人の発症を防ぐのに治療が必要な人数\\
+NNT & number needed to treat & $1/\mathrm{ARR}$（ARR：絶対リスク減少）．1人の発症を防ぐのに治療が必要な人数\\
+NNH & number needed to harm & $1/\mathrm{ARI}$（ARI：絶対リスク増加）．治療により1人余分に害が生じる人数\\
 コホート研究 & cohort study & 曝露で分けて追跡する観察研究\\
 症例対照研究 & case-control study & 症例と対照を集めて過去の曝露を比べる研究\\
 交絡 & confounding & 曝露と結果の両方に関連する因子による偏り\\
