@@ -3,4 +3,11 @@
 90_data/
 # 特定のファイルを無視
 daily_report.md
+# 統計検定準1級チートシート（外部ブログの保存ページ）
+12_データ分析/pokedataanalysis/ref/【完全網羅】統計検定®準１級チートシート _ とけたろうブログ.html
+12_データ分析/pokedataanalysis/ref/【完全網羅】統計検定®準１級チートシート _ とけたろうブログ_files/
 
+# Python のキャッシュ
+__pycache__/
+
+93_scratch/
