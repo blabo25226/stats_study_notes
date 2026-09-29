@@ -296,7 +296,7 @@ for ax, (name, pop) in zip(axes, pops_06.items()):
             label=f"シミュレーション（|T| ≥ 6 の {1 - len(T_in) / reps_s:.1%} は範囲外）")
     ax.plot(g, stats.t.pdf(g, n_s - 1), color=PALETTE[1], label=f"t({n_s - 1})")
     ax.set(title=f"{name}: t 統計量（n = {n_s}）", xlabel="T =（標本平均 − μ）/（S/√n）", ylabel="密度")
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=8, loc="upper left")
 fig.tight_layout()
 plt.show()
 print(f"t_0.025({n_s - 1}) = {t_crit:.3f}")

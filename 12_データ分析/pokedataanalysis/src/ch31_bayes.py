@@ -77,7 +77,7 @@ for k, n in enumerate(n_list):
     y = int(seq_dual[:n].sum())
     post = stats.beta(1 + y, 1 + n - y)
     conc_rows.append({"n": n, "y": y, "事後平均": post.mean(), "事後標準偏差": post.std(),
-                      "sqrt(p(1-p)/n)": np.sqrt(post.mean() * (1 - post.mean()) / n),
+                      "sqrt(p(1-p)/n)": np.sqrt((y / n) * (1 - y / n) / n),   # p = y/n
                       "95%下限": post.ppf(0.025), "95%上限": post.ppf(0.975)})
     axes[0].plot(grid_p, post.pdf(grid_p), color=SEQ_CMAP(0.25 + 0.75 * k / (len(n_list) - 1)), label=f"n={n}")
 axes[0].axvline(bayes_true["複合タイプの割合"], color=INK["muted"], lw=1, label="真値")

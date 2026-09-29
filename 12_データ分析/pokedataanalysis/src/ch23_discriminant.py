@@ -138,23 +138,23 @@ pd.DataFrame(lda3.scalings_[:, :2], index=STATS, columns=["第1正準係数", "�
 # %% 23-6
 # SVM（標準化したうえで）: C の影響とカーネル
 print("6変数・線形 SVM（訓練データ）")
-for C in [0.01, 0.1, 1, 10, 1000]:
-    svm = make_pipeline(StandardScaler(), SVC(kernel="linear", C=C)).fit(X2, y2)
-    print(f"  C={C:>8g}: サポートベクター {svm[-1].n_support_.sum():3d}個, 訓練正解率 {svm.score(X2, y2):.3f}")
-print("→ C を大きくしても訓練正解率が1にならない = 線形分離不可能（ハードマージンSVMは解をもたない）")
+for c_svm in [0.01, 0.1, 1, 10, 1000]:
+    svm = make_pipeline(StandardScaler(), SVC(kernel="linear", C=c_svm)).fit(X2, y2)
+    print(f"  C={c_svm:>8g}: サポートベクター {svm[-1].n_support_.sum():3d}個, 訓練正解率 {svm.score(X2, y2):.3f}")
+print("→ C を大きくしても訓練正解率が1にならない → 線形分離可能でないと考えられる（厳密な証明ではない）")
 
 # 2変数（HP・攻撃）で境界を描く
 X2d = d2[["HP", "攻撃"]].to_numpy(float)
 xx, yy = np.meshgrid(np.linspace(0, 200, 200), np.linspace(0, 200, 200))
 fig, axes = plt.subplots(1, 3, figsize=(12, 4), sharey=True)
-for ax, (kernel, C) in zip(axes, [("linear", 0.1), ("rbf", 1), ("rbf", 100)]):
-    svm2 = make_pipeline(StandardScaler(), SVC(kernel=kernel, C=C, gamma="scale")).fit(X2d, y2)
+for ax, (kernel, c_svm) in zip(axes, [("linear", 0.1), ("rbf", 1), ("rbf", 100)]):
+    svm2 = make_pipeline(StandardScaler(), SVC(kernel=kernel, C=c_svm, gamma="scale")).fit(X2d, y2)
     zz = svm2.decision_function(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
     ax.contourf(xx, yy, zz > 0, levels=[-0.5, 0.5, 1.5], colors=["#dbe8f8", "#fbe1d6"], alpha=0.8)
     ax.contour(xx, yy, zz, levels=[-1, 0, 1], colors=INK["secondary"], linestyles=["--", "-", "--"], linewidths=1)
     for k, nm in enumerate(["むし", "ドラゴン"]):
         ax.scatter(X2d[y2 == k, 0], X2d[y2 == k, 1], s=12, color=PALETTE[k], label=nm)
-    ax.set(title=f"{kernel}, C={C}（訓練正解率 {svm2.score(X2d, y2):.2f}）", xlabel="HP", xlim=(0, 200), ylim=(0, 200))
+    ax.set(title=f"{kernel}, C={c_svm}（訓練正解率 {svm2.score(X2d, y2):.2f}）", xlabel="HP", xlim=(0, 200), ylim=(0, 200))
 axes[0].set_ylabel("攻撃")
 axes[0].legend(loc="upper left")
 fig.suptitle("SVM の判別境界（実線）とマージン（破線, 決定関数=±1）", fontsize=12)
