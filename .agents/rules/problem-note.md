@@ -79,7 +79,7 @@ updated: 2026-09-26
 - 採点・判定理由・講評
 - 解説・模範解答・公式解答
 - 関連知識・発展事項
-- 内部リンクの `## 関連` 節（内部リンクは保留中）
+- 本文中の内部リンク `[[...]]` と `## 関連` 節（概念ノートへのリンクはfrontmatterの `concepts` に置く。`frontmatter.md` §4）
 
 採点結果はfrontmatterの `status` だけに残す。
 判定理由はユーザーへの報告と `daily_report.md` に書く（`grading-rubric.md` §4）。

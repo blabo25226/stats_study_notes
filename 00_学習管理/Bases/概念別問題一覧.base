@@ -1,0 +1,21 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'concepts.contains(this.file)'
+properties:
+  file.name:
+    displayName: 問題
+  stats-category:
+    displayName: 分野
+  difficulty:
+    displayName: 難易度
+  status:
+    displayName: 採点
+views:
+  - type: table
+    name: この概念を使う問題
+    order:
+      - file.name
+      - stats-category
+      - difficulty
+      - status
