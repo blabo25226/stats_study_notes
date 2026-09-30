@@ -11,3 +11,8 @@ daily_report.md
 __pycache__/
 
 93_scratch/
+
+# Obsidian の個人UI状態
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
