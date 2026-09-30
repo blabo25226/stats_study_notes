@@ -1,6 +1,8 @@
 # ディレクトリ全体を無視（末尾にスラッシュをつける）
-91_docs/
 90_data/
+91_docs/
+92_src/
+93_scratch/
 # 特定のファイルを無視
 daily_report.md
 # 統計検定準1級チートシート（外部ブログの保存ページ）
@@ -9,8 +11,6 @@ daily_report.md
 
 # Python のキャッシュ
 __pycache__/
-
-93_scratch/
 
 # Obsidian の個人UI状態
 .obsidian/workspace.json
