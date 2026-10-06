@@ -1,9 +1,9 @@
 # ディレクトリ全体を無視（末尾にスラッシュをつける）
 90_data/
-92_src/
 91_docs/
 92_src/
 93_scratch/
+94_presentation/
 # 特定のファイルを無視
 daily_report.md
 # 統計検定準1級チートシート（外部ブログの保存ページ）
