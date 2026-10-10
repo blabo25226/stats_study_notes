@@ -2,7 +2,7 @@
 
 使い方:
     python build.py            # 連結のみ
-    python build.py compile    # 連結 + lualatex 3回（work/build に出力）
+    python build.py compile    # 連結 + lualatex 3回（work/build に出力）．警告があれば非0で終了
 """
 import pathlib
 import re
@@ -17,7 +17,8 @@ BUILD = WORK / "build"
 ORDER = [
     "00_preamble.tex",
     "01_front.tex",
-    *[f"ch{i:02d}.tex" for i in range(1, 18)],
+    # ch11（競合リスク）は ch10 に統合，ch15（メタアナリシス）は削除
+    *[f"ch{i:02d}.tex" for i in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 17)],
     "90_appendix.tex",
     "99_bib.tex",
 ]
@@ -28,8 +29,7 @@ def concat() -> None:
     for name in ORDER:
         p = PARTS / name
         if not p.exists():
-            print(f"[skip] {name} (not yet written)")
-            continue
+            raise SystemExit(f"missing part: {name}")
         text = p.read_text(encoding="utf-8").rstrip() + "\n"
         chunks.append(f"% ===== {name} =====\n" + text)
     body = "\n".join(chunks)
@@ -53,10 +53,12 @@ def compile_pdf(runs: int = 3) -> None:
             print(tail)
             raise SystemExit(1)
     log = (BUILD / (OUT.stem + ".log")).read_text(encoding="utf-8", errors="replace")
-    report(log)
+    if report(log):
+        raise SystemExit("build has warnings (see above)")
 
 
-def report(log: str) -> None:
+def report(log: str) -> int:
+    """警告を表示し，overfull 以外の警告の総数を返す．"""
     pats = {
         "undefined": r"Undefined control sequence",
         "undef_ref": r"Reference `[^']+' on page \d+ undefined",
@@ -66,15 +68,21 @@ def report(log: str) -> None:
         "missing_char": r"Missing character",
         "rerun": r"Rerun to get",
     }
+    errors = 0
     for k, pat in pats.items():
         found = re.findall(pat, log)
         if k == "overfull":
             big = [float(x) for x in found if float(x) > 5.0]
             print(f"{k}: {len(found)} total, {len(big)} > 5pt, max {max(map(float, found), default=0):.1f}pt")
+            for m in re.finditer(r"Overfull \\hbox \((\d+\.\d+)pt too wide\)[^\n]*?lines (\d+)--(\d+)", log):
+                if float(m.group(1)) > 5.0:
+                    print(f"   {m.group(1)}pt at lines {m.group(2)}--{m.group(3)}")
         else:
             print(f"{k}: {len(found)}")
+            errors += len(found)
     for m in re.finditer(r"(Reference|Citation) `([^']+)' on page (\d+) undefined", log):
         print("  ", m.group(0))
+    return errors
 
 
 if __name__ == "__main__":

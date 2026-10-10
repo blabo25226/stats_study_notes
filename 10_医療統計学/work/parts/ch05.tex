@@ -2,31 +2,30 @@
 
 \begin{goalbox}
 \begin{itemize}
-\item 感度・特異度・陽性的中率（PPV）・陰性的中率（NPV）・有病率・尤度比を条件付き確率として定義し，Bayes の定理で相互に変換できる．
+\item 感度・特異度・陽性的中率（PPV）・陰性的中率（NPV）・尤度比を条件付き確率として定義し，Bayes の定理で PPV・NPV を計算できる．
 \item PPV・NPV が有病率に依存すること，罹患者・非罹患者の人数を固定した研究では標本の PPV がそのまま使えないことを説明できる．
-\item カットオフ値を変えたときの感度と特異度のトレードオフを，正規モデルで計算できる．
-\item 経験ROC曲線を描き，台形公式で AUC を計算し，Youden 指数を最大にするカットオフを選べる．
-\item AUC $=\Prob(X_1>X_0)$ を示し，経験AUCが Mann--Whitney 統計量に一致することを導出できる．
-\item 同一被験者に行った2検査の感度（McNemar型）と PPV（多項分布＋デルタ法）を比較できる．
+\item 経験ROC曲線を階段状に描き，AUC を面積として計算できる．
+\item AUC $=\Prob(X_1>X_0)$ を示し，経験AUCが Mann--Whitney 統計量 $U/(n_1n_0)$ に一致することを導出できる．
+\item 同一被験者に行った2検査の感度を McNemar 型の検定で比較し，多項分布の共分散 $\mathrm{diag}(\bm\pi)-\bm\pi\bm\pi\transp$ と多変量デルタ法で感度差・PPV 差の分散を導出できる．
 \end{itemize}
 \end{goalbox}
 
 \begin{exambox}
 \begin{itemize}
-\item \kakomon{2018}{3}：ロジスティック回帰の予測値による判定の真陽性率・偽陽性率，経験ROC曲線の描画，「真陽性率$-$偽陽性率」最大のカットオフ，
-      ROC上の長方形の面積と AUC が $\frac{1}{8\times8}\sum\sum I(x_{1i}>x_{0j})$ で表されることの証明．
-\item \kakomon{2018}{4}〔5〕：リスクスコアの AUC $0.70$（95\%CI 0.67--0.72）と医師の予測の ROC の比較の解釈．
-\item \kakomon{2019}{3}：同一被験者200名での2検査の感度・PPV，感度の比較（不一致ペアの二項検定），PPV の比較（8セル多項分布の $\bm D-\bm\pi\bm\pi\transp$ とデルタ法）．
-\item \kakomon{2021}{5}（共通）：正規モデルの感度・特異度，有病率1\%での PPV・NPV，感度を固定したカットオフ，「感度1で陰性的中率1」の検査が有効とは限らない理由．
-\item \kakomon{2023}{1}〔5〕：ロジスティックモデルの予測確率 $\ge0.6$ による判定の PPV・NPV．
-\item \kakomon{2024}{1}：4つのカットオフでの感度・特異度・PPV・NPV の表の完成，折れ線 ROC と台形公式による AUC，対応のある2検査の McNemar 検定．
+\item \kakomon{2018}{3}：予測値による判定の真陽性率・偽陽性率，経験ROC曲線の描画，「真陽性率$-$偽陽性率」最大のカットオフ（式は問題文で与えられる），
+      ROC上の長方形の面積の和として AUC $=\frac{1}{n_1n_0}\sum\sum I(x_{1i}>x_{0j})$ を示す．
+\item \kakomon{2018}{4}〔5〕：リスクスコアの AUC とその信頼区間の解釈．
+\item \kakomon{2019}{3}：同一被験者での2検査の感度・PPV，感度の比較（不一致ペアの二項検定），PPV の比較（8セル多項分布の共分散とデルタ法）．
+\item \kakomon{2021}{5}（共通）：正規モデルの感度・特異度，有病率1\%での PPV・NPV（ここだけ定義が問題文にある），感度を固定したカットオフ．
+\item \kakomon{2023}{1}〔5〕：ロジスティックモデルの予測確率による判定の PPV・NPV（定義なし）．
+\item \kakomon{2024}{1}：4つのカットオフでの感度・特異度・PPV・NPV，折れ線 ROC と AUC，対応のある2検査の McNemar 型検定．
 \end{itemize}
 \end{exambox}
 
-\flowline{検査値と\\確定診断}{感度・特異度\\PPV・AUC}{2×2表\\ROC・McNemar}{参照標準が正確\\独立な被験者}{Bayes・台形\\デルタ法}{有病率への依存\\カットオフの選択}
+\flowline{検査値と\\確定診断}{感度・特異度\\PPV・AUC}{2×2表\\ROC・McNemar}{参照標準が正確\\独立な被験者}{Bayes・面積\\デルタ法}{有病率への依存\\カットオフの選択}
 
 \section{問題設定}\label{sec:05-setting}
-各被験者について，確定診断（参照標準，ゴールドスタンダード）による疾患の有無 $D\in\{1,0\}$ と，
+各被験者について，確定診断（参照標準）による疾患の有無 $D\in\{1,0\}$ と，
 検査値 $X$（連続）またはその判定結果（陽性 $+$／陰性 $-$）が得られる．
 $X\ge c$ を陽性とする判定を考え，罹患者・非罹患者の $X$ の分布関数を $F_1,F_0$ とする．
 \begin{table}[htbp]
@@ -59,6 +58,7 @@ $X\ge c$ を陽性とする判定を考え，罹患者・非罹患者の $X$ の
 陰性尤度比 $\mathrm{LR}^-$ & $\dfrac{1-\text{感度}}{\text{特異度}}$
 \end{tabular}
 \end{center}
+PPV・NPV の右の標本比率は，被験者が対象集団からの無作為標本である場合に限る（後述の「研究デザインと的中率」）．
 \end{teigi}
 \Youchui 感度・特異度は「疾患の状態を条件とした検査結果の確率」，PPV・NPV は「検査結果を条件とした疾患の確率」である．
 臨床で患者が知りたいのは後者だが，後者は有病率に依存する．
@@ -73,50 +73,43 @@ $X\ge c$ を陽性とする判定を考え，罹患者・非罹患者の $X$ の
 \end{meidai}
 \begin{proof}
 $\Prob(D=1\mid+)=\Prob(+\mid D=1)\Prob(D=1)/\{\Prob(+\mid D=1)\Prob(D=1)+\Prob(+\mid D=0)\Prob(D=0)\}$．NPV も同様．
+オッズの式は PPV と $1-\mathrm{PPV}=(1-Sp)(1-p)/\{\cdots\}$ の比をとればよい．
 \end{proof}
 \paragraph{有病率への依存}
-$p\to0$ なら $\mathrm{PPV}\to0$，$\mathrm{NPV}\to1$ である．
+$Se,Sp$ を固定して $p\to0$ とすると $\mathrm{PPV}\to0$，$\mathrm{NPV}\to1$ である．
 \kakomon{2021}{5} では $Se=0.841$，$Sp=0.933$ でも $p=0.01$ だと $\mathrm{PPV}\approx0.113$ にすぎない．
-「感度がほぼ1で，陰性者に感染者がいない（NPV $\approx1$）」という主張は，
-閾値を下げて何でも陽性にすれば達成でき，偽陽性が増えて PPV が下がるので，それだけで有効な検査とは言えない．
+また「感度がほぼ1で NPV がほぼ1」は，閾値を下げて何でも陽性にすれば達成でき，そのとき特異度と PPV が下がるので，それだけで有効な検査とは言えない．
 
 \paragraph{研究デザインと的中率}
 \Youchui 罹患者20人・非罹患者20人のように\textbf{疾患の状態ごとに人数を固定}した研究（\kakomon{2024}{1}）では，
 感度・特異度は推定できるが，標本の PPV・NPV は標本内の有病率（ここでは0.5）を反映した値にすぎない．
-実際の対象集団の有病率 $p$ での的中率は\cref{eq:05-ppv}で計算し直す必要がある．
-\kakomon{2019}{3} のように被験者全員に検査と確定診断を行い，被験者が対象集団を代表する標本であれば，標本の PPV は母集団の PPV の推定量になる．
+対象集団の有病率 $p$ での的中率は\cref{eq:05-ppv}で計算し直す．
+\kakomon{2019}{3} のように対象集団を代表する被験者全員に検査と確定診断を行えば，標本の PPV は母集団の PPV の推定量になる．
 
 \section{数理：カットオフと ROC 曲線}\label{sec:05-roc}
 \subsection{正規モデルとカットオフ}\label{subsec:05-binormal}
-$X\mid D=1\sim\Normal(\mu_1,\sigma_1^2)$，$X\mid D=0\sim\Normal(\mu_0,\sigma_0^2)$，$\mu_1>\mu_0$ とする（2正規モデル）．$X\ge c$ を陽性とすると
+$X\mid D=1\sim\Normal(\mu_1,\sigma_1^2)$，$X\mid D=0\sim\Normal(\mu_0,\sigma_0^2)$，$\mu_1>\mu_0$，$X\ge c$ を陽性とすると
 \[
 Se(c)=1-\Phi\Bigl(\frac{c-\mu_1}{\sigma_1}\Bigr),\qquad Sp(c)=\Phi\Bigl(\frac{c-\mu_0}{\sigma_0}\Bigr).
 \]
 $c$ を上げると特異度は上がり感度は下がる．
-感度を $s$ に固定するなら $c=\mu_1-z_{1-s}\sigma_1$（例：$s=0.95$ なら $c=\mu_1-1.645\sigma_1$）．
-両方を同時に $0.95$ にするには $(\mu_1-c)/\sigma_1=(c-\mu_0)/\sigma_0=1.645$ が必要で，
-等分散なら $c=(\mu_0+\mu_1)/2$，$\sigma=(\mu_1-\mu_0)/(2\times1.645)$（\kakomon{2021}{5}〔4〕）．
+感度を $s$ に固定するなら $c=\mu_1-z_{1-s}\sigma_1$（例：$s=0.95$ なら $z_{0.05}=1.645$ を用いて $c=\mu_1-1.645\sigma_1$；\kakomon{2021}{5}）．
 
 \subsection{ROC 曲線}\label{subsec:05-roccurve}
 \begin{teigi}[ROC 曲線]\label{def:05-roc}
 カットオフ $c$ を $+\infty$ から $-\infty$ まで動かしたときの点 $(\mathrm{FPF}(c),\mathrm{TPF}(c))=(1-F_0(c),\,1-F_1(c))$ の軌跡を
-ROC（receiver operating characteristic）曲線という．$(0,0)$ から $(1,1)$ に至る非減少曲線である．
+ROC 曲線という．$(0,0)$ から $(1,1)$ に至る非減少曲線である．
 \end{teigi}
-対角線 $\mathrm{TPF}=\mathrm{FPF}$ は判別力のない検査（コイン投げ）に対応し，左上 $(0,1)$ に近いほど良い．
+対角線 $\mathrm{TPF}=\mathrm{FPF}$ は判別力のない検査に対応し，左上 $(0,1)$ に近いほど良い．
 
 \paragraph{経験 ROC 曲線の描き方（\kakomon{2018}{3}〔2〕）}
-罹患者 $n_1$ 人，非罹患者 $n_0$ 人の検査値（または予測確率）を大きい順に並べ，
-原点から出発して，罹患者なら上へ $1/n_1$，非罹患者なら右へ $1/n_0$ 進む（同じ値の罹患者と非罹患者があれば斜めに進む）．
-最終的に $(1,1)$ に到達する階段状の曲線が経験ROC曲線である．
+\Hinshutsu 罹患者 $n_1$ 人，非罹患者 $n_0$ 人の検査値（または予測確率）を大きい順に並べ，
+原点から出発して，罹患者なら上へ $1/n_1$，非罹患者なら右へ $1/n_0$ 進む（同じ値の罹患者 $r$ 人と非罹患者 $s$ 人があれば $(s/n_0,\,r/n_1)$ だけ斜めに進む）．
+各頂点は「その値以上を陽性」としたときの $(\mathrm{FPF},\mathrm{TPF})$ であり，$(1,1)$ に到達する階段状の折れ線が経験ROC曲線である．
 カットオフが有限個しか与えられていない場合（\kakomon{2024}{1}）は，与えられた点を $(0,0)$，$(1,1)$ と折れ線で結ぶ．
 
-\subsection{Youden 指数}\label{subsec:05-youden}
-\begin{teigi}[Youden 指数]\label{def:05-youden}
-$J(c)=Se(c)+Sp(c)-1=\mathrm{TPF}(c)-\mathrm{FPF}(c)$．$J$ を最大にするカットオフを最適カットオフの1つの基準とする．
-\end{teigi}
-ROC 上の点 $(u,v)$ から対角線への距離は $(v-u)/\sqrt2$ なので，$J$ の最大化は ROC 曲線上で対角線から最も離れた点を選ぶことである
-（\kakomon{2018}{3}〔3〕）．2正規・等分散モデルでは $J$ を最大にする $c$ は $(\mu_0+\mu_1)/2$ である
-（$\frac{\dd}{\dd c}J=-f_1(c)+f_0(c)=0$（$f_1,f_0$ は罹患者・非罹患者の密度）より2つの密度が交わる点）．
+\paragraph{Youden 指数}
+$J(c)=Se(c)+Sp(c)-1=\mathrm{TPF}(c)-\mathrm{FPF}(c)$ を最大にするカットオフ，すなわち ROC 曲線上で対角線から縦方向に最も離れた点を選ぶ基準である（\kakomon{2018}{3}〔3〕では式で与えられた）．
 
 \section{AUC とその確率的解釈}\label{sec:05-auc}
 \Hissu\Hinshutsu
@@ -131,6 +124,7 @@ $u=\mathrm{FPF}(c)=1-F_0(c)$ とおくと $\dd u=-f_0(c)\,\dd c$ で，$c:+\inft
 \[
 \mathrm{AUC}=\int_0^1\mathrm{TPF}\,\dd u=\int_{-\infty}^{\infty}\{1-F_1(c)\}f_0(c)\,\dd c=\int\Prob(X_1>c)f_0(c)\,\dd c=\Prob(X_1>X_0).
 \]
+最後の等号は $X_0$ で条件付けた全確率の公式（$X_1\indep X_0$）による．
 \end{proof}
 2正規モデルでは $X_1-X_0\sim\Normal(\mu_1-\mu_0,\sigma_1^2+\sigma_0^2)$ より
 $\mathrm{AUC}=\Phi\bigl((\mu_1-\mu_0)/\sqrt{\sigma_1^2+\sigma_0^2}\bigr)$．
@@ -145,16 +139,16 @@ $\mathrm{AUC}=\Phi\bigl((\mu_1-\mu_0)/\sqrt{\sigma_1^2+\sigma_0^2}\bigr)$．
 \begin{proof}
 経験ROC曲線の右方向の各ステップは1人の非罹患者 $j$ に対応し，幅 $1/n_0$，そのときの高さは
 「$x_{0j}$ より大きい値をもつ罹患者の割合」$\frac{1}{n_1}\sum_iI(x_{1i}>x_{0j})$ である．
-曲線下面積はこれらの長方形の和であり，\cref{eq:05-empauc}を得る．
-（曲線の上側を罹患者ごとの長方形に分けると $\frac{1}{n_1n_0}\sum\sum I(x_{1i}<x_{0j})$ となり，$1$ からこれを引いても同じ結果になる．）
+曲線下面積はこれらの長方形の面積の和であり，\cref{eq:05-empauc}を得る．
 \end{proof}
-したがって経験AUCは Mann--Whitney 統計量 $U$ の定数倍（Wilcoxon 順位和 $W$ の1次関数；\cref{sec:03-ranksum}）であり，
-「AUC $=0.5$」の検定は順位和検定そのものである．
+ここで $U=\sum_i\sum_jI(x_{1i}>x_{0j})$ は\cref{sec:03-ranksum}で定義した Mann--Whitney 統計量（罹患者を第1標本とする）であり，
+罹患者群の順位和 $W$ とは $W=U+n_1(n_1+1)/2$ の関係にある．
+したがって経験AUCは $U$ の定数倍で，$H_0:F_1=F_0$（このとき AUC $=0.5$）の検定は Mann--Whitney（Wilcoxon 順位和）検定そのものである．
 
-\paragraph{台形公式}
-与えられた点 $(u_0,v_0)=(0,0),(u_1,v_1),\dots,(u_K,v_K)=(1,1)$ を折れ線で結ぶと
+\paragraph{折れ線 ROC の面積}
+与えられた点 $(u_0,v_0)=(0,0),(u_1,v_1),\dots,(u_K,v_K)=(1,1)$ を折れ線で結ぶと，台形の和として
 $\mathrm{AUC}=\sum_{k=1}^K\frac{(v_{k-1}+v_k)(u_k-u_{k-1})}{2}$．
-\kakomon{2024}{1} では点 $(0,0),(0.15,0.60),(0.60,0.90),(1,1)$ から $\mathrm{AUC}=0.045+0.3375+0.38=0.7625$．
+例えば点 $(0,0),(0.15,0.60),(0.60,0.90),(1,1)$ なら $\mathrm{AUC}=0.045+0.3375+0.38=0.7625$．
 
 \begin{figure}[htbp]
 \centering
@@ -171,26 +165,35 @@ $\mathrm{AUC}=\sum_{k=1}^K\frac{(v_{k-1}+v_k)(u_k-u_{k-1})}{2}$．
 \caption{\cref{reidai:05-2}の経験ROC曲線（AUC $=0.80$）}\label{fig:05-roc}
 \end{figure}
 
-\section{推定・検定：2検査の比較}\label{sec:05-compare}
+\section{推定・検定：同一被験者での2検査の比較}\label{sec:05-compare}
 \subsection{対応のある感度の比較}\label{subsec:05-sens}
-同一の罹患者に検査A・Bを行った場合，感度の差は罹患者での対応のある2 値データの周辺比率の差である．
-不一致ペア（A陽性・B陰性の $n_{+-}$，A陰性・B陽性の $n_{-+}$）だけが情報を持ち，McNemar 検定（\cref{sec:04-mcnemar}）
+\Hinshutsu 同一の罹患者 $n$ 人に検査A・Bを行うと，各人の結果 (A,B) は4通り $(++),(+-),(-+),(--)$ で，
+その度数 $\bm x=(n_{++},n_{+-},n_{-+},n_{--})$ は多項分布 $\mathrm{Mult}(n,\bm\pi)$ に従う．標本比率 $\bm p=\bm x/n$ について
+\begin{equation}
+\V[\bm p]=\frac1n\bigl(\bm D_{\bm\pi}-\bm\pi\bm\pi\transp\bigr),\qquad \bm D_{\bm\pi}=\mathrm{diag}(\bm\pi)\label{eq:05-multcov}
+\end{equation}
+（$\V[p_r]=\pi_r(1-\pi_r)/n$，$\Cov(p_r,p_s)=-\pi_r\pi_s/n$，$r\ne s$）であり，多変量中心極限定理より $\sqrt n(\bm p-\bm\pi)\xrightarrow{d}\Normal(\bm0,\bm D_{\bm\pi}-\bm\pi\bm\pi\transp)$．
+感度の差は $Se_A-Se_B=(\pi_{++}+\pi_{+-})-(\pi_{++}+\pi_{-+})=\pi_{+-}-\pi_{-+}$ で，\textbf{不一致ペアだけ}で決まる．
+その推定量 $\hat\delta=p_{+-}-p_{-+}$ の分散は，係数ベクトル $\bm c=(0,1,-1,0)\transp$ について $\bm c\transp\V[\bm p]\bm c$ を計算して
+\begin{equation}
+\V[\hat\delta]=\frac1n\bigl\{\pi_{+-}+\pi_{-+}-(\pi_{+-}-\pi_{-+})^2\bigr\}\label{eq:05-sensvar}
+\end{equation}
+（\cref{sec:04-mcnemar}と同じ式）．$H_0:\pi_{+-}=\pi_{-+}$ の検定は McNemar 検定（\cref{sec:04-mcnemar}）で，不一致ペア数 $s=n_{+-}+n_{-+}$ を条件とすると
+$H_0$ の下で $n_{+-}\sim\Bin(s,1/2)$ なので
 \[
-z=\frac{n_{+-}-s/2}{\sqrt{s/4}},\quad s=n_{+-}+n_{-+}
+z=\frac{n_{+-}-s/2}{\sqrt{s/4}}=\frac{n_{+-}-n_{-+}}{\sqrt{s}},\qquad z^2=\frac{(n_{+-}-n_{-+})^2}{n_{+-}+n_{-+}}\approx\chi^2_1
 \]
-で検定する（\kakomon{2019}{3}〔2〕，\kakomon{2024}{1}〔3〕）．特異度は非罹患者で同様に比較する．
+（\kakomon{2019}{3}〔2〕，\kakomon{2024}{1}〔3〕）．特異度は非罹患者で同様に比較する．
 
 \subsection{対応のある PPV の比較}\label{subsec:05-ppv}
 \Youchui PPV は「検査陽性者」を分母とするので，罹患・非罹患の両方の表にまたがる．
-\kakomon{2019}{3} では，罹患者・非罹患者それぞれの (A,B) の $2\times2$ 表の計8セルを，総数 $n$ を固定した多項分布とみなす．
-セル確率ベクトル $\bm\pi$，標本比率 $\bm p=\bm x/n$ に対し，多変量中心極限定理から
-\[
-\sqrt n(\bm p-\bm\pi)\xrightarrow{d}\Normal_8\bigl(\bm0,\ \bm D_{\bm\pi}-\bm\pi\bm\pi\transp\bigr),\qquad \bm D_{\bm\pi}=\mathrm{diag}(\bm\pi).
-\]
+\kakomon{2019}{3} では，罹患者・非罹患者それぞれの (A,B) の $2\times2$ 表の計8セルを，総数 $n$ を固定した多項分布とみなす（被験者が対象集団の無作為標本の場合）．
+セル確率ベクトル $\bm\pi$（8次元）について，\cref{eq:05-multcov}と同じく $\sqrt n(\bm p-\bm\pi)\xrightarrow{d}\Normal_8(\bm0,\bm D_{\bm\pi}-\bm\pi\bm\pi\transp)$．
+$\pi_{ab D}$，$\pi_{ab\bar D}$（$a,b\in\{+,-\}$ は A,B の結果）と書き，添字 $\bullet$ はその位置で和をとることを表す．
 $\mathrm{PPV}_A=\dfrac{\pi_{+\bullet D}}{\pi_{+\bullet D}+\pi_{+\bullet\bar D}}$，$\mathrm{PPV}_B=\dfrac{\pi_{\bullet+D}}{\pi_{\bullet+D}+\pi_{\bullet+\bar D}}$，
-$f(\bm\pi)=\mathrm{PPV}_A-\mathrm{PPV}_B$ とすると，デルタ法（\cref{thm:04-delta}）より
+$f(\bm\pi)=\mathrm{PPV}_A-\mathrm{PPV}_B$ とすると，多変量デルタ法（\cref{thm:04-delta}）より
 \[
-\V\bigl[\sqrt n f(\bm p)\bigr]\approx\sigma^2=\nabla f\transp(\bm D_{\bm\pi}-\bm\pi\bm\pi\transp)\nabla f.
+\sqrt n\{f(\bm p)-f(\bm\pi)\}\xrightarrow{d}\Normal(0,\sigma^2),\qquad \sigma^2=\nabla f\transp(\bm D_{\bm\pi}-\bm\pi\bm\pi\transp)\nabla f.
 \]
 成分まで計算すると，$q_A=\pi_{+\bullet D}+\pi_{+\bullet\bar D}$（Aが陽性の確率），$q_B=\pi_{\bullet+D}+\pi_{\bullet+\bar D}$ として
 \begin{equation}
@@ -200,12 +203,8 @@ $f(\bm\pi)=\mathrm{PPV}_A-\mathrm{PPV}_B$ とすると，デルタ法（\cref{th
 \end{split}\label{eq:05-ppvvar}
 \end{equation}
 第3項は両検査が陽性の被験者が両方の PPV の分母に入ることによる共分散である．
-検定統計量は $z=\sqrt n f(\bm p)/\hat\sigma$ で，\kakomon{2019}{3} の数値では $f(\bm p)=-0.1$，$\hat\sigma^2=0.42$，$n=200$ から $z=-2.18$（有意）となる．
-
-\begin{supbox}[発展：AUC の比較]
-2つのマーカーの AUC の比較には，Mann--Whitney 型推定量の分散・共分散をU統計量の理論で推定する方法（DeLong ら \cite{delong1988}）が標準的である．
-同一被験者で測定した2マーカーの AUC は正の相関をもつので，独立とみなすと検定は保守的になる．
-\end{supbox}
+$\sigma^2$ に推定値を代入した $\hat\sigma^2$ を用い（Slutsky の定理により漸近分布は変わらない），$H_0:\mathrm{PPV}_A=\mathrm{PPV}_B$ の下で
+$z=\sqrt n f(\bm p)/\hat\sigma\approx\Normal(0,1)$ とする．\kakomon{2019}{3} の数値では $f(\bm p)=-0.1$，$\hat\sigma^2=0.42$，$n=200$ から $z=-0.1/\sqrt{0.42/200}=-2.18$ で，5\%で有意となる．
 
 \section{仮定}\label{sec:05-assump}
 \begin{itemize}
@@ -217,9 +216,8 @@ $f(\bm\pi)=\mathrm{PPV}_A-\mathrm{PPV}_B$ とすると，デルタ法（\cref{th
 
 \section{結果の解釈}\label{sec:05-interp}
 \begin{itemize}
-\item 感度が高い検査は，陰性なら疾患を否定しやすい（除外診断，SnNout）．特異度が高い検査は，陽性なら疾患を確定しやすい（確定診断，SpPin）．
-      ただしこれらは経験的な覚え方（heuristic mnemonic）にすぎない．検査結果による判断の変化の大きさは尤度比 $\mathrm{LR}^+=Se/(1-Sp)$，$\mathrm{LR}^-=(1-Se)/Sp$ で決まり，      どちらも感度と特異度の両方に依存する（感度が高くても特異度が低ければ $\mathrm{LR}^-$ は1から大きく離れない）．さらに検査前確率（有病率）にも依存する．
-\item PPV は有病率が低い集団（検診）では小さくなる．同じ検査でも専門外来（有病率が高い）では PPV が高い．
+\item 検査結果による判断の変化の大きさは尤度比 $\mathrm{LR}^+$，$\mathrm{LR}^-$ で決まり，どちらも感度と特異度の両方に依存する．検査後の確率はさらに検査前確率（有病率）に依存する．
+\item PPV は有病率が低い集団（検診）では小さくなる．同じ検査でも有病率が高い専門外来では PPV が高い．
 \item AUC は「無作為に選んだ罹患者の検査値が，無作為に選んだ非罹患者の値より大きい確率」．
       $0.5$ は判別力なし，$1$ は完全判別．$0.70$ 程度は中等度の判別能であり（\kakomon{2018}{4}），信頼区間が0.5を含まないことと臨床的に十分であることは別である．
 \item ROC 曲線が交差する2検査では，AUC だけでなく，臨床的に重要な FPF 範囲での感度を比べる．
@@ -227,9 +225,9 @@ $f(\bm\pi)=\mathrm{PPV}_A-\mathrm{PPV}_B$ とすると，デルタ法（\cref{th
 
 \section{手法選択}\label{sec:05-choice}
 \begin{itemize}
-\item 単一検査・単一カットオフ → $2\times2$ 表から感度・特異度（二項の区間推定），有病率がわかれば\cref{eq:05-ppv}．
-\item 連続マーカー → ROC 曲線と AUC．カットオフは Youden 指数や臨床的要件（感度 $\ge0.95$ など）で決める．
-\item 同一被験者で2検査 → 感度・特異度は McNemar，PPV・NPV は多項分布＋デルタ法，AUC は DeLong 法．
+\item 単一検査・単一カットオフ → $2\times2$ 表から感度・特異度，有病率がわかれば\cref{eq:05-ppv}で PPV・NPV．
+\item 連続マーカー → 経験ROC曲線と AUC（$=U/(n_1n_0)$）．カットオフは Youden 指数や臨床的要件（感度 $\ge0.95$ など）で決める．
+\item 同一被験者で2検査 → 感度・特異度は McNemar 型の検定（不一致ペア），差の区間と PPV・NPV の比較は多項分布の共分散＋多変量デルタ法．
 \item 独立な被験者群で2検査 → 2群の比率の比較（\cref{ch:04}）．
 \end{itemize}
 
@@ -241,28 +239,29 @@ $f(\bm\pi)=\mathrm{PPV}_A-\mathrm{PPV}_B$ とすると，デルタ法（\cref{th
 \item 経験ROC曲線を描くとき，罹患者で右，非罹患者で上に進む（逆）．
 \item AUC の Mann--Whitney 表現で不等号の向きを逆にする（ROC の上側の面積になる）．
 \item 同一被験者の2検査の感度を，独立2群の $\chi^2$ 検定で比べる．
+\item PPV の差の分散で，両検査陽性者による共分散の項を落とす．
 \end{itemize}
 \end{warnbox}
 
 \section{数理統計との接続}\label{sec:05-link}
 \begin{linkbox}
 \begin{itemize}
-\item \cref{thm:05-auc}は確率積分変換と同じ置換積分である．AUC の推定量は U 統計量で，順位和検定の統計量と一致する（\cref{sec:03-ranksum}）．
-\item 多項分布の共分散行列 $\bm D_{\bm\pi}-\bm\pi\bm\pi\transp$（『現代数理統計学の基礎』4.4.2項）と多変量デルタ法（同書は1次元のみ；\cref{thm:04-delta}）の組み合わせは，
-      比率の関数の分散を求める万能の方法である．
-\item \textbf{等分散の}2正規モデルでは，尤度比 $f_1(x)/f_0(x)$ が $x$ の単調増加関数であることから，Neyman--Pearson の補題（同書 定理7.16）により
-      「$X\ge c$ で陽性」がある特異度の下で感度を最大にする判定になる（$\sigma_1\ne\sigma_0$ では尤度比が単調でなく，この判定は最適とは限らない）．ROC 曲線は検定の「サイズ（FPF）に対する検出力（TPF）」の曲線にほかならない．
+\item \cref{thm:05-auc}は確率積分変換と同じ置換積分である．AUC の推定量 $U/(n_1n_0)$ は $\Prob(X_1>X_0)$ の U 統計量で，順位和検定の統計量と一致する（\cref{sec:03-ranksum}）．
+\item 多項分布の共分散行列 $\bm D_{\bm\pi}-\bm\pi\bm\pi\transp$（『現代数理統計学の基礎』4.4.2項）と多変量デルタ法（\cref{thm:04-delta}）の組み合わせは，
+      比率の関数の分散を求める一般的な方法である．
+\item \textbf{等分散の}2正規モデルでは尤度比 $f_1(x)/f_0(x)$ が $x$ の単調増加関数なので，Neyman--Pearson の補題（同書 定理7.16）により
+      「$X\ge c$ で陽性」はある特異度の下で感度を最大にする判定になる．ROC 曲線は検定の「サイズ（FPF）に対する検出力（TPF）」の曲線にほかならない．
 \end{itemize}
 \end{linkbox}
 
 \section{例題}\label{sec:05-ex}
 \begin{reidai}[正規モデルと有病率]\label{reidai:05-1}
 罹患者の検査値は $\Normal(12,2^2)$，非罹患者は $\Normal(8,2^2)$ に従い，$X\ge11$ を陽性とする．
-$\Phi(0.5)=0.6915$，$\Phi(1)=0.8413$，$\Phi(1.5)=0.9332$，$\Phi(1.414)=0.9214$ を用いよ．
+$\Phi(0.355)=0.6387$，$\Phi(0.5)=0.6915$，$\Phi(1.5)=0.9332$，$\Phi(1.414)=0.9214$，$z_{0.05}=1.645$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
 \item 感度・特異度・陽性尤度比を求めよ．
 \item 有病率5\%の集団での PPV・NPV を求めよ．
-\item Youden 指数を最大にするカットオフとそのときの $J$ を求めよ．
+\item 感度を $0.95$ にするカットオフとそのときの特異度を求めよ．
 \item AUC を求めよ．
 \end{enumerate}
 \end{reidai}
@@ -272,7 +271,7 @@ $\Phi(0.5)=0.6915$，$\Phi(1)=0.8413$，$\Phi(1.5)=0.9332$，$\Phi(1.414)=0.9214
 \begin{enumerate}[label=(\arabic*)]
 \item 経験ROC曲線の頂点の座標を列挙せよ．
 \item AUC を面積として計算し，$\frac{1}{n_1n_0}\sum\sum I(x_{1i}>x_{0j})$ と一致することを確かめよ．
-\item Youden 指数を最大にするカットオフを求めよ．
+\item 「感度 $+$ 特異度 $-1$」を最大にするカットオフを求めよ．
 \end{enumerate}
 \end{reidai}
 
@@ -289,8 +288,8 @@ $\Phi(0.5)=0.6915$，$\Phi(1)=0.8413$，$\Phi(1.5)=0.9332$，$\Phi(1.414)=0.9214
 確定診断で罹患と判定された80人に検査A・Bを行った．両方陽性50，Aのみ陽性14，Bのみ陽性4，両方陰性12であった．
 \begin{enumerate}[label=(\arabic*)]
 \item 検査A・Bの感度を求めよ．
-\item 感度が等しいという帰無仮説を有意水準5\%で検定せよ．
-\item 感度の差の95\%信頼区間を求めよ．
+\item 感度が等しいという帰無仮説を有意水準5\%で検定せよ（$\chi^2_1(0.05)=3.841$）．
+\item 多項分布の共分散を用いて感度の差の分散を導き，95\%信頼区間を求めよ（$z_{0.025}=1.96$）．
 \end{enumerate}
 \end{reidai}
 
@@ -300,29 +299,31 @@ $\Phi(0.5)=0.6915$，$\Phi(1)=0.8413$，$\Phi(1.5)=0.9332$，$\Phi(1.414)=0.9214
 $\mathrm{LR}^+=0.6915/0.0668=10.35$．\\
 (2) $\mathrm{PPV}=\dfrac{0.6915\times0.05}{0.6915\times0.05+0.0668\times0.95}=\dfrac{0.03458}{0.03458+0.06346}=0.353$．
 $\mathrm{NPV}=\dfrac{0.9332\times0.95}{0.9332\times0.95+0.3085\times0.05}=\dfrac{0.8865}{0.8865+0.0154}=0.983$．\\
-(3) 等分散なので $c=(8+12)/2=10$．$Se=Sp=\Phi(1)=0.8413$，$J=0.683$．\\
+(3) $c=12-1.645\times2=8.71$．$Sp=\Phi((8.71-8)/2)=\Phi(0.355)=0.639$．感度を上げると特異度が大きく下がる．\\
 (4) $\mathrm{AUC}=\Phi(4/\sqrt{8})=\Phi(1.414)=0.921$．
 \end{kaitou}
 
 \begin{kaitou}{reidai:05-2}
 (1) 値の大きい順に $9(D),8(\bar D),7(D),6(D),5(\bar D),4(D),3,2,1(\bar D)$．
 頂点は $(0,0)\to(0,0.25)\to(0.2,0.25)\to(0.2,0.75)\to(0.4,0.75)\to(0.4,1)\to(1,1)$（\cref{fig:05-roc}）．\\
-(2) 面積：$0.2\times0.25+0.2\times0.75+0.6\times1=0.05+0.15+0.60=0.80$．
-対の数え上げ：$9$ は5人全員より大，$7$ と $6$ はそれぞれ4人より大，$4$ は3人より大で，計 $16$．$16/20=0.80$ で一致．\\
+(2) 面積（右方向の各ステップの長方形）：$0.2\times0.25+0.2\times0.75+0.6\times1=0.05+0.15+0.60=0.80$．
+対の数え上げ：$9$ は5人全員より大，$7$ と $6$ はそれぞれ4人より大，$4$ は3人より大で，$U=16$．$16/20=0.80$ で一致．\\
 (3) 各頂点の $J=\mathrm{TPF}-\mathrm{FPF}$ は $0.25,\ 0.05,\ 0.55,\ 0.35,\ 0.60$．最大は $(0.4,1)$ で，カットオフ「$4$ 以上を陽性」．
 \end{kaitou}
 
 \begin{kaitou}{reidai:05-3}
 (1) $Se=0.90$，$Sp=80/100=0.80$，標本の PPV $=90/110=0.818$．\\
 (2) $\mathrm{PPV}=\dfrac{0.9\times0.02}{0.9\times0.02+0.2\times0.98}=\dfrac{0.018}{0.214}=0.084$．\\
-(3) 標本では有病率が $0.5$ に固定されている．PPV は有病率に強く依存し，有病率2\%では陽性者の大部分が偽陽性になる．
-尤度比 $\mathrm{LR}^+=4.5$ を使えば，検査後オッズ $=4.5\times(0.02/0.98)=0.0918$，PPV $=0.0918/1.0918=0.084$ とも計算できる．
+(3) 標本では有病率が研究者により $0.5$ に固定されている．PPV は有病率に強く依存し，有病率2\%では陽性者の大部分が偽陽性になる．
+尤度比 $\mathrm{LR}^+=0.9/0.2=4.5$ を使えば，検査後オッズ $=4.5\times(0.02/0.98)=0.0918$，PPV $=0.0918/1.0918=0.084$ とも計算できる．
 \end{kaitou}
 
 \begin{kaitou}{reidai:05-4}
 (1) $Se_A=(50+14)/80=0.800$，$Se_B=(50+4)/80=0.675$．\\
-(2) 不一致ペア $s=18$．$W=(14-4)^2/18=5.56>3.841$ で有意．検査Aの感度が高い．\\
-(3) $\hat\delta=10/80=0.125$．$\widehat\V=\frac{18}{80^2}-\frac{10^2}{80^3}=0.0028125-0.0001953=0.0026172$，$\SE=0.0512$．
+(2) 不一致ペア $s=18$．$z^2=(14-4)^2/18=5.56>3.841$ で有意．検査Aの感度が高い．\\
+(3) $\hat\delta=p_{+-}-p_{-+}=(14-4)/80=0.125$．$\bm c=(0,1,-1,0)\transp$ として
+$n\V[\hat\delta]=\bm c\transp(\bm D_{\bm\pi}-\bm\pi\bm\pi\transp)\bm c=\pi_{+-}+\pi_{-+}-(\pi_{+-}-\pi_{-+})^2$（\cref{eq:05-sensvar}）．
+推定値を代入して $\widehat\V=\frac{1}{80}\bigl\{\frac{18}{80}-\bigl(\frac{10}{80}\bigr)^2\bigr\}=0.0028125-0.0001953=0.0026172$，$\SE=0.0512$．
 $0.125\pm1.96\times0.0512=(0.025,\,0.225)$．
 \end{kaitou}
 
@@ -331,9 +332,9 @@ $0.125\pm1.96\times0.0512=(0.025,\,0.225)$．
 \item 感度・特異度は $D$ を条件，PPV・NPV は検査結果を条件とする確率．PPV $=Se\,p/\{Se\,p+(1-Sp)(1-p)\}$．
 \item 検査後オッズ＝尤度比×検査前オッズ．PPV は有病率が低いと小さい．
 \item 疾患状態ごとに人数を固定した研究では標本の PPV・NPV は使えない（有病率で計算し直す）．
-\item ROC：$(\mathrm{FPF},\mathrm{TPF})$ の軌跡．経験ROCは罹患者で上，非罹患者で右．台形公式で AUC．
-\item AUC $=\Prob(X_1>X_0)$，経験 AUC $=\frac{1}{n_1n_0}\sum\sum I(x_{1i}>x_{0j})$（Mann--Whitney）．2正規なら $\Phi(\Delta\mu/\sqrt{\sigma_1^2+\sigma_0^2})$．
-\item Youden $J=Se+Sp-1$ は対角線から最も離れた点．
-\item 同一被験者の2検査：感度は McNemar，PPV は8セル多項分布＋デルタ法．
+\item 経験ROC：値の大きい順に罹患者で上 $1/n_1$，非罹患者で右 $1/n_0$．AUC は面積の和．
+\item AUC $=\Prob(X_1>X_0)$，経験 AUC $=U/(n_1n_0)$（Mann--Whitney，\cref{sec:03-ranksum}）．2正規なら $\Phi(\Delta\mu/\sqrt{\sigma_1^2+\sigma_0^2})$．
+\item Youden $J=Se+Sp-1$ を最大にする点．
+\item 同一被験者の2検査：感度は McNemar 型（不一致ペア），分散は多項分布の共分散 $\mathrm{diag}(\bm\pi)-\bm\pi\bm\pi\transp$＋多変量デルタ法．PPV 差は8セルで同様．
 \end{itemize}
 \end{summarybox}

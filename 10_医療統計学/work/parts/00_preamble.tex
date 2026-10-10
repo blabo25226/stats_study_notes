@@ -82,6 +82,8 @@
 \crefname{section}{節}{節}
 \crefname{subsection}{項}{項}
 \crefname{appendix}{付録}{付録}
+% 項の書式は文書開始時に再設定しないと「項 2.3.4」の語順になる
+\AtBeginDocument{\crefformat{subsection}{#2#1項#3}}
 \crefname{equation}{式}{式}
 \newcommand{\crefpairconjunction}{，}
 \newcommand{\crefmiddleconjunction}{，}
@@ -186,7 +188,7 @@
 \newcommand{\Unif}{\mathrm{U}}
 \newcommand{\chisq}{\chi^2}
 \newcommand{\transp}{^{\top}}
-\newcommand{\ind}{\mathbb{1}}
+\newcommand{\ind}{\mathbf{1}}
 \newcommand{\hatS}{\widehat{S}}
 
 % ---------- その他 ----------

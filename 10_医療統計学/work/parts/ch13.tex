@@ -4,22 +4,21 @@
 \begin{itemize}
 \item 優越性・同等性・非劣性の帰無仮説と対立仮説を書き分けられる．
 \item 「有意差なし」と「同等」が異なることを，信頼区間を用いて説明できる．
-\item 2つの片側検定（TOST）の第1種の過誤確率が $\alpha$ 以下であることを示し，$100(1-2\alpha)\%$ 信頼区間による判定と同値であることを説明できる．
-\item 対数正規分布の中央値・密度・平均・分散・変動係数を導出できる．
-\item 2剤2期クロスオーバー試験のデータから幾何平均比の90\%信頼区間を計算し，生物学的同等性を判定できる．
+\item 生物学的同等性の判定規則（対数変換した差の90\%信頼区間が $(\log0.80,\log1.25)$ に含まれる）を述べ，適用できる．
+\item 2剤2期クロスオーバー試験のデータを被験者ごとの対数値の差として扱い，幾何平均比の90\%信頼区間を計算できる．
 \end{itemize}
 \end{goalbox}
 
 \begin{exambox}
 \begin{itemize}
-\item \kakomon{2016}{4}：AUC の対数正規分布．中央値 $e^\mu$，密度の導出，MGF による平均・分散，$\mathrm{CV}=1$ から $\sigma^2=\log2$，
-      10名のクロスオーバー試験（$\bar Y=0.1$，$s=0.5$）で中央値の比の90\%CI $(0.83,1.48)$ → 同等域 $(0.8,1.25)$ に含まれず生物学的同等でない．
-\item \kakomon{2021}{2}：$\mu$ の信頼区間，片側仮説 $H_{01}:\mu\le-\Delta$，$H_{02}:\mu\ge\Delta$ の検定統計量と棄却域，
-      $H_0=H_{01}\cup H_{02}$ の検定の第1種の過誤確率が $\alpha$ 以下であること，20名で平均 $-0.1$，SD $0.26$，$\Delta=\log1.25$ の判定（90\%CI $[-0.201,0.001]$ → 同等）．
+\item \kakomon{2016}{4}〔5〕：10名のクロスオーバー試験で，被験者ごとの対数 AUC の差（$\bar Y=0.1$，$s=0.5$）から中央値の比の90\%CI $(0.83,1.48)$ を求め，同等域 $(0.8,1.25)$ に含まれないので生物学的同等でないと判定（\cref{sec:13-be}）．
+      同問〔1〕〜〔4〕の対数正規分布の性質（密度・平均・分散・変動係数）は，積率母関数が与えられた誘導問題である（\cref{app:F}）．
+\item \kakomon{2021}{2}：〔1-2〕〔1-3〕の2つの片側検定とその組合せの第1種の過誤確率は，仮説と手順が問題文で与えられた誘導問題（\cref{app:F}）．
+      〔2〕は20名の対数差（平均 $-0.1$，SD $0.26$）と $\Delta=\log1.25$ による判定で，90\%CI $[-0.201,0.001]\subset(-0.223,0.223)$ から同等．
 \end{itemize}
 \end{exambox}
 
-\flowline{2群または\\クロスオーバー}{平均差・\\幾何平均比}{TOST\\$(1-2\alpha)$CI}{対数正規\\持ち越しなし}{$t$ 区間\\指数変換}{同等域に\\含まれるか}
+\flowline{2群または\\クロスオーバー}{平均差・\\幾何平均比}{$(1-2\alpha)$\\信頼区間}{対数正規\\持ち越しなし}{対応ありの\\$t$ 区間・指数変換}{同等域に\\含まれるか}
 
 \section{問題設定：3種類の比較}\label{sec:13-setting}
 試験治療 $T$ と対照 $C$ の差（または対数比）を $\theta=\mu_T-\mu_C$（大きいほど $T$ が良い）とし，臨床的に許容できる差（マージン）を $\Delta>0$ とする．
@@ -43,111 +42,74 @@
 \cref{reidai:13-2}は，$t$ 検定で有意差がないのに同等性も示せない例である．
 \end{warnbox}
 
-\section{数理：2つの片側検定（TOST）}\label{sec:13-tost}
+\section{同等性の判定：信頼区間による規則}\label{sec:13-equiv}
 \Hissu
-$Y_1,\dots,Y_n\iid\Normal(\theta,\sigma^2)$（差の標本，$\sigma^2$ 未知），$\bar Y$，不偏分散 $s^2$ とする．
-\begin{meidai}[片側検定（\kakomon{2021}{2}〔1-2〕）]\label[meidai]{prop:13-onesided}
-$H_{01}:\theta\le-\Delta$ 対 $H_{A1}:\theta>-\Delta$ は $T_1=\sqrt n(\bar Y+\Delta)/s>t_{n-1}(\alpha)$ で，
-$H_{02}:\theta\ge\Delta$ 対 $H_{A2}:\theta<\Delta$ は $T_2=\sqrt n(\bar Y-\Delta)/s<-t_{n-1}(\alpha)$ で棄却する．いずれも有意水準 $\alpha$ の検定である．
-\end{meidai}
-\begin{proof}
-$\theta=-\Delta$ で $T_1\sim t_{n-1}$ なので棄却確率は $\alpha$．$\theta<-\Delta$ なら $T_1$ は分布が左にずれ，棄却確率は $\alpha$ より小さい．$T_2$ も同様．
-\end{proof}
-\begin{teiri}[交差和検定（IUT）の有意水準（\kakomon{2021}{2}〔1-3〕）]\label[teiri]{thm:13-iut}
-$H_0=H_{01}\cup H_{02}$ を，「$H_{01}$ と $H_{02}$ がともに有意水準 $\alpha$ で棄却されたときに棄却する」検定の第1種の過誤確率は $\alpha$ 以下である．
-\end{teiri}
-\begin{proof}
-$H_0$ が真なら $H_{01}$ と $H_{02}$ の少なくとも一方が真である．$H_{01}$ が真なら
-$\Prob(\text{両方棄却})\le\Prob(T_1\in R_1)\le\alpha$．$H_{02}$ が真の場合も同様．
-\end{proof}
-\Youchui 各検定を $\alpha/2$ に調整する必要はない．$H_0$ の下で「両方棄却」が起こるには，真である方の帰無仮説を誤って棄却しなければならないからである．
-
-\begin{meidai}[信頼区間による判定]\label[meidai]{prop:13-ci}
-TOST（各片側 $\alpha$）で $H_0$ を棄却することは，$100(1-2\alpha)\%$ 信頼区間
-$\bar Y\pm t_{n-1}(\alpha)s/\sqrt n$ が $(-\Delta,\Delta)$ に含まれることと同値である．
-\end{meidai}
-\begin{proof}
-$T_1>t_{n-1}(\alpha)\iff\bar Y-t_{n-1}(\alpha)s/\sqrt n>-\Delta$（下限 $>-\Delta$），
-$T_2<-t_{n-1}(\alpha)\iff\bar Y+t_{n-1}(\alpha)s/\sqrt n<\Delta$（上限 $<\Delta$）．
-\end{proof}
-片側5\%の TOST は\textbf{90\%信頼区間}で判定する．
-非劣性（片側 $\alpha=2.5\%$）は95\%信頼区間の下限が $-\Delta$ を上回るかで判定する．
+差の標本 $Y_1,\dots,Y_n\iid\Normal(\theta,\sigma^2)$（$\sigma^2$ 未知），標本平均 $\bar Y$，不偏分散 $s^2$ とする．
+\begin{pointbox}[同等性の判定規則]
+$\theta$ の $100(1-2\alpha)\%$ 信頼区間 $\bar Y\pm t_{n-1}(\alpha)\,s/\sqrt n$ が $(-\Delta,\Delta)$ に含まれれば同等と判定する．
+$\alpha=0.05$ なら\textbf{90\%信頼区間}を用いる．
+\end{pointbox}
+90\%区間を使うのは，この規則が「$H_{01}:\theta\le-\Delta$ と $H_{02}:\theta\ge\Delta$ をそれぞれ片側5\%の $t$ 検定で検定し，両方とも棄却されたら同等とする」手順と同値だからである
+（下限 $>-\Delta$ が前者の棄却，上限 $<\Delta$ が後者の棄却にあたる）．各片側検定を2.5\%にする必要はない．
 
 \section{非劣性試験}\label{sec:13-ni}
 \begin{itemize}
 \item 標準治療より副作用が少ない・投与が簡便などの利点がある新治療で，「有効性が許容範囲を超えて劣らない」ことを示す．
-\item 判定：$\theta$ の95\%CI の下限 $>-\Delta$．下限が0も上回れば，続けて優越性も主張できる（閉手順なので多重性の調整は不要）．
+\item 判定（片側2.5\%）：$\theta$ の95\%CI の下限 $>-\Delta$．下限が0も上回れば，続けて優越性も主張できる（非劣性→優越性の順に検定する固定順序の手順．\cref{sec:14-closed}）．
 \item マージン $\Delta$ はデータを見る前に，臨床的判断と過去のプラセボ対照試験の効果の大きさから決める．
 \end{itemize}
-\begin{supbox}[補足（出典：ICH E10 \cite{ich:e10}，FDA 非劣性ガイダンス \cite{fda:ni}）]
-試験薬の対照薬に対する劣り幅が $M_1$（対照薬のプラセボに対する効果を過去の試験から保守的に見積もった値）を超えないこと（＝試験薬がプラセボより有効であること）を最低条件とし，さらに臨床的判断で $M_1$ の一部（例えば50\%）を保持するよう $M_2\,(\le M_1)$ を非劣性マージンとして設定するのが一般的である．
-非劣性試験では，(i) 分析感度（assay sensitivity：試験が差を検出できる能力），(ii) 恒常性（過去の試験と現在の試験で対照薬の効果が同じ）が前提となる．
-質の低い試験（脱落が多い，遵守が悪い）は両群の差を小さくし，非劣性を示しやすくしてしまう．このため ITT 解析と治験実施計画書に適合した対象集団の解析の両方で一貫した結果が求められる．
-\end{supbox}
 
-\section{対数正規分布と生物学的同等性}\label{sec:13-be}
-\subsection{対数正規分布}\label{subsec:13-lognormal}
-\Hissu 薬物動態パラメータ（AUC，$C_{\max}$）は正の値をとり右に歪むので，$X\sim LN(\mu,\sigma^2)$，すなわち $Y=\log X\sim\Normal(\mu,\sigma^2)$ とモデル化する．
-\begin{meidai}[\kakomon{2016}{4}〔1〕〜〔4〕]\label[meidai]{prop:13-ln}
-\begin{enumerate}[label=(\arabic*)]
-\item 中央値 $e^\mu$（$\log$ は単調なので $\Prob(X\le e^\mu)=\Prob(Y\le\mu)=1/2$）．
-\item 密度 $f(x)=\dfrac{1}{x\sqrt{2\pi}\sigma}\exp\Bigl\{-\dfrac{(\log x-\mu)^2}{2\sigma^2}\Bigr\}$（$x>0$）．
-\item $\E[X]=e^{\mu+\sigma^2/2}$，$\V[X]=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$．
-\item 変動係数 $\mathrm{CV}=\sqrt{\V[X]}/\E[X]=\sqrt{e^{\sigma^2}-1}$，逆に $\sigma^2=\log(1+\mathrm{CV}^2)$．
-\end{enumerate}
-\end{meidai}
-\begin{proof}
-(2) $\Prob(X\le x)=\Prob(Y\le\log x)=\Phi\bigl((\log x-\mu)/\sigma\bigr)$ を $x$ で微分し，$(\log x)'=1/x$．
-(3) $M_Y(t)=\E[e^{tY}]=e^{\mu t+\sigma^2t^2/2}$ で，$\E[X]=M_Y(1)$，$\E[X^2]=M_Y(2)=e^{2\mu+2\sigma^2}$．
-(4) (3)から直ちに従う．
-\end{proof}
-\kakomon{2016}{4} では $\mathrm{CV}=1$ から $\sigma^2=\log2$．CV が小さいとき $\sigma\approx\mathrm{CV}$ である．
+\section{生物学的同等性}\label{sec:13-be}
+\Hissu\Hinshutsu
+\subsection{対数変換と幾何平均比}
+薬物動態パラメータ（AUC，$C_{\max}$）は正の値をとり右に歪むので，対数をとった $Y=\log X$ が正規分布 $\Normal(\mu,\sigma^2)$ に従う（$X$ は対数正規分布に従う）とモデル化する．
+$\log$ は単調増加なので $\Prob(X\le e^\mu)=\Prob(Y\le\mu)=1/2$，すなわち $X$ の中央値は $e^\mu$ である．
+したがって対数スケールの平均の差 $\mu_T-\mu_R$ を指数変換した $e^{\mu_T-\mu_R}$ は，中央値の比（幾何平均の比，GMR）である（\kakomon{2021}{2}〔2-1〕）．
 
-\subsection{幾何平均比}
-対数スケールでの平均の差 $\mu_T-\mu_R$ を逆変換した $e^{\mu_T-\mu_R}$ は中央値の比（幾何平均の比，GMR）である（\kakomon{2021}{2}〔2-1〕）．
-\Youchui 算術平均の比 $e^{\mu_T+\sigma_T^2/2}/e^{\mu_R+\sigma_R^2/2}$ とは，分散が等しいときに限り一致する．
-
-\subsection{生物学的同等性の判定}
-\begin{supbox}[補足（出典：後発医薬品の生物学的同等性試験ガイドライン \cite{jp:be}）]
-日本のガイドラインでは，AUC と $C_{\max}$ の対数値の平均の差の90\%信頼区間が $\log(0.80)$ から $\log(1.25)$ の範囲にあるとき生物学的に同等と判定する．
-これは片側5\%の2つの片側検定に相当し，同等でない製剤が合格する確率（消費者危険）を5\%以下に抑える．
-$\log1.25=0.2231=-\log0.80$ なので，同等域は対数スケールで $0$ に関して対称である．
-\end{supbox}
+\subsection{判定規則}
+\begin{pointbox}[生物学的同等性の判定（\kakomon{2016}{4}〔5〕）]
+AUC と $C_{\max}$ の対数値の平均の差 $\mu_T-\mu_R$ の90\%信頼区間が $(\log0.80,\log1.25)$ に含まれる
+（同じことだが，指数変換した GMR の90\%信頼区間が $(0.80,1.25)$ に含まれる）とき生物学的に同等と判定する
+（後発医薬品の生物学的同等性試験ガイドライン \cite{jp:be}）．
+\end{pointbox}
+これは\cref{sec:13-equiv}の規則で $\Delta=\log1.25$ としたものである．$\log1.25=0.2231=-\log0.80$ なので，同等域は対数スケールで $0$ に関して対称である．
+同等でない製剤が合格する確率（消費者危険）は5\%以下に抑えられる．
 \paragraph{判定の手順}
 \begin{enumerate}
-\item AUC を対数変換し，被験者ごとの差 $d_i=\log X_i^T-\log X_i^R$（またはクロスオーバーのモデルに基づく推定値）を求める．
-\item $\bar d\pm t_\nu(0.05)\,\SE$ を計算する．
-\item 指数変換して GMR の90\%CI を得て，$(0.80,1.25)$ に含まれるかを判定する．
+\item AUC を対数変換し，被験者ごとの差 $d_i=\log X_i^T-\log X_i^R$ を求める．
+\item 対応のある差の $t$ 区間 $\bar d\pm t_{n-1}(0.05)\,s_d/\sqrt n$ を計算する．
+\item 指数変換して GMR の90\%CI を得て，$(0.80,1.25)$ に含まれるかを判定する（対数スケールのまま $(-0.2231,0.2231)$ と比べてもよい）．
 \end{enumerate}
 \kakomon{2016}{4}〔5〕：$\bar Y=0.1$，$s=0.5$，$n=10$，$t_9(0.05)=1.833$ から $0.1\pm0.29=(-0.19,0.39)$，
 GMR（既存薬/後発品）の区間 $(0.83,1.48)$ は上限が1.25を超え，同等とは言えない．\\
 \kakomon{2021}{2}〔2-2〕：$\bar d=-0.1$，$s=0.26$，$n=20$，$t_{19}(0.05)=1.729$ から $[-0.201,0.001]\subset(-0.223,0.223)$ で同等．
 
-\subsection{2剤2期クロスオーバー試験}\label{subsec:13-crossover}
-\Hatten 系列 TR（第1期T，第2期R）に $n_1$ 人，RT に $n_2$ 人を割り付け，被験者 $i$ の第 $p$ 期の対数値を
+\subsection{2剤2期クロスオーバー試験を対応ありの差で扱う}\label{subsec:13-crossover}
+系列 TR（第1期T，第2期R）に $n_1$ 人，RT に $n_2$ 人を割り付け，被験者 $i$ の第 $p$ 期の対数値を
 \[
 Y_{ip}=\mu+\xi_i+\pi_p+\tau_{d(i,p)}+\varepsilon_{ip}
 \]
-とする（$\xi_i$：被験者効果，$\pi_p$：時期効果，$\tau_d$：製剤効果，$\varepsilon$：被験者内誤差 $\Normal(0,\sigma_w^2)$，持ち越し効果なし）．
-被験者ごとの期間差の半分 $c_i=(Y_{i2}-Y_{i1})/2$ は $\xi_i$ を消去し，
-系列 RT では $\E[c_i]=\frac{\pi_2-\pi_1}{2}+\frac{\tau_T-\tau_R}{2}$，系列 TR では $\frac{\pi_2-\pi_1}{2}-\frac{\tau_T-\tau_R}{2}$．よって
+とする（$\xi_i$：被験者効果，$\pi_p$：時期効果，$\tau_d$：製剤効果，$\varepsilon_{ip}\iid\Normal(0,\sigma_w^2)$，持ち越し効果なし）．
+被験者ごとの差 $d_i=Y_i^T-Y_i^R$（T 投与時から R 投与時を引く）では被験者効果 $\xi_i$ が消え，
 \[
-\hat\tau=\bar c_{RT}-\bar c_{TR},\qquad \V[\hat\tau]=\frac{\sigma_w^2}{2}\Bigl(\frac{1}{n_1}+\frac{1}{n_2}\Bigr),
+\text{系列 TR：}\ d_i=(\tau_T-\tau_R)+(\pi_1-\pi_2)+e_i,\qquad
+\text{系列 RT：}\ d_i=(\tau_T-\tau_R)-(\pi_1-\pi_2)+e_i
 \]
-自由度 $n_1+n_2-2$ の $t$ 分布で区間を作る．時期効果が相殺される点が，単純な対応のある差 $\log X^T-\log X^R$ の $t$ 区間（試験問題で用いられた簡略化）との違いである．
-持ち越し効果の検定は被験者間比較（被験者ごとの和の系列間比較）になり検出力が低いので，十分な休薬期間を設けてデザインで防ぐ．
-
-\section{症例数の考え方}\label{sec:13-n}
-\begin{supbox}[補足：同等性試験の症例数]
-真の差が0のとき，TOST の検出力はおよそ $2\Phi(\Delta/\SE-z_\alpha)-1$ である．これを $1-\beta$ とおくと $\Delta/\SE=z_\alpha+z_{\beta/2}$．
-差の標本の SD を $\sigma$ とすれば $n=(z_\alpha+z_{\beta/2})^2\sigma^2/\Delta^2$．真の差が0でないと，必要数は大きく増える．
-\end{supbox}
+（$e_i$ は2つの誤差の差で $\Normal(0,2\sigma_w^2)$）となる．
+\begin{itemize}
+\item 時期効果がなければ（$\pi_1=\pi_2$），$d_i\iid\Normal(\tau_T-\tau_R,2\sigma_w^2)$ で，$\bar d\pm t_{n-1}(0.05)\,s_d/\sqrt n$ はそのまま正しい90\%区間である．試験ではこの扱い（対応のある差の $t$ 区間）が用いられた．
+\item 時期効果があっても系列の人数が等しければ（$n_1=n_2$），$\pm(\pi_1-\pi_2)$ が打ち消し合い $\bar d$ は $\tau_T-\tau_R$ の不偏推定量のままである．
+      ただし $s_d^2$ に時期効果による系列間のばらつきが加わるので，区間はやや広く（保守的に）なる．
+\item 時期効果を除いて推定するには，系列ごとの平均を等しい重みで平均した $\hat\tau=(\bar d_{TR}+\bar d_{RT})/2$ を用いる．
+      $\V[\hat\tau]=\frac{2\sigma_w^2}{4}\bigl(\frac1{n_1}+\frac1{n_2}\bigr)=\frac{\sigma_w^2}{2}\bigl(\frac1{n_1}+\frac1{n_2}\bigr)$ で，$2\sigma_w^2$ を系列内でプールした $d_i$ の不偏分散で推定し，自由度 $n_1+n_2-2$ の $t$ 分布で区間を作る．
+\end{itemize}
+持ち越し効果は差 $d_i$ では消えないので，十分な休薬期間を設けてデザインで防ぐ．
 
 \section{仮定}\label{sec:13-assump}
 \begin{itemize}
 \item 対数変換後の正規性（対数正規性），被験者の独立性．
 \item クロスオーバー：持ち越し効果がない（十分な休薬期間），時期と製剤の交互作用がない．
-\item 非劣性：分析感度・恒常性，マージンの事前設定．
+\item 非劣性：マージンの事前設定．
 \end{itemize}
 
 \section{結果の解釈}\label{sec:13-interp}
@@ -159,44 +121,42 @@ Y_{ip}=\mu+\xi_i+\pi_p+\tau_{d(i,p)}+\varepsilon_{ip}
 
 \section{手法選択}\label{sec:13-choice}
 \begin{itemize}
-\item 後発品の生物学的同等性 → 対数変換，クロスオーバー，90\%CI を $(0.80,1.25)$ と比較．
+\item 後発品の生物学的同等性 → 対数変換，クロスオーバーの被験者ごとの差，90\%CI を $(0.80,1.25)$ と比較．
 \item 新治療の有効性が標準治療に劣らないこと → 非劣性（95\%CI の下限とマージン）．
-\item 差が両方向に小さいこと → 同等性（TOST，$(1-2\alpha)$ CI）．
+\item 差が両方向に小さいこと → 同等性（$(1-2\alpha)$ CI が $(-\Delta,\Delta)$ に含まれるか）．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:13-err}
 \begin{warnbox}
 \begin{itemize}
 \item 優越性検定の非有意を同等とみなす．
-\item 同等性の判定に95\%CI を使う（片側5\%の TOST に対応するのは90\%CI）．あるいは TOST の各検定を $\alpha/2$ にする．
+\item 同等性の判定に95\%CI を使う（片側5\%の2つの片側検定に対応するのは90\%CI）．
 \item AUC を対数変換せずに比の区間を作る，または対数スケールの区間を指数変換し忘れる．
-\item 対数正規分布の中央値を $e^{\mu+\sigma^2/2}$ とする（それは平均）．
+\item 境界付近で丸めた GMR の値で判定を誤る（対数スケールの区間端と $\pm0.2231$ を比べると確実）．
 \end{itemize}
 \end{warnbox}
 
 \section{数理統計との接続}\label{sec:13-link}
 \begin{linkbox}
 \begin{itemize}
-\item 対数正規分布は『現代数理統計学の基礎』第3章演習．$\E[e^{\bar X}]$ の偏りと不偏化 $\exp(\bar X-\frac1{2n})$ は\kakomonSM{2016}{1}，
-      平均と分散の MLE $\exp(\hat\mu+\hat\sigma^2/2)$ は\kakomonSM{2025}{5}（不変性）．
-\item $t$ 区間の根拠は正規標本の $\bar X$ と不偏分散の独立性（同書 定理5.1）．
-\item 片側検定の有意水準が境界 $\theta=-\Delta$ で最大になることは，単調尤度比をもつ分布族の性質（同書 定理7.18）．
+\item $t$ 区間の根拠は正規標本の $\bar X$ と不偏分散の独立性（『現代数理統計学の基礎』定理5.1）．
+\item 信頼区間と検定の双対性：$\theta_0$ が $100(1-2\alpha)\%$ 区間の外にあることと，$\theta_0$ を帰無仮説の値とする片側 $\alpha$ の検定のどちらかが棄却されることは同値である．
 \item \kakomonSM{2022}{5} の「対応のある2標本＝二元配置」はクロスオーバーの被験者効果の消去と同じ考え方である．
 \end{itemize}
 \end{linkbox}
 
 \section{例題}\label{sec:13-ex}
 \begin{reidai}[生物学的同等性]\label{reidai:13-1}
-24名のクロスオーバー試験で，被験者ごとの $\log\mathrm{AUC}_T-\log\mathrm{AUC}_R$ の平均が $0.05$，標準偏差が $0.20$ であった．
-$t_{23}(0.05)=1.714$，$e^{-0.020}=0.980$，$e^{0.120}=1.127$ を用いよ．
+24名の2剤2期クロスオーバー試験（各系列12名）で，被験者ごとの $\log\mathrm{AUC}_T-\log\mathrm{AUC}_R$ の平均が $0.05$，標準偏差が $0.20$ であった．
+時期効果はないものとし，$t_{23}(0.05)=1.714$，$\sqrt{24}=4.899$，$\log1.25=0.2231$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
-\item GMR の点推定値と90\%信頼区間を求め，生物学的同等性を判定せよ．
-\item 同じ判定を TOST の2つの $t$ 統計量で示せ（$\log1.25=0.2231$）．
+\item GMR の点推定値と90\%信頼区間を求め，生物学的同等性を判定せよ（$e^{0.05}=1.051$，$e^{-0.020}=0.980$，$e^{0.120}=1.127$）．
+\item 標準偏差が $0.50$ であったら判定はどうなるか（$e^{-0.125}=0.882$，$e^{0.225}=1.252$）．
 \end{enumerate}
 \end{reidai}
 
 \begin{reidai}[有意差なしと同等]\label{reidai:13-2}
-8名の同様の試験で，平均 $0.05$，標準偏差 $0.30$ であった（$t_7(0.05)=1.895$，$t_7(0.025)=2.365$，$e^{-0.151}=0.860$，$e^{0.251}=1.285$）．
+8名の同様の試験で，平均 $0.05$，標準偏差 $0.30$ であった（$\sqrt8=2.828$，$t_7(0.05)=1.895$，$t_7(0.025)=2.365$，$e^{-0.151}=0.860$，$e^{0.251}=1.285$）．
 \begin{enumerate}[label=(\arabic*)]
 \item $H_0:\mu_T=\mu_R$ の両側5\%の $t$ 検定を行え．
 \item 生物学的同等性を判定せよ．
@@ -204,23 +164,12 @@ $t_{23}(0.05)=1.714$，$e^{-0.020}=0.980$，$e^{0.120}=1.127$ を用いよ．
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[対数正規分布]\label{reidai:13-3}
-AUC の変動係数が30\%と見込まれる．$\log(1.09)=0.0862$，$e^{0.0431}=1.044$ を用いよ．
-\begin{enumerate}[label=(\arabic*)]
-\item 対数スケールの分散 $\sigma^2$ を求めよ．
-\item 中央値に対する平均の比を求めよ．
-\end{enumerate}
-\end{reidai}
-
-\begin{reidai}[非劣性]\label{reidai:13-4}
-有効率の差（新治療$-$標準治療）の推定値が $-0.02$，標準誤差 $0.03$，非劣性マージンが $0.10$ である．非劣性と優越性を判定せよ．
-\end{reidai}
-
 \section{解答}\label{sec:13-sol}
 \begin{kaitou}{reidai:13-1}
 (1) $\SE=0.20/\sqrt{24}=0.0408$．$0.05\pm1.714\times0.0408=0.05\pm0.070=(-0.020,0.120)$．
 GMR $=e^{0.05}=1.05$，90\%CI $(0.980,1.127)\subset(0.80,1.25)$ で生物学的に同等．\\
-(2) $T_1=(0.05+0.2231)/0.0408=6.69>1.714$，$T_2=(0.05-0.2231)/0.0408=-4.24<-1.714$．両方の片側帰無仮説が棄却され同等．
+(2) $\SE=0.50/4.899=0.1021$，$1.714\times0.1021=0.175$ で区間 $(-0.125,0.225)$．GMR では $(0.882,1.252)$．
+上限 $0.225>0.2231$（$1.252>1.25$）なので同等とは言えない．点推定は同じでも，ばらつきが大きいと区間が広がり同等性を示せない．
 \end{kaitou}
 
 \begin{kaitou}{reidai:13-2}
@@ -229,22 +178,13 @@ GMR $=e^{0.05}=1.05$，90\%CI $(0.980,1.127)\subset(0.80,1.25)$ で生物学的�
 (3) 有意差がないのは症例数が少なく推定が不正確だからであり，同等であることは示されない．「差があるとも同等とも言えない」が正しい結論．
 \end{kaitou}
 
-\begin{kaitou}{reidai:13-3}
-(1) $\sigma^2=\log(1+0.3^2)=\log1.09=0.0862$．\\
-(2) $\E[X]/e^\mu=e^{\sigma^2/2}=e^{0.0431}=1.044$．平均は中央値より約4\%大きい．
-\end{kaitou}
-
-\begin{kaitou}{reidai:13-4}
-95\%CI $-0.02\pm1.96\times0.03=(-0.079,\,0.039)$．下限 $-0.079>-0.10$ で非劣性が示される．区間が0を含むので優越性は示されない．
-\end{kaitou}
-
 \begin{summarybox}
 \begin{itemize}
 \item 優越性 $H_0:\theta\le0$，非劣性 $H_0:\theta\le-\Delta$，同等性 $H_0:|\theta|\ge\Delta$．示したいことを対立仮説に．
-\item TOST：各片側 $\alpha$ で両方棄却 → 全体の第1種の過誤 $\le\alpha$（IUT）．$\iff$ $(1-2\alpha)$CI $\subset(-\Delta,\Delta)$．
+\item 同等性：$(1-2\alpha)$CI $\subset(-\Delta,\Delta)$ で判定（各片側 $\alpha$ の2つの片側検定と同値）．
 \item 非劣性：95\%CI 下限 $>-\Delta$．
-\item 対数正規：中央値 $e^\mu$，平均 $e^{\mu+\sigma^2/2}$，$\V=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$，$\mathrm{CV}=\sqrt{e^{\sigma^2}-1}$．
-\item BE：$\log$ 差の90\%CI を指数変換して $(0.80,1.25)$ に含まれれば同等．
+\item BE：$\log$ 差の90\%CI を指数変換して $(0.80,1.25)$ に含まれれば同等．中央値 $e^\mu$ の比＝GMR．
+\item クロスオーバー：被験者ごとの対数差で被験者効果が消え，対応のある $t$ 区間で扱える（系列が同数なら時期効果があっても $\bar d$ は不偏）．
 \item 「有意差なし」≠「同等」．
 \end{itemize}
 \end{summarybox}

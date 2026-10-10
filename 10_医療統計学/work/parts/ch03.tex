@@ -5,6 +5,7 @@
 \item 対応のある $t$ 検定と2標本 $t$ 検定を使い分け，それぞれの帰無仮説と仮定を述べられる．
 \item 符号検定・Wilcoxon符号付き順位検定・Wilcoxon順位和検定（Mann--Whitney検定）の帰無仮説，仮定，検定統計量を説明できる．
 \item 帰無仮説の下での順位統計量の期待値・分散を導出し，exactなP 値と正規近似のP 値を計算できる．
+\item 3群以上の比較で Kruskal--Wallis 検定の統計量を書ける．
 \item 小標本で順位検定が有意になりえない（離散性）ことを具体的に示せる．
 \item 位置ずれモデルの下での順位和検定の検出力を $\Prob(X>Y)$ を用いて表せる．
 \end{itemize}
@@ -51,11 +52,10 @@ t=\frac{\bar X-\bar Y}{s_p\sqrt{\frac1m+\frac1n}},\qquad s_p^2=\frac{(m-1)s_X^2+
 \textbf{仮定}（\kakomon{2019}{4}〔1〕）：(i) すべての測定値が互いに独立，(ii) 各群の母集団分布が正規分布，(iii) 2群の母分散が等しい．
 差の $100(1-\alpha)\%$ 信頼区間は $\bar X-\bar Y\pm t_{m+n-2}(\alpha/2)\,s_p\sqrt{1/m+1/n}$．
 
-\begin{supbox}[補足：Welch の検定]
-等分散を仮定しない場合は $t_W=(\bar X-\bar Y)/\sqrt{s_X^2/m+s_Y^2/n}$ を，
-自由度 $\nu=\dfrac{(s_X^2/m+s_Y^2/n)^2}{\frac{(s_X^2/m)^2}{m-1}+\frac{(s_Y^2/n)^2}{n-1}}$ の $t$ 分布で近似する（Welch--Satterthwaite）．
+\paragraph{Welch の検定}
+等分散を仮定しない場合は $t_W=(\bar X-\bar Y)/\sqrt{s_X^2/m+s_Y^2/n}$ の $H_0$ の下での分布を，
+自由度 $\nu=\dfrac{(s_X^2/m+s_Y^2/n)^2}{\frac{(s_X^2/m)^2}{m-1}+\frac{(s_Y^2/n)^2}{n-1}}$ の $t$ 分布で近似する（Welch--Satterthwaite の近似．正確な $t$ 分布ではない）．
 群の大きさが等しければ等分散からのずれの影響は小さいが，大きさも分散も異なるとStudentの検定の有意水準は大きく狂う．
-\end{supbox}
 
 \section{符号検定}\label{sec:03-sign}
 \Hissu 差 $Z_i$ の分布が連続で中央値を $\theta$ とする．$H_0:\theta=0$ の下で $\Prob(Z_i>0)=1/2$ である．
@@ -69,7 +69,7 @@ $T=\#\{i:Z_i>0\}$（差が正の個数）を検定統計量とする検定を符
 差が0の観測は除いて $n$ を数え直すのが通例である．
 
 \paragraph{exactなP 値}
-実現値 $t^*$ に対し，片側（$H_1:\theta>0$）P 値は $\sum_{i=t^*}^{n}\binom ni2^{-n}$，
+実現値 $t^*$ に対し，片側（$H_1:\theta>0$）P 値は $\sum_{i=t^*}^{n}\binom ni2^{-n}$ である．
 \Youchui 離散分布の両側P 値には複数の定義がある．本書では $p=\min\{1,\ 2\min(P_{\mathrm{lower}},P_{\mathrm{upper}})\}$（小さい方の片側P 値の2倍，1で打ち切り）を用いる．ここで $P_{\mathrm{upper}}=\Prob(T\ge t^*\mid H_0)$，$P_{\mathrm{lower}}=\Prob(T\le t^*\mid H_0)$．このほか「観測値以下の確率をもつ値の確率の和」とする定義もあり，帰無分布が非対称なら両者は一致しない．符号検定の $\Bin(n,1/2)$ は対称なので，どちらの定義でも両側P 値は片側P 値の2倍になる．\kakomon{2016}{1} では $n=7$，$t^*=6$ で
 $(\binom76+\binom77)/2^7=8/128=0.0625$，両側 $0.125$．
 \paragraph{正規近似}
@@ -91,9 +91,18 @@ $H_0$ の下で
 \end{equation}
 \end{teiri}
 \begin{proof}
-$Z$ の分布が0に関して対称で連続なら，$\mathrm{sign}(Z)$ と $|Z|$ は独立で，$\Prob(Z>0)=1/2$ である．
-したがって $|Z|$ の順位が $k$ である観測が正かどうかの指示変数 $I_k$ $(k=1,\dots,n)$ は，
-順位の並びとは独立に $\mathrm{Bernoulli}(1/2)$ に従い互いに独立である．$W^+=\sum_{k=1}^n kI_k$ だから
+\textbf{(a) $\mathrm{sign}(Z)$ と $|Z|$ の独立性．}
+$Z$ の分布が0に関して対称で連続なら $\Prob(Z=0)=0$，$\Prob(Z>0)=1/2$ であり，任意の $a>0$ について
+\[
+\Prob(Z>0,\ |Z|\le a)=\Prob(0<Z\le a)=\tfrac12\Prob(|Z|\le a)=\Prob(Z>0)\,\Prob(|Z|\le a)
+\]
+（第2の等号は対称性 $\Prob(-a\le Z<0)=\Prob(0<Z\le a)$ による）．
+事象 $\{|Z|\le a\}$ $(a>0)$ は $|Z|$ の分布を決めるので，$\mathrm{sign}(Z)$ と $|Z|$ は独立である．\\
+\textbf{(b) $W^+$ の表現．}
+$Z_1,\dots,Z_n$ は独立なので，(a) より符号の組 $(\mathrm{sign}Z_1,\dots,\mathrm{sign}Z_n)$ は絶対値の組 $(|Z_1|,\dots,|Z_n|)$ と独立で，
+各符号は独立に確率 $1/2$ で正である．順位は絶対値の組だけで決まるので，
+$|Z|$ の順位が $k$ である観測が正かどうかの指示変数 $I_k$ $(k=1,\dots,n)$ は，絶対値の組を与えた条件の下でも
+互いに独立に $\mathrm{Bernoulli}(1/2)$ に従う．$W^+=\sum_{k=1}^n kI_k$ だから
 \[
 \E[W^+]=\frac12\sum_{k=1}^nk=\frac{n(n+1)}{4},\qquad
 \V[W^+]=\frac14\sum_{k=1}^nk^2=\frac14\cdot\frac{n(n+1)(2n+1)}{6}.
@@ -127,10 +136,19 @@ $H_0$ の下で，第1群の順位の集合は $\{1,\dots,N\}$ から大きさ $
 \end{equation}
 \end{teiri}
 \begin{proof}
-$H_0$ の下で $N$ 個の観測は i.i.d. の連続分布に従うので，順位ベクトルは $N!$ 通りの順列上の一様分布に従う．
-よって第1群の順位 $R_1,\dots,R_m$ は $\{1,\dots,N\}$ からの非復元単純無作為抽出である．
-母集団 $\{1,\dots,N\}$ の平均は $(N+1)/2$，分散は $\sigma^2=\frac1N\sum k^2-\bigl(\frac{N+1}2\bigr)^2=\frac{N^2-1}{12}$．
-非復元抽出では $\V[R_i]=\sigma^2$，$\Cov(R_i,R_j)=-\sigma^2/(N-1)$ $(i\ne j)$ なので
+2群をまとめた観測に通し番号を付け，第1群を $1,\dots,m$，第2群を $m+1,\dots,N$ 番とし，$i$ 番目の観測の順位を $R_i$ とする．
+$H_0$ の下で $N$ 個の観測は i.i.d. の連続分布に従うので，順位ベクトル $(R_1,\dots,R_N)$ は $\{1,\dots,N\}$ の $N!$ 通りの並べ替え上の一様分布に従う．
+よって第1群の順位 $R_1,\dots,R_m$ は $\{1,\dots,N\}$ からの非復元単純無作為抽出であり，前半が示された．\\
+\textbf{期待値．}各 $R_i$ は $\{1,\dots,N\}$ 上の一様分布に従うので $\E[R_i]=(N+1)/2$，$\V[R_i]=\sigma^2=\frac1N\sum_{k=1}^N k^2-\bigl(\frac{N+1}2\bigr)^2=\frac{N^2-1}{12}$．
+よって $\E[W]=m(N+1)/2$．\\
+\textbf{共分散．}並べ替えが一様なので $(R_1,\dots,R_N)$ は\emphx{交換可能}（添字をどう入れ替えても同時分布が変わらない）であり，
+$c=\Cov(R_i,R_j)$ $(i\ne j)$ は組 $(i,j)$ によらない．
+ここで，抽出された $m$ 個の和 $W=\sum_{i=1}^mR_i$ は定数ではない（だから $\V[W]$ を求めている）が，
+\textbf{全 $N$ 個の順位の和} $\sum_{i=1}^NR_i=N(N+1)/2$ はデータによらない定数である．したがって
+\[
+0=\V\Bigl[\sum_{i=1}^NR_i\Bigr]=N\sigma^2+N(N-1)c\quad\Longrightarrow\quad c=\Cov(R_i,R_j)=-\frac{\sigma^2}{N-1}\quad(i\ne j).
+\]
+交換可能性は「すべての $\Cov(R_i,R_j)$ が同じ値 $c$」と置くところで使っている．これを $W$ の分散に用いて
 \[
 \V[W]=m\sigma^2-m(m-1)\frac{\sigma^2}{N-1}=m\sigma^2\frac{N-m}{N-1}=\frac{m n(N^2-1)}{12(N-1)}=\frac{mn(N+1)}{12}.
 \]
@@ -148,8 +166,31 @@ W=U+\frac{m(m+1)}{2}.\label{eq:03-wu}
 第1群を小さい順に $X_{(1)}<\dots<X_{(m)}$ とすると，$X_{(k)}$ の全体での順位は
 「第1群で自分以下の個数 $k$」＋「$X_{(k)}$ より小さい第2群の個数 $\sum_jI(X_{(k)}>Y_j)$」である．$k$ について和をとればよい．
 \end{proof}
-$\theta=\Prob(X>Y)$ とおくと $\E[U]=mn\theta$ であり，$\hat\theta=U/(mn)$ は $\theta$ の不偏推定量である．
-$H_0$ の下で $\theta=1/2$ なので，順位和検定は $\Prob(X>Y)=1/2$ からのずれを検出する検定である（ただし帰無分布の導出には $F_X=F_Y$ を用いる）．
+\begin{teigi}[Mann--Whitney 検定]\label{def:03-mwtest}
+$U=\sum_{i=1}^m\sum_{j=1}^nI(X_i>Y_j)$（$X_i>Y_j$ となる組の数）を検定統計量として $H_0:F_X=F_Y$ を検定するものを Mann--Whitney 検定という．
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{帰無分布}：\cref{eq:03-wu}より $U=W-m(m+1)/2$ は $W$ をデータによらない定数だけずらしたもの（1対1対応）なので，
+      $\Prob_0(U=u)=\Prob_0\bigl(W=u+m(m+1)/2\bigr)$．正確分布は順位和 $W$ の正確分布（部分集合の数え上げ，\cref{subsec:03-exact}）と同じである．
+\item \textbf{期待値と分散}：\cref{eq:03-ranksum}から
+      \begin{equation}
+      \E_0[U]=\frac{m(N+1)}{2}-\frac{m(m+1)}{2}=\frac{mn}{2},\qquad \V_0[U]=\V_0[W]=\frac{mn(m+n+1)}{12}.\label{eq:03-umoments}
+      \end{equation}
+\item \textbf{棄却域}：$H_0$ の下で $U$ の分布は $mn/2$ に関して対称である
+      （順位を $r\mapsto N+1-r$ と逆順にしても一様な並べ替えの分布は変わらず，このとき $U\mapsto mn-U$ となるため）．
+      両側有意水準 $\alpha$ では $u_\alpha=\max\{u:\Prob_0(U\le u)\le\alpha/2\}$ として
+      $U\le u_\alpha$ または $U\ge mn-u_\alpha$ のとき棄却する．
+      大標本では $Z=(U-mn/2)/\sqrt{mn(N+1)/12}$ が $H_0$ の下で漸近的に $\Normal(0,1)$ に従うことを用い，$|Z|>z_{\alpha/2}$ で棄却する．
+\end{enumerate}
+\end{teigi}
+$U$ と $W$ は1対1に対応するので，Mann--Whitney 検定と Wilcoxon 順位和検定は，同じデータに対して常に同じ P 値・同じ結論を与える\textbf{同一の検定}である．
+
+\paragraph{$\Prob(X>Y)=1/2$ との関係}
+$\theta=\Prob(X>Y)$ とおくと，$H_0$ が成り立つかどうかによらず（$X,Y$ が独立で連続なら）$\E[U]=\sum_i\sum_j\Prob(X_i>Y_j)=mn\theta$ であり，
+$\hat\theta=U/(mn)$ は $\theta$ の不偏推定量である．
+$H_0:F_X=F_Y$ の下では $\theta=1/2$ なので，この検定は $\hat\theta$ が $1/2$ から大きく離れたときに棄却する検定，
+すなわち $\Prob(X>Y)=1/2$ からのずれを検出する検定である．
+ただし帰無分布の導出には $\theta=1/2$ だけでなく $F_X=F_Y$ を用いている．
+逆に $F_X\ne F_Y$ でも $\theta=1/2$ となる場合（例：中心が同じで広がりだけが異なる対称分布）は，この検定では検出を期待できない．
 $\hat\theta$ は経験ROC曲線の曲線下面積（AUC）に一致する（\cref{sec:05-auc}）．
 
 \subsection{exact分布と離散性}\label{subsec:03-exact}
@@ -158,6 +199,14 @@ $\hat\theta$ は経験ROC曲線の曲線下面積（AUC）に一致する（\cre
 両側P 値の最小値は $2/20=0.1$ なので，\textbf{有意水準5\%ではどんなデータでも棄却されず，第1種の過誤確率は0}である．
 これは検出力も0であることを意味する．極端な小標本では，順位検定はそもそも有意になりえないことを設計段階で確認する必要がある．
 順位和の帰無分布も $m(N+1)/2$ に関して対称なので両側P 値は片側の2倍であり，一般に最小の両側P 値は $2/\binom{N}{m}$ である．
+
+\subsection{3群以上：Kruskal--Wallis 検定}\label{subsec:03-kw}
+$k$ 群（大きさ $n_1,\dots,n_k$，$N=\sum n_i$）をまとめて順位を付け，第 $i$ 群の平均順位を $\bar R_i$ とする．$H_0$：全群の分布が等しい，の下で
+\begin{equation}
+H=\frac{12}{N(N+1)}\sum_{i=1}^kn_i\Bigl(\bar R_i-\frac{N+1}{2}\Bigr)^2\label{eq:03-kw}
+\end{equation}
+は各 $n_i$ が大きいとき近似的に $\chi^2_{k-1}$ に従い，$H>\chi^2_{k-1}(\alpha)$ で棄却する．
+$k=2$ のとき $H$ は順位和検定の正規近似統計量 $(W-\E_0[W])^2/\V_0[W]$ に一致する．
 
 \section{数理：位置ずれモデルでの検出力}\label{sec:03-power}
 \Hinshutsu 対立仮説の下で $\E[U]=mn\theta$，$\theta=\Prob(X>Y)$ である．
@@ -177,14 +226,9 @@ $\Phi\bigl(\sqrt{6n}(\delta-\delta^2/2)-z_\alpha\bigr)$ となる．
 \paragraph{正規分布の例}
 $X\sim\Normal(\mu+\delta,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ なら $X-Y\sim\Normal(\delta,2\sigma^2)$ より $\theta=\Phi\bigl(\delta/(\sqrt2\sigma)\bigr)$．
 
-\begin{supbox}[発展：漸近相対効率]
-正規分布の位置ずれでは，順位和検定の $t$ 検定に対する漸近相対効率（同じ検出力を得るのに必要な標本サイズの逆比）は $3/\pi\approx0.955$ である．
-すなわち正規分布でも損失は約5\%にすぎず，裾の重い分布では順位検定の方が効率がよい．
-符号検定の対応のある $t$ 検定に対する効率は正規分布で $2/\pi\approx0.637$ と低い．
-\end{supbox}
-
 \section{仮定のまとめ}\label{sec:03-assump}
-\begin{table}[htbp]
+各検定の帰無仮説と仮定を\cref{tab:03-assump}にまとめる．
+\begin{table}[!htbp]
 \centering\small
 \caption{各検定の帰無仮説と仮定}\label{tab:03-assump}
 \begin{tabular}{@{}lL{38mm}L{70mm}@{}}
@@ -196,6 +240,7 @@ $X\sim\Normal(\mu+\delta,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ なら $X-Y\s
 符号付き順位 & 差の中央値 $\theta=0$ & 差が独立，中央値に関して対称な連続分布\\
 2標本 $t$（Student） & $\mu_1=\mu_2$ & 独立，各群正規，等分散\\
 順位和（Mann--Whitney） & $F_X=F_Y$ & 独立，連続分布（位置ずれを検出したいなら形が同じ）\\
+Kruskal--Wallis & $k$ 群の分布が等しい & 独立，連続分布（$\chi^2$ 近似には各群がある程度大きいこと）\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -213,7 +258,7 @@ $X\sim\Normal(\mu+\delta,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ なら $X-Y\s
 \begin{itemize}
 \item 対応あり：差が正規 → 対応のある $t$；対称だが外れ値がある → 符号付き順位；非対称・順序尺度 → 符号検定．
 \item 独立2群：正規・等分散 → Student $t$；正規・不等分散 → Welch；非正規・外れ値・順序尺度 → 順位和検定．
-\item 3群以上：一元配置分散分析，順位なら Kruskal--Wallis 検定．
+\item 3群以上：正規・等分散なら一元配置分散分析（\cref{sec:14-anova}），非正規・順序尺度なら Kruskal--Wallis 検定（\cref{subsec:03-kw}）．
 \item 対数正規が想定される量（薬物動態のAUCなど）→ 対数変換して $t$ 型の方法（\cref{ch:13}）．
 \end{itemize}
 
@@ -259,10 +304,11 @@ $2.1,\ -0.4,\ 3.5,\ 1.2,\ 0.8,\ 4.0,\ -1.5,\ 2.6$ であった
 \item $H_0$ の下での $W_A$ の期待値・分散を求めよ．
 \item $W_A$ のexactな片側P 値（$H_1$：Aが大きい）と両側P 値を求めよ．
 \item この標本サイズで，両側5\%の順位和検定が有意になりうるかを答えよ．
+\item $U$ を統計量とする Mann--Whitney 検定の $H_0$ の下での期待値・分散と，exactな片側P 値を求め，(2)(3)と比べよ．
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[順位和検定の検出力]\label{reidai:03-3}
+\begin{reidai}[順位和検定の検出力（\kakomon{2025}{1}型）]\label{reidai:03-3}
 2群（各 $n=50$）で，$X\sim\Normal(\mu+0.5\sigma,\sigma^2)$，$Y\sim\Normal(\mu,\sigma^2)$ とする．
 $\Phi(0.354)=0.638$，$\Phi(0.42)=0.663$，$\Phi(0.54)=0.705$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
@@ -293,7 +339,9 @@ $\emptyset,\{1\},\{2\},\{3\},\{1,2\},\{4\},\{1,3\},\{5\},\{1,4\},\{2,3\}$ の10�
 \cref{eq:03-wu}より $U=17-3\cdot4/2=11$，$\hat\theta=11/12=0.917$．\\
 (2) $N=7$：$\E=3\times8/2=12$，$\V=3\times4\times8/12=8$．\\
 (3) $\binom73=35$ 通りのうち $W_A\ge17$ は $\{5,6,7\}$（18）と $\{4,6,7\}$（17）の2通り．片側 $2/35=0.057$，両側 $0.114$．\\
-(4) 最も極端な $\{5,6,7\}$ でも片側 $1/35$，両側 $2/35=0.057>0.05$ なので，両側5\%ではどのデータでも有意にならない．
+(4) 最も極端な $\{5,6,7\}$ でも片側 $1/35$，両側 $2/35=0.057>0.05$ なので，両側5\%ではどのデータでも有意にならない．\\
+(5) \cref{eq:03-umoments}より $\E_0[U]=3\times4/2=6$，$\V_0[U]=3\times4\times8/12=8$（$\E_0[W_A]-6=6$，分散は $W_A$ と同じ）．
+$U\ge11\iff W_A\ge17$ なので片側P 値は $2/35=0.057$ で(3)と一致する（同一の検定）．
 \end{kaitou}
 
 \begin{kaitou}{reidai:03-3}
@@ -301,7 +349,8 @@ $\emptyset,\{1\},\{2\},\{3\},\{1,2\},\{4\},\{1,3\},\{5\},\{1,4\},\{2,3\}$ の10�
 (2) $mn(\theta-1/2)=2500\times0.138=345$，$\sqrt{\V_0}=\sqrt{2500\times101/12}=\sqrt{21042}=145.1$．
 $345/145.1=2.38$，検出力 $\approx\Phi(2.38-1.96)=\Phi(0.42)=0.663$．\\
 (3) $z$ 検定では $\delta/(\sigma\sqrt{2/n})=0.5\times5=2.5$，検出力 $\Phi(2.5-1.96)=\Phi(0.54)=0.705$．
-順位和検定の検出力はやや低いが近い（$\delta=0.5\sigma$ は局所対立ではないので，漸近相対効率 $3/\pi$ とは目安として比べる）．
+正規分布の下では順位和検定の検出力は $z$ 検定よりやや低いが，大きくは劣らない．
+（(2)は分散を $H_0$ の下の値で近似した値なので，概算として比べる．）
 \end{kaitou}
 
 \begin{kaitou}{reidai:03-4}
@@ -320,7 +369,9 @@ $\E[(W^+-5)^2]=\frac1{16}\{2(25+16+9)+2\cdot2(4+1)\}=\frac{100+20}{16}=7.5$，
 \item 対応のある $t$：$t=\bar Z/(s_Z/\sqrt n)\sim t_{n-1}$．2標本 $t$：仮定は独立・正規・等分散．
 \item 符号検定：$T\sim\Bin(n,1/2)$，$\E=n/2$，$\V=n/4$．仮定は独立のみ．
 \item 符号付き順位：$W^+=\sum kI_k$，$\E=n(n+1)/4$，$\V=n(n+1)(2n+1)/24$．仮定は対称性．
-\item 順位和：$\E[W]=m(N+1)/2$，$\V[W]=mn(N+1)/12$（非復元抽出）．$W=U+m(m+1)/2$，$\E[U]=mn\Prob(X>Y)$．
+\item 順位和：$\E[W]=m(N+1)/2$，$\V[W]=mn(N+1)/12$．$\Cov(R_i,R_j)=-\sigma^2/(N-1)$ は交換可能性と「全 $N$ 個の順位和が定数」から．
+\item Mann--Whitney 検定：$U=\sum\sum I(X_i>Y_j)=W-m(m+1)/2$，$\E_0[U]=mn/2$，$\V_0[U]=mn(m+n+1)/12$．順位和検定と同一の検定．$\E[U]=mn\Prob(X>Y)$．
+\item 3群以上の順位検定は Kruskal--Wallis：$H=\frac{12}{N(N+1)}\sum n_i(\bar R_i-\frac{N+1}2)^2\approx\chi^2_{k-1}$．
 \item exact分布は部分集合の数え上げ．最小両側P 値 $2/\binom Nm$ が $\alpha$ を超えると有意になりえない．
 \item 検出力 $\approx\Phi\bigl(mn(\theta-\frac12)/\sqrt{mn(N+1)/12}-z_\alpha\bigr)$．
 \end{itemize}

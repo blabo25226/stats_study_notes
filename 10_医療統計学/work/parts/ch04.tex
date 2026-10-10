@@ -4,10 +4,10 @@
 \begin{itemize}
 \item 2 値データの確率モデル（二項・積二項・多項・超幾何）を研究デザインから選べる．
 \item $2\times2$ 表の Pearson $\chi^2$ 検定を，比率の差の $z$ 検定・スコア検定として導出できる．
-\item リスク差・リスク比・オッズ比の推定量と，デルタ法による分散・信頼区間を導出できる．
+\item リスク比・オッズ比の信頼区間を，二項分布の中心極限定理・多変量デルタ法・Slutsky の定理から導出できる．
 \item $K$ 群の比率の一様性の検定と Cochran--Armitage 傾向性検定を導出し，使い分けられる．
-\item 対応のある2 値データで McNemar 検定・差の信頼区間・尤度比検定を導出できる．
-\item 層別 $2\times2$ 表の Mantel--Haenszel 検定と共通オッズ比の推定量を書ける．
+\item 対応のある2 値データで McNemar 検定・差の信頼区間・尤度比検定・条件付きオッズ比を導出できる．
+\item 層別 $2\times2$ 表の層別 Cochran 検定（Cochran--Mantel--Haenszel 検定）を導出できる．
 \end{itemize}
 \end{goalbox}
 
@@ -16,13 +16,14 @@
 \item \kakomon{2016}{2}：4群の有効率の一様性の検定統計量と漸近分布（$\chi^2_3$），最小二乗（重み $n_i$）による傾き $\hat\beta$ と $\SE[\hat\beta\mid H_0]$，Cochran--Armitage 検定．
 \item \kakomon{2018}{2}：マッチドペアの多項分布．$\hat\delta=(n_{12}-n_{21})/n$ の分散，信頼区間，ラグランジュ乗数法による制約付き最尤推定，尤度比検定（自由度1）．
 \item \kakomon{2019}{3}〔2〕：同一患者での2検査の感度比較（不一致ペアの二項分布 $\Bin(23,0.5)$，McNemar型）．
-\item \kakomon{2021}{3}：オッズ比とWoolfの信頼区間，積二項尤度，$\hat E[n_{11}]$ と $\hat V[n_{11}-\hat E[n_{11}]]$ の導出，層別 Cochran 検定．
+\item \kakomon{2021}{3}：オッズ比の信頼区間（対数オッズ比の分散の推定式は問題文で与えられる），積二項尤度，$\hat E[n_{11}]$ と $\hat V[n_{11}-\hat E[n_{11}]]$ の導出，層別 Cochran 検定．
 \item \kakomon{2024}{1}〔2〕〔3〕：$Z_i=X_i-Y_i$ の平均と分散から McNemar 統計量 $W=(n_{10}-n_{01})^2/(n_{10}+n_{01})$ を導出．
-\item \kakomon{2017}{4}：層別表の超幾何分布の期待値・分散（\cref{eq:04-hyper}）と $(O-E)/V$ による1段階近似（Peto 型）の共通オッズ比．\kakomon{2022}{2}：MH 推定量（解釈は\cref{ch:07}）．
+\item \kakomon{2017}{4}：層別表の超幾何分布の期待値・分散（\cref{eq:04-hyper}）．共通オッズ比の推定式は問題文で与えられる（\cref{app:F}）．
+\item \kakomon{2022}{2}：マッチドペアの層別推定値（推定式は問題文で与えられる．\cref{app:F}）．マッチドペアでは条件付きオッズ比 $n_{12}/n_{21}$ に一致する（\cref{subsec:04-condor}）．解釈は\cref{subsec:02-collapse}と\cref{ch:07}．
 \end{itemize}
 \end{exambox}
 
-\flowline{2 値\\独立／対応／層別}{RD・RR・OR\\一様性・傾向}{$\chi^2$・MH\\McNemar・CA}{二項・多項\\超幾何}{期待度数・分散\\デルタ法}{効果の向きと大きさ}
+\flowline{2 値\\独立／対応／層別}{RD・RR・OR\\一様性・傾向}{$\chi^2$・CMH\\McNemar・CA}{二項・多項\\超幾何}{期待度数・分散\\デルタ法}{効果の向きと大きさ}
 
 \section{問題設定と確率モデル}\label{sec:04-model}
 \cref{tab:02-2x2}の記号（$a,b,c,d$，行和 $n_1,n_0$，列和 $m_1,m_0$，総数 $N$）を用いる．
@@ -37,7 +38,7 @@
 多項分布 & 総数 $N$ & 横断研究，マッチドペア（ペア数 $n$ を固定し4セルに多項）\\
 積二項分布 & 行和 $n_1,n_0$ & RCT，コホート（群ごとに二項）\\
 積二項分布 & 列和 $m_1,m_0$ & 症例対照研究（症例・対照ごとに曝露が二項）\\
-超幾何分布 & 行和と列和 & 条件付き推測（Fisherの正確検定，MH検定）\\
+超幾何分布 & 行和と列和 & 条件付き推測（Fisherの正確検定，CMH検定）\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -73,13 +74,12 @@ $\hat\pi_1-\hat\pi_0=(ad-bc)/(n_1n_0)$ を代入すれば最後の等号を得�
 \end{proof}
 最後の形は比率の差をプールした分散で標準化した $z$ 統計量の2乗である．
 
-\begin{supbox}[補足：Yates補正と Fisher の正確検定]
+\paragraph{Yates補正と Fisher の正確検定}
 度数が小さいときは連続修正 $X^2_Y=N(|ad-bc|-N/2)^2/(n_1n_0m_1m_0)$ を用いることがある（保守的になる）．
 周辺度数をすべて固定すると，$H_0$ の下で $a$ は超幾何分布
 $\Prob(a)=\binom{n_1}{a}\binom{n_0}{m_1-a}\big/\binom{N}{m_1}$ に従う．これに基づく検定が Fisher の正確検定である．
 例：治療群5人中4人，対照群5人中0人が有効なら，$m_1=4$ で $a\ge4$ となる確率は
 $\binom54\binom50/\binom{10}{4}=5/210=0.024$（片側）．
-\end{supbox}
 
 \subsection{尤度比検定}\label{subsec:04-lrt}
 尤度比統計量 $G^2=2\sum O\log(O/E)$ も $H_0$ の下で $\chi^2_1$ に従い，$X^2$ と漸近同等である
@@ -101,25 +101,56 @@ $g(\hat{\bm\theta})=g(\bm\theta)+\nabla g(\bm\theta)\transp(\hat{\bm\theta}-\bm\
 実用上は「$\V[g(\hat{\bm\theta})]\approx\nabla g\transp\,\V[\hat{\bm\theta}]\,\nabla g$」と覚え，
 独立な推定量なら各成分の寄与の和 $\sum_j(\partial g/\partial\theta_j)^2\V[\hat\theta_j]$ になる．
 
-\subsection{各指標の分散}\label{subsec:04-var}
-\begin{meidai}\label[meidai]{prop:04-var}
-独立な $a\sim\Bin(n_1,\pi_1)$，$c\sim\Bin(n_0,\pi_0)$ について
-\begin{align}
-\V[\hat\pi_1-\hat\pi_0]&=\frac{\pi_1(1-\pi_1)}{n_1}+\frac{\pi_0(1-\pi_0)}{n_0},\\
-\V[\log\hat\pi_1]&\approx\frac{1-\pi_1}{n_1\pi_1},\qquad
-\V[\log\widehat{\RR}]\approx\frac{1-\pi_1}{n_1\pi_1}+\frac{1-\pi_0}{n_0\pi_0},\label{eq:04-varlogRR}\\
-\V\Bigl[\log\frac{\hat\pi_1}{1-\hat\pi_1}\Bigr]&\approx\frac{1}{n_1\pi_1(1-\pi_1)},\qquad
-\V[\log\widehat{\OR}]\approx\frac{1}{n_1\pi_1(1-\pi_1)}+\frac{1}{n_0\pi_0(1-\pi_0)}.\label{eq:04-varlogOR}
-\end{align}
-推定量は $\pi$ を $\hat\pi$ に置き換えて，$\widehat\V[\log\widehat{\RR}]=\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0}$，
-$\widehat\V[\log\widehat{\OR}]=\frac1a+\frac1b+\frac1c+\frac1d$（Woolf）．
+\subsection{リスク比・オッズ比の信頼区間}\label{subsec:04-var}
+\Hissu 独立な $a\sim\Bin(n_1,\pi_1)$，$c\sim\Bin(n_0,\pi_0)$（$0<\pi_1,\pi_0<1$），$N=n_1+n_0$ とし，
+$N\to\infty$ のとき $n_1/N\to\kappa\in(0,1)$ とする（両群がともに大きくなる）．
+$\hat\pi_1=a/n_1$，$\hat\pi_0=c/n_0$，$\widehat{\RR}=\hat\pi_1/\hat\pi_0$，$\widehat{\OR}=ad/(bc)$．
+
+\begin{meidai}[対数リスク比・対数オッズ比の漸近正規性と Wald 区間]\label[meidai]{prop:04-var}
+\begin{equation}
+\frac{\log\widehat{\RR}-\log\RR}{\sqrt{\widehat\V_{\RR}}}\xrightarrow{d}\Normal(0,1),\qquad
+\widehat\V_{\RR}=\frac{1-\hat\pi_1}{n_1\hat\pi_1}+\frac{1-\hat\pi_0}{n_0\hat\pi_0}=\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0}.\label{eq:04-varlogRR}
+\end{equation}
+したがって $\exp\bigl(\log\widehat{\RR}\pm z_{\alpha/2}\sqrt{\widehat\V_{\RR}}\bigr)$ は $\RR$ の漸近的な信頼係数 $1-\alpha$ の信頼区間である．
+同様に
+\begin{equation}
+\frac{\log\widehat{\OR}-\log\OR}{\sqrt{\widehat\V_{\OR}}}\xrightarrow{d}\Normal(0,1),\qquad
+\widehat\V_{\OR}=\frac{1}{n_1\hat\pi_1(1-\hat\pi_1)}+\frac{1}{n_0\hat\pi_0(1-\hat\pi_0)}=\frac1a+\frac1b+\frac1c+\frac1d.\label{eq:04-varlogOR}
+\end{equation}
 \end{meidai}
 \begin{proof}
-$g(\pi)=\log\pi$ なら $g'=1/\pi$ で $\V\approx\pi^{-2}\pi(1-\pi)/n_1$．
-$g(\pi)=\log\{\pi/(1-\pi)\}$ なら $g'=1/\{\pi(1-\pi)\}$ で $\V\approx\{\pi(1-\pi)\}^{-2}\pi(1-\pi)/n_1$．
-2群は独立なので分散は和．$n_1\hat\pi_1(1-\hat\pi_1)=ab/n_1$ より $1/\{n_1\hat\pi_1(1-\hat\pi_1)\}=1/a+1/b$．
+\textbf{(1) 二項分布の中心極限定理．}$a$ は独立な $\mathrm{Bernoulli}(\pi_1)$ の $n_1$ 個の和なので
+$\sqrt{n_1}(\hat\pi_1-\pi_1)\xrightarrow{d}\Normal(0,\pi_1(1-\pi_1))$．$\hat\pi_0$ も同様．\\
+\textbf{(2) 同時漸近正規性．}$N/n_1\to1/\kappa$ なので Slutsky の定理より
+$\sqrt N(\hat\pi_1-\pi_1)=\sqrt{N/n_1}\,\sqrt{n_1}(\hat\pi_1-\pi_1)\xrightarrow{d}\Normal\bigl(0,\pi_1(1-\pi_1)/\kappa\bigr)$，
+同様に $\sqrt N(\hat\pi_0-\pi_0)\xrightarrow{d}\Normal\bigl(0,\pi_0(1-\pi_0)/(1-\kappa)\bigr)$．
+2群は独立なので，2成分の同時特性関数は各成分の特性関数の積であり，その極限は独立な2つの正規分布の積になる．よって
+\[
+\sqrt N\begin{pmatrix}\hat\pi_1-\pi_1\\ \hat\pi_0-\pi_0\end{pmatrix}\xrightarrow{d}\Normal_2(\bm0,\bm\Sigma),\qquad
+\bm\Sigma=\begin{pmatrix}\pi_1(1-\pi_1)/\kappa&0\\0&\pi_0(1-\pi_0)/(1-\kappa)\end{pmatrix}.
+\]
+\textbf{(3) 多変量デルタ法．}$g(\pi_1,\pi_0)=\log\pi_1-\log\pi_0$ とすると $g(\hat\pi_1,\hat\pi_0)=\log\widehat{\RR}$，
+$\nabla g=(1/\pi_1,\,-1/\pi_0)\transp\ne\bm0$．\cref{thm:04-delta}（$n$ を $N$ として）より
+\[
+\sqrt N(\log\widehat{\RR}-\log\RR)\xrightarrow{d}\Normal(0,\tau^2),\qquad
+\tau^2=\nabla g\transp\bm\Sigma\nabla g=\frac{1-\pi_1}{\kappa\pi_1}+\frac{1-\pi_0}{(1-\kappa)\pi_0}.
+\]
+\textbf{(4) 分散推定量の代入（Slutsky）．}大数の法則より $\hat\pi_j\xrightarrow{p}\pi_j$，また $n_1/N\to\kappa$ なので，
+連続写像定理より $N\widehat\V_{\RR}=\frac{1-\hat\pi_1}{(n_1/N)\hat\pi_1}+\frac{1-\hat\pi_0}{(n_0/N)\hat\pi_0}\xrightarrow{p}\tau^2>0$．よって
+\[
+\frac{\log\widehat{\RR}-\log\RR}{\sqrt{\widehat\V_{\RR}}}
+=\frac{\sqrt N(\log\widehat{\RR}-\log\RR)}{\tau}\cdot\frac{\tau}{\sqrt{N\widehat\V_{\RR}}}\xrightarrow{d}\Normal(0,1)
+\]
+（第1因子は $\Normal(0,1)$ に分布収束し，第2因子は1に確率収束する）．$\widehat\V_{\RR}$ の第2の形は $n_1\hat\pi_1=a$ を代入したもの．\\
+\textbf{(5) Wald 区間．}(4)より $\Prob\bigl(|\log\widehat{\RR}-\log\RR|\le z_{\alpha/2}\sqrt{\widehat\V_{\RR}}\bigr)\to1-\alpha$．
+この事象は $\log\RR\in\log\widehat{\RR}\pm z_{\alpha/2}\sqrt{\widehat\V_{\RR}}$ と同値で，$\exp$ は単調増加なので区間の端点を指数変換してよい．\\
+\textbf{OR．}(3)で $g=\log\frac{\pi_1}{1-\pi_1}-\log\frac{\pi_0}{1-\pi_0}$，$\nabla g=\bigl(\frac1{\pi_1(1-\pi_1)},\,-\frac1{\pi_0(1-\pi_0)}\bigr)\transp$ とすれば
+$\tau^2=\frac1{\kappa\pi_1(1-\pi_1)}+\frac1{(1-\kappa)\pi_0(1-\pi_0)}$ となり，以下同じである．
+$n_1\hat\pi_1(1-\hat\pi_1)=ab/n_1$ より $1/\{n_1\hat\pi_1(1-\hat\pi_1)\}=1/a+1/b$．
 \end{proof}
-信頼区間は $\log\hat\theta\pm z_{\alpha/2}\widehat{\SE}$ を指数変換する．
+（$a=0$ などで $\log\widehat{\RR}$ が定義できない確率は $N\to\infty$ で0になるので，漸近論には影響しない．）
+$\widehat\V_{\OR}=1/a+1/b+1/c+1/d$ は Woolf の分散推定量とも呼ばれる．
+リスク差は $g=\pi_1-\pi_0$（線形）なので，同じ論法で $\hat\pi_1-\hat\pi_0\pm z_{\alpha/2}\sqrt{\hat\pi_1(1-\hat\pi_1)/n_1+\hat\pi_0(1-\hat\pi_0)/n_0}$ を得る．
 \kakomon{2021}{3} では $\widehat{\OR}=\frac{59\times65}{71\times60}=0.90$，$\widehat\V=\frac1{59}+\frac1{71}+\frac1{60}+\frac1{65}=0.063$ で，
 95\%信頼区間は $(0.55,1.47)$ となる．
 
@@ -232,32 +263,52 @@ G^2=2\log\Lambda=2\Bigl[n_{12}\log\frac{2n_{12}}{n_{12}+n_{21}}+n_{21}\log\frac{
 \end{equation}
 自由度は対立仮説の自由パラメータ数3と帰無仮説の2の差で1である．
 
-\subsection{条件付きオッズ比}
-ペアごとに異なるベースラインを許すロジスティックモデル $\logit\Prob(\text{有効})=\alpha_k+\beta\cdot(\text{処置})$ の下で，
-$\alpha_k$ を消去した条件付き尤度から $e^{\hat\beta}=n_{12}/n_{21}$ となる．
-これはペアを層とみなした MH オッズ比（\cref{sec:04-mh}）とも一致する（\kakomon{2022}{2}：同乗者の運転者に対する $\widehat{\OR}_{\mathrm{MH}}=2632/662=3.98$，すなわち不一致ペアの比）．
+\subsection{条件付きオッズ比}\label{subsec:04-condor}
+ペア $k$ の処置1・処置2の結果を $Y_{k1},Y_{k2}\in\{0,1\}$（1＝有効）とし，ペア内で独立に
+$\logit\Prob(Y_{k1}=1)=\alpha_k+\beta$，$\logit\Prob(Y_{k2}=1)=\alpha_k$ とする（ペアごとに異なるベースライン $\alpha_k$，共通の処置効果 $e^\beta$ ＝ペア内のオッズ比）．
+$\alpha_k$ はペアごとに1個ずつあり $n$ とともに増えるので，$S_k=Y_{k1}+Y_{k2}$ を与えた条件付き分布で $\alpha_k$ を消去する．
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{一致ペアは寄与しない}：$S_k=0$ または $2$ なら $(Y_{k1},Y_{k2})$ は $S_k$ で完全に決まり，条件付き確率は1で $\beta$ を含まない．
+\item \textbf{不一致ペア}：$S_k=1$ のとき，$\pi_{kj}=\Prob(Y_{kj}=1)$ とそのオッズ $o_1=\pi_{k1}/(1-\pi_{k1})=e^{\alpha_k+\beta}$，$o_2=\pi_{k2}/(1-\pi_{k2})=e^{\alpha_k}$ を用いて
+      \[
+      \Prob(Y_{k1}=1,Y_{k2}=0\mid S_k=1)=\frac{\pi_{k1}(1-\pi_{k2})}{\pi_{k1}(1-\pi_{k2})+(1-\pi_{k1})\pi_{k2}}=\frac{o_1}{o_1+o_2}=\frac{e^\beta}{1+e^\beta}
+      \]
+      （分母・分子を $(1-\pi_{k1})(1-\pi_{k2})$ で割った）．$\alpha_k$ が消え，すべての不一致ペアで同じ確率になる．
+\item \textbf{二項 MLE}：条件付き尤度は $p=e^\beta/(1+e^\beta)$ として $p^{n_{12}}(1-p)^{n_{21}}$ で，二項分布の尤度と同じ形なので
+      $\hat p=n_{12}/(n_{12}+n_{21})$．最尤推定量の不変性より $e^{\hat\beta}=\hat p/(1-\hat p)=n_{12}/n_{21}$．
+\end{enumerate}
+$H_0:\beta=0$ は $p=1/2$ と同値で，これは McNemar の条件付き二項検定（$n_{12}\mid s\sim\Bin(s,1/2)$）そのものである．
+\kakomon{2022}{2} の同乗者の運転者に対するオッズ比は，ペアを層とした推定式（問題文で与えられる）で計算すると不一致ペアの比 $2632/662=3.98$ となり，この条件付きオッズ比と一致する．
+これが粗オッズ比 $2.79$ と異なるのは，周辺オッズ比とペア内の条件付きオッズ比が異なるパラメータだからである（\cref{subsec:02-collapse}）．
 
-\section{層別 \texorpdfstring{$2\times2$}{2×2} 表と Mantel--Haenszel 法}\label{sec:04-mh}
-\Hinshutsu 層 $k=1,\dots,K$ ごとの表（$a_k,b_k,c_k,d_k$，行和 $n_{1k},n_{0k}$，列和 $m_{1k},m_{0k}$，総数 $N_k$）を考える．
-交絡の調整としての意味は\cref{ch:07}で詳しく扱い，ここでは統計量をまとめる．
-\paragraph{MH 検定}
-各層で周辺度数を固定すると，$H_0$（全層で OR $=1$）の下で $a_k$ は超幾何分布に従い
+\section{層別 \texorpdfstring{$2\times2$}{2×2} 表と層別 Cochran（CMH）検定}\label{sec:04-mh}
+\Hinshutsu 層 $k=1,\dots,K$ ごとの表（$a_k,b_k,c_k,d_k$，行和 $n_{1k},n_{0k}$，列和 $m_{1k},m_{0k}$，総数 $N_k$）を考え，
+層 $k$ のオッズ比を $\psi_k$ とする．層は互いに独立とする．
+帰無仮説は $H_0:\psi_1=\dots=\psi_K=1$（どの層でも曝露と結果が独立）である．
+交絡の調整としての意味は\cref{ch:07}で扱い，ここでは検定統計量を導く．
+
+\paragraph{条件付き（超幾何）版：Cochran--Mantel--Haenszel 検定}
+各層で周辺度数を固定すると，$H_0$ の下で $a_k$ は超幾何分布に従い（導出は\cref{reidai:04-4}）
 \begin{equation}
 \E[a_k]=\frac{n_{1k}m_{1k}}{N_k},\qquad \V[a_k]=\frac{n_{1k}n_{0k}m_{1k}m_{0k}}{N_k^2(N_k-1)}.\label{eq:04-hyper}
 \end{equation}
-層は独立なので
+$Y_k=a_k-\E[a_k]$ は $H_0$ の下で平均0，層は独立なので $\V[\sum_kY_k]=\sum_k\V[a_k]$ である．
+$\sum_kY_k$ に中心極限定理による正規近似を適用すると（層の数 $K$ が多いか，各層が大きいとき）
 \begin{equation}
-\chi^2_{\mathrm{MH}}=\frac{\bigl\{\sum_k(a_k-\E[a_k])\bigr\}^2}{\sum_k\V[a_k]}\ \xrightarrow{d}\ \chi^2_1.\label{eq:04-mhtest}
+\chi^2_{\mathrm{CMH}}=\frac{\bigl\{\sum_k(a_k-\E[a_k])\bigr\}^2}{\sum_k\V[a_k]}\ \text{は近似的に}\ \chi^2_1\ \text{に従う}.\label{eq:04-mhtest}
 \end{equation}
-\kakomon{2021}{3} の Cochran 検定は，分散に条件なし（積二項）版 $n_{1k}n_{0k}m_{1k}m_{0k}/N_k^3$ を用いたもので，
-$N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい（マッチドペア $N_k=2$ など）場合にも使える．
-\paragraph{MH 推定量}
-\begin{equation}
-\widehat{\OR}_{\mathrm{MH}}=\frac{\sum_ka_kd_k/N_k}{\sum_kb_kc_k/N_k},\qquad
-\widehat{\RR}_{\mathrm{MH}}=\frac{\sum_ka_kn_{0k}/N_k}{\sum_kc_kn_{1k}/N_k}.\label{eq:04-mhest}
-\end{equation}
-層内で比が共通なら一致推定量であり，層が多数で各層が小さくても一致性を保つ．
-このほか，$\widehat{\log\psi}=\sum_k(a_k-\E[a_k])/\sum_k\V[a_k]$（Peto 型の1段階推定；\cref{subsec:07-peto}）も用いられる．
+\paragraph{積二項版：層別 Cochran 検定（\kakomon{2021}{3}）}
+各層で行和だけを固定し $a_k\sim\Bin(n_{1k},\pi_{1k})$，$c_k\sim\Bin(n_{0k},\pi_{0k})$ とすると，
+\cref{subsec:04-pearson}の計算を層ごとに行って $\hat\V[a_k-\hat E[a_k]]=n_{1k}n_{0k}m_{1k}m_{0k}/N_k^3$ となり，
+これを分母に用いたものが層別 Cochran 検定である．
+両者の分散の比は $N_k/(N_k-1)$ なので，$N_k$ が大きければほぼ等しい．
+各層が小さい（マッチドペア $N_k=2$ など）ときは条件付き版を用いる．
+実際，マッチドペアで条件付き版を計算すると，一致ペアの層は $\V[a_k]=0$，$Y_k=0$ で寄与せず，McNemar 統計量に一致する．
+
+\paragraph{何を検出する検定か}
+分子は各層の $O-E$ の\emph{和}なので，効果が層間で同じ向き（とくに共通オッズ比 $\psi_k\equiv\psi\ne1$）のときに検出力が高い．
+効果の向きが層によって逆だと打ち消し合って検出力を失う．
+層間でオッズ比が等しいかどうか（均一性）の検討は\cref{ch:07}で扱う．
 
 \section{仮定}\label{sec:04-assump}
 \begin{itemize}
@@ -265,7 +316,7 @@ $N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい�
 \item $\chi^2$ 近似：期待度数が十分大きい（目安として全セル5以上）．満たさなければ Fisher の正確検定・exact二項検定．
 \item McNemar：ペア間の独立性．ペア内の相関は許容される（むしろそれを利用する）．
 \item 傾向性検定：用量のスコア $x_i$ の選び方が結果を左右する（等間隔スコアが一般的）．
-\item MH：層内でORが共通（均一性）であることを推定の前提とする．検定自体は均一でなくても有効だが，効果が逆向きの層があると検出力を失う．
+\item 層別 Cochran（CMH）検定：層間の独立性．$H_0$ の下での分布は均一性を仮定せずに導かれるので検定自体は有効だが，効果が逆向きの層があると検出力を失う．
 \end{itemize}
 
 \section{結果の解釈}\label{sec:04-interp}
@@ -289,7 +340,7 @@ $N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい�
 独立 $K$ 群，順序なし & $K\times2$ 表の $\chi^2$（自由度 $K-1$）\\
 独立 $K$ 群，用量の順序あり & Cochran--Armitage 傾向性検定（自由度1）\\
 対応あり（前後，マッチドペア，同一患者に2検査） & McNemar 検定，差の区間推定，条件付きOR $n_{12}/n_{21}$\\
-層別（交絡の調整） & MH 検定，MH 推定量（\cref{ch:07}）\\
+層別（交絡の調整） & 層別 Cochran（CMH）検定．均一性の検討は\cref{ch:07}\\
 連続共変量を含めて調整 & ロジスティック回帰（\cref{ch:06}）\\
 \bottomrule
 \end{tabular}
@@ -300,7 +351,8 @@ $N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい�
 \begin{itemize}
 \item 対応のある2 値データを独立2群の $2\times2$ 表として $\chi^2$ 検定する．
 \item McNemar 統計量の分母に一致ペアを含める．
-\item Woolf の分散 $1/a+1/b+1/c+1/d$ を RR に使う（RR は $1/a-1/n_1+1/c-1/n_0$）．
+\item 対数オッズ比の分散 $1/a+1/b+1/c+1/d$ を RR に使う（RR は $1/a-1/n_1+1/c-1/n_0$）．
+\item 比の指標の信頼区間を，対数をとらずに $\widehat{\RR}\pm1.96\SE$ の形で作る（漸近正規性を示したのは $\log\widehat{\RR}$ である）．
 \item 一様性の検定の自由度を $K$ とする（正しくは $K-1$）．傾向性検定の自由度を $K-1$ とする（正しくは1）．
 \item 傾向性検定の $\V[\hat\beta]$ を対立仮説の下の分散で計算する（検定では $H_0$ の下の共通 $p$ を用いる）．
 \end{itemize}
@@ -310,11 +362,12 @@ $N_k$ が大きければ両者はほぼ等しい．MH 版は各層が小さい�
 \begin{linkbox}
 \begin{itemize}
 \item 分割表の独立性の Pearson $\chi^2$ 検定と自由度 $(r-1)(c-1)$ の導出は『現代数理統計学の基礎』7.4節（例7.12は薬と疾患の $2\times2$ 表）．
-      Yates補正・Fisherの正確検定・McNemar・MH・傾向性検定は同書の範囲外であり，本章で導出した．
+      Yates補正・Fisherの正確検定・McNemar・層別 Cochran（CMH）検定・傾向性検定は同書の範囲外であり，本章で導出した．
+\item リスク比の信頼区間は，中心極限定理・多変量デルタ法・Slutsky の定理（同書の漸近論）を組み合わせた典型例である（\cref{prop:04-var}）．
 \item 多項分布の共分散 $\Cov(n_{ij},n_{kl})=-n\pi_{ij}\pi_{kl}$（同書 定義4.23，第4章演習）は McNemar の分散の導出の要である．
 \item 制約付き最尤推定のラグランジュ乗数法は\kakomonSM{2025}{1}（ヒストグラム型多項モデル）でも問われた．
-\item 超幾何分布の平均・分散（同書 式(3.9)(3.10)）が MH 検定の分散の源である．\kakomonSM{2018}{2} では有限母集団修正と超幾何分布の分散が導出された．
-\item $X^2$ はスコア検定，$G^2$ は尤度比検定，Woolf の区間は Wald 型である（同書7.3節）．
+\item 超幾何分布の平均・分散（同書 式(3.9)(3.10)）が CMH 検定の分散の源である．\kakomonSM{2018}{2} では有限母集団修正と超幾何分布の分散が導出された．
+\item $X^2$ はスコア検定，$G^2$ は尤度比検定，対数オッズ比・対数リスク比の区間は Wald 型である（同書7.3節）．
 \end{itemize}
 \end{linkbox}
 
@@ -404,11 +457,13 @@ $\V[I_j]=\frac{n_1}{N}\frac{n_0}{N}$，$\Cov(I_j,I_l)=\frac{n_1(n_1-1)}{N(N-1)}-
 \begin{summarybox}
 \begin{itemize}
 \item $X^2=N(ad-bc)^2/(n_1n_0m_1m_0)$ ＝ プール分散による比率の差の $z^2$ ＝ スコア検定．
-\item $\V[\log\widehat{\RR}]\approx\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0}$，$\V[\log\widehat{\OR}]\approx\frac1a+\frac1b+\frac1c+\frac1d$（デルタ法）．
+\item RR・OR の区間：二項CLT → 2群独立で同時漸近正規 → 多変量デルタ法 → Slutsky で分散推定量を代入 → 対数スケールの Wald 区間を指数変換．
+      $\widehat\V[\log\widehat{\RR}]=\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0}$，$\widehat\V[\log\widehat{\OR}]=\frac1a+\frac1b+\frac1c+\frac1d$．
 \item $K$ 群一様性：$X^2=\sum n_i(p_i-p)^2/\{p(1-p)\}\sim\chi^2_{K-1}$．
       傾向性：$\hat\beta=\sum y_i(x_i-\bar x)/S_{xx}$，$\V_0=p(1-p)/S_{xx}$，$Y\sim\chi^2_1$．
 \item 対応あり：$\V[\hat\delta]=\{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2\}/n$，McNemar $W=(n_{12}-n_{21})^2/(n_{12}+n_{21})$，
-      LRT $2[n_{12}\log\frac{2n_{12}}{s}+n_{21}\log\frac{2n_{21}}{s}]$，条件付き OR $=n_{12}/n_{21}$．
-\item MH：超幾何の $\E[a_k]=n_{1k}m_{1k}/N_k$，$\V[a_k]=n_{1k}n_{0k}m_{1k}m_{0k}/\{N_k^2(N_k-1)\}$，$\widehat{\OR}_{\mathrm{MH}}=\sum a_kd_k/N_k\big/\sum b_kc_k/N_k$．
+      LRT $2[n_{12}\log\frac{2n_{12}}{s}+n_{21}\log\frac{2n_{21}}{s}]$，条件付き OR $=n_{12}/n_{21}$（一致ペアは条件付き尤度に寄与せず，不一致ペアの二項MLE）．
+\item 層別 Cochran（CMH）検定：超幾何の $\E[a_k]=n_{1k}m_{1k}/N_k$，$\V[a_k]=n_{1k}n_{0k}m_{1k}m_{0k}/\{N_k^2(N_k-1)\}$，
+      $\{\sum(a_k-\E[a_k])\}^2/\sum\V[a_k]\approx\chi^2_1$．積二項版の分散は $n_{1k}n_{0k}m_{1k}m_{0k}/N_k^3$．
 \end{itemize}
 \end{summarybox}

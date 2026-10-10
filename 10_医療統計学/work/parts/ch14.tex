@@ -1,25 +1,26 @@
-\chapter{中間解析・二段階試験・多重性・用量反応}\label{ch:14}
+\chapter{中間解析・多重性・用量反応}\label{ch:14}
 
 \begin{goalbox}
 \begin{itemize}
-\item 繰り返し検定による第1種の過誤の増大を説明し，情報時間と Brown 運動の構造から中間解析の検定統計量の相関を求められる．
-\item $\alpha$ 消費関数から各解析で消費する $\alpha$ と棄却限界値を求め，2変量正規分布を用いて最終解析の限界値を定める方法を説明できる．
-\item 第II相の二段階デザインの第1種・第2種の過誤確率，早期中止確率，期待症例数を二項分布で計算できる．
-\item FWER を定義し，Bonferroni・Šidák・Holm・Simes 法を比較できる．相関が FWER に与える影響を示せる．
-\item Dunnett 型の多対1比較の相関，閉検定手順・ゲートキーピングの考え方を説明できる．
-\item 用量反応の対比（contrast）を設計し，対比検定どうしの相関を計算できる．
+\item 繰り返し検定による第1種の過誤の増大を説明できる．
+\item スコア統計量の部分和の独立増分構造から，情報時間 $t$ の標準化統計量の相関 $\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$ を導ける．
+\item $\alpha$ 消費関数から各解析で消費する $\alpha$ と中間解析の棄却限界値を求め，2変量正規分布を用いて最終解析の限界値を定める方法を説明できる．
+\item FWER（強い制御・弱い制御）を定義し，Bonferroni 法・Holm 法を適用できる．
+\item 一元配置分散分析の $F$ 検定を述べ，閉検定手順の考え方から「分散分析で保護した対比較」が FWER を強く制御する条件としない条件を説明できる．
+\item 用量反応の線形対比の係数を，中心化した用量から作れる．
 \end{itemize}
 \end{goalbox}
 
 \begin{exambox}
 \begin{itemize}
 \item \kakomon{2017}{2}：ログランク検定の群逐次デザイン．$\alpha(t)=0.05t^2$，$t=0.4$ で $\alpha=0.008$，$z_1=2.41$，
-      $\Cov[Z(0.4),Z(1)]=\sqrt{0.4}$，$z_2$ を $\int_{-\infty}^{z_1}\int_{z_2}^\infty\phi_2(x_1,x_2;\sqrt{0.4})=0.042$ で定める方法，解析の追加（$t=0.7$）．
-\item \kakomon{2017}{3}：Simon の二段階デザイン（$\pi_0=0.1$，$\pi_1=0.5$，$n_1=5,r_1=0,n_2=7,r=3$）．$\alpha\approx0.024$，$\beta\approx0.089$，PET，$\E[N\mid\pi_0]=7.87$．
-\item \kakomon{2024}{4}：プラセボと3用量．独立3検定の FWER，Bonferroni，分散分析をゲートとした $z$ 検定で FWER が制御される条件，
-      $Z_j$ と $Z_k$ の相関 $\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$，直線的用量反応の対比 $(-3,-1,1,3)/\sqrt{20}$，対比検定の相関 $3/\sqrt{15}$．
-\item \kakomon{2025}{4}：2つの主要評価項目．独立な $p$ 値の FWER $0.0975$，Bonferroni の FWER $0.0494$，Šidák 型の制約，Simes と Bonferroni の棄却域の差，
-      $\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)\le\mathrm{FWER}(0)$．
+      $\Cov[Z(0.4),Z(1)]=\sqrt{0.4}$，$z_2$ を $\int_{-\infty}^{z_1}\int_{z_2}^\infty\phi_2(x_1,x_2;\sqrt{0.4})\,\dd x_2\,\dd x_1=0.042$ で定める方法，解析の追加（$t=0.7$）．
+      $B(t)=\sqrt tZ(t)$ の平均と共分散は問題文で与えられた．
+\item \kakomon{2024}{4}：プラセボと3用量．〔2〕Bonferroni，〔3〕分散分析をゲートとした $z$ 検定で FWER が制御される条件，〔5〕直線的用量反応の対比 $(-3,-1,1,3)/\sqrt{20}$．
+      〔1〕独立な検定の FWER，〔4〕多対1比較の検定統計量の相関，〔6〕対比検定どうしの相関は，式が与えられた誘導問題である（\cref{app:F}）．
+\item \kakomon{2025}{4}：2つの主要評価項目．〔1-2〕Bonferroni 法の FWER．
+      〔1-1〕〔1-3〕独立な $p$ 値の FWER，〔1-4〕大域帰無仮説に対する別の棄却規則，〔2〕相関のある検定統計量の FWER は誘導問題（\cref{app:F}）．
+\item \kakomon{2017}{3}：二段階デザインの $\alpha,\beta$，期待症例数．手順と二項分布表がすべて与えられた誘導問題（\cref{app:F}）．
 \item \kakomon{2016}{2}：Cochran--Armitage 傾向性検定（\cref{sec:04-trend}）．
 \end{itemize}
 \end{exambox}
@@ -31,21 +32,45 @@
 
 \section{群逐次デザインと \texorpdfstring{$\alpha$}{α} 消費関数}\label{sec:14-gsd}
 \Hinshutsu
-\subsection{情報時間と検定統計量の相関}
-最終解析の情報量（ログランクならイベント数 $D$）に対する時点の情報量の割合を\emphx{情報時間} $t\in(0,1]$ とする（$t=L/D$）．
-情報時間 $t$ の標準化統計量を $Z(t)$，$B(t)=\sqrt t\,Z(t)$ とすると，$H_0$ の下で $B(t)$ は近似的に標準 Brown 運動になり，
-$\E[B(t)]=0$，$\Cov[B(t_1),B(t_2)]=\min(t_1,t_2)$（\kakomon{2017}{2}）．
+\subsection{情報時間と検定統計量の相関}\label{subsec:14-info}
+\paragraph{情報時間}
+最終解析で得られる情報量を $I_{\max}$，ある解析時点までの情報量を $I$ として，\emphx{情報時間}を $t=I/I_{\max}\in(0,1]$ とする．
+ログランク検定では情報量（$U$ の分散 $V$）が近似的にイベント数に比例する（\cref{prop:12-schoenfeld}の $V\approx Dp(1-p)$）ので，
+中間解析までのイベント数 $L$，最終解析の目標イベント数 $D$ に対して $t=L/D$ である．
+
+\paragraph{スコアの部分和の構造}
+情報時間 $t$ までのデータによるスコア統計量を $S(t)$ とする（ログランク検定なら，それまでのイベント時点についての $U=\sum_j(d_{1j}-E_{1j})$）．
+$H_0$ の下で次が成り立つ．
+\begin{enumerate}[label=(\roman*)]
+\item $\E[S(t)]=0$，$\V[S(t)]\approx I(t)=t\,I_{\max}$（スコアの分散は情報量）．
+\item $s<t$ のとき，増分 $S(t)-S(s)$（時点 $s$ 以降に加わるデータの寄与）は $S(s)$ と無相関．
+      独立な観測の和であれば増分は過去と独立である．ログランク統計量では各時点の項 $d_{1j}-E_{1j}$ の過去を条件とした期待値が0なので（\cref{sec:09-logrank}），
+      反復期待値により過去の項との共分散が0になる（情報量を確率変数でなく定数とみなす近似の下で）．
+\end{enumerate}
+すると $s<t$ のとき
+\[
+\Cov[S(s),S(t)]=\V[S(s)]+\Cov[S(s),S(t)-S(s)]=I(s)=s\,I_{\max}.
+\]
+標準化統計量を $Z(t)=S(t)/\sqrt{I(t)}$，$B(t)=\sqrt t\,Z(t)=S(t)/\sqrt{I_{\max}}$ とおくと
+\begin{equation}
+\E[B(t)]=0,\qquad \Cov[B(s),B(t)]=\frac{\Cov[S(s),S(t)]}{I_{\max}}=\min(s,t).\label{eq:14-Bcov}
+\end{equation}
+さらに $S(t)$ は多数の項の和なので中心極限定理により $(B(t_1),\dots,B(t_k))$ は近似的に多変量正規分布に従う．
+平均0・共分散 $\min(s,t)$ の正規過程は標準 Brown 運動にほかならないので，$B(t)$ は「近似的に標準 Brown 運動」であるといわれる．
+以下の計算で使うのは，有限個の時点の $(Z(t_1),\dots,Z(t_k))$ が近似的に多変量正規分布に従い，共分散が\cref{eq:14-Bcov}から決まることだけである．
+\Youchui これは $H_0$ の下での\textbf{近似}であり（ログランク検定では独立増分も近似的にしか成り立たない），試験（\kakomon{2017}{2}）では $\E[B(t)]=0$，$\Cov[B(t_1),B(t_2)]=\min(t_1,t_2)$ は問題文で与えられた．
+
 \begin{meidai}\label[meidai]{prop:14-corr}
-$t_1<t_2$ のとき $\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$．
+$t_1<t_2$ のとき $\Corr[Z(t_1),Z(t_2)]=\Cov[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$．
 \end{meidai}
 \begin{proof}
-$\Cov[Z(t_1),Z(t_2)]=\Cov[B(t_1),B(t_2)]/\sqrt{t_1t_2}=t_1/\sqrt{t_1t_2}=\sqrt{t_1/t_2}$，分散はともに1．
+$Z(t)=B(t)/\sqrt t$ で $\V[Z(t)]=t/t=1$．$\Cov[Z(t_1),Z(t_2)]=\Cov[B(t_1),B(t_2)]/\sqrt{t_1t_2}=t_1/\sqrt{t_1t_2}=\sqrt{t_1/t_2}$．
 \end{proof}
-直観的には，$Z(t_2)$ は $Z(t_1)$ の情報に新しい情報を足したもの（独立増分）で，情報の重なりの割合が相関になる．
+直観的には，$Z(t_2)$ は $Z(t_1)$ の情報に新しい（無相関な）情報を足したもので，情報の重なりの割合が相関になる．
 
 \paragraph{繰り返し検定の問題}
 $t=0.5$ と $t=1$ の2回，それぞれ片側 $z_{0.025}=1.96$ で検定すると，全体の第1種の過誤確率は
-$1-\Prob(Z(0.5)\le1.96,Z(1)\le1.96)\approx0.042$（相関 $\sqrt{0.5}$ の2変量正規）となり，名目の0.025を大きく超える．
+$1-\Prob(Z(0.5)\le1.96,Z(1)\le1.96)$（相関 $\sqrt{0.5}$ の2変量正規）で，数値計算すると約 $0.042$ となり，名目の0.025を大きく超える．
 
 \subsection{\texorpdfstring{$\alpha$}{α} 消費関数}\label{subsec:14-spending}
 \begin{teigi}[$\alpha$ 消費関数]\label{def:14-spending}
@@ -54,16 +79,17 @@ $\alpha(0)=0$，$\alpha(1)=\alpha$ の非減少関数 $\alpha(t)$ を定め，�
 \end{teigi}
 \begin{enumerate}
 \item 第1回：$\Prob(Z(t_1)>c_1)=\alpha(t_1)$ から $c_1=z_{\alpha(t_1)}$．
-\item 第 $k$ 回：$\Prob(Z(t_1)\le c_1,\dots,Z(t_{k-1})\le c_{k-1},Z(t_k)>c_k)=\alpha(t_k)-\alpha(t_{k-1})$ を満たす $c_k$ を，多変量正規分布の数値積分で求める．
+\item 第 $k$ 回：$\Prob(Z(t_1)\le c_1,\dots,Z(t_{k-1})\le c_{k-1},Z(t_k)>c_k)=\alpha(t_k)-\alpha(t_{k-1})$ を満たす $c_k$ を，多変量正規分布（相関は\cref{prop:14-corr}）の数値積分で求める．
 \end{enumerate}
-\kakomon{2017}{2} では $\alpha(t)=0.05t^2$ で $t_1=0.4$ なら $\alpha(0.4)=0.008$，$c_1=z_{0.008}=2.41$，最終解析で消費するのは $0.042$．
+各回の事象「それまで棄却されず，第 $k$ 回で初めて棄却」は互いに排反なので，全体の第1種の過誤確率は増分の和 $\alpha(t_K)=\alpha$ になる．
+\kakomon{2017}{2} では $\alpha(t)=0.05t^2$ で $t_1=0.4$ なら $\alpha(0.4)=0.05\times0.16=0.008$，$c_1=z_{0.008}=2.41$，最終解析で消費するのは $0.05-0.008=0.042$．
 最終の限界値 $c_2$ は
 \[
-\int_{-\infty}^{c_1}\int_{c_2}^{\infty}\phi_2\bigl(x_1,x_2;\sqrt{0.4}\bigr)\,\dd x_2\,\dd x_1=0.042
+\Prob(Z(0.4)\le c_1,\ Z(1)>c_2)=\int_{-\infty}^{c_1}\int_{c_2}^{\infty}\phi_2\bigl(x_1,x_2;\sqrt{0.4}\bigr)\,\dd x_2\,\dd x_1=0.042
 \]
 を満たす値で，数値計算すると $c_2\approx1.68$（名目の $z_{0.05}=1.645$ よりわずかに大きい）．
 $\alpha$ 消費関数法の利点は，解析の回数や時期をあらかじめ固定しなくてよいことで，
-途中で $t=0.7$ の解析を追加しても，消費する $\alpha$ は $\alpha(0.7)-\alpha(0.4)=0.0165$，最終は $0.05-\alpha(0.7)=0.0255$ と自動的に決まる．
+途中で $t=0.7$ の解析を追加しても，消費する $\alpha$ は $\alpha(0.7)-\alpha(0.4)=0.0245-0.008=0.0165$，最終は $0.05-\alpha(0.7)=0.0255$ と自動的に決まる．
 
 \begin{table}[htbp]
 \centering\small
@@ -78,156 +104,134 @@ Pocock 型 & $\alpha\log\{1+(e-1)t\}$ & 各回ほぼ同じ限界値．早期中�
 \bottomrule
 \end{tabular}
 \end{table}
-\Youchui O'Brien--Fleming 型の式に $z_{\alpha/2}$ が現れるのは両側検定だからではない．O'Brien--Fleming 型の境界は $Z(t)>c/\sqrt t$，すなわち $B(t)>c$ であり，Brown 運動の鏡像原理から，時点 $t$ までに片側の水準 $c$ を越える確率は$\Prob(\max_{s\le t}B(s)\ge c)=2\{1-\Phi(c/\sqrt t)\}$ である．$t=1$ でこれを片側水準 $\alpha$ とおくと $c=z_{\alpha/2}$ となり，$\alpha(t)=2-2\Phi(z_{\alpha/2}/\sqrt t)$ を得る（$\alpha(1)=\alpha$）．たとえば片側 $\alpha=0.025$ なら $z_{\alpha/2}=z_{0.0125}=2.241$ を用いる．両側水準 $\alpha$ で対称な境界を設計する場合は，片側 $\alpha/2$ として同じ式を適用するのが一般的である（ソフトウェアによって $\alpha$ の意味が異なるので確認すること）．
-\begin{supbox}[補足：無効中止]
-効果が見込めないときの早期中止（無効中止）には，$\beta$ 消費関数による下側の境界や，条件付き検出力を用いる．
-無効中止の境界は第1種の過誤を増やさない（拘束的でなければ $\alpha$ の計算には入れない）．
-\end{supbox}
+\Youchui O'Brien--Fleming 型の式の $z_{\alpha/2}$ は両側検定を意味しない（$\alpha$ は片側水準で，$t=1$ で $2-2\Phi(z_{\alpha/2})=\alpha$ となるように置かれている）．
+どの関数でも，消費する $\alpha$ の計算は上の手順と同じである．
 
-\section{第II相の二段階デザイン}\label{sec:14-simon}
-\Hinshutsu 単群で有効率 $\pi$ を評価する．$\pi_0$（これ以下なら無効），$\pi_1$（期待する有効率）とし，$H_0:\pi\le\pi_0$ を検定する．
-\begin{itemize}
-\item 第1段階：$n_1$ 人を治療し，有効数 $X_1\le r_1$ なら無効として中止．
-\item 第2段階：$X_1>r_1$ なら $n_2$ 人を追加し，総有効数 $X_1+X_2>r$ なら有効と結論．
-\end{itemize}
-$b(x;\pi,n)$，$B(x;\pi,n)=\sum_{k\le x}b(k;\pi,n)$ として（$X_1,X_2$ は独立）
-\begin{align}
-\alpha&=\Prob(\text{有効と結論}\mid\pi_0)=\sum_{x=r_1+1}^{n_1}b(x;\pi_0,n_1)\{1-B(r-x;\pi_0,n_2)\},\label{eq:14-simonalpha}\\
-\beta&=\Prob(\text{無効と結論}\mid\pi_1)=B(r_1;\pi_1,n_1)+\sum_{x=r_1+1}^{\min(n_1,r)}b(x;\pi_1,n_1)B(r-x;\pi_1,n_2),\label{eq:14-simonbeta}\\
-\mathrm{PET}&=B(r_1;\pi_0,n_1),\qquad \E[N\mid\pi_0]=n_1+(1-\mathrm{PET})\,n_2.\label{eq:14-simonEN}
-\end{align}
-（$r-x<0$ なら $B(r-x)=0$．）\kakomon{2017}{3} の設計 $(n_1,r_1,n_2,r)=(5,0,7,3)$ は，$\alpha\le0.05$，$\beta\le0.1$ を満たす設計のうち最大症例数 $n_1+n_2=12$ を最小にし，その中で $\E[N\mid\pi_0]$ を最小にするもの（Simon のミニマックスデザイン）にあたる．
-公式解答は「$\E[N\mid\pi_0]$ を最小にする」デザインと述べているが，同じ条件で $\E[N\mid\pi_0]$ を最小にする最適デザインは $(4,0,9,3)$（$\alpha=0.029$，$\beta=0.093$，$\E[N\mid\pi_0]=7.10$）である（二項確率の全探索による）．
-\begin{supbox}[補足（出典：Simon \cite{simon1989}）]
-Simon の最適（optimal）デザインは $\E[N\mid\pi_0]$ を，ミニマックス（minimax）デザインは最大症例数 $n_1+n_2$ を最小化する．
-無効な治療に多くの患者を曝さないことが第1段階の目的である．
-\end{supbox}
-
-\section{多重性}\label{sec:14-mult}
+\section{多重性と FWER}\label{sec:14-mult}
 \Hissu
 \subsection{FWER}
 \begin{teigi}[FWER]\label{def:14-fwer}
 検定する帰無仮説の族 $\{H_1,\dots,H_m\}$ について，少なくとも1つの真の帰無仮説を誤って棄却する確率を FWER（familywise error rate）という．
-どの帰無仮説が真であっても FWER $\le\alpha$ となる制御を\textbf{強い制御}，すべての帰無仮説が真のときだけ保証されるものを\textbf{弱い制御}という．
+どの帰無仮説が真であっても（真偽のどの組合せでも）FWER $\le\alpha$ となる制御を\textbf{強い制御}，すべての帰無仮説が真のとき（完全帰無仮説）だけ保証されるものを\textbf{弱い制御}という．
 \end{teigi}
-各検定を水準 $\alpha$ で行うと，独立な $m$ 個の検定では $\mathrm{FWER}=1-(1-\alpha)^m$．
-$m=2$，$\alpha=0.05$ で $0.0975$（\kakomon{2025}{4}），$m=3$，$\alpha=0.025$ で $1-0.975^3=0.073$（\kakomon{2024}{4}）．
+真の帰無仮説が1つもなければ，誤って棄却しうる仮説がないので FWER $=0$ である．
+各検定を水準 $\alpha$ で行うと，真の帰無仮説が複数あれば FWER は一般に $\alpha$ を超える．
 
-\subsection{単一段階の方法}
-\begin{itemize}
-\item \textbf{Bonferroni}：各検定を $\alpha/m$ で行う．Boole の不等式 $\Prob(\cup A_i)\le\sum\Prob(A_i)$ により，依存関係によらず強い制御．
-\item \textbf{Šidák}：独立なら $1-(1-\alpha_1)(1-\alpha_2)=\alpha$，等しく配分して $\alpha_k=1-(1-\alpha)^{1/m}$（$m=2$，$\alpha=0.05$ で $0.0253$）．Bonferroni よりわずかに大きい．
-\end{itemize}
-\begin{meidai}[正の相関と FWER（\kakomon{2025}{4}〔2〕）]\label[meidai]{prop:14-rho}
-$(Z_1,Z_2)$ が相関 $\rho\ge0$ の標準2変量正規分布に従い，各検定を $Z_k>z_\alpha$ で棄却するとき，
-$\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)$，$\phi(\rho)=\Prob(Z_1>z_\alpha,Z_2>z_\alpha)$ であり，$\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)=2\alpha-\alpha^2$．
+\subsection{Bonferroni 法}
+\begin{meidai}[Bonferroni 法]\label[meidai]{prop:14-bonf}
+各 $H_i$ を有意水準 $\alpha/m$ で検定すると，検定統計量の依存関係によらず FWER $\le\alpha$（強い制御）．
 \end{meidai}
 \begin{proof}
-和事象の確率から $\Prob(A_1\cup A_2)=\alpha+\alpha-\phi(\rho)$．$\rho=0$ なら独立で $\phi(0)=\alpha^2$．$\rho\ge0$ では $\phi(\rho)\ge\alpha^2$（Slepian の不等式．試験では証明なしに使用可）なので $\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$．
+真の帰無仮説の添字集合を $I_0$（$|I_0|=m_0\le m$），$A_i$ を「$H_i$ を棄却」とする．Boole の不等式 $\Prob(\cup A_i)\le\sum\Prob(A_i)$ より
+$\mathrm{FWER}=\Prob\bigl(\bigcup_{i\in I_0}A_i\bigr)\le\sum_{i\in I_0}\alpha/m=m_0\alpha/m\le\alpha$．
 \end{proof}
-正の相関があると，独立を仮定した調整（Šidák）や Bonferroni は保守的になる．相関を利用すれば限界値を緩められる（Dunnett 法）．
+$p$ 値で書けば「$p_i\le\alpha/m$ なら棄却」である．\kakomon{2024}{4}〔2〕では3つの対比較なので $\alpha/3$．
 
-\subsection{段階的方法}
-\begin{itemize}
-\item \textbf{Holm}（ステップダウン）：$p_{(1)}\le\dots\le p_{(m)}$ について，$p_{(k)}\le\alpha/(m-k+1)$ が $k=1,2,\dots$ と成り立つ限り棄却し，初めて成り立たなかったところで止める．強い制御で Bonferroni より常に強力．
-\item \textbf{Simes 検定}（大域帰無仮説 $\cap H_k$ の検定）：ある $k$ で $p_{(k)}\le k\alpha/m$ なら棄却．大域帰無仮説の下で，独立なら棄却確率は $\alpha$ ちょうど，正の依存（PRDS）の下では $\alpha$ 以下．
-      $m=2$ では「$p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$」で，Bonferroni（$p_{(1)}\le\alpha/2$）との差は正方形 $\alpha/2<p_1,p_2\le\alpha$ の部分（\kakomon{2025}{4}〔1-4〕）．
-\item \textbf{Hochberg}（ステップアップ）：$k=m,m-1,\dots$ の順に $p_{(k)}\le\alpha/(m-k+1)$ となる最大の $k$ を探し，$H_{(1)},\dots,H_{(k)}$ を棄却．Simes 検定による閉手順（Hommel 法）の簡便版で，Hommel 法より保守的だが Holm 法より強力．
-\end{itemize}
+\subsection{Holm 法}
+\begin{meidai}[Holm 法（ステップダウン）]\label[meidai]{prop:14-holm}
+$p$ 値を小さい順に $p_{(1)}\le\dots\le p_{(m)}$，対応する仮説を $H_{(1)},\dots,H_{(m)}$ とする．
+$k=1,2,\dots$ の順に $p_{(k)}\le\alpha/(m-k+1)$ を調べ，成り立つ限り $H_{(k)}$ を棄却し，初めて成り立たなかったところで止める（以降は棄却しない）．
+この方法は依存関係によらず FWER を強く $\alpha$ 以下に制御し，Bonferroni 法で棄却される仮説はすべて棄却する．
+\end{meidai}
+\begin{proof}
+真の帰無仮説の数を $m_0\ge1$ とする．真の帰無仮説のうち $p$ 値が最小のものが $k$ 番目に来たとすると，それより前には偽の帰無仮説しかないので $k-1\le m-m_0$，すなわち $m-k+1\ge m_0$．
+真の帰無仮説を1つでも棄却するには，この $H_{(k)}$ を棄却しなければならず，そのためには $p_{(k)}\le\alpha/(m-k+1)\le\alpha/m_0$．
+よって $\mathrm{FWER}\le\Prob(\text{ある }i\in I_0\text{ で }p_i\le\alpha/m_0)\le m_0\cdot\alpha/m_0=\alpha$．
+後半は，$\alpha/(m-k+1)\ge\alpha/m$ なので，Bonferroni で棄却される $p_{(1)},\dots$ は Holm でも順に棄却されることによる．
+\end{proof}
 
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[scale=5]
-\draw[->] (0,0)--(0.42,0) node[right,font=\scriptsize]{$p_1$};
-\draw[->] (0,0)--(0,0.42) node[above,font=\scriptsize]{$p_2$};
-\fill[bkblue!25] (0,0) rectangle (0.1,0.4);
-\fill[bkblue!25] (0,0) rectangle (0.4,0.1);
-\fill[bkorange!50] (0.1,0.1) rectangle (0.2,0.2);
-\draw (0.1,0)--(0.1,-0.01) node[below,font=\scriptsize]{$\alpha/2$};
-\draw (0.2,0)--(0.2,-0.01) node[below,font=\scriptsize]{$\alpha$};
-\draw (0,0.1)--(-0.01,0.1) node[left,font=\scriptsize]{$\alpha/2$};
-\draw (0,0.2)--(-0.01,0.2) node[left,font=\scriptsize]{$\alpha$};
-\node[font=\scriptsize,align=left,anchor=west] at (0.24,0.3) {青：Bonferroni の棄却域\\橙：Simes で追加される棄却域};
-\end{tikzpicture}
-\caption{2つの $p$ 値に対する大域帰無仮説の棄却域（\kakomon{2025}{4}）}\label{fig:14-simes}
-\end{figure}
+\section{一元配置分散分析}\label{sec:14-anova}
+準1級の範囲なので公式だけをまとめる．$a$ 群，群 $i$ の $n_i$ 人（$N=\sum_in_i$）について
+\[
+y_{ij}=\mu+\alpha_i+\varepsilon_{ij},\qquad \varepsilon_{ij}\iid\Normal(0,\sigma^2),\qquad \sum_{i=1}^an_i\alpha_i=0
+\]
+とする．群平均を $\bar y_{i\cdot}$，全平均を $\bar y_{\cdot\cdot}$ として
+\[
+S_T=\sum_{i}\sum_{j}(y_{ij}-\bar y_{\cdot\cdot})^2,\qquad
+S_A=\sum_{i}n_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})^2,\qquad
+S_E=\sum_{i}\sum_{j}(y_{ij}-\bar y_{i\cdot})^2,
+\]
+\begin{equation}
+S_T=S_A+S_E,\qquad
+F=\frac{S_A/(a-1)}{S_E/(N-a)}\ \sim\ F(a-1,\,N-a)\quad(H_0:\alpha_1=\dots=\alpha_a=0\ \text{の下で}).\label{eq:14-anova}
+\end{equation}
+$F>F_{a-1,N-a}(\alpha)$（$F$ 分布の上側 $100\alpha\%$ 点）で $H_0$（全群の平均が等しい）を棄却する．
+$S_E/(N-a)$ は $H_0$ の真偽によらず $\sigma^2$ の不偏推定量である．$\sigma^2$ が既知なら $S_A/\sigma^2\sim\chi^2_{a-1}$（$H_0$ の下）を用いる．
+$a=2$ では $F$ は2標本 $t$ 統計量の2乗に一致する．
 
-\subsection{閉検定手順とゲートキーピング}
+$H_0:\mu_0=\mu_1=\dots=\mu_J$ は，各用量対プラセボの帰無仮説 $H_{0j}:\mu_0=\mu_j$ の\textbf{共通部分} $\bigcap_jH_{0j}$ である．
+この見方から，分散分析を「ゲート」にした対比較の性質を次節の閉検定手順で調べる．
+
+\section{閉検定手順}\label{sec:14-closed}
+\Hissu
 \begin{teiri}[閉検定手順]\label[teiri]{thm:14-closed}
-族のすべての共通部分仮説 $H_I=\cap_{i\in I}H_i$ に水準 $\alpha$ の検定を用意し，
-$H_i$ を「$i$ を含むすべての $H_I$ が棄却されたとき」に棄却すると，FWER は強い意味で $\alpha$ 以下に制御される．
+族のすべての共通部分仮説 $H_I=\bigcap_{i\in I}H_i$（$I\subset\{1,\dots,m\}$，$I\ne\emptyset$）に水準 $\alpha$ の検定を用意し，
+$H_i$ を「$i$ を含むすべての $I$ について $H_I$ が棄却されたとき」に棄却すると，FWER は強い意味で $\alpha$ 以下に制御される．
 \end{teiri}
 \begin{proof}
-真の帰無仮説の添字集合を $I_0$ とする．真の $H_i$ $(i\in I_0)$ が1つでも棄却されるには $H_{I_0}$（真）が棄却されなければならず，その確率は $\alpha$ 以下．
+真の帰無仮説の添字集合を $I_0\ne\emptyset$ とすると $H_{I_0}$ は真である．真の $H_i$ $(i\in I_0)$ が1つでも棄却されるには $H_{I_0}$ が棄却されなければならず，その確率は $\alpha$ 以下．
 \end{proof}
-Holm 法は各 $H_I$ を Bonferroni で検定する閉手順である．Simes 検定による閉手順は Hommel 法で，Hochberg 法はその保守的な簡便版である．
-\paragraph{固定順序（階層的）検定}
-あらかじめ順序を決め，前の仮説が棄却されたときだけ次を水準 $\alpha$ で検定する．閉手順の特別な場合で，主要評価項目→副次評価項目のゲートキーピングに使われる．
-非劣性→優越性の順の検定もこれにあたる．
-\paragraph{分散分析をゲートにした対比較（\kakomon{2024}{4}〔3〕）}
-一元配置分散分析で全体の帰無仮説が棄却されたときだけ各対比較を水準 $\alpha$ で行う方法は，完全帰無仮説の下では FWER を制御する（弱い制御）．
-しかし「$\mu_0=\mu_1=\mu_2<\mu_3$」のように真の帰無仮説が2つ以上ある部分的帰無仮説では，全体の検定は $\mu_3$ のためにほぼ確実に棄却され，
-その後2つの真の帰無仮説をそれぞれ水準 $\alpha$ で検定することになり FWER は $\alpha$ を超えうる．
-FWER が保証されるのは，すべての帰無仮説が真か，真の帰無仮説が高々1つの場合である．
+\begin{itemize}
+\item Holm 法は，各 $H_I$ を Bonferroni（$\min_{i\in I}p_i\le\alpha/|I|$）で検定する閉検定手順と同じ結果を与える．
+\item \textbf{固定順序（階層的）検定}：あらかじめ順序 $H_1\to H_2\to\cdots$ を決め，前の仮説がすべて棄却されたときだけ次を水準 $\alpha$ で検定する．
+      $H_I$ を「$I$ の中で最も順序の早い仮説の検定」で検定する閉手順にあたり，強い制御が成り立つ．主要評価項目→副次評価項目，非劣性→優越性（\cref{sec:13-ni}）の順の検定がこれにあたる．
+\end{itemize}
 
-\subsection{多対1比較と Dunnett 法}
-\begin{meidai}[多対1比較の相関（\kakomon{2024}{4}〔4〕）]\label[meidai]{prop:14-dunnett}
-$Z_j=(\bar Y_j-\bar Y_0)/\sqrt{\sigma^2(1/n_j+1/n_0)}$ について，すべての帰無仮説が真のとき
-\[
-\Corr(Z_j,Z_k)=\sqrt{\frac{n_jn_k}{(n_j+n_0)(n_k+n_0)}}\quad(j\ne k),\qquad n_j=n_k=n_0\ \text{なら}\ \frac12.
-\]
-\end{meidai}
-\begin{proof}
-$\Cov(\bar Y_j-\bar Y_0,\bar Y_k-\bar Y_0)=\V[\bar Y_0]=\sigma^2/n_0$（共通の対照群のみが共有される）．
-各分散で割って $\frac{1/n_0}{\sqrt{(1/n_j+1/n_0)(1/n_k+1/n_0)}}=\sqrt{\frac{n_jn_k}{(n_j+n_0)(n_k+n_0)}}$．
-\end{proof}
-Dunnett 法はこの相関をもつ多変量正規（$t$）分布の最大値の分布から共通の限界値を求め，Bonferroni より緩い限界値で強い制御を行う．
+\paragraph{分散分析で保護した対比較（\kakomon{2024}{4}〔3〕）}
+プラセボ（$j=0$）と3用量で，一元配置分散分析（水準 $\alpha$）で $H_0:\mu_0=\mu_1=\mu_2=\mu_3$ が棄却されたときだけ，
+$H_{0j}:\mu_0=\mu_j$（$j=1,2,3$）をそれぞれ水準 $\alpha$ の $z$ 検定で検定する．真の帰無仮説の数で場合分けする．
+\begin{itemize}
+\item \textbf{すべて真}（$\mu_0=\mu_1=\mu_2=\mu_3$）：誤った棄却には分散分析での棄却が必要で，その確率は $\alpha$．よって FWER $\le\alpha$．
+\item \textbf{真がちょうど1つ}（$H_{0j}$ だけ真）：誤った棄却は $H_{0j}$ の $z$ 検定の棄却を含むので FWER $\le\Prob(H_{0j}\text{ を棄却})=\alpha$．
+\item \textbf{真が1つもない}：FWER $=0$．
+\item \textbf{真がちょうど2つ}（例えば $\mu_0=\mu_1=\mu_2\ne\mu_3$）：$\mu_3$ が大きく異なるか症例数が大きければ分散分析はほぼ確実に棄却され，
+      その後2つの真の帰無仮説 $H_{01},H_{02}$ をそれぞれ水準 $\alpha$ で検定することになる．FWER は $\Prob(H_{01}\text{ または }H_{02}\text{ を棄却})$ に近づき，これは $\alpha$ を超えうる．
+\end{itemize}
+したがって，各群の人数によらず FWER $\le\alpha$ が保証されるのは「$\mu_0=\mu_1=\mu_2=\mu_3$」または「$H_{0j}$ のうち真であるものが高々1つ」の場合である．
+閉検定手順の言葉でいえば，2つの仮説の共通部分 $H_{0j}\cap H_{0k}$ に対する水準 $\alpha$ の検定が欠けているため，一般には弱い制御にとどまる．
+プラセボと2用量（仮説が2つ）なら，共通部分は全体の帰無仮説だけなのでこの手順は閉検定手順そのものになり，強い制御が成り立つ．
 
-\subsection{複数の主要評価項目}
-\begin{supbox}[補足（出典：FDA Multiple Endpoints ガイダンス \cite{fda:multiple}）]
-「複数のうちどれか1つで有効」を主張するなら多重性の調整が必要である．
-「すべての評価項目で有効（co-primary）」を要件とするなら，IUT（\cref{thm:13-iut}）により各検定を水準 $\alpha$ で行ってよいが，
-全体の検出力は各検出力の積程度に下がる（正の相関があれば少し改善）．
-\end{supbox}
-
-\section{用量反応と対比}\label{sec:14-contrast}
-各群の平均 $\bar Y_j\sim\Normal(\mu_j,\sigma^2/n_j)$（$j=0,\dots,J$，独立）について，$\sum c_j=0$ を満たす対比係数 $\bm c$ による
+\section{用量反応と線形対比}\label{sec:14-contrast}
+各群の平均 $\bar Y_j\sim\Normal(\mu_j,\sigma^2/n_j)$（$j=0,\dots,J$，独立，$\sigma^2$ 既知）について，$\sum c_j=0$ を満たす対比係数 $\bm c$ による
 \begin{equation}
 Z_c=\frac{\sum_jc_j\bar Y_j}{\sqrt{\sigma^2\sum_jc_j^2/n_j}}\label{eq:14-contrast}
 \end{equation}
-は $H_0:\sum c_j\mu_j=0$ の検定統計量である．$\sum c_j=0$ なので全群の平均が等しければ $H_0$ が成り立つ．
-\begin{itemize}
-\item \textbf{直線的な用量反応}（等間隔の用量，各群同数）：$\bm c\propto(-3,-1,1,3)$（中心化した用量）．
-      正規化すると $(-3,-1,1,3)/\sqrt{20}$（\kakomon{2024}{4}〔5〕）．真の $\mu_j$ が直線なら，この対比が最も検出力が高い．
-\item \textbf{プラセボ対全用量の平均}：$(-3,1,1,1)$．
-\item 2 値データでの直線対比の検定が Cochran--Armitage 傾向性検定（\cref{sec:04-trend}）である．
-\end{itemize}
-\begin{meidai}[対比検定の相関（\kakomon{2024}{4}〔6〕）]\label[meidai]{prop:14-contrastcorr}
-$H_0$ の下で $\Corr(Z_c,Z_d)=\dfrac{\sum c_jd_j/n_j}{\sqrt{\sum c_j^2/n_j}\sqrt{\sum d_j^2/n_j}}$．各群同数なら $\bm c$ と $\bm d$ のなす角の余弦．
+は $H_0:\sum c_j\mu_j=0$ の検定統計量で，$H_0$ の下で $\Normal(0,1)$ に従う．$\sum c_j=0$ なので全群の平均が等しければ $H_0$ が成り立つ．
+\begin{meidai}[直線的な用量反応の対比]\label[meidai]{prop:14-linear}
+各群同数（$n_j=n$）で，真の平均が用量 $x_j$ の1次式 $\mu_j=a+bx_j$ のとき，$\E[Z_c]$ の絶対値を最大にする対比は中心化した用量 $c_j\propto x_j-\bar x$（$\bar x=\sum_jx_j/(J+1)$）である．
 \end{meidai}
-$(-3,-1,1,3)$ と $(-3,1,1,1)$ では $\frac{9-1+1+3}{\sqrt{20}\sqrt{12}}=\frac{12}{\sqrt{240}}=\frac{3}{\sqrt{15}}\approx0.775$．
-複数の対比（用量反応の形の候補）を検定するときは，この相関を用いた多重性調整を行う（MCP-Mod などの方法）．
+\begin{proof}
+$\sum c_j=0$ より $\sum c_j\mu_j=b\sum c_jx_j=b\sum c_j(x_j-\bar x)$．よって $\E[Z_c]=b\sqrt n\sum c_j(x_j-\bar x)/(\sigma\|\bm c\|)$．
+Cauchy--Schwarz の不等式 $|\sum c_j(x_j-\bar x)|\le\|\bm c\|\,\|\bm x-\bar x\bm1\|$ の等号は $\bm c\propto\bm x-\bar x\bm1$ のときで，これは $\sum c_j=0$ を満たす．
+\end{proof}
+\begin{itemize}
+\item 等間隔の用量（例：0, 40, 80, 120 mg）では $x_j-\bar x=-60,-20,20,60\propto(-3,-1,1,3)$．
+      ノルムを1に正規化すると $(-3,-1,1,3)/\sqrt{20}$（\kakomon{2024}{4}〔5〕）．
+\item プラセボ対全用量の平均の比較は $(-3,1,1,1)$．
+\item 2値データでの直線対比の検定が Cochran--Armitage 傾向性検定（\cref{sec:04-trend}）である．
+\end{itemize}
+\Youchui 直線対比が有意でも，用量反応が直線であることが示されたわけではない（単調でない形でも $\sum c_j\mu_j\ne0$ になりうる）．
 
 \section{仮定}\label{sec:14-assump}
 \begin{itemize}
-\item 群逐次：独立増分構造（ログランク・スコア統計量で近似的に成立），解析時期が結果に依存しない．
-\item 二段階デザイン：患者の独立性，二項モデル．
-\item 多重性の方法：Bonferroni・Holm は依存関係によらず有効．Simes・Hochberg は独立または正の依存を要する．Dunnett は正規性・等分散．
+\item 群逐次：$H_0$ の下で統計量の部分和が近似的に独立増分・正規（ログランク・スコア統計量で近似的に成立），解析時期が結果に依存しない．
+\item Bonferroni・Holm：依存関係によらず有効．
+\item 分散分析・対比：独立性，正規性，等分散．
 \end{itemize}
 
 \section{結果の解釈}\label{sec:14-interp}
 \begin{itemize}
 \item 中間解析で早期に有効中止した試験は，効果を過大推定する傾向がある（早く境界を越えたのは偶然大きく出たため）．
 \item 多重性の調整で有意にならなかった副次項目の名目上の $p<0.05$ は，探索的な結果として扱う．
-\item 用量反応の対比が有意でも，どの用量が有効かは多対1比較や用量反応モデルで別に評価する．
+\item 用量反応の対比が有意でも，どの用量が有効かは各用量対プラセボの比較（多重性を調整して）で別に評価する．
 \end{itemize}
 
 \section{手法選択}\label{sec:14-choice}
 \begin{itemize}
-\item 中間解析：$\alpha$ 消費関数（通常は O'Brien--Fleming 型）．
-\item 第II相単群：Simon の二段階デザイン．
-\item 多用量対プラセボ：Dunnett 法，閉手順（固定順序・Holm），用量反応の対比．
-\item 複数の主要評価項目：どれか1つで主張 → Bonferroni/Holm/Hochberg，すべてで主張 → 調整不要（IUT）．
+\item 中間解析：$\alpha$ 消費関数で各解析の限界値を決める．
+\item 複数の仮説（複数の用量・評価項目）のどれか1つでも主張する：Bonferroni 法，より強力にするなら Holm 法．あらかじめ順序が決まっていれば固定順序検定．
+\item 3群以上の平均の一様性：一元配置分散分析．分散分析をゲートにした対比較は，仮説が3つ以上なら強い制御にならない．
+\item 用量反応の傾向：中心化した用量を係数とする線形対比（2値なら Cochran--Armitage）．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:14-err}
@@ -235,19 +239,19 @@ $(-3,-1,1,3)$ と $(-3,1,1,1)$ では $\frac{9-1+1+3}{\sqrt{20}\sqrt{12}}=\frac{
 \begin{itemize}
 \item 中間解析ごとに名目の $\alpha$ で検定する．
 \item $\alpha$ 消費関数で，第 $k$ 回に消費する $\alpha$ を $\alpha(t_k)$ とする（正しくは増分 $\alpha(t_k)-\alpha(t_{k-1})$）．
-\item $\Corr[Z(t_1),Z(t_2)]$ を $t_1/t_2$ とする（正しくは $\sqrt{t_1/t_2}$）．
-\item 二段階デザインの $\beta$ で第1段階の中止を数え忘れる．
-\item 分散分析をゲートにすれば常に FWER が制御されると考える．
+\item $\Corr[Z(t_1),Z(t_2)]$ を $t_1/t_2$ とする（正しくは $\sqrt{t_1/t_2}$）．$B(t)$ と $Z(t)$ の共分散を取り違える．
+\item Holm 法で，一度棄却できなかった後の仮説も検定し続ける．
+\item 分散分析をゲートにすれば常に FWER が強く制御されると考える．
+\item 対比係数の和を0にし忘れる（全群が等しくても $H_0$ が成り立たなくなる）．
 \end{itemize}
 \end{warnbox}
 
 \section{数理統計との接続}\label{sec:14-link}
 \begin{linkbox}
 \begin{itemize}
-\item $B(t)=\sqrt tZ(t)$ の独立増分構造は，独立な観測の部分和 $S_k=\sum_{i\le k}X_i$ の共分散 $\Cov(S_k,S_l)=\min(k,l)\sigma^2$ と同じである．
-\item $p$ 値が帰無仮説の下で $\Unif(0,1)$ に従うこと（『現代数理統計学の基礎』定理7.22）が，Bonferroni・Šidák・Simes の FWER の計算の基礎である．
-\item 2変量正規分布の上側同時確率が $\rho$ について増加すること（Slepian の不等式）が\cref{prop:14-rho}の背景にある．
-\item \kakomonSM{2025}{4} は二項分布の確率化検定を扱い，離散分布では有意水準をちょうど $\alpha$ にできない（二段階デザインの $\alpha$ が $0.05$ より小さい）ことの背景となる．
+\item $B(t)=\sqrt tZ(t)$ の共分散構造は，独立な観測の部分和 $S_k=\sum_{i\le k}X_i$ の共分散 $\Cov(S_k,S_l)=\min(k,l)\sigma^2$ と同じである．
+\item $p$ 値が帰無仮説の下で $\Unif(0,1)$ に従うこと（『現代数理統計学の基礎』定理7.22）から $\Prob(p_i\le\alpha/m)=\alpha/m$ となり，Bonferroni 法の証明が成り立つ．
+\item 一元配置分散分析の $F$ 分布は，$S_A/\sigma^2$ と $S_E/\sigma^2$ が独立な $\chi^2$ 分布に従うこと（Cochran の定理）による．
 \end{itemize}
 \end{linkbox}
 
@@ -257,88 +261,61 @@ $(-3,-1,1,3)$ と $(-3,1,1,1)$ では $\frac{9-1+1+3}{\sqrt{20}\sqrt{12}}=\frac{
 \begin{enumerate}[label=(\arabic*)]
 \item 中間解析と最終解析で消費する $\alpha$ を求め，中間解析の棄却限界値を求めよ（$z_{0.00625}=2.50$）．
 \item $\Corr[Z(0.5),Z(1)]$ を求め，最終解析の限界値 $c_2$ を定める式を書け（数値計算では $c_2\approx2.02$）．
+\item 計画を変更して $t=0.75$ にも中間解析を追加した．2回目の中間解析と最終解析で消費する $\alpha$ を求めよ．
 \item 両解析を名目の $1.96$ で行った場合の全体の第1種の過誤確率は約 $0.042$ である．このことの意味を述べよ．
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[二段階デザイン]\label{reidai:14-2}
-$\pi_0=0.2$，$\pi_1=0.5$ で，$n_1=6$，$r_1=1$，$n_2=6$，$r=4$ のデザインを考える（総有効数 $\ge5$ で有効）．
-$\Bin(6,\pi)$ の確率関数 $b(x)$ と上側確率 $\Prob(X\ge x)$ は次のとおり．
-\begin{center}\small
-\begin{tabular}{@{}ccccc@{}}
-\toprule
-$x$ & $b(x;0.2,6)$ & $\Prob(X\ge x;0.2)$ & $b(x;0.5,6)$ & $\Prob(X\ge x;0.5)$\\
-\midrule
-0 & 0.2621 & 1 & 0.0156 & 1\\
-1 & 0.3932 & 0.7379 & 0.0938 & 0.9844\\
-2 & 0.2458 & 0.3446 & 0.2344 & 0.8906\\
-3 & 0.0819 & 0.0989 & 0.3125 & 0.6562\\
-4 & 0.0154 & 0.0170 & 0.2344 & 0.3438\\
-5 & 0.0015 & 0.0016 & 0.0938 & 0.1094\\
-6 & 0.0001 & 0.0001 & 0.0156 & 0.0156\\
-\bottomrule
-\end{tabular}
-\end{center}
-\begin{enumerate}[label=(\arabic*)]
-\item 早期中止確率 PET と $\E[N\mid\pi_0]$ を求めよ．
-\item $\alpha$ と検出力 $1-\beta$ を求めよ．
-\item $\alpha\le0.05$ を満たすか．満たさない場合の改善策を述べよ．
-\end{enumerate}
-\end{reidai}
-
 \begin{reidai}[多重性]\label{reidai:14-3}
-3つの独立な仮説の $p$ 値が $0.010,\ 0.020,\ 0.030$ であった．$\alpha=0.05$ とする．
 \begin{enumerate}[label=(\arabic*)]
-\item 各検定を $0.05$ で行ったときの完全帰無仮説の下の FWER を求めよ．
-\item Bonferroni，Holm，Hochberg の各方法で棄却される仮説を答えよ．
+\item 3つの仮説の $p$ 値が $0.010,\ 0.020,\ 0.030$ であった．$\alpha=0.05$ として，Bonferroni 法と Holm 法で棄却される仮説を答えよ．
+\item プラセボと2用量の3群で，一元配置分散分析（水準 $\alpha$）で全体の帰無仮説が棄却されたときだけ，各用量対プラセボを水準 $\alpha$ で検定する．
+      この手順は FWER を強く制御するか．プラセボと3用量の4群ではどうか．
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[対比]\label{reidai:14-4}
-プラセボと3用量（等間隔）の各群20人で，平均が $10,12,13,15$，$\sigma^2=16$（既知）であった．
+\begin{reidai}[対比と多重性]\label{reidai:14-4}
+プラセボと3用量（0, 40, 80, 120 mg）の各群20人で，平均が $10,12,13,15$，$\sigma^2=16$（既知）であった．
+片側 $\alpha=0.025$ とし，$z_{0.025}=1.960$，$z_{0.0125}=2.241$，$z_{0.025/3}=2.394$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
-\item 直線対比 $(-3,-1,1,3)$ の検定統計量を求めよ．
-\item 各用量対プラセボの $Z_j$ を求めよ．$Z_1$ と $Z_2$ の相関はいくらか．
+\item 直線的な用量反応を検出する対比係数を作り，その検定統計量を求めて判定せよ．
+\item 各用量対プラセボの $Z_j=(\bar Y_j-\bar Y_0)/\sqrt{\sigma^2(1/20+1/20)}$ を求め，Bonferroni 法と Holm 法で判定せよ．
 \end{enumerate}
 \end{reidai}
 
 \section{解答}\label{sec:14-sol}
 \begin{kaitou}{reidai:14-1}
-(1) $\alpha(0.5)=0.025\times0.25=0.00625$，最終で $0.025-0.00625=0.01875$．$c_1=2.50$．\\
-(2) $\sqrt{0.5/1}=0.707$．$\Prob(Z(0.5)\le2.50,\ Z(1)>c_2)=0.01875$，すなわち
-$\int_{-\infty}^{2.50}\int_{c_2}^{\infty}\phi_2(x_1,x_2;0.707)\dd x_2\dd x_1=0.01875$．\\
-(3) 名目の限界値で2回検定すると，第1種の過誤確率が0.025から0.042へ約1.7倍に増える．中間解析では限界値を調整しなければならない．
-\end{kaitou}
-
-\begin{kaitou}{reidai:14-2}
-(1) $\mathrm{PET}=b(0)+b(1)=0.2621+0.3932=0.6553$．$\E[N]=6+(1-0.6553)\times6=8.07$．\\
-(2) 有効の結論には $X_1=x\ge2$ かつ $X_2\ge5-x$．
-$\alpha=0.2458\times0.0989+0.0819\times0.3446+0.0154\times0.7379+0.0015+0.0001=0.0243+0.0282+0.0114+0.0016=0.065$．
-$1-\beta=0.2344\times0.6562+0.3125\times0.8906+0.2344\times0.9844+0.0938+0.0156=0.1538+0.2783+0.2307+0.1094=0.772$．\\
-(3) $\alpha=0.065>0.05$ で満たさない．$r$ を5に上げる（総有効数 $\ge6$）と $\alpha$ は下がるが検出力も下がるので，
-$n_1,n_2$ を増やしたデザインを探索する必要がある（Simon のデザインはこの探索を系統的に行う）．
+(1) $\alpha(0.5)=0.025\times0.25=0.00625$，最終で $0.025-0.00625=0.01875$．$c_1=z_{0.00625}=2.50$．\\
+(2) \cref{prop:14-corr}より $\sqrt{0.5/1}=0.707$．$\Prob(Z(0.5)\le2.50,\ Z(1)>c_2)=0.01875$，すなわち
+$\int_{-\infty}^{2.50}\int_{c_2}^{\infty}\phi_2(x_1,x_2;0.707)\,\dd x_2\,\dd x_1=0.01875$ を満たす $c_2$．\\
+(3) $\alpha(0.75)=0.025\times0.5625=0.0140625$．2回目は $0.0140625-0.00625=0.0078125$，最終は $0.025-0.0140625=0.0109375$．\\
+(4) 名目の限界値で2回検定すると，第1種の過誤確率が0.025から約0.042へ1.7倍程度に増える．中間解析では限界値を調整しなければならない．
 \end{kaitou}
 
 \begin{kaitou}{reidai:14-3}
-(1) $1-0.95^3=0.143$．\\
-(2) Bonferroni（$0.0167$）：$0.010$ のみ棄却．
-Holm：$0.010\le0.0167$ 棄却，$0.020\le0.025$ 棄却，$0.030\le0.05$ 棄却で3つとも棄却．
-Hochberg：最大の $p=0.030\le0.05$ なので3つとも棄却．
+(1) Bonferroni（$0.05/3=0.0167$）：$0.010$ のみ棄却．
+Holm：$0.010\le0.05/3$ で棄却，$0.020\le0.05/2=0.025$ で棄却，$0.030\le0.05$ で棄却．3つとも棄却．\\
+(2) 仮説は $H_{01}:\mu_0=\mu_1$，$H_{02}:\mu_0=\mu_2$ の2つで，共通部分 $H_{01}\cap H_{02}$ は全体の帰無仮説 $\mu_0=\mu_1=\mu_2$ である．
+分散分析はその水準 $\alpha$ の検定，各 $z$ 検定は $H_{0j}$ の水準 $\alpha$ の検定なので，この手順は閉検定手順（\cref{thm:14-closed}）であり強い制御が成り立つ
+（場合分けでも，真の帰無仮説が2つ（全部）・1つ・0の各場合に FWER $\le\alpha$）．
+4群では，真の帰無仮説がちょうど2つの場合（例：$\mu_0=\mu_1=\mu_2\ne\mu_3$）に FWER が $\alpha$ を超えうるので，強い制御にならない（\cref{sec:14-closed}）．
 \end{kaitou}
 
 \begin{kaitou}{reidai:14-4}
-(1) $\sum c_j\bar Y_j=-30-12+13+45=16$，$\sqrt{16\times20/20}=4$，$Z_c=4.0$．\\
-(2) $\SE=\sqrt{16\times2/20}=1.265$．$Z_1=2/1.265=1.58$，$Z_2=3/1.265=2.37$，$Z_3=5/1.265=3.95$．
-相関は $\sqrt{20\cdot20/(40\cdot40)}=0.5$．
+(1) 中心化した用量 $-60,-20,20,60$ より $\bm c=(-3,-1,1,3)$（\cref{prop:14-linear}）．
+$\sum c_j\bar Y_j=-30-12+13+45=16$，$\sqrt{\sigma^2\sum c_j^2/n}=\sqrt{16\times20/20}=4$，$Z_c=4.0>1.960$ で有意（増加傾向あり）．\\
+(2) $\SE=\sqrt{16\times2/20}=\sqrt{1.6}=1.265$．$Z_1=2/1.265=1.58$，$Z_2=3/1.265=2.37$，$Z_3=5/1.265=3.95$．
+Bonferroni（限界値 $2.394$）：$Z_3$ のみ有意．
+Holm：最大の $Z_3=3.95>2.394$ で棄却，次の $Z_2=2.37>z_{0.025/2}=2.241$ で棄却，$Z_1=1.58<1.960$ で止める．$H_{03},H_{02}$ を棄却．
 \end{kaitou}
 
 \begin{summarybox}
 \begin{itemize}
-\item 情報時間 $t$，$B(t)=\sqrt tZ(t)$，$\Cov[B(t_1),B(t_2)]=\min(t_1,t_2)$，$\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$．
-\item $\alpha$ 消費：第1回 $c_1=z_{\alpha(t_1)}$，第 $k$ 回は増分 $\alpha(t_k)-\alpha(t_{k-1})$ を多変量正規で．
-\item 二段階：$\alpha=\sum_{x>r_1}b(x;\pi_0,n_1)\{1-B(r-x;\pi_0,n_2)\}$，PET $=B(r_1;\pi_0,n_1)$，$\E[N]=n_1+(1-\mathrm{PET})n_2$．
-\item FWER：独立なら $1-(1-\alpha)^m$．Bonferroni $\alpha/m$，Šidák $1-(1-\alpha)^{1/m}$，Holm（ステップダウン），Simes/Hochberg．正の相関で FWER は下がる．
-\item 閉検定手順で強い制御．分散分析ゲートは弱い制御．
-\item 多対1の相関 $\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$（同数なら1/2）．対比の相関は係数ベクトルの余弦．直線対比 $(-3,-1,1,3)$．
+\item 情報時間 $t=I/I_{\max}$（ログランクなら $L/D$）．スコアの部分和が $H_0$ の下で平均0・分散 $\propto$ 情報量・無相関な増分をもつことから $\Cov[B(s),B(t)]=\min(s,t)$（近似），$\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$．
+\item $\alpha$ 消費：第1回 $c_1=z_{\alpha(t_1)}$，第 $k$ 回は増分 $\alpha(t_k)-\alpha(t_{k-1})$ を多変量正規で．2回なら $\Prob(Z_1\le c_1,Z_2>c_2)=\alpha(1)-\alpha(t_1)$．
+\item FWER の強い制御：Bonferroni（$\alpha/m$），Holm（$p_{(k)}\le\alpha/(m-k+1)$ のステップダウン），閉検定手順，固定順序検定．
+\item 一元配置分散分析：$S_T=S_A+S_E$，$F=\{S_A/(a-1)\}/\{S_E/(N-a)\}\sim F(a-1,N-a)$．
+\item 分散分析で保護した対比較：仮説が2つなら閉検定手順で強い制御．3つ以上では，真の帰無仮説が2つ以上あり，かつ全部ではないとき FWER が $\alpha$ を超えうる．
+\item 直線対比：中心化した用量 $(-3,-1,1,3)$，$\sum c_j=0$．
 \end{itemize}
 \end{summarybox}

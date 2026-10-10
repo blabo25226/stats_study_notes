@@ -1,17 +1,18 @@
 \contentsline {chapter}{はじめに}{i}{chapter*.1}%
-\contentsline {section}{本書の対象読者}{i}{section*.2}%
-\contentsline {section}{本書の使い方}{ii}{section*.3}%
-\contentsline {paragraph}{章の構成}{ii}{section*.4}%
-\contentsline {paragraph}{ボックスと表示}{ii}{section*.5}%
-\contentsline {paragraph}{記法}{ii}{section*.6}%
-\contentsline {paragraph}{数値計算について}{ii}{section*.7}%
-\contentsline {chapter}{統計検定1級・医薬生物学の出題構造}{iii}{chapter*.8}%
-\contentsline {paragraph}{試験の形式}{iii}{section*.9}%
-\contentsline {paragraph}{9回分の傾向}{iii}{section*.10}%
-\contentsline {paragraph}{問われる能力}{iii}{section*.11}%
-\contentsline {chapter}{過去問9回分の出題マップ}{iv}{chapter*.12}%
-\contentsline {paragraph}{読み取れること}{iv}{section*.13}%
-\contentsline {chapter}{推奨学習ロードマップ}{v}{chapter*.14}%
+\contentsline {paragraph}{扱う範囲の決め方}{i}{section*.2}%
+\contentsline {section}{本書の対象読者}{i}{section*.3}%
+\contentsline {section}{本書の使い方}{ii}{section*.4}%
+\contentsline {paragraph}{章の構成}{ii}{section*.5}%
+\contentsline {paragraph}{ボックスと表示}{ii}{section*.6}%
+\contentsline {paragraph}{記法}{ii}{section*.7}%
+\contentsline {paragraph}{数値計算について}{iii}{section*.8}%
+\contentsline {chapter}{統計検定1級・医薬生物学の出題構造}{iv}{chapter*.9}%
+\contentsline {paragraph}{試験の形式}{iv}{section*.10}%
+\contentsline {paragraph}{9回分の傾向}{iv}{section*.11}%
+\contentsline {paragraph}{問われる能力}{iv}{section*.12}%
+\contentsline {chapter}{過去問9回分の出題マップ}{v}{chapter*.13}%
+\contentsline {paragraph}{読み取れること}{v}{section*.14}%
+\contentsline {chapter}{推奨学習ロードマップ}{vi}{chapter*.15}%
 \contentsline {chapter}{\numberline {第1章}医療統計の問題をどう読むか}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}問題設定：医療統計の設問の読み方}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}基本概念}{2}{section.1.2}%
@@ -36,15 +37,15 @@
 \contentsline {section}{\numberline {2.1}問題設定}{10}{section.2.1}%
 \contentsline {section}{\numberline {2.2}研究デザイン}{11}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}ランダム化比較試験}{11}{subsection.2.2.1}%
-\contentsline {paragraph}{割付の方法}{11}{section*.18}%
+\contentsline {paragraph}{割付の方法}{11}{section*.19}%
 \contentsline {subsection}{\numberline {2.2.2}観察研究}{11}{subsection.2.2.2}%
 \contentsline {subsection}{\numberline {2.2.3}その他のデザイン}{12}{subsection.2.2.3}%
 \contentsline {section}{\numberline {2.3}効果指標}{12}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}リスク・率・オッズ}{12}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}比較の指標}{13}{subsection.2.3.2}%
-\contentsline {paragraph}{使い分け}{13}{section*.20}%
+\contentsline {subsection}{\numberline {2.3.2}比較の指標}{12}{subsection.2.3.2}%
+\contentsline {paragraph}{使い分け}{13}{section*.21}%
 \contentsline {subsection}{\numberline {2.3.3}RR・OR・HRの関係}{13}{subsection.2.3.3}%
-\contentsline {paragraph}{HRとリスク比}{14}{section*.21}%
+\contentsline {paragraph}{HRとリスク比}{14}{section*.22}%
 \contentsline {subsection}{\numberline {2.3.4}可縮性と非可縮性}{14}{subsection.2.3.4}%
 \contentsline {section}{\numberline {2.4}Estimand（推定対象）}{14}{section.2.4}%
 \contentsline {section}{\numberline {2.5}推定と検定の概要}{15}{section.2.5}%
@@ -60,337 +61,284 @@
 \contentsline {section}{\numberline {3.2}$t$ 検定}{20}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}対応のある $t$ 検定}{20}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}2標本 $t$ 検定}{20}{subsection.3.2.2}%
+\contentsline {paragraph}{Welch の検定}{20}{section*.23}%
 \contentsline {section}{\numberline {3.3}符号検定}{20}{section.3.3}%
-\contentsline {paragraph}{exactなP 値}{21}{section*.22}%
-\contentsline {paragraph}{正規近似}{21}{section*.23}%
+\contentsline {paragraph}{exactなP 値}{21}{section*.24}%
+\contentsline {paragraph}{正規近似}{21}{section*.25}%
 \contentsline {section}{\numberline {3.4}Wilcoxon符号付き順位検定}{21}{section.3.4}%
-\contentsline {paragraph}{exact分布}{21}{section*.24}%
+\contentsline {paragraph}{exact分布}{21}{section*.26}%
 \contentsline {section}{\numberline {3.5}Wilcoxon順位和検定とMann--Whitney検定}{22}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}定義と帰無分布}{22}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Mann--Whitney統計量との関係}{22}{subsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.5.3}exact分布と離散性}{22}{subsection.3.5.3}%
-\contentsline {section}{\numberline {3.6}数理：位置ずれモデルでの検出力}{23}{section.3.6}%
-\contentsline {paragraph}{一様分布の例（\mbox {2025年 医薬 問1}）}{23}{section*.25}%
-\contentsline {paragraph}{正規分布の例}{23}{section*.26}%
-\contentsline {section}{\numberline {3.7}仮定のまとめ}{23}{section.3.7}%
+\contentsline {subsection}{\numberline {3.5.2}Mann--Whitney統計量との関係}{23}{subsection.3.5.2}%
+\contentsline {paragraph}{$\mathrm {P}(X>Y)=1/2$ との関係}{23}{section*.27}%
+\contentsline {subsection}{\numberline {3.5.3}exact分布と離散性}{23}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}3群以上：Kruskal--Wallis 検定}{24}{subsection.3.5.4}%
+\contentsline {section}{\numberline {3.6}数理：位置ずれモデルでの検出力}{24}{section.3.6}%
+\contentsline {paragraph}{一様分布の例（\mbox {2025年 医薬 問1}）}{24}{section*.28}%
+\contentsline {paragraph}{正規分布の例}{24}{section*.29}%
+\contentsline {section}{\numberline {3.7}仮定のまとめ}{24}{section.3.7}%
 \contentsline {section}{\numberline {3.8}結果の解釈}{24}{section.3.8}%
-\contentsline {section}{\numberline {3.9}手法選択}{24}{section.3.9}%
-\contentsline {section}{\numberline {3.10}よくある誤り}{24}{section.3.10}%
-\contentsline {section}{\numberline {3.11}数理統計との接続}{24}{section.3.11}%
-\contentsline {section}{\numberline {3.12}例題}{25}{section.3.12}%
-\contentsline {section}{\numberline {3.13}解答}{25}{section.3.13}%
-\contentsline {chapter}{\numberline {第4章}2 値データと分割表}{27}{chapter.4}%
-\contentsline {section}{\numberline {4.1}問題設定と確率モデル}{28}{section.4.1}%
-\contentsline {section}{\numberline {4.2}$2\times 2$ 表の検定}{28}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}比率の差の検定と Pearson $\chi ^2$}{28}{subsection.4.2.1}%
-\contentsline {paragraph}{共通比率の最尤推定}{28}{section*.29}%
-\contentsline {paragraph}{スコア型統計量（\mbox {2021年 医薬 問3}）}{28}{section*.30}%
-\contentsline {subsection}{\numberline {4.2.2}尤度比検定}{29}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}効果指標の推定とデルタ法}{29}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}デルタ法}{29}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}各指標の分散}{29}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}$K$ 群の比率の一様性の検定}{30}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Cochran--Armitage 傾向性検定}{30}{section.4.5}%
-\contentsline {paragraph}{重み付き最小二乗}{30}{section*.31}%
-\contentsline {paragraph}{帰無仮説の下での分散}{30}{section*.32}%
-\contentsline {section}{\numberline {4.6}対応のある2 値データと McNemar 検定}{31}{section.4.6}%
-\contentsline {subsection}{\numberline {4.6.1}設定}{31}{subsection.4.6.1}%
-\contentsline {subsection}{\numberline {4.6.2}差の分散と信頼区間}{31}{subsection.4.6.2}%
-\contentsline {subsection}{\numberline {4.6.3}McNemar 検定}{31}{subsection.4.6.3}%
-\contentsline {paragraph}{条件付き二項検定}{32}{section*.34}%
-\contentsline {subsection}{\numberline {4.6.4}尤度比検定（\mbox {2018年 医薬 問2}〔3〕〔4〕）}{32}{subsection.4.6.4}%
-\contentsline {subsection}{\numberline {4.6.5}条件付きオッズ比}{32}{subsection.4.6.5}%
-\contentsline {section}{\numberline {4.7}層別 $2\times 2$ 表と Mantel--Haenszel 法}{32}{section.4.7}%
-\contentsline {paragraph}{MH 検定}{32}{section*.35}%
-\contentsline {paragraph}{MH 推定量}{33}{section*.36}%
-\contentsline {section}{\numberline {4.8}仮定}{33}{section.4.8}%
-\contentsline {section}{\numberline {4.9}結果の解釈}{33}{section.4.9}%
-\contentsline {section}{\numberline {4.10}手法選択}{33}{section.4.10}%
-\contentsline {section}{\numberline {4.11}よくある誤り}{33}{section.4.11}%
-\contentsline {section}{\numberline {4.12}数理統計との接続}{34}{section.4.12}%
-\contentsline {section}{\numberline {4.13}例題}{34}{section.4.13}%
-\contentsline {section}{\numberline {4.14}解答}{35}{section.4.14}%
-\contentsline {chapter}{\numberline {第5章}診断検査とROC解析}{37}{chapter.5}%
-\contentsline {section}{\numberline {5.1}問題設定}{38}{section.5.1}%
-\contentsline {section}{\numberline {5.2}基本概念}{38}{section.5.2}%
-\contentsline {paragraph}{有病率への依存}{38}{section*.39}%
-\contentsline {paragraph}{研究デザインと的中率}{39}{section*.40}%
-\contentsline {section}{\numberline {5.3}数理：カットオフと ROC 曲線}{39}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}正規モデルとカットオフ}{39}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}ROC 曲線}{39}{subsection.5.3.2}%
-\contentsline {paragraph}{経験 ROC 曲線の描き方（\mbox {2018年 医薬 問3}〔2〕）}{39}{section*.41}%
-\contentsline {subsection}{\numberline {5.3.3}Youden 指数}{39}{subsection.5.3.3}%
-\contentsline {section}{\numberline {5.4}AUC とその確率的解釈}{40}{section.5.4}%
-\contentsline {paragraph}{台形公式}{40}{section*.42}%
-\contentsline {section}{\numberline {5.5}推定・検定：2検査の比較}{40}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}対応のある感度の比較}{40}{subsection.5.5.1}%
-\contentsline {subsection}{\numberline {5.5.2}対応のある PPV の比較}{41}{subsection.5.5.2}%
-\contentsline {section}{\numberline {5.6}仮定}{41}{section.5.6}%
-\contentsline {section}{\numberline {5.7}結果の解釈}{42}{section.5.7}%
-\contentsline {section}{\numberline {5.8}手法選択}{42}{section.5.8}%
-\contentsline {section}{\numberline {5.9}よくある誤り}{43}{section.5.9}%
-\contentsline {section}{\numberline {5.10}数理統計との接続}{43}{section.5.10}%
-\contentsline {section}{\numberline {5.11}例題}{43}{section.5.11}%
-\contentsline {section}{\numberline {5.12}解答}{44}{section.5.12}%
-\contentsline {chapter}{\numberline {第6章}ロジスティック回帰}{46}{chapter.6}%
-\contentsline {section}{\numberline {6.1}問題設定}{46}{section.6.1}%
-\contentsline {section}{\numberline {6.2}モデルと係数の解釈}{47}{section.6.2}%
-\contentsline {paragraph}{カテゴリ変数}{47}{section*.44}%
-\contentsline {paragraph}{交互作用}{47}{section*.45}%
-\contentsline {section}{\numberline {6.3}数理：尤度・スコア・情報行列}{47}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}対数尤度}{47}{subsection.6.3.1}%
-\contentsline {paragraph}{集計データ}{47}{section*.46}%
-\contentsline {subsection}{\numberline {6.3.2}スコアと情報行列}{48}{subsection.6.3.2}%
-\contentsline {subsection}{\numberline {6.3.3}2群の場合：$2\times 2$ 表との一致}{48}{subsection.6.3.3}%
-\contentsline {section}{\numberline {6.4}推定と検定}{48}{section.6.4}%
-\contentsline {subsection}{\numberline {6.4.1}3つの検定}{48}{subsection.6.4.1}%
-\contentsline {subsection}{\numberline {6.4.2}完全分離}{49}{subsection.6.4.2}%
-\contentsline {section}{\numberline {6.5}共変量調整と交絡}{49}{section.6.5}%
-\contentsline {section}{\numberline {6.6}予測と判別}{49}{section.6.6}%
-\contentsline {section}{\numberline {6.7}モデル選択：AIC と KL 情報量}{50}{section.6.7}%
-\contentsline {section}{\numberline {6.8}症例対照研究とロジスティック回帰}{50}{section.6.8}%
-\contentsline {section}{\numberline {6.9}仮定}{50}{section.6.9}%
-\contentsline {section}{\numberline {6.10}結果の解釈}{51}{section.6.10}%
-\contentsline {section}{\numberline {6.11}手法選択}{51}{section.6.11}%
-\contentsline {section}{\numberline {6.12}よくある誤り}{51}{section.6.12}%
-\contentsline {section}{\numberline {6.13}数理統計との接続}{51}{section.6.13}%
-\contentsline {section}{\numberline {6.14}例題}{52}{section.6.14}%
-\contentsline {section}{\numberline {6.15}解答}{52}{section.6.15}%
-\contentsline {chapter}{\numberline {第7章}疫学研究・交絡・層別・マッチング}{54}{chapter.7}%
-\contentsline {section}{\numberline {7.1}問題設定}{55}{section.7.1}%
-\contentsline {section}{\numberline {7.2}基本概念}{55}{section.7.2}%
-\contentsline {subsection}{\numberline {7.2.1}交絡}{55}{subsection.7.2.1}%
-\contentsline {subsection}{\numberline {7.2.2}粗効果と調整効果・Simpson のパラドックス}{55}{subsection.7.2.2}%
-\contentsline {subsection}{\numberline {7.2.3}効果修飾}{55}{subsection.7.2.3}%
-\contentsline {section}{\numberline {7.3}数理：層別解析}{56}{section.7.3}%
-\contentsline {subsection}{\numberline {7.3.1}Mantel--Haenszel 法}{56}{subsection.7.3.1}%
-\contentsline {subsection}{\numberline {7.3.2}逆分散重み法と Peto の1段階推定}{56}{subsection.7.3.2}%
-\contentsline {paragraph}{Peto の1段階推定（\mbox {2017年 医薬 問4}）}{56}{section*.47}%
-\contentsline {subsection}{\numberline {7.3.3}均一性の検定}{57}{subsection.7.3.3}%
-\contentsline {section}{\numberline {7.4}標準化}{57}{section.7.4}%
-\contentsline {subsection}{\numberline {7.4.1}直接標準化}{57}{subsection.7.4.1}%
-\contentsline {subsection}{\numberline {7.4.2}間接標準化}{57}{subsection.7.4.2}%
-\contentsline {section}{\numberline {7.5}マッチング}{57}{section.7.5}%
-\contentsline {paragraph}{間接比較（\mbox {2022年 医薬 問2}〔5〕）}{58}{section*.48}%
-\contentsline {section}{\numberline {7.6}傾向スコア}{58}{section.7.6}%
-\contentsline {paragraph}{推定と利用}{58}{section*.49}%
-\contentsline {section}{\numberline {7.7}仮定}{59}{section.7.7}%
-\contentsline {section}{\numberline {7.8}結果の解釈}{59}{section.7.8}%
-\contentsline {section}{\numberline {7.9}手法選択}{59}{section.7.9}%
-\contentsline {section}{\numberline {7.10}よくある誤り}{59}{section.7.10}%
-\contentsline {section}{\numberline {7.11}数理統計との接続}{60}{section.7.11}%
-\contentsline {section}{\numberline {7.12}例題}{60}{section.7.12}%
-\contentsline {section}{\numberline {7.13}解答}{61}{section.7.13}%
-\contentsline {chapter}{\numberline {第8章}縦断データ・ベースライン調整・混合モデル}{63}{chapter.8}%
+\contentsline {section}{\numberline {3.9}手法選択}{25}{section.3.9}%
+\contentsline {section}{\numberline {3.10}よくある誤り}{25}{section.3.10}%
+\contentsline {section}{\numberline {3.11}数理統計との接続}{26}{section.3.11}%
+\contentsline {section}{\numberline {3.12}例題}{26}{section.3.12}%
+\contentsline {section}{\numberline {3.13}解答}{27}{section.3.13}%
+\contentsline {chapter}{\numberline {第4章}2 値データと分割表}{29}{chapter.4}%
+\contentsline {section}{\numberline {4.1}問題設定と確率モデル}{30}{section.4.1}%
+\contentsline {section}{\numberline {4.2}$2\times 2$ 表の検定}{30}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}比率の差の検定と Pearson $\chi ^2$}{30}{subsection.4.2.1}%
+\contentsline {paragraph}{共通比率の最尤推定}{30}{section*.32}%
+\contentsline {paragraph}{スコア型統計量（\mbox {2021年 医薬 問3}）}{30}{section*.33}%
+\contentsline {paragraph}{Yates補正と Fisher の正確検定}{31}{section*.34}%
+\contentsline {subsection}{\numberline {4.2.2}尤度比検定}{31}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}効果指標の推定とデルタ法}{31}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}デルタ法}{31}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}リスク比・オッズ比の信頼区間}{31}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}$K$ 群の比率の一様性の検定}{32}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Cochran--Armitage 傾向性検定}{33}{section.4.5}%
+\contentsline {paragraph}{重み付き最小二乗}{33}{section*.35}%
+\contentsline {paragraph}{帰無仮説の下での分散}{33}{section*.36}%
+\contentsline {section}{\numberline {4.6}対応のある2 値データと McNemar 検定}{33}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}設定}{33}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}差の分散と信頼区間}{34}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}McNemar 検定}{34}{subsection.4.6.3}%
+\contentsline {paragraph}{条件付き二項検定}{34}{section*.38}%
+\contentsline {subsection}{\numberline {4.6.4}尤度比検定（\mbox {2018年 医薬 問2}〔3〕〔4〕）}{35}{subsection.4.6.4}%
+\contentsline {subsection}{\numberline {4.6.5}条件付きオッズ比}{35}{subsection.4.6.5}%
+\contentsline {section}{\numberline {4.7}層別 $2\times 2$ 表と層別 Cochran（CMH）検定}{35}{section.4.7}%
+\contentsline {paragraph}{条件付き（超幾何）版：Cochran--Mantel--Haenszel 検定}{36}{section*.39}%
+\contentsline {paragraph}{積二項版：層別 Cochran 検定（\mbox {2021年 医薬 問3}）}{36}{section*.40}%
+\contentsline {paragraph}{何を検出する検定か}{36}{section*.41}%
+\contentsline {section}{\numberline {4.8}仮定}{36}{section.4.8}%
+\contentsline {section}{\numberline {4.9}結果の解釈}{36}{section.4.9}%
+\contentsline {section}{\numberline {4.10}手法選択}{37}{section.4.10}%
+\contentsline {section}{\numberline {4.11}よくある誤り}{37}{section.4.11}%
+\contentsline {section}{\numberline {4.12}数理統計との接続}{37}{section.4.12}%
+\contentsline {section}{\numberline {4.13}例題}{38}{section.4.13}%
+\contentsline {section}{\numberline {4.14}解答}{39}{section.4.14}%
+\contentsline {chapter}{\numberline {第5章}診断検査とROC解析}{41}{chapter.5}%
+\contentsline {section}{\numberline {5.1}問題設定}{42}{section.5.1}%
+\contentsline {section}{\numberline {5.2}基本概念}{42}{section.5.2}%
+\contentsline {paragraph}{有病率への依存}{42}{section*.44}%
+\contentsline {paragraph}{研究デザインと的中率}{43}{section*.45}%
+\contentsline {section}{\numberline {5.3}数理：カットオフと ROC 曲線}{43}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}正規モデルとカットオフ}{43}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}ROC 曲線}{43}{subsection.5.3.2}%
+\contentsline {paragraph}{経験 ROC 曲線の描き方（\mbox {2018年 医薬 問3}〔2〕）}{43}{section*.46}%
+\contentsline {paragraph}{Youden 指数}{43}{section*.47}%
+\contentsline {section}{\numberline {5.4}AUC とその確率的解釈}{43}{section.5.4}%
+\contentsline {paragraph}{折れ線 ROC の面積}{44}{section*.48}%
+\contentsline {section}{\numberline {5.5}推定・検定：同一被験者での2検査の比較}{45}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}対応のある感度の比較}{45}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}対応のある PPV の比較}{45}{subsection.5.5.2}%
+\contentsline {section}{\numberline {5.6}仮定}{46}{section.5.6}%
+\contentsline {section}{\numberline {5.7}結果の解釈}{46}{section.5.7}%
+\contentsline {section}{\numberline {5.8}手法選択}{46}{section.5.8}%
+\contentsline {section}{\numberline {5.9}よくある誤り}{47}{section.5.9}%
+\contentsline {section}{\numberline {5.10}数理統計との接続}{47}{section.5.10}%
+\contentsline {section}{\numberline {5.11}例題}{47}{section.5.11}%
+\contentsline {section}{\numberline {5.12}解答}{48}{section.5.12}%
+\contentsline {chapter}{\numberline {第6章}ロジスティック回帰}{50}{chapter.6}%
+\contentsline {section}{\numberline {6.1}問題設定}{50}{section.6.1}%
+\contentsline {section}{\numberline {6.2}モデルと係数の解釈}{51}{section.6.2}%
+\contentsline {paragraph}{交互作用}{51}{section*.50}%
+\contentsline {section}{\numberline {6.3}数理：尤度・スコア・情報行列}{51}{section.6.3}%
+\contentsline {paragraph}{集計データ}{51}{section*.51}%
+\contentsline {subsection}{\numberline {6.3.1}2群の場合：$2\times 2$ 表との一致}{52}{subsection.6.3.1}%
+\contentsline {section}{\numberline {6.4}推定と検定}{52}{section.6.4}%
+\contentsline {section}{\numberline {6.5}共変量調整と交絡}{52}{section.6.5}%
+\contentsline {section}{\numberline {6.6}予測と判別}{53}{section.6.6}%
+\contentsline {section}{\numberline {6.7}モデル選択：AIC と KL 情報量}{53}{section.6.7}%
+\contentsline {section}{\numberline {6.8}症例対照研究とロジスティック回帰}{53}{section.6.8}%
+\contentsline {section}{\numberline {6.9}仮定}{54}{section.6.9}%
+\contentsline {section}{\numberline {6.10}結果の解釈}{54}{section.6.10}%
+\contentsline {section}{\numberline {6.11}手法選択}{54}{section.6.11}%
+\contentsline {section}{\numberline {6.12}よくある誤り}{54}{section.6.12}%
+\contentsline {section}{\numberline {6.13}数理統計との接続}{55}{section.6.13}%
+\contentsline {section}{\numberline {6.14}例題}{55}{section.6.14}%
+\contentsline {section}{\numberline {6.15}解答}{56}{section.6.15}%
+\contentsline {chapter}{\numberline {第7章}疫学研究・交絡・層別・マッチング}{57}{chapter.7}%
+\contentsline {section}{\numberline {7.1}問題設定}{57}{section.7.1}%
+\contentsline {section}{\numberline {7.2}基本概念}{58}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}交絡}{58}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}粗効果と調整効果・Simpson のパラドックス}{58}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}効果修飾}{58}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}非併合性（非可縮性）}{58}{subsection.7.2.4}%
+\contentsline {section}{\numberline {7.3}数理：層別解析}{59}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}層別 Cochran 検定}{59}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}オッズ比の均一性の検定}{59}{subsection.7.3.2}%
+\contentsline {paragraph}{その他の確認方法}{60}{section*.52}%
+\contentsline {section}{\numberline {7.4}マッチング}{60}{section.7.4}%
+\contentsline {paragraph}{間接比較（\mbox {2022年 医薬 問2}〔5〕）}{60}{section*.53}%
+\contentsline {section}{\numberline {7.5}仮定}{60}{section.7.5}%
+\contentsline {section}{\numberline {7.6}結果の解釈}{61}{section.7.6}%
+\contentsline {section}{\numberline {7.7}手法選択}{61}{section.7.7}%
+\contentsline {section}{\numberline {7.8}よくある誤り}{61}{section.7.8}%
+\contentsline {section}{\numberline {7.9}数理統計との接続}{62}{section.7.9}%
+\contentsline {section}{\numberline {7.10}例題}{62}{section.7.10}%
+\contentsline {section}{\numberline {7.11}解答}{62}{section.7.11}%
+\contentsline {chapter}{\numberline {第8章}縦断データと線形混合モデル}{64}{chapter.8}%
 \contentsline {section}{\numberline {8.1}問題設定}{64}{section.8.1}%
-\contentsline {section}{\numberline {8.2}ベースライン調整}{64}{section.8.2}%
-\contentsline {subsection}{\numberline {8.2.1}3つの推定量}{64}{subsection.8.2.1}%
-\contentsline {paragraph}{実際の ANCOVA}{64}{section*.52}%
-\contentsline {subsection}{\numberline {8.2.2}平均への回帰}{65}{subsection.8.2.2}%
-\contentsline {paragraph}{真値モデル}{65}{section*.53}%
-\contentsline {paragraph}{臨床試験への含意}{65}{section*.54}%
-\contentsline {section}{\numberline {8.3}反復測定データ}{65}{section.8.3}%
-\contentsline {subsection}{\numberline {8.3.1}平均ベクトルの推定}{65}{subsection.8.3.1}%
-\contentsline {subsection}{\numberline {8.3.2}共分散構造}{66}{subsection.8.3.2}%
-\contentsline {section}{\numberline {8.4}線形混合効果モデル}{66}{section.8.4}%
-\contentsline {subsection}{\numberline {8.4.1}モデル}{66}{subsection.8.4.1}%
-\contentsline {subsection}{\numberline {8.4.2}一般化最小二乗推定}{67}{subsection.8.4.2}%
-\contentsline {subsection}{\numberline {8.4.3}変量切片と複合対称}{67}{subsection.8.4.3}%
+\contentsline {section}{\numberline {8.2}反復測定データ}{65}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}平均ベクトルの推定と変化量}{65}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}共分散構造と AIC}{65}{subsection.8.2.2}%
+\contentsline {section}{\numberline {8.3}線形混合効果モデル}{66}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}モデル}{66}{subsection.8.3.1}%
+\contentsline {subsection}{\numberline {8.3.2}一般化最小二乗推定}{66}{subsection.8.3.2}%
+\contentsline {subsection}{\numberline {8.3.3}変量切片と複合対称}{66}{subsection.8.3.3}%
 \contentsline {paragraph}{相関を無視したときの誤り}{67}{section*.56}%
-\contentsline {subsection}{\numberline {8.4.4}固定効果と変量効果}{67}{subsection.8.4.4}%
-\contentsline {section}{\numberline {8.5}仮定}{68}{section.8.5}%
-\contentsline {section}{\numberline {8.6}結果の解釈}{68}{section.8.6}%
-\contentsline {section}{\numberline {8.7}手法選択}{68}{section.8.7}%
-\contentsline {section}{\numberline {8.8}よくある誤り}{68}{section.8.8}%
-\contentsline {section}{\numberline {8.9}数理統計との接続}{69}{section.8.9}%
-\contentsline {section}{\numberline {8.10}例題}{69}{section.8.10}%
-\contentsline {section}{\numberline {8.11}解答}{70}{section.8.11}%
-\contentsline {chapter}{\numberline {第9章}生存時間解析の基礎}{72}{chapter.9}%
-\contentsline {section}{\numberline {9.1}問題設定}{73}{section.9.1}%
-\contentsline {section}{\numberline {9.2}生存時間の分布を表す関数}{73}{section.9.2}%
-\contentsline {paragraph}{乱数生成への応用}{74}{section*.57}%
-\contentsline {subsection}{\numberline {9.2.1}代表的なパラメトリック分布}{74}{subsection.9.2.1}%
-\contentsline {section}{\numberline {9.3}打ち切り}{74}{section.9.3}%
-\contentsline {section}{\numberline {9.4}Kaplan--Meier 推定量}{74}{section.9.4}%
-\contentsline {subsection}{\numberline {9.4.1}定義と導出}{74}{subsection.9.4.1}%
-\contentsline {paragraph}{積極限としての導出}{75}{section*.59}%
-\contentsline {subsection}{\numberline {9.4.2}表の作り方（手順）}{75}{subsection.9.4.2}%
-\contentsline {subsection}{\numberline {9.4.3}曲線と中央生存時間}{75}{subsection.9.4.3}%
-\contentsline {subsection}{\numberline {9.4.4}Greenwood の分散公式}{76}{subsection.9.4.4}%
-\contentsline {section}{\numberline {9.5}Nelson--Aalen 推定量}{76}{section.9.5}%
-\contentsline {section}{\numberline {9.6}ログランク検定}{76}{section.9.6}%
-\contentsline {subsection}{\numberline {9.6.1}導出}{77}{subsection.9.6.1}%
-\contentsline {paragraph}{各時点のイベント数が1の場合}{77}{section*.61}%
-\contentsline {subsection}{\numberline {9.6.2}性質}{77}{subsection.9.6.2}%
-\contentsline {section}{\numberline {9.7}仮定}{78}{section.9.7}%
-\contentsline {section}{\numberline {9.8}結果の解釈}{78}{section.9.8}%
-\contentsline {section}{\numberline {9.9}手法選択}{78}{section.9.9}%
-\contentsline {section}{\numberline {9.10}よくある誤り}{78}{section.9.10}%
-\contentsline {section}{\numberline {9.11}数理統計との接続}{79}{section.9.11}%
-\contentsline {section}{\numberline {9.12}例題}{79}{section.9.12}%
-\contentsline {section}{\numberline {9.13}解答}{80}{section.9.13}%
-\contentsline {chapter}{\numberline {第10章}Cox比例ハザード・RMST・パラメトリック生存解析}{82}{chapter.10}%
-\contentsline {section}{\numberline {10.1}Cox 比例ハザードモデル}{83}{section.10.1}%
-\contentsline {subsection}{\numberline {10.1.1}モデル}{83}{subsection.10.1.1}%
-\contentsline {paragraph}{2重対数プロット}{83}{section*.62}%
-\contentsline {paragraph}{線形変換モデル（\mbox {2017年 医薬 問1}〔5〕）}{83}{section*.63}%
-\contentsline {subsection}{\numberline {10.1.2}部分尤度}{84}{subsection.10.1.2}%
-\contentsline {subsection}{\numberline {10.1.3}推定結果の解釈}{84}{subsection.10.1.3}%
-\contentsline {section}{\numberline {10.2}パラメトリックモデル：指数分布}{85}{section.10.2}%
-\contentsline {subsection}{\numberline {10.2.1}打ち切りのある尤度}{85}{subsection.10.2.1}%
-\contentsline {subsection}{\numberline {10.2.2}デルタ法とハザード比}{85}{subsection.10.2.2}%
-\contentsline {paragraph}{必要イベント数（\mbox {2018年 医薬 問1}〔5〕）}{85}{section*.64}%
-\contentsline {section}{\numberline {10.3}RMST（境界内平均生存時間）}{86}{section.10.3}%
-\contentsline {subsection}{\numberline {10.3.1}定義と性質}{86}{subsection.10.3.1}%
-\contentsline {paragraph}{指数分布の場合}{86}{section*.65}%
-\contentsline {paragraph}{KM による推定}{86}{section*.66}%
-\contentsline {subsection}{\numberline {10.3.2}効果指標としての RMST}{86}{subsection.10.3.2}%
-\contentsline {section}{\numberline {10.4}仮定}{87}{section.10.4}%
-\contentsline {section}{\numberline {10.5}結果の解釈}{87}{section.10.5}%
-\contentsline {section}{\numberline {10.6}手法選択}{87}{section.10.6}%
-\contentsline {section}{\numberline {10.7}よくある誤り}{87}{section.10.7}%
-\contentsline {section}{\numberline {10.8}数理統計との接続}{88}{section.10.8}%
-\contentsline {section}{\numberline {10.9}例題}{88}{section.10.9}%
-\contentsline {section}{\numberline {10.10}解答}{89}{section.10.10}%
-\contentsline {chapter}{\numberline {第11章}競合リスク}{91}{chapter.11}%
-\contentsline {section}{\numberline {11.1}問題設定}{91}{section.11.1}%
-\contentsline {section}{\numberline {11.2}基本概念}{92}{section.11.2}%
-\contentsline {paragraph}{例：原因別ハザードが一定の場合}{93}{section*.67}%
-\contentsline {paragraph}{例：Weibull 型（\mbox {2025年 医薬 問3}〔4〕）}{93}{section*.68}%
-\contentsline {section}{\numberline {11.3}推定}{93}{section.11.3}%
-\contentsline {subsection}{\numberline {11.3.1}Aalen--Johansen 型推定量}{93}{subsection.11.3.1}%
-\contentsline {subsection}{\numberline {11.3.2}$1-\mathrm {KM}$ による過大推定}{93}{subsection.11.3.2}%
-\contentsline {section}{\numberline {11.4}回帰モデル}{94}{section.11.4}%
-\contentsline {subsection}{\numberline {11.4.1}原因別ハザードの Cox モデル}{94}{subsection.11.4.1}%
-\contentsline {subsection}{\numberline {11.4.2}Fine--Gray モデル（部分分布ハザード）}{94}{subsection.11.4.2}%
-\contentsline {section}{\numberline {11.5}仮定}{95}{section.11.5}%
-\contentsline {section}{\numberline {11.6}結果の解釈}{95}{section.11.6}%
-\contentsline {section}{\numberline {11.7}手法選択}{95}{section.11.7}%
-\contentsline {section}{\numberline {11.8}よくある誤り}{96}{section.11.8}%
-\contentsline {section}{\numberline {11.9}数理統計との接続}{96}{section.11.9}%
-\contentsline {section}{\numberline {11.10}例題}{96}{section.11.10}%
-\contentsline {section}{\numberline {11.11}解答}{97}{section.11.11}%
-\contentsline {chapter}{\numberline {第12章}検出力・症例数・イベント数設計}{98}{chapter.12}%
-\contentsline {section}{\numberline {12.1}問題設定と基本概念}{98}{section.12.1}%
-\contentsline {section}{\numberline {12.2}数理：$\mu =z_\alpha +z_\beta $ の導出}{99}{section.12.2}%
-\contentsline {paragraph}{症例数の一般公式}{99}{section*.72}%
-\contentsline {section}{\numberline {12.3}主な症例数の式}{99}{section.12.3}%
-\contentsline {subsection}{\numberline {12.3.1}連続アウトカム}{99}{subsection.12.3.1}%
-\contentsline {subsection}{\numberline {12.3.2}2 値アウトカム}{100}{subsection.12.3.2}%
-\contentsline {subsection}{\numberline {12.3.3}生存時間：イベント数}{100}{subsection.12.3.3}%
-\contentsline {paragraph}{指数モデル（\mbox {2018年 医薬 問1}）}{100}{section*.73}%
-\contentsline {paragraph}{ログランク検定（Schoenfeld の式）}{100}{section*.74}%
-\contentsline {paragraph}{イベント数から症例数へ}{100}{section*.75}%
-\contentsline {subsection}{\numberline {12.3.4}単群試験（\mbox {2023年 医薬 問2}）}{101}{subsection.12.3.4}%
-\contentsline {section}{\numberline {12.4}その他の考慮}{101}{section.12.4}%
-\contentsline {section}{\numberline {12.5}仮定}{101}{section.12.5}%
-\contentsline {section}{\numberline {12.6}結果の解釈}{101}{section.12.6}%
-\contentsline {section}{\numberline {12.7}手法選択}{102}{section.12.7}%
-\contentsline {section}{\numberline {12.8}よくある誤り}{102}{section.12.8}%
-\contentsline {section}{\numberline {12.9}数理統計との接続}{102}{section.12.9}%
-\contentsline {section}{\numberline {12.10}例題}{102}{section.12.10}%
-\contentsline {section}{\numberline {12.11}解答}{103}{section.12.11}%
-\contentsline {chapter}{\numberline {第13章}同等性・非劣性・生物学的同等性}{104}{chapter.13}%
-\contentsline {section}{\numberline {13.1}問題設定：3種類の比較}{104}{section.13.1}%
-\contentsline {section}{\numberline {13.2}数理：2つの片側検定（TOST）}{105}{section.13.2}%
-\contentsline {section}{\numberline {13.3}非劣性試験}{106}{section.13.3}%
-\contentsline {section}{\numberline {13.4}対数正規分布と生物学的同等性}{106}{section.13.4}%
-\contentsline {subsection}{\numberline {13.4.1}対数正規分布}{106}{subsection.13.4.1}%
-\contentsline {subsection}{\numberline {13.4.2}幾何平均比}{107}{subsection.13.4.2}%
-\contentsline {subsection}{\numberline {13.4.3}生物学的同等性の判定}{107}{subsection.13.4.3}%
-\contentsline {paragraph}{判定の手順}{107}{section*.77}%
-\contentsline {subsection}{\numberline {13.4.4}2剤2期クロスオーバー試験}{107}{subsection.13.4.4}%
-\contentsline {section}{\numberline {13.5}症例数の考え方}{108}{section.13.5}%
-\contentsline {section}{\numberline {13.6}仮定}{108}{section.13.6}%
-\contentsline {section}{\numberline {13.7}結果の解釈}{108}{section.13.7}%
-\contentsline {section}{\numberline {13.8}手法選択}{108}{section.13.8}%
-\contentsline {section}{\numberline {13.9}よくある誤り}{108}{section.13.9}%
-\contentsline {section}{\numberline {13.10}数理統計との接続}{109}{section.13.10}%
-\contentsline {section}{\numberline {13.11}例題}{109}{section.13.11}%
-\contentsline {section}{\numberline {13.12}解答}{109}{section.13.12}%
-\contentsline {chapter}{\numberline {第14章}中間解析・二段階試験・多重性・用量反応}{111}{chapter.14}%
-\contentsline {section}{\numberline {14.1}問題設定}{112}{section.14.1}%
-\contentsline {section}{\numberline {14.2}群逐次デザインと $\alpha $ 消費関数}{112}{section.14.2}%
-\contentsline {subsection}{\numberline {14.2.1}情報時間と検定統計量の相関}{112}{subsection.14.2.1}%
-\contentsline {paragraph}{繰り返し検定の問題}{112}{section*.78}%
-\contentsline {subsection}{\numberline {14.2.2}$\alpha $ 消費関数}{112}{subsection.14.2.2}%
-\contentsline {section}{\numberline {14.3}第II相の二段階デザイン}{113}{section.14.3}%
-\contentsline {section}{\numberline {14.4}多重性}{114}{section.14.4}%
-\contentsline {subsection}{\numberline {14.4.1}FWER}{114}{subsection.14.4.1}%
-\contentsline {subsection}{\numberline {14.4.2}単一段階の方法}{114}{subsection.14.4.2}%
-\contentsline {subsection}{\numberline {14.4.3}段階的方法}{114}{subsection.14.4.3}%
-\contentsline {subsection}{\numberline {14.4.4}閉検定手順とゲートキーピング}{115}{subsection.14.4.4}%
-\contentsline {paragraph}{固定順序（階層的）検定}{115}{section*.81}%
-\contentsline {paragraph}{分散分析をゲートにした対比較（\mbox {2024年 医薬 問4}〔3〕）}{115}{section*.82}%
-\contentsline {subsection}{\numberline {14.4.5}多対1比較と Dunnett 法}{116}{subsection.14.4.5}%
-\contentsline {subsection}{\numberline {14.4.6}複数の主要評価項目}{116}{subsection.14.4.6}%
-\contentsline {section}{\numberline {14.5}用量反応と対比}{116}{section.14.5}%
-\contentsline {section}{\numberline {14.6}仮定}{117}{section.14.6}%
-\contentsline {section}{\numberline {14.7}結果の解釈}{117}{section.14.7}%
-\contentsline {section}{\numberline {14.8}手法選択}{117}{section.14.8}%
-\contentsline {section}{\numberline {14.9}よくある誤り}{117}{section.14.9}%
-\contentsline {section}{\numberline {14.10}数理統計との接続}{118}{section.14.10}%
-\contentsline {section}{\numberline {14.11}例題}{118}{section.14.11}%
-\contentsline {section}{\numberline {14.12}解答}{119}{section.14.12}%
-\contentsline {chapter}{\numberline {第15章}メタアナリシス}{121}{chapter.15}%
-\contentsline {section}{\numberline {15.1}問題設定}{121}{section.15.1}%
-\contentsline {section}{\numberline {15.2}固定効果モデル}{121}{section.15.2}%
-\contentsline {section}{\numberline {15.3}異質性と $Q$ 統計量}{122}{section.15.3}%
-\contentsline {section}{\numberline {15.4}変量効果モデル}{122}{section.15.4}%
-\contentsline {subsection}{\numberline {15.4.1}DerSimonian--Laird 推定量}{123}{subsection.15.4.1}%
-\contentsline {subsection}{\numberline {15.4.2}$I^2$}{123}{subsection.15.4.2}%
-\contentsline {section}{\numberline {15.5}推定対象の違い}{123}{section.15.5}%
-\contentsline {section}{\numberline {15.6}フォレストプロット}{124}{section.15.6}%
-\contentsline {section}{\numberline {15.7}仮定}{124}{section.15.7}%
-\contentsline {section}{\numberline {15.8}結果の解釈}{124}{section.15.8}%
-\contentsline {section}{\numberline {15.9}手法選択}{125}{section.15.9}%
-\contentsline {section}{\numberline {15.10}よくある誤り}{125}{section.15.10}%
-\contentsline {section}{\numberline {15.11}数理統計との接続}{125}{section.15.11}%
-\contentsline {section}{\numberline {15.12}例題}{126}{section.15.12}%
-\contentsline {section}{\numberline {15.13}解答}{126}{section.15.13}%
-\contentsline {chapter}{\numberline {第16章}欠測データと多重補完}{127}{chapter.16}%
-\contentsline {section}{\numberline {16.1}問題設定}{127}{section.16.1}%
-\contentsline {section}{\numberline {16.2}欠測メカニズム}{128}{section.16.2}%
-\contentsline {paragraph}{データから言えること}{128}{section*.84}%
-\contentsline {section}{\numberline {16.3}主な解析法}{128}{section.16.3}%
-\contentsline {section}{\numberline {16.4}多重補完}{128}{section.16.4}%
-\contentsline {subsection}{\numberline {16.4.1}手順}{128}{subsection.16.4.1}%
-\contentsline {paragraph}{各項の意味}{129}{section*.86}%
-\contentsline {subsection}{\numberline {16.4.2}補完間分散の性質}{129}{subsection.16.4.2}%
-\contentsline {section}{\numberline {16.5}感度分析}{130}{section.16.5}%
-\contentsline {section}{\numberline {16.6}EM アルゴリズム}{130}{section.16.6}%
-\contentsline {paragraph}{例：ABO 血液型（\mbox {2019年 医薬 問5}）}{130}{section*.87}%
-\contentsline {section}{\numberline {16.7}仮定}{131}{section.16.7}%
-\contentsline {section}{\numberline {16.8}結果の解釈}{131}{section.16.8}%
-\contentsline {section}{\numberline {16.9}手法選択}{131}{section.16.9}%
-\contentsline {section}{\numberline {16.10}よくある誤り}{131}{section.16.10}%
-\contentsline {section}{\numberline {16.11}数理統計との接続}{132}{section.16.11}%
-\contentsline {section}{\numberline {16.12}例題}{132}{section.16.12}%
-\contentsline {section}{\numberline {16.13}解答}{132}{section.16.13}%
-\contentsline {chapter}{\numberline {第17章}ポアソン率と医療データのBayes解析}{134}{chapter.17}%
-\contentsline {section}{\numberline {17.1}ポアソン率}{135}{section.17.1}%
-\contentsline {subsection}{\numberline {17.1.1}モデルと推定}{135}{subsection.17.1.1}%
-\contentsline {subsection}{\numberline {17.1.2}2群の比較}{135}{subsection.17.1.2}%
-\contentsline {section}{\numberline {17.2}ガンマ分布のパラメータ化}{135}{section.17.2}%
-\contentsline {section}{\numberline {17.3}Bayes 推測の基本}{136}{section.17.3}%
-\contentsline {section}{\numberline {17.4}Beta--Binomial モデル}{136}{section.17.4}%
-\contentsline {paragraph}{一様事前分布（\mbox {2022年 医薬 問4}）}{136}{section*.88}%
-\contentsline {paragraph}{事後確率による判定}{136}{section*.89}%
-\contentsline {paragraph}{事後予測}{137}{section*.90}%
-\contentsline {section}{\numberline {17.5}Gamma--Poisson モデル}{137}{section.17.5}%
-\contentsline {paragraph}{\mbox {2025年 医薬 問2} の数値}{137}{section*.91}%
-\contentsline {section}{\numberline {17.6}正規--正規モデル}{137}{section.17.6}%
-\contentsline {section}{\numberline {17.7}頻度論との違い}{138}{section.17.7}%
-\contentsline {section}{\numberline {17.8}仮定}{138}{section.17.8}%
-\contentsline {section}{\numberline {17.9}結果の解釈}{138}{section.17.9}%
-\contentsline {section}{\numberline {17.10}手法選択}{138}{section.17.10}%
-\contentsline {section}{\numberline {17.11}よくある誤り}{139}{section.17.11}%
-\contentsline {section}{\numberline {17.12}数理統計との接続}{139}{section.17.12}%
-\contentsline {section}{\numberline {17.13}例題}{139}{section.17.13}%
-\contentsline {section}{\numberline {17.14}解答}{140}{section.17.14}%
-\contentsline {chapter}{\numberline {付録A}手法選択フローチャート}{142}{appendix.A}%
-\contentsline {chapter}{\numberline {付録B}必須公式集}{144}{appendix.B}%
-\contentsline {chapter}{\numberline {付録C}医薬生物学用語集}{147}{appendix.C}%
-\contentsline {chapter}{\numberline {付録D}過去問対応表}{150}{appendix.D}%
-\contentsline {chapter}{\numberline {付録E}総合チェックリスト}{152}{appendix.E}%
-\contentsline {chapter}{参考文献}{155}{appendix*.102}%
+\contentsline {subsection}{\numberline {8.3.4}固定効果と変量効果}{67}{subsection.8.3.4}%
+\contentsline {section}{\numberline {8.4}仮定}{67}{section.8.4}%
+\contentsline {section}{\numberline {8.5}結果の解釈}{67}{section.8.5}%
+\contentsline {section}{\numberline {8.6}手法選択}{67}{section.8.6}%
+\contentsline {section}{\numberline {8.7}よくある誤り}{68}{section.8.7}%
+\contentsline {section}{\numberline {8.8}数理統計との接続}{68}{section.8.8}%
+\contentsline {section}{\numberline {8.9}例題}{68}{section.8.9}%
+\contentsline {section}{\numberline {8.10}解答}{69}{section.8.10}%
+\contentsline {chapter}{\numberline {第9章}生存時間解析の基礎}{70}{chapter.9}%
+\contentsline {section}{\numberline {9.1}問題設定}{71}{section.9.1}%
+\contentsline {section}{\numberline {9.2}生存時間の分布を表す関数}{71}{section.9.2}%
+\contentsline {paragraph}{乱数生成への応用}{72}{section*.57}%
+\contentsline {subsection}{\numberline {9.2.1}代表的なパラメトリック分布}{72}{subsection.9.2.1}%
+\contentsline {section}{\numberline {9.3}打ち切り}{72}{section.9.3}%
+\contentsline {section}{\numberline {9.4}Kaplan--Meier 推定量}{72}{section.9.4}%
+\contentsline {subsection}{\numberline {9.4.1}定義}{72}{subsection.9.4.1}%
+\contentsline {subsection}{\numberline {9.4.2}表の作り方（手順）}{73}{subsection.9.4.2}%
+\contentsline {subsection}{\numberline {9.4.3}曲線と中央生存時間}{73}{subsection.9.4.3}%
+\contentsline {subsection}{\numberline {9.4.4}Greenwood の分散公式}{73}{subsection.9.4.4}%
+\contentsline {section}{\numberline {9.5}ログランク検定}{74}{section.9.5}%
+\contentsline {subsection}{\numberline {9.5.1}導出}{74}{subsection.9.5.1}%
+\contentsline {paragraph}{分散を足せる理由}{74}{section*.60}%
+\contentsline {paragraph}{各時点のイベント数が1の場合}{74}{section*.61}%
+\contentsline {subsection}{\numberline {9.5.2}性質}{75}{subsection.9.5.2}%
+\contentsline {section}{\numberline {9.6}仮定}{75}{section.9.6}%
+\contentsline {section}{\numberline {9.7}結果の解釈}{75}{section.9.7}%
+\contentsline {section}{\numberline {9.8}手法選択}{75}{section.9.8}%
+\contentsline {section}{\numberline {9.9}よくある誤り}{76}{section.9.9}%
+\contentsline {section}{\numberline {9.10}数理統計との接続}{76}{section.9.10}%
+\contentsline {section}{\numberline {9.11}例題}{76}{section.9.11}%
+\contentsline {section}{\numberline {9.12}解答}{77}{section.9.12}%
+\contentsline {chapter}{\numberline {第10章}Cox比例ハザード・パラメトリック生存解析・競合リスク}{79}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Cox 比例ハザードモデル}{80}{section.10.1}%
+\contentsline {subsection}{\numberline {10.1.1}モデル}{80}{subsection.10.1.1}%
+\contentsline {paragraph}{線形変換モデル（\mbox {2017年 医薬 問1}〔5〕）}{80}{section*.62}%
+\contentsline {subsection}{\numberline {10.1.2}部分尤度}{80}{subsection.10.1.2}%
+\contentsline {subsection}{\numberline {10.1.3}推定結果の解釈}{81}{subsection.10.1.3}%
+\contentsline {section}{\numberline {10.2}パラメトリックモデル：指数分布}{82}{section.10.2}%
+\contentsline {subsection}{\numberline {10.2.1}打ち切りのある尤度}{82}{subsection.10.2.1}%
+\contentsline {subsection}{\numberline {10.2.2}デルタ法とハザード比}{82}{subsection.10.2.2}%
+\contentsline {paragraph}{必要イベント数（\mbox {2018年 医薬 問1}〔5〕）}{82}{section*.63}%
+\contentsline {section}{\numberline {10.3}競合リスクの解釈}{83}{section.10.3}%
+\contentsline {subsection}{\numberline {10.3.1}定義}{83}{subsection.10.3.1}%
+\contentsline {subsection}{\numberline {10.3.2}$1-\mathrm {KM}$ による過大推定}{83}{subsection.10.3.2}%
+\contentsline {paragraph}{解釈（\mbox {2021年 医薬 問1}〔5〕）}{84}{section*.64}%
+\contentsline {subsection}{\numberline {10.3.3}原因別 Cox と Fine--Gray モデル}{84}{subsection.10.3.3}%
+\contentsline {paragraph}{原因別ハザードの Cox モデル}{84}{section*.65}%
+\contentsline {paragraph}{Fine--Gray モデル（部分分布ハザードの比例ハザードモデル）}{84}{section*.66}%
+\contentsline {section}{\numberline {10.4}仮定}{84}{section.10.4}%
+\contentsline {section}{\numberline {10.5}結果の解釈}{85}{section.10.5}%
+\contentsline {section}{\numberline {10.6}手法選択}{85}{section.10.6}%
+\contentsline {section}{\numberline {10.7}よくある誤り}{85}{section.10.7}%
+\contentsline {section}{\numberline {10.8}数理統計との接続}{86}{section.10.8}%
+\contentsline {section}{\numberline {10.9}例題}{86}{section.10.9}%
+\contentsline {section}{\numberline {10.10}解答}{87}{section.10.10}%
+\contentsline {chapter}{\numberline {第11章}検出力・症例数・イベント数設計}{89}{chapter.11}%
+\contentsline {section}{\numberline {11.1}問題設定と基本概念}{89}{section.11.1}%
+\contentsline {section}{\numberline {11.2}数理：$\mu =z_\alpha +z_\beta $ の導出}{90}{section.11.2}%
+\contentsline {paragraph}{症例数の一般公式}{90}{section*.68}%
+\contentsline {section}{\numberline {11.3}主な症例数の式}{90}{section.11.3}%
+\contentsline {subsection}{\numberline {11.3.1}平均の差・比率の差}{90}{subsection.11.3.1}%
+\contentsline {subsection}{\numberline {11.3.2}生存時間：イベント数}{91}{subsection.11.3.2}%
+\contentsline {paragraph}{指数モデル（\mbox {2018年 医薬 問1}）}{91}{section*.69}%
+\contentsline {paragraph}{ログランク検定（Schoenfeld の式）}{91}{section*.70}%
+\contentsline {paragraph}{イベント数から症例数へ}{92}{section*.71}%
+\contentsline {section}{\numberline {11.4}その他の考慮}{92}{section.11.4}%
+\contentsline {section}{\numberline {11.5}仮定}{92}{section.11.5}%
+\contentsline {section}{\numberline {11.6}結果の解釈}{93}{section.11.6}%
+\contentsline {section}{\numberline {11.7}手法選択}{93}{section.11.7}%
+\contentsline {section}{\numberline {11.8}よくある誤り}{93}{section.11.8}%
+\contentsline {section}{\numberline {11.9}数理統計との接続}{93}{section.11.9}%
+\contentsline {section}{\numberline {11.10}例題}{94}{section.11.10}%
+\contentsline {section}{\numberline {11.11}解答}{94}{section.11.11}%
+\contentsline {chapter}{\numberline {第12章}同等性・非劣性・生物学的同等性}{96}{chapter.12}%
+\contentsline {section}{\numberline {12.1}問題設定：3種類の比較}{96}{section.12.1}%
+\contentsline {section}{\numberline {12.2}同等性の判定：信頼区間による規則}{97}{section.12.2}%
+\contentsline {section}{\numberline {12.3}非劣性試験}{97}{section.12.3}%
+\contentsline {section}{\numberline {12.4}生物学的同等性}{97}{section.12.4}%
+\contentsline {subsection}{\numberline {12.4.1}対数変換と幾何平均比}{98}{subsection.12.4.1}%
+\contentsline {subsection}{\numberline {12.4.2}判定規則}{98}{subsection.12.4.2}%
+\contentsline {paragraph}{判定の手順}{98}{section*.73}%
+\contentsline {subsection}{\numberline {12.4.3}2剤2期クロスオーバー試験を対応ありの差で扱う}{98}{subsection.12.4.3}%
+\contentsline {section}{\numberline {12.5}仮定}{99}{section.12.5}%
+\contentsline {section}{\numberline {12.6}結果の解釈}{99}{section.12.6}%
+\contentsline {section}{\numberline {12.7}手法選択}{99}{section.12.7}%
+\contentsline {section}{\numberline {12.8}よくある誤り}{100}{section.12.8}%
+\contentsline {section}{\numberline {12.9}数理統計との接続}{100}{section.12.9}%
+\contentsline {section}{\numberline {12.10}例題}{100}{section.12.10}%
+\contentsline {section}{\numberline {12.11}解答}{100}{section.12.11}%
+\contentsline {chapter}{\numberline {第13章}中間解析・多重性・用量反応}{102}{chapter.13}%
+\contentsline {section}{\numberline {13.1}問題設定}{103}{section.13.1}%
+\contentsline {section}{\numberline {13.2}群逐次デザインと $\alpha $ 消費関数}{103}{section.13.2}%
+\contentsline {subsection}{\numberline {13.2.1}情報時間と検定統計量の相関}{103}{subsection.13.2.1}%
+\contentsline {paragraph}{情報時間}{103}{section*.74}%
+\contentsline {paragraph}{スコアの部分和の構造}{103}{section*.75}%
+\contentsline {paragraph}{繰り返し検定の問題}{104}{section*.76}%
+\contentsline {subsection}{\numberline {13.2.2}$\alpha $ 消費関数}{104}{subsection.13.2.2}%
+\contentsline {section}{\numberline {13.3}多重性と FWER}{105}{section.13.3}%
+\contentsline {subsection}{\numberline {13.3.1}FWER}{105}{subsection.13.3.1}%
+\contentsline {subsection}{\numberline {13.3.2}Bonferroni 法}{105}{subsection.13.3.2}%
+\contentsline {subsection}{\numberline {13.3.3}Holm 法}{105}{subsection.13.3.3}%
+\contentsline {section}{\numberline {13.4}一元配置分散分析}{105}{section.13.4}%
+\contentsline {section}{\numberline {13.5}閉検定手順}{106}{section.13.5}%
+\contentsline {paragraph}{分散分析で保護した対比較（\mbox {2024年 医薬 問4}〔3〕）}{106}{section*.78}%
+\contentsline {section}{\numberline {13.6}用量反応と線形対比}{107}{section.13.6}%
+\contentsline {section}{\numberline {13.7}仮定}{107}{section.13.7}%
+\contentsline {section}{\numberline {13.8}結果の解釈}{108}{section.13.8}%
+\contentsline {section}{\numberline {13.9}手法選択}{108}{section.13.9}%
+\contentsline {section}{\numberline {13.10}よくある誤り}{108}{section.13.10}%
+\contentsline {section}{\numberline {13.11}数理統計との接続}{108}{section.13.11}%
+\contentsline {section}{\numberline {13.12}例題}{109}{section.13.12}%
+\contentsline {section}{\numberline {13.13}解答}{109}{section.13.13}%
+\contentsline {chapter}{\numberline {第14章}欠測データと EM アルゴリズム}{111}{chapter.14}%
+\contentsline {section}{\numberline {14.1}問題設定}{111}{section.14.1}%
+\contentsline {section}{\numberline {14.2}欠測メカニズム}{112}{section.14.2}%
+\contentsline {paragraph}{データから言えること}{112}{section*.79}%
+\contentsline {section}{\numberline {14.3}主な解析法}{112}{section.14.3}%
+\contentsline {paragraph}{完全ケース解析の偏り}{112}{section*.81}%
+\contentsline {paragraph}{逆確率重み付け（IPW）}{113}{section*.82}%
+\contentsline {section}{\numberline {14.4}EM アルゴリズム}{113}{section.14.4}%
+\contentsline {subsection}{\numberline {14.4.1}一般形}{113}{subsection.14.4.1}%
+\contentsline {subsection}{\numberline {14.4.2}例：ABO 血液型の遺伝子頻度}{114}{subsection.14.4.2}%
+\contentsline {paragraph}{M ステップ（完全データの最尤推定）}{114}{section*.83}%
+\contentsline {paragraph}{E ステップ（観測データを条件とした期待値）}{114}{section*.84}%
+\contentsline {paragraph}{反復法}{114}{section*.85}%
+\contentsline {section}{\numberline {14.5}仮定}{115}{section.14.5}%
+\contentsline {section}{\numberline {14.6}結果の解釈}{115}{section.14.6}%
+\contentsline {section}{\numberline {14.7}手法選択}{115}{section.14.7}%
+\contentsline {section}{\numberline {14.8}よくある誤り}{115}{section.14.8}%
+\contentsline {section}{\numberline {14.9}数理統計との接続}{116}{section.14.9}%
+\contentsline {section}{\numberline {14.10}例題}{116}{section.14.10}%
+\contentsline {section}{\numberline {14.11}解答}{116}{section.14.11}%
+\contentsline {chapter}{\numberline {第15章}Bayes 解析の基礎}{119}{chapter.15}%
+\contentsline {section}{\numberline {15.1}ポアソン率の最尤推定}{119}{section.15.1}%
+\contentsline {section}{\numberline {15.2}Bayes 推測の基本}{120}{section.15.2}%
+\contentsline {section}{\numberline {15.3}Beta--Binomial モデル}{120}{section.15.3}%
+\contentsline {paragraph}{一様事前分布（\mbox {2022年 医薬 問4}）}{121}{section*.86}%
+\contentsline {paragraph}{事後確率による判定}{121}{section*.87}%
+\contentsline {paragraph}{事後予測}{121}{section*.88}%
+\contentsline {section}{\numberline {15.4}正規--正規モデル}{121}{section.15.4}%
+\contentsline {section}{\numberline {15.5}頻度論との違い}{121}{section.15.5}%
+\contentsline {section}{\numberline {15.6}仮定}{122}{section.15.6}%
+\contentsline {section}{\numberline {15.7}結果の解釈}{122}{section.15.7}%
+\contentsline {section}{\numberline {15.8}手法選択}{122}{section.15.8}%
+\contentsline {section}{\numberline {15.9}よくある誤り}{122}{section.15.9}%
+\contentsline {section}{\numberline {15.10}数理統計との接続}{123}{section.15.10}%
+\contentsline {section}{\numberline {15.11}例題}{123}{section.15.11}%
+\contentsline {section}{\numberline {15.12}解答}{123}{section.15.12}%
+\contentsline {chapter}{\numberline {付録A}手法選択フローチャート}{125}{appendix.A}%
+\contentsline {chapter}{\numberline {付録B}必須公式集}{127}{appendix.B}%
+\contentsline {chapter}{\numberline {付録C}医薬生物学用語集}{130}{appendix.C}%
+\contentsline {chapter}{\numberline {付録D}過去問対応表}{133}{appendix.D}%
+\contentsline {chapter}{\numberline {付録E}総合チェックリスト}{135}{appendix.E}%
+\contentsline {chapter}{\numberline {付録F}誘導付きで出題された概念}{138}{appendix.F}%
+\contentsline {chapter}{参考文献}{140}{appendix*.99}%

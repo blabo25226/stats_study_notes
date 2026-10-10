@@ -2,31 +2,30 @@
 
 \begin{goalbox}
 \begin{itemize}
-\item ロジスティック回帰モデルを書き，回帰係数を（調整）対数オッズ比として解釈できる．
-\item 個別データ・集計データの対数尤度，スコア，Fisher情報行列を導出できる．
-\item 2群比較のロジスティック回帰の最尤推定値と標準誤差が $2\times2$ 表の対数オッズ比と Woolf の分散に一致することを示せる．
-\item Wald 検定・尤度比検定・スコア検定を使い分け，尤度比検定の自由度を正しく数えられる．
-\item 交互作用項のあるモデルでオッズ比を計算できる．予測確率から判定表・PPV・NPV・ROC を作れる．
-\item AIC の定義と Kullback--Leibler 情報量との関係を説明できる．
+\item ロジスティック回帰モデルを書き，回帰係数を（調整）対数オッズ比として解釈できる．交互作用項があるときのオッズ比を計算できる．
+\item 個別データ・集計データの対数尤度を書き，2群モデルの最尤推定値と標準誤差が $2\times2$ 表の対数オッズ比とその分散に一致することを示せる．
+\item Wald 検定・尤度比検定・スコア検定を行い，尤度比検定の自由度を正しく数えられる．
+\item AIC を計算してモデルを選択し，Kullback--Leibler 情報量との関係を説明できる．
+\item 予測確率から判定表・PPV・NPV を作れる．
+\item 症例対照研究でもロジスティック回帰の傾き（対数OR）が推定できる理由（Prentice--Pyke の結果）を説明できる．
 \end{itemize}
 \end{goalbox}
 
 \begin{exambox}
 \begin{itemize}
 \item \kakomon{2018}{4}：ロジスティックモデルの対数尤度，二値共変量の係数が調整オッズ比の対数であることの証明，AIC の式，Bernoulli分布間の KL 情報量，リスクスコアの解釈（150字）．
-\item \kakomon{2023}{1}：治療群の対数オッズとオッズ比の表現，集計データの対数尤度 $l=c_1\alpha+c_2\beta+c_3\log(1+e^\alpha)+c_4\log(1+e^{\alpha+\beta})$ の係数，
+\item \kakomon{2023}{1}：治療群の対数オッズとオッズ比の表現，集計データの対数尤度，
       2群モデルの最尤推定値 $\hat\alpha=\log(4/6)$，$\hat\beta=\log(7/2)$，年齢を加えたモデルとの尤度比検定，予測確率 $\ge0.6$ による判定の PPV・NPV．
-\item \kakomon{2019}{2}〔3〕：傾向スコアを飽和ロジスティックモデル（交互作用項つき）で推定．
 \item \kakomon{2018}{3}：ロジスティックモデルの予測値による ROC 解析（\cref{ch:05}）．
 \end{itemize}
 \end{exambox}
 
-\flowline{2 値アウトカム\\＋共変量}{調整OR\\予測確率}{ロジスティック\\回帰}{logit 線形\\独立}{最尤法\\Wald・LRT}{調整ORの解釈\\判別・較正}
+\flowline{2 値アウトカム\\＋共変量}{調整OR\\予測確率}{ロジスティック\\回帰}{logit 線形\\独立}{最尤法\\Wald・LRT}{調整ORの解釈\\判別}
 
 \section{問題設定}\label{sec:06-setting}
 被験者 $i=1,\dots,n$ について，2 値アウトカム $y_i\in\{0,1\}$ と共変量ベクトル $\bm x_i=(1,x_{i1},\dots,x_{ip})\transp$ が得られる．
 目的は (a) 他の共変量を調整した曝露・治療の効果（調整オッズ比）の推定，(b) 発症確率の予測，のいずれかである．
-2群比較や層別表では足りない「複数の共変量（連続量を含む）の同時調整」を行うのがロジスティック回帰である．
+本章の基本事項（モデル，オッズ比としての解釈，対数尤度，AIC，尤度比検定）は準1級の範囲なので公式と例題を中心にまとめる．
 
 \section{モデルと係数の解釈}\label{sec:06-model}
 \begin{teigi}[ロジスティック回帰モデル]\label{def:06-logit}
@@ -48,18 +47,13 @@ $x_1$ が連続なら，$x_1$ が1単位増えるごとのオッズ比が $e^{\b
 \end{proof}
 「調整」とは「他の共変量が同じ値の人どうしで比べた」という意味であり，
 このモデルは他の共変量の値によらずオッズ比が一定（交互作用なし）であることを仮定している．
-
-\paragraph{カテゴリ変数}
-$L$ 水準のカテゴリ変数は参照水準を除く $L-1$ 個のダミー変数で表す．各係数は参照水準に対する対数オッズ比である
-（\kakomon{2018}{4} の年齢区分 [8--12]/[5--7]，[13--18]/[5--7]）．
-このときカテゴリ変数全体の効果の検定は自由度 $L-1$ になる．
+$L$ 水準のカテゴリ変数は参照水準を除く $L-1$ 個のダミー変数で表し，各係数は参照水準に対する対数オッズ比，変数全体の検定は自由度 $L-1$ になる．
 
 \paragraph{交互作用}
 $\logit\pi=\beta_0+\beta_1x+\beta_2z+\beta_3xz$ では，$z$ を固定したときの $x$ のオッズ比は $e^{\beta_1+\beta_3z}$ で，$z$ によって変わる．
 $\beta_3\ne0$ は「$z$ による効果修飾」（\cref{sec:07-modification}）をオッズ比の尺度で表したものである．
 
 \section{数理：尤度・スコア・情報行列}\label{sec:06-likelihood}
-\subsection{対数尤度}
 \begin{meidai}[対数尤度（\kakomon{2018}{4}〔1〕）]\label[meidai]{prop:06-loglik}
 $Y_i$ が独立に $\mathrm{Bernoulli}(\pi_i)$ に従うとき，
 \begin{equation}
@@ -70,27 +64,22 @@ $Y_i$ が独立に $\mathrm{Bernoulli}(\pi_i)$ に従うとき，
 $\log\pi_i=\bm x_i\transp\bm\beta-\log(1+e^{\bm x_i\transp\bm\beta})$，$\log(1-\pi_i)=-\log(1+e^{\bm x_i\transp\bm\beta})$ を代入する．
 \end{proof}
 \paragraph{集計データ}
-共変量パターン $g$ ごとに $n_g$ 人中 $y_g$ 人がイベントを起こしたとき（二項），定数を除いて
+共変量パターン $g$ ごとに $n_g$ 人中 $y_g$ 人がイベントを起こしたとき，定数を除いて
 $\ell=\sum_g\{y_g\,\bm x_g\transp\bm\beta-n_g\log(1+e^{\bm x_g\transp\bm\beta})\}$．
-\kakomon{2023}{1} の2群（$T$：10人中7人，$C$：10人中4人，$\logit\pi_C=\alpha$，$\logit\pi_T=\alpha+\beta$）では
-\[
-\ell(\alpha,\beta)=7(\alpha+\beta)+4\alpha-10\log(1+e^{\alpha+\beta})-10\log(1+e^{\alpha})=11\alpha+7\beta-10\log(1+e^\alpha)-10\log(1+e^{\alpha+\beta}).
-\]
+例えば対照群10人中4人（$\logit\pi_C=\alpha$），治療群10人中7人（$\logit\pi_T=\alpha+\beta$）なら
+$\ell(\alpha,\beta)=11\alpha+7\beta-10\log(1+e^\alpha)-10\log(1+e^{\alpha+\beta})$（\kakomon{2023}{1}）．
 
-\subsection{スコアと情報行列}
-\begin{meidai}\label[meidai]{prop:06-score}
+\begin{meidai}[スコアと情報行列]\label[meidai]{prop:06-score}
 \begin{align}
 \bm U(\bm\beta)&=\frac{\partial\ell}{\partial\bm\beta}=\sum_i\bm x_i(y_i-\pi_i)=\bm X\transp(\bm y-\bm\pi),\label{eq:06-score}\\
-\bm I(\bm\beta)&=-\frac{\partial^2\ell}{\partial\bm\beta\partial\bm\beta\transp}=\sum_i\pi_i(1-\pi_i)\bm x_i\bm x_i\transp=\bm X\transp\bm W\bm X,\label{eq:06-info}
+\bm I(\bm\beta)&=-\frac{\partial^2\ell}{\partial\bm\beta\partial\bm\beta\transp}=\sum_i\pi_i(1-\pi_i)\bm x_i\bm x_i\transp=\bm X\transp\bm W\bm X,\quad \bm W=\mathrm{diag}\{\pi_i(1-\pi_i)\}.\label{eq:06-info}
 \end{align}
-$\bm W=\mathrm{diag}\{\pi_i(1-\pi_i)\}$．$\bm I$ は $\bm y$ に依存しないので観測情報＝期待情報である．
 \end{meidai}
 \begin{proof}
 $\frac{\partial}{\partial\bm\beta}\log(1+e^{\bm x\transp\bm\beta})=\bm x\,\pi$，$\frac{\partial\pi}{\partial\bm\beta\transp}=\pi(1-\pi)\bm x\transp$ による．
 \end{proof}
-尤度方程式 $\bm X\transp(\bm y-\hat{\bm\pi})=\bm0$ は一般に陽に解けず，Newton--Raphson 法
-$\bm\beta^{(t+1)}=\bm\beta^{(t)}+\bm I(\bm\beta^{(t)})^{-1}\bm U(\bm\beta^{(t)})$（反復重み付き最小二乗法；IRLS）で解く．
-切片を含むモデルでは第1成分から $\sum_iy_i=\sum_i\hat\pi_i$（観測イベント数＝予測イベント数）が成り立つ．
+尤度方程式 $\bm X\transp(\bm y-\hat{\bm\pi})=\bm0$ は一般に陽に解けず Newton--Raphson 法で解く．
+切片を含むモデルでは第1成分から $\sum_iy_i=\sum_i\hat\pi_i$（観測イベント数＝予測イベント数）．
 MLE は漸近的に $\hat{\bm\beta}\approx\Normal(\bm\beta,\bm I(\bm\beta)^{-1})$ に従う．
 
 \subsection{2群の場合：\texorpdfstring{$2\times2$}{2×2} 表との一致}\label{subsec:06-2group}
@@ -102,42 +91,35 @@ $\logit\pi=\alpha+\beta x$（$x\in\{0,1\}$）を $2\times2$ 表（\cref{tab:02-2
 \]
 \end{meidai}
 \begin{proof}
-パラメータ数（2）と群の数（2）が等しい飽和モデルなので，MLE は各群の観測割合を再現する：$\hat\pi_1=a/n_1$，$\hat\pi_0=c/n_0$
-（スコア方程式 $\sum y=\sum\hat\pi$，$\sum_{x=1}y=\sum_{x=1}\hat\pi$ から）．
+スコア方程式 $\sum y=\sum\hat\pi$，$\sum_{x=1}y=\sum_{x=1}\hat\pi$ から $\hat\pi_1=a/n_1$，$\hat\pi_0=c/n_0$（パラメータ数＝群の数の飽和モデル）．
 よって $\hat\alpha=\logit(c/n_0)=\log(c/d)$，$\hat\alpha+\hat\beta=\log(a/b)$．
-情報行列は $w_1=n_1\pi_1(1-\pi_1)$，$w_0=n_0\pi_0(1-\pi_0)$ として
-$\bm I=\begin{pmatrix}w_0+w_1&w_1\\ w_1&w_1\end{pmatrix}$，$\det\bm I=w_0w_1$，
-$(\bm I^{-1})_{22}=(w_0+w_1)/(w_0w_1)=1/w_0+1/w_1$．
-$\hat w_1=ab/n_1$ より $1/\hat w_1=1/a+1/b$，同様に $1/\hat w_0=1/c+1/d$．
+$w_1=n_1\pi_1(1-\pi_1)$，$w_0=n_0\pi_0(1-\pi_0)$ として $\bm I=\begin{pmatrix}w_0+w_1&w_1\\ w_1&w_1\end{pmatrix}$，
+$(\bm I^{-1})_{22}=(w_0+w_1)/(w_0w_1)=1/w_0+1/w_1$．$\hat w_1=ab/n_1$ より $1/\hat w_1=1/a+1/b$，同様に $1/\hat w_0=1/c+1/d$．
 \end{proof}
-\kakomon{2023}{1} では $\hat\alpha=\log(4/6)=-0.405$，$\hat\beta=\log\{(7/3)/(4/6)\}=\log(7/2)=1.253$．
-年齢を加えたモデルで治療の係数が $1.1$ に変わったのは，ランダム化にもかかわらず偶然に年齢分布が群間で異なった（$C$ 群に70歳が多い）ことによる調整の効果である（OR の非可縮性の影響も含む）．
+\kakomon{2023}{1} では $\hat\alpha=\log(4/6)$，$\hat\beta=\log\{(7/3)/(4/6)\}=\log(7/2)$．
+年齢を加えたモデルで治療の係数が変わったのは，偶然に生じた年齢分布の群間差の調整と OR の非可縮性（\cref{subsec:02-collapse}）による．
 
 \section{推定と検定}\label{sec:06-test}
-\subsection{3つの検定}
-$H_0:\beta_j=0$ に対して
+$H_0:\beta_j=0$（一般には $r$ 個の係数が0）に対して
 \begin{itemize}
-\item \textbf{Wald 検定}：$z=\hat\beta_j/\SE(\hat\beta_j)$，$z^2\sim\chi^2_1$．信頼区間 $\exp\{\hat\beta_j\pm z_{\alpha/2}\SE\}$ と双対．
-\item \textbf{尤度比検定}：入れ子のモデルの最大対数尤度 $\ell_1\ge\ell_0$ に対し $G^2=2(\ell_1-\ell_0)\sim\chi^2_{d}$，$d$ は自由パラメータ数の差．
-\item \textbf{スコア検定}：制約モデルの MLE で評価したスコアを使う．2群の $\beta=0$ のスコア検定は Pearson $\chi^2$ である．
+\item \textbf{Wald 検定}：$z=\hat\beta_j/\SE(\hat\beta_j)$，$\SE$ は $\bm I(\hat{\bm\beta})^{-1}$ の対角成分の平方根．$z^2\approx\chi^2_1$．信頼区間 $\exp\{\hat\beta_j\pm z_{\alpha/2}\SE\}$ と双対．
+\item \textbf{尤度比検定}：入れ子のモデルの最大対数尤度 $\ell_1\ge\ell_0$ に対し $G^2=2(\ell_1-\ell_0)\approx\chi^2_{d}$，$d$ は自由パラメータ数の差．
+\item \textbf{スコア検定}：制約モデルの MLE $\tilde{\bm\beta}$ で評価した $\bm U(\tilde{\bm\beta})\transp\bm I(\tilde{\bm\beta})^{-1}\bm U(\tilde{\bm\beta})\approx\chi^2_d$．2群の $\beta=0$ のスコア検定は Pearson $\chi^2$ に一致する．
 \end{itemize}
+3つは $H_0$ の下で漸近的に同等だが，有限標本では値が異なる．
 \kakomon{2023}{1} では $G^2=2\{-11.79-(-12.84)\}=2.10<\chi^2_1(0.05)=3.84$ で，年齢の効果は有意でない．
-3つの検定は漸近的に同等だが，小標本や係数が大きい場合は値が異なり，尤度比検定が最も信頼できることが多い．
-\Youchui Wald 検定は $|\hat\beta|$ が大きいと標準誤差も大きくなり検出力が落ちることがある（Hauck--Donner 効果）．
 
-\subsection{完全分離}
 \begin{supbox}[補足：完全分離]
 ある共変量の閾値でアウトカムが完全に分かれる（例：治療群全員が有効）と，尤度は $|\beta|\to\infty$ で単調に増加し MLE が存在しない．
-$2\times2$ 表にゼロのセルがあると $\log\widehat{\OR}$ が定義できないのと同じ現象で，exact 法や罰則付き尤度（Firth 法）を用いる．
+$2\times2$ 表にゼロのセルがあると $\log\widehat{\OR}$ が定義できないのと同じ現象である．
 \end{supbox}
 
 \section{共変量調整と交絡}\label{sec:06-adjust}
 \begin{itemize}
 \item 観察研究では，交絡因子を共変量に加えることで調整オッズ比を推定する（\cref{ch:07}）．
-\item 層別変数を共変量に含めたロジスティック回帰は，層共通ORの MH 推定と同じ対象を推定する．
-\item RCT でも予後因子で調整すると OR の値は変わる（\cref{subsec:02-collapse}の非可縮性）．
-      調整 OR は「同じ予後の患者どうしの条件付き効果」で，粗 OR は「集団全体の周辺効果」である．
-      ランダム化が成功していれば両者の違いは交絡ではない．
+      層を表すダミー変数を共変量にすれば，曝露の係数は層共通の対数 OR を表す．
+\item RCT でも予後因子で調整すると OR の値は変わる（非可縮性）．
+      調整 OR は「同じ予後の患者どうしの条件付き効果」，粗 OR は「集団全体の周辺効果」で，ランダム化が成功していれば両者の違いは交絡ではない．
 \end{itemize}
 
 \section{予測と判別}\label{sec:06-predict}
@@ -145,10 +127,7 @@ $2\times2$ 表にゼロのセルがあると $\log\widehat{\OR}$ が定義でき
 カットオフ $c$ で「$\hat\pi\ge c$ なら陽性」と判定すれば，感度・特異度・PPV・NPV（\cref{ch:05}）が計算できる．
 \kakomon{2023}{1}〔5〕では，予測確率 $\ge0.6$ の群（9人）のうち実際に効果ありが6人で $\mathrm{PPV}=2/3$，
 $<0.6$ の群（11人）のうち効果なしが6人で $\mathrm{NPV}=6/11$．
-\begin{itemize}
-\item \textbf{判別能}（discrimination）：AUC（c統計量）．
-\item \textbf{較正}（calibration）：予測確率と観測割合の一致．予測値を10分位に分けて比べる Hosmer--Lemeshow 検定など．
-\end{itemize}
+カットオフを動かせば ROC 曲線と AUC（判別能）が得られる．
 予測モデルは作成データで評価すると過大評価になるので，独立な検証コホートで評価する（\kakomon{2018}{4}）．
 
 \section{モデル選択：AIC と KL 情報量}\label{sec:06-aic}
@@ -157,49 +136,48 @@ $<0.6$ の群（11人）のうち効果なしが6人で $\mathrm{NPV}=6/11$．
 切片と $p$ 個の説明変数のロジスティックモデルでは $k=p+1$（\kakomon{2018}{4}〔3〕）．小さいほど良い．
 \end{teigi}
 \begin{teigi}[Kullback--Leibler 情報量]\label{def:06-kl}
-真の分布 $g$ に対するモデル $f$ の KL 情報量は $I(g;f)=\E_g[\log\{g(X)/f(X)\}]\ge0$．
+真の分布 $g$ に対するモデル $f$ の KL 情報量は $I(g;f)=\E_g[\log\{g(X)/f(X)\}]\ge0$（等号は $g=f$ のとき）．
 $g=\mathrm{Bern}(\theta)$，$f=\mathrm{Bern}(\pi)$ なら
 \begin{equation}
 I(g;f)=\theta\log\frac\theta\pi+(1-\theta)\log\frac{1-\theta}{1-\pi}.\label{eq:06-kl}
 \end{equation}
 \end{teigi}
 $I(g;f)=\E_g[\log g]-\E_g[\log f]$ の第1項はモデルによらないので，KL の最小化は期待平均対数尤度 $\E_g[\log f]$ の最大化と同値である．
-最大対数尤度はこの量を楽観的に（同じデータで推定と評価をするため）過大推定し，その偏りが漸近的に $k$ であることから
-$-2\times(\ell-k)$ が AIC となる（\kakomonSM{2023}{4} で線形回帰の場合の罰則 $2(p+1)$ が導出された）．
+最大対数尤度は同じデータで推定と評価をするためこの量を過大推定し，その偏りが漸近的に $k$ であることから，$-2(\ell-k)$ が AIC になる．
 
 \section{症例対照研究とロジスティック回帰}\label{sec:06-cc}
-\Hatten 症例対照研究で，症例は確率 $s_1$，対照は確率 $s_0$ で抽出される（$\bm x$ によらない）とする．
+症例対照研究で，症例は確率 $s_1$，対照は確率 $s_0$ で抽出される（$\bm x$ によらない）とし，母集団で $\logit\pi(\bm x)=\beta_0+\beta_1x_1+\dots$ とする．
 抽出された ($S=1$) 被験者での発症確率は Bayes の定理より
 \begin{gather*}
 \Prob(D=1\mid\bm x,S=1)=\frac{s_1\pi(\bm x)}{s_1\pi(\bm x)+s_0\{1-\pi(\bm x)\}},\\
 \logit\Prob(D=1\mid\bm x,S=1)=\log\frac{s_1}{s_0}+\beta_0+\beta_1x_1+\dots.
 \end{gather*}
-したがって症例対照データにロジスティック回帰を当てはめると，\textbf{傾き（対数OR）のパラメータは抽出によって変わらず（保存され），切片だけが $\log(s_1/s_0)$ ずれる}．
-したがって通常の条件（抽出確率が $\bm x$ によらない，十分な標本サイズ）の下で，症例対照データの最尤推定量は対数 OR を一致推定する（小標本での不偏性までは保証されない）．
-症例対照研究でも調整ORが推定できるのはこのためで，一方で発症確率（リスク）そのものは推定できない．
+したがって抽出された集団でも同じ形のロジスティックモデルが成り立ち，\textbf{傾き（対数OR）は抽出によって変わらず，切片だけが $\log(s_1/s_0)$ ずれる}．
+さらに Prentice と Pyke は，症例対照データに通常の（前向きの）ロジスティック尤度をそのまま当てはめると，傾きの MLE とその漸近分散が正しく得られることを示した（\textbf{Prentice--Pyke の結果}；証明は省く）．
+症例対照研究でも調整ORが推定できるのはこのためであり，一方で切片がずれるので発症確率（リスク）そのものは推定できない．
 
 \section{仮定}\label{sec:06-assump}
 \begin{itemize}
-\item 観測の独立性（クラスタや反復測定があれば GEE・混合モデル）．
-\item 連続共変量について logit が線形（必要ならカテゴリ化・スプライン）．
+\item 観測の独立性（同一患者の反復測定などがあると標準誤差を誤る．連続アウトカムの反復測定は\cref{ch:08}）．
+\item 連続共変量について logit が線形（必要ならカテゴリ化する）．
 \item 交互作用を入れていなければ，オッズ比が他の共変量の値によらず一定．
-\item 十分なイベント数．「変数（推定するパラメータ）1つあたりイベント10以上」（EPV $\ge10$）は古典的な粗い目安であり，絶対的な条件ではない．イベントが少ないと推定が不安定で過学習する．
+\item 十分なイベント数．イベントが少ないと推定が不安定で過学習する．
 \end{itemize}
 
 \section{結果の解釈}\label{sec:06-interp}
 \begin{itemize}
 \item 「年齢・性別を調整した喫煙の OR は 2.1（95\%CI 1.4--3.2）」：同じ年齢・性別の人どうしで比べて，喫煙者の発症オッズは約2倍．
-\item 連続変数の OR は単位に依存する（年齢1歳あたり1.04なら10歳あたり $1.04^{10}\approx1.48$）．
+\item 連続変数の OR は単位に依存する（年齢1歳あたり $e^{\beta}$ なら10歳あたり $e^{10\beta}$）．
 \item リスクスコアの評価（\kakomon{2018}{4}〔5〕）：どの因子が独立した予測因子か（調整ORと信頼区間），判別能（AUC とその区間），
       既存の方法（医師の判断）との比較，検証コホートでの評価であることを述べる．
 \end{itemize}
 
 \section{手法選択}\label{sec:06-choice}
 \begin{itemize}
-\item 調整したい変数が少数のカテゴリ変数 → MH 法でも可．連続変数や多数の変数 → ロジスティック回帰．
-\item リスク比を直接推定したい（イベントが稀でない） → log-二項モデルや修正ポアソン回帰．
+\item 調整したい変数が少数のカテゴリ変数 → 層別解析（層別 Cochran 検定，\cref{sec:04-mh}）でも可．連続変数や多数の変数 → ロジスティック回帰．
+\item 共変量を追加するかの判断 → 尤度比検定（入れ子のモデル），または AIC．
+\item 症例対照研究 → ロジスティック回帰で調整 OR（切片は解釈しない）．
 \item 時間の情報（打ち切り）がある → Cox 回帰（\cref{ch:10}）．
-\item マッチした症例対照研究 → 条件付きロジスティック回帰（ペアの切片を条件付けで消去）．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:06-err}
@@ -210,6 +188,7 @@ $-2\times(\ell-k)$ が AIC となる（\kakomonSM{2023}{4} で線形回帰の場
 \item 尤度比検定の自由度をモデル全体のパラメータ数とする（差が自由度）．
 \item AIC のパラメータ数に切片を数え忘れる．
 \item 交互作用項があるモデルで $e^{\beta_1}$ を「$x$ のオッズ比」と書く（$z=0$ のときのオッズ比にすぎない）．
+\item 症例対照研究のロジスティックモデルから発症確率を予測する．
 \end{itemize}
 \end{warnbox}
 
@@ -228,9 +207,9 @@ $-2\times(\ell-k)$ が AIC となる（\kakomonSM{2023}{4} で線形回帰の場
 治療群30人中18人，対照群30人中10人が改善した．$\logit\pi=\alpha+\beta x$（治療 $x=1$）を当てはめる．
 \begin{enumerate}[label=(\arabic*)]
 \item 対数尤度を $\alpha,\beta$ の関数として書け．
-\item $\hat\alpha,\hat\beta$ とオッズ比の推定値を求めよ．
-\item $\SE(\hat\beta)$ を求め，Wald 検定を行え．オッズ比の95\%信頼区間も求めよ（$e^{0.0451}=1.046$，$e^{2.1521}=8.60$）．
-\item 最大対数尤度は，モデル全体で $-39.29$，$\beta=0$ のモデルで $-41.46$ である．尤度比検定を行え．
+\item $\hat\alpha,\hat\beta$ とオッズ比の推定値を求めよ（$\log2=0.693$，$\log3=1.099$，$\log1.5=0.405$）．
+\item $\SE(\hat\beta)$ を求め，Wald 検定を行え．オッズ比の95\%信頼区間も求めよ（$z_{0.025}=1.96$，$e^{0.0451}=1.046$，$e^{2.1521}=8.60$）．
+\item 最大対数尤度は，モデル全体で $-39.29$，$\beta=0$ のモデルで $-41.46$ である．尤度比検定を行え（$\chi^2_1(0.05)=3.841$）．
 \item Pearson $\chi^2$ 統計量を求め，(3)(4)と比べよ．
 \end{enumerate}
 \end{reidai}
@@ -241,7 +220,7 @@ $e^{0.9}=2.460$，$e^{0.4}=1.492$，$e^{1.2}=3.320$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
 \item 喫煙の調整オッズ比と，年齢10歳あたりのオッズ比を求め，解釈せよ．
 \item 60歳の喫煙男性の発症確率の予測値を求めよ．
-\item 喫煙と性別の交互作用項 $0.3\,(\text{喫煙}\times\text{男性})$ を加えたモデルでは，男性での喫煙のオッズ比は何を用いて表されるか．
+\item 喫煙と性別の交互作用項 $0.3\,(\text{喫煙}\times\text{男性})$ を加えたモデルでは，男性での喫煙のオッズ比はいくらか．
 \end{enumerate}
 \end{reidai}
 
@@ -288,6 +267,6 @@ M1 対 M2：$G^2=2(117.9-116.8)=2.2<5.991$（自由度2）で重症度の追加�
 \item 2群では $\hat\beta=\log(ad/bc)$，$\V=1/a+1/b+1/c+1/d$（$2\times2$ 表と一致）．
 \item 検定：Wald $\hat\beta/\SE$，尤度比 $2(\ell_1-\ell_0)\sim\chi^2_{\text{パラメータ数の差}}$，スコア（2群なら Pearson）．
 \item $\mathrm{AIC}=-2\ell+2(p+1)$．KL：$\theta\log(\theta/\pi)+(1-\theta)\log\{(1-\theta)/(1-\pi)\}$．
-\item 症例対照研究では傾き（対数OR）は抽出で保存され一致推定できる．切片は $\log(s_1/s_0)$ だけずれる．
+\item 症例対照研究では傾き（対数OR）は抽出で保存され推定できる（Prentice--Pyke）．切片は $\log(s_1/s_0)$ だけずれる．
 \end{itemize}
 \end{summarybox}

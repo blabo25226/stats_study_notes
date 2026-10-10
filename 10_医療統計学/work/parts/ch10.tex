@@ -1,29 +1,32 @@
-\chapter[Cox比例ハザード・RMST・パラメトリック生存解析]{Cox比例ハザード・RMST・\\パラメトリック生存解析}\label{ch:10}
+\chapter[Cox比例ハザード・パラメトリック生存解析・競合リスク]{Cox比例ハザード・パラメトリック生存解析・競合リスク}\label{ch:10}
 
 \begin{goalbox}
 \begin{itemize}
-\item Cox 比例ハザードモデルを書き，回帰係数を対数ハザード比として解釈し，比例ハザード性の意味を説明できる．
-\item $S(t\mid x)=S_0(t)^{\exp(\beta x)}$ と $\log\{-\log S(t\mid x)\}=\log H_0(t)+\beta x$ を導き，2重対数プロットで比例ハザード性を確認できる．
+\item Cox 比例ハザードモデルを書き，回帰係数を対数ハザード比として解釈し，$S(t\mid x)=S_0(t)^{\exp(\beta x)}$ を導ける．
 \item 部分尤度を小さなデータで書き下し，スコア検定がログランク検定に一致することを示せる．
 \item 打ち切りのある指数分布の尤度・最尤推定量・Fisher情報量を導出し，デルタ法でハザード比の検定・区間を作れる．
-\item RMST（境界内平均生存時間）が生存曲線下の面積であることを示し，指数モデルと KM で計算できる．
+\item 原因別ハザード・累積発生関数・部分分布ハザードを定義し，競合イベントを打ち切り扱いした $1-\mathrm{KM}$ が累積発生関数を過大推定する理由を説明できる．
+\item 原因別ハザードの Cox モデルの $\beta$ と Fine--Gray モデルの係数の解釈の違いを説明できる．
 \end{itemize}
 \end{goalbox}
 
 \begin{exambox}
 \begin{itemize}
 \item \kakomon{2016}{3}〔3〕：2群のデータの Cox 部分尤度 $L(\beta)$ の書き下し．
-\item \kakomon{2017}{1}〔4〕〜〔6〕：Cox モデルで $\log(-\log S(t\mid\bm Z))=\log\Lambda_0(t)+\bm\beta\transp\bm Z$，
-      $\epsilon(T)$ が極値分布 $1-\exp(-e^x)$ に従うこと，年齢が一様分布の共変量のときの乱数生成．
+\item \kakomon{2017}{1}〔4〕〜〔6〕：Cox モデルの $\log(-\log S)$ 表現（モデル式は与えられる），極値分布，乱数生成．
 \item \kakomon{2018}{1}：打ち切りのある指数分布の尤度，$\hat\lambda=\sum\delta_i/\sum t_i$，$I(\lambda)=\delta/\lambda^2$，
       デルタ法による $\V[\log\hat\lambda_1-\log\hat\lambda_2]=1/d_1+1/d_2$，$Z$ 検定，必要イベント数．
-\item \kakomon{2019}{1}〔3〕〜〔5〕：RMST $=\int_0^\tau S$ の証明，指数分布での $\V[\min(T,\tau)]$，$\hat\lambda=3/83$ と $\tau=20$ の RMST・分散．
-\item \kakomon{2022}{1}：比例ハザード性，$S_0(t)$ の表現，2重対数プロットが平行になる理由，$\hat\beta=0.06$（SE 0.18）の HR と CI の解釈．
+\item \kakomon{2019}{1}〔5〕：打ち切りのある指数モデルの $\hat\lambda=3/83$．（〔3〕〔4〕と〔5〕の後半は定義が与えられる誘導付きの量の計算：\cref{app:F}．）
+\item \kakomon{2022}{1}：比例ハザード性，$S_0(t)$ の表現，$\hat\beta=0.06$（SE 0.18）の HR と CI の解釈．（〔3〕は誘導付き：\cref{app:F}．）
 \item \kakomon{2023}{2}：打ち切りなしの指数分布の尤度・Fisher情報量と症例数設計（\cref{ch:12}）．
+\item \kakomon{2021}{1}〔5〕：他因死を打ち切り扱いした $1-\mathrm{KM}$ と累積発生関数の推定値の違いの考察．
+\item \kakomon{2025}{3}〔5〕：原因別ハザードの比例ハザードモデルの $\beta$ で累積発生関数への効果を評価することの適否．
 \end{itemize}
+\kakomon{2021}{1}〔3〕〔4〕と\kakomon{2025}{3}〔1〕〜〔4〕は定義・推定式が問題文で与えられる誘導付きの問題なので，本書では解説しない（\cref{app:F}）．
+必要な定義は\cref{sec:10-compete}の冒頭にまとめる．
 \end{exambox}
 
-\flowline{時間＋打ち切り\\＋共変量}{ハザード比\\RMST}{Cox・指数\\モデル}{比例ハザード\\独立打ち切り}{部分尤度\\デルタ法}{HR・RMST差\\の臨床的意味}
+\flowline{時間＋打ち切り\\＋共変量}{ハザード比\\累積発生}{Cox・指数\\モデル}{比例ハザード\\独立打ち切り}{部分尤度\\デルタ法}{HR・CIF\\の解釈}
 
 \section{Cox 比例ハザードモデル}\label{sec:10-cox}
 \Hissu\Hinshutsu
@@ -39,7 +42,7 @@ h(t\mid\bm x)=h_0(t)\exp(\bm\beta\transp\bm x)\label{eq:10-cox}
 これが\emphx{比例ハザード性}である（\kakomon{2022}{1}〔1〕）．
 2 値の共変量なら $e^{\beta}$ が HR，連続なら1単位増加あたりの HR である．
 
-\begin{meidai}[生存関数と2重対数変換]\label[meidai]{prop:10-loglog}
+\begin{meidai}[生存関数の表現]\label[meidai]{prop:10-loglog}
 $H_0(t)=\int_0^th_0$，$S_0(t)=e^{-H_0(t)}$ とすると
 \begin{equation}
 S(t\mid\bm x)=S_0(t)^{\exp(\bm\beta\transp\bm x)},\qquad
@@ -48,27 +51,14 @@ S(t\mid\bm x)=S_0(t)^{\exp(\bm\beta\transp\bm x)},\qquad
 \end{meidai}
 \begin{proof}
 $H(t\mid\bm x)=\int_0^th_0(u)e^{\bm\beta\transp\bm x}\dd u=e^{\bm\beta\transp\bm x}H_0(t)$．
-$S=e^{-H}$ より $S(t\mid\bm x)=\{e^{-H_0(t)}\}^{\exp(\bm\beta\transp\bm x)}$．両辺の $-\log$ をとってから $\log$ をとれば第2式．
+$S=e^{-H}$（\cref{thm:09-relations}）より $S(t\mid\bm x)=\{e^{-H_0(t)}\}^{\exp(\bm\beta\transp\bm x)}$．両辺の $-\log$ をとってから $\log$ をとれば第2式．
 \end{proof}
-\paragraph{2重対数プロット}\label{sec:10-phcheck}
-群ごとの KM 推定値 $\hat S_g(t)$ について $\log\{-\log\hat S_g(t)\}$ を $\log t$（または $t$）に対してプロットすると，
-比例ハザードの下では群間の差が $\beta$ で一定，すなわち曲線が\textbf{平行}になる（\kakomon{2022}{1}〔3〕）．
-交差したり間隔が大きく変わったりすれば比例ハザード性が疑われる．
-さらに直線になれば Weibull 分布（$\log H=\alpha\log\gamma+\alpha\log t$），傾き1の直線なら指数分布である．
-\begin{supbox}[補足：その他の確認法]
-Schoenfeld 残差を時間に対してプロットする（傾向があれば非比例），共変量と時間の関数の交互作用項 $\beta_2\,x\log t$ を加えて検定する，などがある．
-非比例のときは，層別 Cox モデル（非比例の変数で層別し $h_{0s}(t)$ を層ごとに変える），時間依存係数，RMST による要約を検討する．
-\end{supbox}
+第2式から，比例ハザードの下では群ごとの $\log\{-\log\hat S(t)\}$ の差が $\beta$ で一定になる（2重対数プロットが平行になる；\kakomon{2022}{1}〔3〕で与えられる）．
 
 \paragraph{線形変換モデル（\kakomon{2017}{1}〔5〕）}
 \cref{eq:10-loglog}を $t=T$ で評価すると $\log H_0(T)=-\bm\beta\transp\bm x+\epsilon$，$\epsilon=\log H(T\mid\bm x)$．
-$H(T\mid\bm x)\sim\Ex(1)$（\cref{prop:09-HT}）なので
-\[
-\Prob(\epsilon\le u)=\Prob\bigl(H(T\mid\bm x)\le e^u\bigr)=1-\exp(-e^u),
-\]
-すなわち $\epsilon$ は（最小値の）極値分布に従う．
-$H_0(t)=t^{3/2}$，$\beta=1/2$ なら $\frac32\log T=-\frac Z2+\epsilon$，$\epsilon=\log(-\log V)$ より
-$T=\exp\{-Z/3+\frac23\log(-\log V)\}$ で乱数を作れる（$Z=40+30U$）．
+$H(T\mid\bm x)\sim\Ex(1)$（\cref{prop:09-HT}）なので $\Prob(\epsilon\le u)=\Prob\bigl(H(T\mid\bm x)\le e^u\bigr)=1-\exp(-e^u)$（極値分布）．
+$V\sim\Unif(0,1)$ なら $\epsilon=\log(-\log V)$ として $T=H_0^{-1}\bigl(\exp\{-\bm\beta\transp\bm x+\epsilon\}\bigr)$ で乱数を作れる．
 
 \subsection{部分尤度}\label{subsec:10-partial}
 \Hissu 同順位のないイベント時点 $t_{(1)}<\dots<t_{(r)}$，時点 $t_{(j)}$ でイベントを起こした個体を $(j)$，リスク集合を $R_j$ とする．
@@ -101,14 +91,14 @@ I(\beta)=-\frac{\partial^2\log L}{\partial\beta^2}=\sum_j\Bigl\{\frac{\sum_{R_j}
 スコア検定 $U(0)^2/I(0)$ はログランク検定（\cref{thm:09-logrank}，同順位なし）に一致する．
 \end{meidai}
 部分尤度は通常の尤度と同様に扱える：$\hat\beta$ は漸近正規で $\SE(\hat\beta)=I(\hat\beta)^{-1/2}$，
-Wald 検定 $\hat\beta/\SE$，部分尤度比検定 $2\{\log L(\hat\beta)-\log L(0)\}$ はいずれも $\chi^2_1$ に近似できる．
-\begin{supbox}[補足：同順位とベースラインハザード]
-同時点に複数のイベントがあるときは，Breslow 近似 $\prod_j\exp(\bm\beta\transp\bm s_j)/\{\sum_{R_j}e^{\bm\beta\transp\bm x_l}\}^{d_j}$（$\bm s_j$ はイベント個体の共変量の和）や Efron 近似を用いる．
-ベースラインの累積ハザードは Breslow 推定量 $\hat H_0(t)=\sum_{t_{(j)}\le t}d_j/\sum_{l\in R_j}e^{\hat{\bm\beta}\transp\bm x_l}$ で推定する．
+Wald 検定 $\hat\beta/\SE$，部分尤度比検定 $2\{\log L(\hat\beta)-\log L(0)\}$ はいずれも漸近的に $\chi^2_1$（Wald は $\Normal(0,1)$）で近似できる．
+\begin{supbox}[補足：同時点のイベント（Breslow 近似）]
+同時点に複数のイベントがあるときは，Breslow 近似 $\prod_j\exp(\bm\beta\transp\bm s_j)/\{\sum_{R_j}e^{\bm\beta\transp\bm x_l}\}^{d_j}$（$\bm s_j$ はその時点でイベントを起こした個体の共変量の和）がよく用いられる．
+2 値の $x$ では $U(0)=\sum_j(d_{1j}-d_jn_{1j}/n_j)$ はログランクの $O-E$ に一致し，$I(0)=\sum_jd_jn_{1j}n_{0j}/n_j^2$ は超幾何分散 $V_j$ より因子 $(n_j-1)/(n_j-d_j)$ だけ大きい（$d_j=1$ なら一致）．
 \end{supbox}
 
 \subsection{推定結果の解釈}\label{subsec:10-interp}
-\kakomon{2022}{1} の数値では，$\hat\beta=0.06$，$\SE=0.18$ から
+\kakomon{2022}{1} の数値では，$\hat\beta=0.06$，$\SE=0.18$，$z_{0.025}=1.96$ から $1.96\times0.18=0.353$ で
 \[
 \widehat{\HR}=e^{0.06}=1.06,\qquad 95\%\text{CI}=(e^{0.06-0.353},\,e^{0.06+0.353})=(0.75,\,1.51).
 \]
@@ -142,7 +132,7 @@ $\hat\lambda$ は「イベント数/人時間」の発生率そのものであ�
 \kakomon{2019}{1} のデータ（イベント3，総観察時間83週）では $\hat\lambda=3/83=0.036$/週．
 
 \subsection{デルタ法とハザード比}\label{subsec:10-expdelta}
-$\V[\hat\lambda]\approx\lambda^2/d$ なので，デルタ法で $\V[\log\hat\lambda]\approx\lambda^{-2}\cdot\lambda^2/d=1/d$．
+$\hat\lambda$ は漸近的に $\V[\hat\lambda]\approx\lambda^2/d$ なので，デルタ法で $\V[\log\hat\lambda]\approx\lambda^{-2}\cdot\lambda^2/d=1/d$．
 独立な2群では
 \begin{equation}
 \V[\log\hat\lambda_1-\log\hat\lambda_2]\approx\frac{1}{d_1}+\frac{1}{d_2},\qquad
@@ -159,56 +149,86 @@ r=\frac{2(z_{\alpha/2}+z_\beta)^2}{(\log\lambda_1-\log\lambda_2)^2}\quad\text{�
 \end{equation}
 導出の一般論は\cref{ch:12}．
 
-\begin{supbox}[補足：Weibull モデルと加速モデル]
-Weibull モデル $h(t)=\alpha\gamma(\gamma t)^{\alpha-1}$ の打ち切りつき対数尤度は
-$\sum_i\{\delta_i\log(\alpha\gamma^\alpha t_i^{\alpha-1})-(\gamma t_i)^\alpha\}$ で，数値的に最大化する．
-Weibull（指数を含む）は比例ハザードモデルであると同時に，$\log T=\mu+\bm\eta\transp\bm x+\sigma\epsilon$ の形の加速故障時間（AFT）モデルでもある唯一の分布族である．
-\end{supbox}
+\section{競合リスクの解釈}\label{sec:10-compete}
+\Hissu
+がん死を評価項目とする研究で他因死が起こると，その人のがん死は以後決して観察されない．
+このように，あるイベントが起こると別のイベントが起こりえなくなるとき，それらを\emphx{競合リスク}という．
+\Youchui 打ち切りは「イベントはいずれ起こるが観察できなかった」，競合イベントは「そのイベントは二度と起こらない」であり，両者は別物である．
+本節では解釈に必要な最小限の定義を置き，2つの論点（$1-\mathrm{KM}$ の過大推定，原因別 Cox の係数の意味）を説明する．
 
-\section{RMST（境界内平均生存時間）}\label{sec:10-rmst}
-\Hinshutsu
-\subsection{定義と性質}
-KM 曲線が0に達しない（最長観察が打ち切り）と，平均生存時間 $\int_0^\infty S$ は推定できない．そこで境界時間 $\tau$ を定めて
-\begin{teigi}[RMST]\label{def:10-rmst}
-$X(\tau)=\min(T,\tau)$ として $\mu(\tau)=\E[X(\tau)]$ を境界内平均生存時間（restricted mean survival time）という．
+\subsection{定義}\label{subsec:10-compete-def}
+最初のイベントまでの時間を $T$，その種類（原因）を $J\in\{1,\dots,m\}$ とする（同時には起こらないとする）．$S(t)=\Prob(T>t)$ は「どのイベントもまだ起きていない」確率である．
+\begin{teigi}[原因別ハザード・累積発生関数・部分分布ハザード]\label{def:10-compete}
+\begin{align*}
+&\text{原因別ハザード} & \lambda_j(t)&=\lim_{\Delta\to0}\frac{\Prob(t\le T<t+\Delta,\ J=j\mid T\ge t)}{\Delta},\qquad \Lambda_j(t)=\int_0^t\lambda_j(u)\,\dd u,\\
+&\text{累積発生関数（CIF）} & F_j(t)&=\Prob(T\le t,\ J=j),\\
+&\text{部分分布ハザード} & \tilde\lambda_j(t)&=-\frac{\dd}{\dd t}\log\{1-F_j(t)\}.
+\end{align*}
 \end{teigi}
-\begin{teiri}[\kakomon{2019}{1}〔3〕〔4〕]\label[teiri]{thm:10-rmst}
+事象 $\{t\le T<t+\Delta\}$ は排反な $\{t\le T<t+\Delta,J=j\}$ $(j=1,\dots,m)$ の和なので，全ハザードは $\lambda(t)=\sum_j\lambda_j(t)$，
+したがって\cref{thm:09-relations}より
 \begin{equation}
-\E[X(\tau)]=\int_0^\tau S(t)\,\dd t,\qquad \E[X(\tau)^2]=2\int_0^\tau tS(t)\,\dd t.\label{eq:10-rmst}
+S(t)=\exp\Bigl\{-\sum_{j=1}^m\Lambda_j(t)\Bigr\},\qquad
+F_j(t)=\int_0^t\lambda_j(u)S(u)\,\dd u .\label{eq:10-cif}
 \end{equation}
-\end{teiri}
+第2式は「$u$ までどのイベントも起きず（確率 $S(u)$），そこで原因 $j$ が起こる（率 $\lambda_j(u)$）」を足し上げたもので，$\Prob(u\le T<u+\dd u,J=j)=\lambda_j(u)S(u)\,\dd u$ による．
+$F_j$ は $S$ を通じて\textbf{他の原因のハザードにも依存する}．また $\sum_jF_j(t)=1-S(t)$ で，$F_j(\infty)=\Prob(J=j)<1$（$m\ge2$ で他の原因の確率が正のとき）である．
+
+部分分布ハザードについては，$1-F_j(t)=\Prob(T>t)+\Prob(T\le t,\,J\ne j)$ なので，
+$\tilde\lambda_j$ は\textbf{他の原因で既にイベントを起こした人もリスク集合に残したときの原因 $j$ の瞬間発生率}に相当する．
+定義から $1-F_j(t)=\exp\{-\int_0^t\tilde\lambda_j(u)\,\dd u\}$ であり，$\tilde\lambda_j$ と $F_j$ は1対1に対応する．
+
+\subsection{\texorpdfstring{$1-\mathrm{KM}$}{1−KM} による過大推定}\label{subsec:10-compete-km}
+\Hinshutsu 他の原因のイベントを打ち切りとみなし，原因 $j$ だけをイベントとして KM $\hat S_j^{\mathrm{KM}}$ を計算するとする．
+各時点の因子 $1-d_{ji}/n_i$ の $n_i$ は「どのイベントも起こさず観察中の人数」なので，$d_{ji}/n_i$ は原因別ハザード $\lambda_j$ の増分を推定しており，
+$\hat S_j^{\mathrm{KM}}(t)$ は（独立な打ち切りの下で）$\exp\{-\Lambda_j(t)\}$ の推定量になる．したがって $1-\hat S_j^{\mathrm{KM}}(t)$ が推定するのは $1-e^{-\Lambda_j(t)}$ であって $F_j(t)$ ではない．
+\begin{meidai}[$1-\mathrm{KM}$ の推定対象は CIF 以上]\label[meidai]{prop:10-overestimate}
+$F_j(t)\le1-e^{-\Lambda_j(t)}$．$\lambda_j(u)>0$ かつ $\sum_{k\ne j}\Lambda_k(u)>0$ となる $u$ が $[0,t]$ 内の正の長さの区間にわたって存在すれば，不等号は厳密である．
+\end{meidai}
 \begin{proof}
-$\E[X(\tau)]=\int_0^\tau tf(t)\dd t+\tau S(\tau)$．部分積分 $\int_0^\tau tf\,\dd t=[-tS(t)]_0^\tau+\int_0^\tau S\,\dd t=-\tau S(\tau)+\int_0^\tau S$ を代入すると第1式．
-同様に $\int_0^\tau t^2f\,\dd t=-\tau^2S(\tau)+2\int_0^\tau tS$，$\E[X^2]=\int_0^\tau t^2f+\tau^2S(\tau)$ から第2式．
-（別証：$X(\tau)=\int_0^\tau\ind(T>t)\dd t$ の期待値をとり，積分の順序を交換する．）
+$S(u)=e^{-\Lambda_j(u)}\exp\{-\sum_{k\ne j}\Lambda_k(u)\}\le e^{-\Lambda_j(u)}$ を\cref{eq:10-cif}に用いて
+$F_j(t)=\int_0^t\lambda_j(u)S(u)\,\dd u\le\int_0^t\lambda_j(u)e^{-\Lambda_j(u)}\,\dd u=\bigl[-e^{-\Lambda_j(u)}\bigr]_0^t=1-e^{-\Lambda_j(t)}$．
 \end{proof}
-\paragraph{指数分布の場合}
-$S(t)=e^{-\lambda t}$ なら
-\begin{equation}
-\mu(\tau)=\frac{1-e^{-\lambda\tau}}{\lambda},\qquad
-\V[X(\tau)]=\frac{1-2\lambda\tau e^{-\lambda\tau}-e^{-2\lambda\tau}}{\lambda^2}.\label{eq:10-rmstexp}
-\end{equation}
-（$2\int_0^\tau te^{-\lambda t}\dd t=\frac{2}{\lambda^2}\{1-(1+\lambda\tau)e^{-\lambda\tau}\}$ から $\mu(\tau)^2$ を引く．）
-\kakomon{2019}{1} では $\hat\lambda=3/83$，$\tau=20$ で $\hat\mu(20)\approx14.2$週，$\widehat\V\approx48$．
+\paragraph{解釈（\kakomon{2021}{1}〔5〕）}
+打ち切り扱いは「他因死した人も，リスク集合に残った人と同じ率で将来原因 $j$ のイベントを起こす」とみなすことにあたる．
+実際には他因死した人は原因 $j$ のイベントを二度と起こさないので，原因 $j$ のイベントを起こさない確率を過小に，累積発生を過大に推定する．
+$1-e^{-\Lambda_j(t)}$ は「他の原因が存在しない仮想的な世界での原因 $j$ の累積リスク」と解釈されることがあるが，それには原因ごとの潜在的なイベント時間が独立という，データからは検証できない仮定が要る．
+現実の世界で「$t$ までに原因 $j$ のイベントを経験する確率」は $F_j(t)$ である．
 
-\paragraph{KM による推定}
-$\hat\mu(\tau)=\int_0^\tau\hat S(t)\dd t$ は階段関数の面積で，$0=t_0<t_1<\dots<t_D\le\tau$ を $\tau$ 以前のイベント時点，$t_{D+1}=\tau$ として
-$\hat\mu(\tau)=\sum_{k=0}^{D}(t_{k+1}-t_k)\hat S(t_k)$．\kakomon{2019}{1} では $10\times1+3\times0.8+6\times0.6+1\times0.3=16.3$ 週．
-指数モデルによる値（14.2）との違いは，このデータで指数分布の仮定が合っていない可能性を示唆する（ただし5例と小標本なので断定はできない）．
+\subsection{原因別 Cox と Fine--Gray モデル}\label{subsec:10-compete-reg}
+\Hinshutsu
+\paragraph{原因別ハザードの Cox モデル}
+$\lambda_1(t\mid x)=\lambda_{10}(t)\exp(\beta x)$ とする．原因別ハザードのリスク集合は「どのイベントも起きていない人」なので，
+他の原因のイベントを打ち切りとみなした通常の Cox 回帰（\cref{sec:10-cox}）で $\beta$ を推定できる．
+しかし $e^\beta$ は\textbf{原因別ハザード $\lambda_1$ の比}（まだどのイベントも起きていない人での原因1の発生率の比）であり，$F_1$ への効果ではない（\kakomon{2025}{3}〔5〕）．
+実際，\cref{eq:10-cif}より
+\[
+F_1(t\mid x)=\int_0^t\lambda_1(u\mid x)\exp\{-\Lambda_1(u\mid x)-\Lambda_2(u\mid x)\}\,\dd u
+\]
+は $\lambda_2(\cdot\mid x)$ にも依存する．$x$ が $\lambda_2$ を大きくすれば，$\beta$ の値にかかわらず $F_1$ は小さくなりうる．
+$x$ が $\lambda_2$ に影響しない場合でも，$F_1$ は $\beta$ の非線形な関数で，$e^\beta$ は $F_1$ の比などにはならない．
 
-\subsection{効果指標としての RMST}
-2群の RMST の差 $\mu_1(\tau)-\mu_0(\tau)$ は「$\tau$ までの平均的なイベントのない時間の延長」で，
-比例ハザード性を仮定せず，時間の単位で臨床的に解釈しやすい．
-HR が非比例ハザードで解釈しにくいときの代替指標として推奨されている．$\tau$ は十分な人数がリスク集合に残る範囲で事前に決める．
-\begin{supbox}[補足：KM による RMST の分散]
-$A_j=\int_{t_{(j)}}^\tau\hat S(t)\dd t$ として $\widehat\V[\hat\mu(\tau)]=\sum_{t_{(j)}\le\tau}A_j^2\frac{d_j}{n_j(n_j-d_j)}$（Greenwood 型）．
-\end{supbox}
+\paragraph{Fine--Gray モデル（部分分布ハザードの比例ハザードモデル）}
+$F_1$ への効果を直接表すには，部分分布ハザードに比例ハザードを仮定する \cite{finegray1999}：
+\[
+\tilde\lambda_1(t\mid x)=\tilde\lambda_{10}(t)\exp(\gamma x)
+\quad\Longrightarrow\quad
+1-F_1(t\mid x)=\exp\Bigl\{-e^{\gamma x}\int_0^t\tilde\lambda_{10}\Bigr\}=\{1-F_{10}(t)\}^{\exp(\gamma x)}.
+\]
+ここで $F_{10}$ は $x=0$ の CIF である．$\gamma>0$ なら $0<F_{10}(t)<1$ となるすべての $t$ で $F_1(t\mid x=1)>F_1(t\mid x=0)$ となり，係数を「累積発生を増やす（$\gamma<0$ なら減らす）」と直接解釈できる．
+ただし $e^\gamma$ も $F_1$ の比そのものではなく，部分分布ハザードの比である．
+\begin{pointbox}[本書での扱い]
+Fine--Gray モデルは\textbf{係数の解釈（原因別 Cox との違い）だけを必修}とし，推定法は扱わない．
+病因の研究（まだイベントのない人で原因 $j$ の発生率が変わるか）には原因別ハザード，
+予後の予測（$t$ までに原因 $j$ のイベントを経験する確率が変わるか）には CIF と Fine--Gray の係数が対応する．
+\end{pointbox}
 
 \section{仮定}\label{sec:10-assump}
 \begin{itemize}
 \item Cox：比例ハザード（HR が時間によらず一定），共変量の効果が $\exp(\bm\beta\transp\bm x)$ の形（対数線形），独立な打ち切り．
-\item 指数モデル：ハザード一定．Weibull：$\log H$ が $\log t$ の1次式．
-\item RMST：独立な打ち切り（比例ハザードは不要）．$\tau$ まで十分な追跡．
+\item 指数モデル：ハザード一定，独立で無情報な打ち切り．
+\item 競合リスク：独立な打ち切りは追跡不能・試験終了など真の打ち切りに対する仮定であり，\textbf{競合イベントは打ち切りではない}．
+      原因別ハザードと CIF は観測データから推定できるが，「競合イベントがない世界での分布」は検証できない仮定なしには推定できない．
 \end{itemize}
 
 \section{結果の解釈}\label{sec:10-interp}
@@ -216,15 +236,16 @@ $A_j=\int_{t_{(j)}}^\tau\hat S(t)\dd t$ として $\widehat\V[\hat\mu(\tau)]=\su
 \item 「HR $=0.70$（95\%CI 0.55--0.89）」：追跡期間中どの時点でも，生存している人の死亡の瞬間的な発生率が試験群で30\%低い．
       「死亡割合が30\%低い」ではない（\cref{subsec:02-relation}）．
 \item 共変量で調整した HR は「他の共変量が同じ人どうしの比較」．Cox の HR も OR と同様に非可縮であり，RCT でも調整で値が変わりうる．
-\item RMST の差「$\tau=5$年で0.4年」：5年間で平均して約5か月長くイベントのない期間を過ごせる．
+\item 治療が原因1の原因別ハザードを下げても，生存が延びた結果として原因2のイベントが増えることがある．競合リスクがあるときは両方の原因について示す．
 \end{itemize}
 
 \section{手法選択}\label{sec:10-choice}
 \begin{itemize}
-\item 2群比較の検定 → ログランク．効果の大きさ・共変量調整 → Cox 回帰．
-\item ハザード一定がもっともらしく小標本・外挿が必要 → 指数（または Weibull）モデル．
-\item 比例ハザードが疑わしい → 層別 Cox，RMST の差，時点ごとの生存率の差．
-\item 競合リスクがある → 原因別ハザードの Cox か Fine--Gray モデル（\cref{ch:11}）．
+\item 2群比較の検定 → ログランク（\cref{sec:09-logrank}）．効果の大きさ・共変量調整 → Cox 回帰．
+\item ハザード一定がもっともらしく小標本・外挿が必要 → 指数モデル．
+\item 比例ハザードが疑わしい → HR 1つで要約せず，群ごとの KM 曲線や特定時点の $\hat S(t)$ を示す．
+\item 競合リスクがある → 原因別ハザードへの効果は原因別 Cox（競合を打ち切り扱い），累積発生への効果の解釈は Fine--Gray モデルの係数．
+      累積発生を $1-\mathrm{KM}$（競合を打ち切り扱い）で報告しない．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:10-err}
@@ -233,8 +254,8 @@ $A_j=\int_{t_{(j)}}^\tau\hat S(t)\dd t$ として $\widehat\V[\hat\mu(\tau)]=\su
 \item 部分尤度の分母を，その時点のリスク集合（両群を含め，直前までイベントも打ち切りも起きていない全員）ではなく同じ群の人だけとする．打ち切り例を分母から早く外しすぎる．
 \item 打ち切り例の尤度の寄与を $f(t_i)$ とする（正しくは $S(t_i)$）．
 \item 指数モデルの分散 $\V[\log\hat\lambda]$ を $1/n$ とする（正しくは $1/d$，イベント数）．
-\item 2重対数プロットで「直線であること」を比例ハザードの条件とする（条件は群間で平行であること）．
-\item RMST の $\tau$ をデータを見てから選ぶ．
+\item 競合イベントを打ち切りとして $1-\mathrm{KM}$ で累積発生を報告する（過大推定）．
+\item 原因別ハザード比を「累積発生の比」と解釈する．$F_j(t)\to1$ と考える（極限は $\Prob(J=j)$）．
 \end{itemize}
 \end{warnbox}
 
@@ -246,8 +267,9 @@ $A_j=\int_{t_{(j)}}^\tau\hat S(t)\dd t$ として $\widehat\V[\hat\mu(\tau)]=\su
       \kakomonSM{2016}{2} は指数分布の MLE・不変性・$\sum X_i\sim\Ga(n,\lambda)$（形状・率）・生存関数の UMVU を問うた．
 \item 指数モデルの尤度 $\lambda^de^{-\lambda W}$ は，平均 $\lambda W$ のポアソン分布で $d$ を観測した尤度と $\lambda$ について同じ形である（\cref{ch:17}）．
 \item デルタ法（同書 定理5.20）で $\V[\log\hat\lambda]=1/d$．$\log$ 変換は分散を $\lambda$ に依存しなくする分散安定化変換でもある．
-\item 部分尤度は条件付き確率の積であり，局外母数 $h_0$ を消去する点で MH 法の条件付けと同じ発想である．
-\item $E[\min(T,\tau)]=\int_0^\tau S$ は\kakomonSM{2024}{4}（$E[X]=\int(1-F)$）の打ち切り版である．
+\item 部分尤度は条件付き確率の積であり，局外母数 $h_0$ を消去する点で層別 $2\times2$ 表の条件付け（\cref{sec:04-mh}）と同じ発想である．
+\item 独立な $\Ex(\lambda)$ と $\Ex(\mu)$ の最小値 $Z$ と，どちらが最小かの指示変数 $W$ の同時分布（同書第4章演習）は，一定の原因別ハザードをもつ競合リスクそのものである：
+      $Z\sim\Ex(\lambda+\mu)$，$\Prob(W=1)=\lambda/(\lambda+\mu)$，$Z\indep W$．
 \end{itemize}
 \end{linkbox}
 
@@ -270,21 +292,23 @@ $A_j=\int_{t_{(j)}}^\tau\hat S(t)\dd t$ として $\widehat\V[\hat\mu(\tau)]=\su
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[RMST]\label{reidai:10-3}
-\cref{reidai:09-2}のデータ（$3,5^+,6,6,8^+,10,12^+,15$）について，$\tau=12$ とする．
+\begin{reidai}[比例ハザードの下での生存関数]\label{reidai:10-4}
+対照群の生存関数が $S_0(t)=\exp\{-(t/10)^{1.5}\}$ で，試験群は対照群に対するハザード比 $0.6$ の比例ハザードモデルに従うとする．
 \begin{enumerate}[label=(\arabic*)]
-\item KM に基づく RMST を求めよ．
-\item 指数モデルの MLE $\hat\lambda$ と，それに基づく RMST を求めよ（$e^{-0.9231}=0.3973$）．
-\item 2つの値の違いについて考察せよ．
+\item 試験群の生存関数を書け．
+\item $t=10$ での両群の生存確率を求めよ（$e^{-1}=0.368$，$e^{-0.6}=0.549$）．
+\item $t=10$ までのイベント割合の比 $\{1-S_1(10)\}/\{1-S_0(10)\}$ を求め，HR $=0.6$ と比べよ．
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[2重対数プロット]\label{reidai:10-4}
-対照群の生存関数が $S_0(t)=\exp\{-(t/10)^{1.5}\}$ で，試験群のハザード比が $0.6$ の比例ハザードモデルに従うとする．
+\begin{reidai}[競合リスク：一定の原因別ハザード]\label{reidai:10-5}
+原因1・原因2の原因別ハザードが（年あたり）それぞれ $\lambda_1=0.02$，$\lambda_2=0.03$ で一定とする．
+$e^{-0.5}=0.6065$，$e^{-0.2}=0.8187$，$e^{-1}=0.3679$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
-\item 試験群の生存関数を書け．
-\item 両群の $\log\{-\log S(t)\}$ を $\log t$ の関数として書き，プロットが平行な直線になることを示せ．
-\item $t=10$ での両群の生存確率を求めよ（$e^{-1}=0.368$，$e^{-0.6}=0.549$）．
+\item 10年間いずれのイベントも起こさない確率 $S(10)$ を求めよ．
+\item $F_1(10)$ と $F_1(\infty)$ を求めよ．
+\item 原因2を打ち切りとみなした $1-\mathrm{KM}$ が推定する量 $1-e^{-\Lambda_1(10)}$ を求め，$F_1(10)$ と比べよ．
+\item ある共変量 $x=1$ の集団では $\lambda_1=0.02$ のまま $\lambda_2=0.08$ であった．原因1の原因別ハザード比は1である．この集団の $F_1(10)$ を求め，原因別ハザード比で $F_1$ への効果を評価することの問題点を述べよ．
 \end{enumerate}
 \end{reidai}
 
@@ -296,37 +320,39 @@ L(\beta)=\frac{e^\beta}{3e^\beta+2}\cdot\frac{1}{2e^\beta+2}\cdot\frac{1}{e^\bet
 =\frac{e^\beta}{(3e^\beta+2)(2e^\beta+2)(e^\beta+1)}.
 \]
 (2) $\beta=0$ で $\bar x_j=3/5,\ 2/4,\ 1/2,\ 1$．$U(0)=(1-0.6)+(0-0.5)+(0-0.5)+(1-1)=-0.6$．
-$I(0)=\sum\bar x_j(1-\bar x_j)=0.24+0.25+0.25+0=0.74$．スコア統計量 $0.36/0.74=0.49$．\\
-(3) 群1（$x=1$）の観測イベント2，期待 $0.6+0.5+0.5+1=2.6$，$O-E=-0.6$．分散 $\sum n_{1j}n_{0j}/n_j^2=0.74$．一致する．
+$I(0)=\sum\bar x_j(1-\bar x_j)=0.24+0.25+0.25+0=0.74$．スコア統計量 $0.36/0.74=0.49$（$<3.841=\chi^2_1(0.05)$）．\\
+(3) 群1（$x=1$）の観測イベント2，期待 $0.6+0.5+0.5+1=2.6$，$O-E=-0.6$．各時点 $d_j=1$ なので分散 $\sum n_{1j}n_{0j}/n_j^2=0.74$．一致する．
 \end{kaitou}
 
 \begin{kaitou}{reidai:10-2}
 (1) $\hat\lambda_A=12/240=0.05$/月，$\hat\lambda_B=20/200=0.10$/月．中央値 $\log2/\hat\lambda$：A 13.9か月，B 6.9か月．\\
-(2) $\widehat{\HR}=0.5$，$\log0.5=-0.693$，$\SE=\sqrt{1/12+1/20}=0.365$，$Z=-1.90$，$|Z|<1.96$ で有意でない．\\
+(2) $\widehat{\HR}=0.5$，$\log0.5=-0.693$，$\SE=\sqrt{1/12+1/20}=\sqrt{0.1333}=0.365$，$Z=-1.90$，$|Z|<z_{0.025}=1.96$ で有意でない．\\
 (3) $-0.693\pm1.96\times0.365=(-1.409,\,0.023)$ → $(0.24,\,1.02)$．区間が1をわずかに含む．
 \end{kaitou}
 
-\begin{kaitou}{reidai:10-3}
-(1) $\hat S$ は $[0,3)$ で1，$[3,6)$ で0.875，$[6,10)$ で0.583，$[10,12]$ で0.389．
-$\hat\mu(12)=3\times1+3\times0.875+4\times0.583+2\times0.389=3+2.625+2.333+0.778=8.74$ 週．\\
-(2) $d=5$，$W=65$ で $\hat\lambda=0.0769$．$\hat\mu(12)=(1-e^{-0.9231})/0.0769=0.6027/0.0769=7.84$ 週．\\
-(3) KM による値の方が大きい．KM では最初の3週にイベントがなく，その後もゆるやかに減るのに対し，指数モデルは初期からハザード一定を仮定するため，
-早期の生存を過小評価している可能性がある．どちらが妥当かはハザードが一定かどうか（2重対数プロットなど）で判断する．
+\begin{kaitou}{reidai:10-4}
+(1) \cref{prop:10-loglog}より $S_1(t)=S_0(t)^{0.6}=\exp\{-0.6(t/10)^{1.5}\}$．\\
+(2) $S_0(10)=e^{-1}=0.368$，$S_1(10)=e^{-0.6}=0.549$．\\
+(3) $(1-0.549)/(1-0.368)=0.451/0.632=0.71$．HR $=0.6$ とは異なる．HR は瞬間的な発生率の比であり，一定期間のイベント割合の比（リスク比）ではない．
 \end{kaitou}
 
-\begin{kaitou}{reidai:10-4}
-(1) $S_1(t)=S_0(t)^{0.6}=\exp\{-0.6(t/10)^{1.5}\}$．\\
-(2) $\log\{-\log S_0\}=1.5\log t-1.5\log10$，$\log\{-\log S_1\}=\log0.6+1.5\log t-1.5\log10$．
-どちらも $\log t$ の傾き1.5の直線で，縦方向の差は $\log0.6=\beta$ で一定（平行）．\\
-(3) $S_0(10)=e^{-1}=0.368$，$S_1(10)=e^{-0.6}=0.549$．
+\begin{kaitou}{reidai:10-5}
+(1) 全ハザード $\lambda=0.05$ なので $S(10)=e^{-0.5}=0.607$．\\
+(2) $F_1(t)=\int_0^t0.02\,e^{-0.05u}\dd u=\frac{0.02}{0.05}(1-e^{-0.05t})$ より $F_1(10)=0.4\times0.393=0.157$，$F_1(\infty)=0.4$．\\
+(3) $\Lambda_1(10)=0.2$ で $1-e^{-0.2}=0.181>0.157$．$1-\mathrm{KM}$ の推定対象は $F_1(10)$ を約15\%上回る（\cref{prop:10-overestimate}）．\\
+(4) 全ハザード $0.10$ で $F_1(10)=\frac{0.02}{0.10}(1-e^{-1})=0.2\times0.632=0.126<0.157$．
+原因1の原因別ハザード比は1（$\beta=0$）なのに，原因2のハザードが大きいため原因1のイベントを起こす前に原因2で脱落する人が増え，$F_1$ は小さくなる．
+$F_1$ は $\lambda_2$ にも依存するので，原因別ハザード比だけでは $F_1$ への効果を評価できない．
 \end{kaitou}
 
 \begin{summarybox}
 \begin{itemize}
-\item Cox：$h(t\mid\bm x)=h_0(t)e^{\bm\beta\transp\bm x}$，HR $=e^\beta$ は時間によらず一定．$S=S_0^{\exp(\bm\beta\transp\bm x)}$，$\log(-\log S)=\log H_0+\bm\beta\transp\bm x$（平行性で確認）．
+\item Cox：$h(t\mid\bm x)=h_0(t)e^{\bm\beta\transp\bm x}$，HR $=e^\beta$ は時間によらず一定．$S=S_0^{\exp(\bm\beta\transp\bm x)}$．
 \item 部分尤度 $\prod_j e^{\bm\beta\transp\bm x_{(j)}}/\sum_{R_j}e^{\bm\beta\transp\bm x_l}$．$\beta=0$ のスコア検定＝ログランク．
 \item 打ち切り尤度 $\prod f^{\delta}S^{1-\delta}$．指数：$\hat\lambda=d/W$，$I=d/\lambda^2$，$\V[\log\hat\lambda]\approx1/d$．
 \item 2群：$\V[\log\hat\lambda_1-\log\hat\lambda_2]\approx1/d_1+1/d_2$，必要イベント数 $r=2(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$（各群）．
-\item RMST $=\int_0^\tau S$，$\E[X(\tau)^2]=2\int_0^\tau tS$．指数：$(1-e^{-\lambda\tau})/\lambda$．KM：階段の面積．
+\item 競合リスク：$\lambda=\sum\lambda_j$，$S=\exp(-\sum\Lambda_j)$，$F_j(t)=\int_0^t\lambda_jS$，$\tilde\lambda_j=-\frac{\dd}{\dd t}\log(1-F_j)$．
+\item 競合を打ち切り扱いした $1-\mathrm{KM}$ は $1-e^{-\Lambda_j}\ge F_j$ を推定し過大．
+\item 原因別 Cox の $\beta$ は原因別ハザードへの効果で CIF への効果ではない．CIF への効果は Fine--Gray（部分分布ハザード）の係数で解釈する（推定法は扱わない）．
 \end{itemize}
 \end{summarybox}
