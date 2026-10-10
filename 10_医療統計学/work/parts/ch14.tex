@@ -266,7 +266,7 @@ Cauchy--Schwarz の不等式 $|\sum c_j(x_j-\bar x)|\le\|\bm c\|\,\|\bm x-\bar x
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[多重性]\label{reidai:14-3}
+\begin{reidai}[多重性]\label{reidai:14-2}
 \begin{enumerate}[label=(\arabic*)]
 \item 3つの仮説の $p$ 値が $0.010,\ 0.020,\ 0.030$ であった．$\alpha=0.05$ として，Bonferroni 法と Holm 法で棄却される仮説を答えよ．
 \item プラセボと2用量の3群で，一元配置分散分析（水準 $\alpha$）で全体の帰無仮説が棄却されたときだけ，各用量対プラセボを水準 $\alpha$ で検定する．
@@ -274,7 +274,7 @@ Cauchy--Schwarz の不等式 $|\sum c_j(x_j-\bar x)|\le\|\bm c\|\,\|\bm x-\bar x
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[対比と多重性]\label{reidai:14-4}
+\begin{reidai}[対比と多重性]\label{reidai:14-3}
 プラセボと3用量（0, 40, 80, 120 mg）の各群20人で，平均が $10,12,13,15$，$\sigma^2=16$（既知）であった．
 片側 $\alpha=0.025$ とし，$z_{0.025}=1.960$，$z_{0.0125}=2.241$，$z_{0.025/3}=2.394$ を用いよ．
 \begin{enumerate}[label=(\arabic*)]
@@ -292,7 +292,7 @@ $\int_{-\infty}^{2.50}\int_{c_2}^{\infty}\phi_2(x_1,x_2;0.707)\,\dd x_2\,\dd x_1
 (4) 名目の限界値で2回検定すると，第1種の過誤確率が0.025から約0.042へ1.7倍程度に増える．中間解析では限界値を調整しなければならない．
 \end{kaitou}
 
-\begin{kaitou}{reidai:14-3}
+\begin{kaitou}{reidai:14-2}
 (1) Bonferroni（$0.05/3=0.0167$）：$0.010$ のみ棄却．
 Holm：$0.010\le0.05/3$ で棄却，$0.020\le0.05/2=0.025$ で棄却，$0.030\le0.05$ で棄却．3つとも棄却．\\
 (2) 仮説は $H_{01}:\mu_0=\mu_1$，$H_{02}:\mu_0=\mu_2$ の2つで，共通部分 $H_{01}\cap H_{02}$ は全体の帰無仮説 $\mu_0=\mu_1=\mu_2$ である．
@@ -301,7 +301,7 @@ Holm：$0.010\le0.05/3$ で棄却，$0.020\le0.05/2=0.025$ で棄却，$0.030\le
 4群では，真の帰無仮説がちょうど2つの場合（例：$\mu_0=\mu_1=\mu_2\ne\mu_3$）に FWER が $\alpha$ を超えうるので，強い制御にならない（\cref{sec:14-closed}）．
 \end{kaitou}
 
-\begin{kaitou}{reidai:14-4}
+\begin{kaitou}{reidai:14-3}
 (1) 中心化した用量 $-60,-20,20,60$ より $\bm c=(-3,-1,1,3)$（\cref{prop:14-linear}）．
 $\sum c_j\bar Y_j=-30-12+13+45=16$，$\sqrt{\sigma^2\sum c_j^2/n}=\sqrt{16\times20/20}=4$，$Z_c=4.0>1.960$ で有意（増加傾向あり）．\\
 (2) $\SE=\sqrt{16\times2/20}=\sqrt{1.6}=1.265$．$Z_1=2/1.265=1.58$，$Z_2=3/1.265=2.37$，$Z_3=5/1.265=3.95$．

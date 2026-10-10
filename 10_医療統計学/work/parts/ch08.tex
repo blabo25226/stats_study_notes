@@ -171,7 +171,7 @@ $\E[\hat{\bm\beta}]=\bm A\bm X\bm\beta=\bm\beta$，$\V[\hat{\bm\beta}]=\bm A\bm 
 \end{linkbox}
 
 \section{例題}\label{sec:08-ex}
-\begin{reidai}[反復測定]\label{reidai:08-3}
+\begin{reidai}[反復測定]\label{reidai:08-1}
 30人の3時点（0，4，8週）の測定値の平均ベクトルの推定値が $(10.2,9.1,8.3)$，
 共分散行列の推定値が $\begin{pmatrix}4.0&2.4&2.0\\2.4&4.4&2.6\\2.0&2.6&4.8\end{pmatrix}$ である．
 \begin{enumerate}[label=(\arabic*)]
@@ -182,7 +182,7 @@ $\E[\hat{\bm\beta}]=\bm A\bm X\bm\beta=\bm\beta$，$\V[\hat{\bm\beta}]=\bm A\bm 
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[変量切片モデル]\label{reidai:08-4}
+\begin{reidai}[変量切片モデル]\label{reidai:08-2}
 $Y_{ij}=\mu+\delta z_i+b_i+\varepsilon_{ij}$（$j=1,\dots,m$，$b_i\sim\Normal(0,\sigma_b^2)$，$\varepsilon_{ij}\sim\Normal(0,\sigma^2)$，独立）で，各群 $n$ 人とする（$z_i\in\{0,1\}$ は群）．
 \begin{enumerate}[label=(\arabic*)]
 \item 被験者 $i$ の $m$ 個の測定値の共分散行列を書き，これを $\bm Z_i\bm G_i\bm Z_i\transp+\bm R_i$ の形に表せ．
@@ -192,14 +192,14 @@ $Y_{ij}=\mu+\delta z_i+b_i+\varepsilon_{ij}$（$j=1,\dots,m$，$b_i\sim\Normal(0
 \end{reidai}
 
 \section{解答}\label{sec:08-sol}
-\begin{kaitou}{reidai:08-3}
-(1) $8.3-10.2=-1.9$．$\widehat\V=(4.0+4.8-2\times2.0)/30=4.8/30=0.16$，$\SE=0.40$．$Z=-1.9/0.40=-4.75$，$|Z|>1.96$ で有意．\\
+\begin{kaitou}{reidai:08-1}
+(1) $8.3-10.2=-1.9$．$\widehat\V=(4.0+4.8-2\times2.0)/30=4.8/30=0.16$，$\SE=0.40$．$Z=-1.9/0.40=-4.75$，$|Z|>1.96$ で有意（共分散行列を推定値で置き換えているので，$Z$ は大標本で近似的に $\Normal(0,1)$）．\\
 (2) $2.0/\sqrt{4.0\times4.8}=2.0/4.382=0.456$．\\
 (3) 独立 1，CS 2，AR(1) 2，無構造 $4\cdot5/2=10$．\\
 (4) 平均のパラメータは3個．無構造：$300.4+2\times(3+6)=318.4$．AR(1)：$307.8+2\times(3+2)=317.8$．AR(1) の AIC が小さい（ただし差は0.6でわずか）．
 \end{kaitou}
 
-\begin{kaitou}{reidai:08-4}
+\begin{kaitou}{reidai:08-2}
 (1) 対角成分 $\sigma_b^2+\sigma^2$，非対角成分 $\sigma_b^2$ の $m\times m$ 行列（複合対称）．$\bm Z_i=\bm1_m$，$\bm G_i=\sigma_b^2$，$\bm R_i=\sigma^2\bm I_m$ として $\sigma_b^2\bm1\bm1\transp+\sigma^2\bm I_m$．\\
 (2) 被験者平均 $\bar Y_{i\cdot}=\mu+\delta z_i+b_i+\bar\varepsilon_{i\cdot}$ の分散は $\sigma_b^2+\sigma^2/m$ で，群平均はその $n$ 人の平均，2群は独立なので
 $\V[\hat\delta]=2(\sigma_b^2+\sigma^2/m)/n$．独立とみなすと $2(\sigma_b^2+\sigma^2)/(nm)$．

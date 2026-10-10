@@ -112,7 +112,7 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \item 頻度論ではパラメータは定数で，確率は手順の繰り返しに関するもの．Bayes ではパラメータの不確かさを確率分布で表し，「$\Prob(\pi\ge0.5\mid\text{データ})$」を直接述べられる．
 \item 信用区間は「データを与えたとき $\theta$ が区間に入る確率が95\%」と解釈できる．信頼区間はそうは解釈できない．
 \item 事前分布が結論に影響する．小標本では影響が大きく，事前分布の選択の根拠と感度分析が必要である．
-\item Bayes の判定規則（事後確率の閾値）も，頻度論的な性質（第1種の過誤確率・検出力）を評価できる（\cref{reidai:17-3}(2)）．
+\item Bayes の判定規則（事後確率の閾値）も，頻度論的な性質（第1種の過誤確率・検出力）を評価できる（\cref{reidai:17-2}(2)）．
 \end{itemize}
 
 \section{仮定}\label{sec:17-assump}
@@ -158,16 +158,16 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \end{linkbox}
 
 \section{例題}\label{sec:17-ex}
-\begin{reidai}[Beta--Binomial]\label{reidai:17-2}
+\begin{reidai}[Beta--Binomial]\label{reidai:17-1}
 先行研究から有効率の事前分布を $\Be(2,8)$ とし，新しい試験で20人中7人が有効であった．
 \begin{enumerate}[label=(\arabic*)]
 \item 事前平均，事後分布，事後平均，事後モードを求めよ．
 \item 事後平均を MLE と事前平均の重み付き平均として表せ．
-\item 次の2人の有効数の事後予測分布を求めよ．
+\item （任意）次の2人の有効数 $\tilde Y$ の事後予測分布を求めよ（2人の結果は $\pi$ を与えて互いに独立で，既存データとも独立とする）．
 \end{enumerate}
 \end{reidai}
 
-\begin{reidai}[事後確率による判定]\label{reidai:17-3}
+\begin{reidai}[事後確率による判定]\label{reidai:17-2}
 一様事前分布の下，$n=9$ 人の試験で「$\Prob(\pi>0.5\mid y)\ge0.9$ なら有望」と判定する．
 $\Bin(10,0.5)$ の累積確率 $\Prob(W\le y)$ は $y=5,6,7,8$ でそれぞれ $0.623,0.828,0.945,0.989$ である．
 \begin{enumerate}[label=(\arabic*)]
@@ -177,16 +177,16 @@ $\Bin(10,0.5)$ の累積確率 $\Prob(W\le y)$ は $y=5,6,7,8$ でそれぞれ $
 \end{reidai}
 
 \section{解答}\label{sec:17-sol}
-\begin{kaitou}{reidai:17-2}
+\begin{kaitou}{reidai:17-1}
 (1) 事前平均 $2/10=0.2$．事後 $\Be(2+7,\,8+13)=\Be(9,21)$，平均 $9/30=0.30$，モード $8/28=0.286$．\\
 (2) $0.30=\frac{20}{30}\times0.35+\frac{10}{30}\times0.2$（事前の仮想標本10人，データ20人，MLE $7/20=0.35$）．\\
-(3) $\Prob(\tilde Y=0\mid y)=\E[(1-\pi)^2\mid y]=\frac{21}{30}\cdot\frac{22}{31}=\frac{462}{930}=0.497$，
+(3)（任意）$\Prob(\tilde Y=0\mid y)=\E[(1-\pi)^2\mid y]=\frac{21}{30}\cdot\frac{22}{31}=\frac{462}{930}=0.497$，
 $\Prob(\tilde Y=2\mid y)=\E[\pi^2\mid y]=\frac{9}{30}\cdot\frac{10}{31}=\frac{90}{930}=0.097$，
 $\Prob(\tilde Y=1\mid y)=2\E[\pi(1-\pi)\mid y]=2\cdot\frac{9\cdot21}{30\cdot31}=\frac{378}{930}=0.406$．
 （$\Be(\alpha,\beta)$ で $\E[\pi^2]=\frac{\alpha(\alpha+1)}{(\alpha+\beta)(\alpha+\beta+1)}$ など．）
 \end{kaitou}
 
-\begin{kaitou}{reidai:17-3}
+\begin{kaitou}{reidai:17-2}
 (1) \cref{prop:17-betatail}より $\Prob(\pi>0.5\mid y)=\Prob(W\le y)$，$W\sim\Bin(10,0.5)$．$\ge0.9$ となる最小の $y$ は7（$0.945$）．\\
 (2) $\Prob(Y\ge7\mid\pi=0.5)=0.0898$．この Bayes 判定の「第1種の過誤確率」は約9\%である．
 \end{kaitou}
