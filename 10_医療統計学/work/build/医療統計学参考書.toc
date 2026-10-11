@@ -64,15 +64,15 @@
 \contentsline {subsection}{\numberline {3.2.2}2標本 $t$ 検定}{20}{subsection.3.2.2}%
 \contentsline {paragraph}{Welch の検定}{20}{section*.24}%
 \contentsline {section}{\numberline {3.3}符号検定}{20}{section.3.3}%
-\contentsline {paragraph}{exactなP 値}{21}{section*.25}%
+\contentsline {paragraph}{正確な P 値}{21}{section*.25}%
 \contentsline {paragraph}{正規近似}{21}{section*.26}%
 \contentsline {section}{\numberline {3.4}Wilcoxon符号付き順位検定}{21}{section.3.4}%
-\contentsline {paragraph}{exact分布}{21}{section*.27}%
+\contentsline {paragraph}{正確な分布}{21}{section*.27}%
 \contentsline {section}{\numberline {3.5}Wilcoxon順位和検定とMann--Whitney検定}{22}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}定義と帰無分布}{22}{subsection.3.5.1}%
 \contentsline {subsection}{\numberline {3.5.2}Mann--Whitney統計量との関係}{23}{subsection.3.5.2}%
 \contentsline {paragraph}{$\mathrm {P}(X>Y)=1/2$ との関係}{23}{section*.28}%
-\contentsline {subsection}{\numberline {3.5.3}exact分布と離散性}{23}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.3}正確な分布と離散性}{23}{subsection.3.5.3}%
 \contentsline {subsection}{\numberline {3.5.4}3群以上：Kruskal--Wallis 検定}{24}{subsection.3.5.4}%
 \contentsline {section}{\numberline {3.6}数理：位置ずれモデルでの検出力}{24}{section.3.6}%
 \contentsline {paragraph}{一様分布の例（\mbox {2025年 医薬 問1}）}{24}{section*.29}%
@@ -90,7 +90,7 @@
 \contentsline {subsection}{\numberline {4.2.1}比率の差の検定と Pearson $\chi ^2$}{30}{subsection.4.2.1}%
 \contentsline {paragraph}{共通比率の最尤推定}{30}{section*.33}%
 \contentsline {paragraph}{スコア型統計量（\mbox {2021年 医薬 問3}）}{30}{section*.34}%
-\contentsline {paragraph}{Yates補正と Fisher の正確検定}{31}{section*.35}%
+\contentsline {paragraph}{Yates補正と Fisher の正確な検定}{31}{section*.35}%
 \contentsline {subsection}{\numberline {4.2.2}尤度比検定}{31}{subsection.4.2.2}%
 \contentsline {section}{\numberline {4.3}効果指標の推定とデルタ法}{31}{section.4.3}%
 \contentsline {subsection}{\numberline {4.3.1}デルタ法}{31}{subsection.4.3.1}%

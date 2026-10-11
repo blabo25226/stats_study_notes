@@ -97,6 +97,16 @@ for name in ORDER:
             if t in line:
                 report("deleted", name, i, f"削除した概念 '{t}'")
 
+# ---------- 3b. 用語の統一（exact は「正確な～」に統一．前付の記法の説明だけ許可） ----------
+TERM = re.compile(r"exact|Exact|正確分布|正確検定")
+for name in ORDER:
+    if name in ("99_bib.tex", "01_front.tex"):
+        continue
+    for i, line in lines_of(name):
+        line_wo_labels = REF.sub("", re.sub(r"\\label(?:\[[^\]]*\])?\{[^}]*\}", "", line))
+        if TERM.search(line_wo_labels):
+            report("term", name, i, f"表記の統一（正確な～）: '{TERM.search(line_wo_labels).group(0)}'")
+
 # ---------- 4. 発展項目の不整合 ----------
 def blocks(s, start_pat, end_pat):
     for m in re.finditer(start_pat, s):
