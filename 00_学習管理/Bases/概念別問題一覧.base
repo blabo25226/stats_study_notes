@@ -5,6 +5,8 @@ filters:
 properties:
   file.name:
     displayName: 問題
+  source:
+    displayName: 出典
   stats-category:
     displayName: 分野
   difficulty:
@@ -16,6 +18,7 @@ views:
     name: この概念を使う問題
     order:
       - file.name
+      - source
       - stats-category
       - difficulty
       - status
