@@ -7,7 +7,7 @@ tags:
   - 多変量t分布
   - 用量反応
 created: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-22
 ---
 
 # 線形対比とDunnett検定
@@ -36,6 +36,27 @@ $$
   （分子は $\operatorname{Cov}(\bar y_j-\bar y_0,\bar y_k-\bar y_0)/\sigma^2=1/n_0$、分母は各分散 $1/n_j+1/n_0$ から。）等しい標本サイズでは $1/2$。
 - $(T_1,\dots,T_k)$ は共通の $MS_E$ を分母に持つ多変量 $t$ 分布に従う。臨界値は $\max_j|T_j|$ の分布（多変量 $t$ の分位点）から決め、$k$ 個の比較全体の第1種の過誤確率（FWER）を $\alpha$ に保つ。Bonferroni 法より相関を利用する分だけ検出力が高い。
 - 多重性の一般論は[[多重比較]]を参照。
+
+## 対比の分散とオリジナル演習
+
+独立な群平均 $\bar Y_i$ が分散 $\sigma^2/n_i$ を持つとき、$\hat\psi=\sum_ic_i\bar Y_i$ の分散は
+
+$
+\operatorname{Var}(\hat\psi)=\sigma^2\sum_i\frac{c_i^2}{n_i}.
+$
+
+**問題** 3群（対照0・低用量1・高用量2）の各群標本数$n=5$。線形トレンド対比$c=(-1,0,1)$について、推定値と標準誤差を群平均$(2,3,5)$、共通残差平均平方$MS_E=2$から求めよ。
+
+> [!success]- 解答
+>
+> $\hat\psi=-2+0\cdot3+5=\boxed{3}$。
+>
+> $
+> \widehat{\operatorname{Var}}(\hat\psi)=2\left(\frac15+0+\frac15\right)=\frac45,\quad
+> \widehat{\operatorname{SE}}(\hat\psi)=\sqrt{\frac45}.
+> $
+>
+> $t=3/\sqrt{4/5}$（自由度は残差自由度）で検定。Dunnettは**対照との差を複数同時に検定する別の多重比較手順**なので、単一の線形トレンド対比と区別する。
 
 ## 関連
 
