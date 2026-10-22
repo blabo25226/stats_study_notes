@@ -33,25 +33,25 @@ $$
 
 $U\sim\chi_m^2$、$V\sim\chi_n^2$ は独立として $F=(U/m)/(V/n)$ とする。$n>2$ なら独立性から
 
-$
+$$
 E[F]=\frac nmE[U]E[V^{-1}]
 =\frac nm\cdot m\cdot\frac1{n-2}=\frac n{n-2}.
-$
+$$
 
 $n>4$ では
 
-$
+$$
 \begin{aligned}
 E[F^2]&=\left(\frac nm\right)^2E[U^2]E[V^{-2}]\\
 &=\frac{n^2}{m^2}\frac{m(m+2)}{(n-2)(n-4)}.
 \end{aligned}
-$
+$$
 
 従って
 
-$
+$$
 \boxed{\operatorname{Var}(F)=\frac{2n^2(m+n-2)}{m(n-2)^2(n-4)}}\qquad(n>4).
-$
+$$
 
 $n\le2$ では平均が存在せず、$2<n\le4$ では分散が有限でない。
 
@@ -70,19 +70,54 @@ $n\le2$ では平均が存在せず、$2<n\le4$ では分散が有限でない�
 >
 > $n=8>4$ なので期待値・分散はともに有限。
 >
-> $
+> $$
 > E[F]=\frac8{8-2}=\frac43,
 > \quad
 > E[F^2]=\frac{8^2}{4^2}
 > \frac{4(4+2)}{(8-2)(8-4)}=4.
-> $
+> $$
 >
-> $
+> $$
 > \operatorname{Var}(F)=4-\left(\frac43\right)^2
 > =\boxed{\frac{20}{9}}.
-> $
+> $$
 >
 > $F$ は正に歪んだ分布なので、期待値が自由度の比から自明に1となるわけではない。
+
+## F分布 → カイ二乗：分布収束と密度の収束
+
+分子自由度$m>0$を固定し、分母自由度$n\to\infty$とする。独立な$U\sim\chi_m^2,V_n\sim\chi_n^2$について
+
+$$
+F_{m,n}=\frac{U/m}{V_n/n}.
+$$
+
+$E[V_n/n]=1,\operatorname{Var}(V_n/n)=2/n\to0$より$V_n/n\xrightarrow P1$。Slutskyの定理で
+
+$$
+\boxed{mF_{m,n}=\frac U{V_n/n}\xrightarrow{d}\chi_m^2}.
+$$
+
+つまり**$F_{m,n}$自体は$\chi_m^2/m$に収束**し、$\chi_m^2$へ収束するのは$mF_{m,n}$である。
+
+**密度関数の点ごとの収束**も示す。$Y_n=mF_{m,n}$の密度は、$y>0$で
+
+$$
+f_{Y_n}(y)=
+\frac{\Gamma((m+n)/2)}{\Gamma(m/2)\Gamma(n/2)}
+n^{-m/2}y^{m/2-1}\left(1+\frac yn\right)^{-(m+n)/2}.
+$$
+
+Gamma関数比$\Gamma(z+a)/\Gamma(z)\sim z^a$と$(1+y/n)^{-(m+n)/2}\to e^{-y/2}$から
+
+$$
+\boxed{f_{Y_n}(y)\to
+\frac{y^{m/2-1}e^{-y/2}}{2^{m/2}\Gamma(m/2)}}.
+$$
+
+右辺は$\chi_m^2$の**密度**。分母自由度が大きいという条件と、**倍率$m$**を必ず明示する。
+
+**確認例題**：$m=2$を固定して$n\to\infty$なら$2F_{2,n}\Rightarrow\chi_2^2$。$F_{2,n}$単独なら$\chi_2^2/2$。
 
 ## 関連
 

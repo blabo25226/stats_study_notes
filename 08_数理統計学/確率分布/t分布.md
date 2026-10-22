@@ -34,21 +34,21 @@ $Z\sim N(0,1)$、$V\sim\chi_\nu^2$ は独立、$T=Z/\sqrt{V/\nu}$ とする。�
 
 $\nu>2$ のとき独立性を用いれば
 
-$
+$$
 \begin{aligned}
 E[T^2]&=E[Z^2]\,\nu E[V^{-1}]\\
 &=1\cdot\nu\frac1{\nu-2}
 =\frac{\nu}{\nu-2}.
 \end{aligned}
-$
+$$
 
 従って $\operatorname{Var}(T)=\nu/(\nu-2)$。$\nu\le1$ では平均が存在せず、$1<\nu\le2$ では平均は存在するが分散は有限でない。
 
 **正規極限**：$V_\nu=\sum_{i=1}^\nu Z_i^2$ とおけば $V_\nu/\nu\xrightarrow{P}1$（大数の法則）。独立な $Z\sim N(0,1)$ と組み合わせたスルツキーの定理により
 
-$
+$$
 \frac{Z}{\sqrt{V_\nu/\nu}}\xrightarrow{d}N(0,1).
-$
+$$
 
 また $T^2=Z^2/(V/\nu)\sim F(1,\nu)$。$\nu=1$ なら $T$ は標準コーシー分布（**2023年 統計数理 問2**）。
 
@@ -60,17 +60,72 @@ $
 >
 > 自由度が4なので
 >
-> $
+> $$
 > E[T]=0,\qquad\operatorname{Var}(T)=\frac4{4-2}=2.
-> $
+> $$
 >
 > $T^2\sim F(1,4)$。したがって任意の $c>0$ で
 >
-> $
+> $$
 > P(|T|>c)=P(T^2>c^2)=P(F_{1,4}>c^2).
-> $
+> $$
 >
 > この関係で t の**両側**検定を F の**上側**検定に直すことができる。
+
+## 矢印の証明：t → コーシー／正規／F
+
+### 1. $t_1=$ 標準コーシー（密度の厳密一致）
+
+自由度$\nu$のt密度は
+
+$$
+f_\nu(t)=\frac{\Gamma((\nu+1)/2)}
+{\sqrt{\nu\pi}\Gamma(\nu/2)}
+\left(1+\frac{t^2}{\nu}\right)^{-(\nu+1)/2}.
+$$
+
+$\nu=1$を代入し$\Gamma(1)=1,\Gamma(1/2)=\sqrt\pi$を使えば
+
+$$
+\boxed{f_1(t)=\frac1{\pi(1+t^2)}},
+$$
+
+すなわち**$t_1$と標準コーシーは同じ分布**。$\nu\downarrow1$を考える必要はない（同一性である）。
+
+### 2. $t_\nu\Rightarrow N(0,1)$（密度の極限も示す）
+
+$\nu\to\infty$で独立な$Z\sim N(0,1),V_\nu\sim\chi_\nu^2$を考える。$V_\nu/\nu\xrightarrow P1$よりSlutskyで
+
+$$
+\frac{Z}{\sqrt{V_\nu/\nu}}\xrightarrow{d}N(0,1).
+$$
+
+**密度の各点収束**も、Gamma関数比の漸近公式$\Gamma(z+1/2)/\Gamma(z)\sim z^{1/2}$と
+
+$$
+\left(1+\frac{t^2}{\nu}\right)^{-(\nu+1)/2}\to e^{-t^2/2}
+$$
+
+から
+
+$$
+\boxed{f_\nu(t)\to \phi(t)=\frac{e^{-t^2/2}}{\sqrt{2\pi}}}
+\quad(t\in\mathbb R\ \text{固定})
+$$
+
+と示せる。
+
+### 3. $T_\nu^2\sim F(1,\nu)$（厳密な変換）
+
+$T_\nu=Z/\sqrt{V_\nu/\nu}$（$Z\perp V_\nu$）なら$Z^2\sim\chi_1^2$で$Z^2\perp V_\nu$。従って
+
+$$
+T_\nu^2=\frac{Z^2/1}{V_\nu/\nu}\sim F(1,\nu).
+$$
+
+これは**極限ではなく厳密な分布関係**。密度の変数変換でも$y>0$について$f_{T^2}(y)=[f_T(\sqrt y)+f_T(-\sqrt y)]/(2\sqrt y)$から同じF密度を得る。
+
+**確認例題**：$\nu=1$では$t_1$がコーシーで$T_1^2\sim F(1,1)$。コーシーの期待値は存在しない。
 
 ## 関連
 
