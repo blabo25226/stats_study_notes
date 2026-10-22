@@ -6,6 +6,7 @@ tags:
   - BIC
   - モデル選択
   - 情報量規準
+  - 予測誤差
 created: 2026-10-19
 updated: 2026-10-22
 ---
@@ -65,6 +66,53 @@ $k$ はモデルの**自由パラメータ数**であり、確率が1に足し�
 > $\mathrm{BIC}_B-\mathrm{BIC}_A=-6+2\log100$。$\log100>4>3$ より差は正なので、BICはAを選ぶ。
 >
 > AICとBICは目的と漸近的性質が異なるので、結果が一致するとは限らない。境界母数・特異モデルでは通常の罰則の理論条件に注意。
+
+## 正規線形回帰での罰則項の厳密な導出
+
+AICの罰則 $2k$ が「同じデータで評価した当てはまりの過大評価」から生じることを、正規線形回帰で**厳密に**確かめる（2023数理 問4 の題材）。
+
+**設定** $\boldsymbol Y=X\boldsymbol\beta+\boldsymbol\varepsilon$、$\boldsymbol\varepsilon\sim N_n(\boldsymbol 0,\sigma^2I)$、$X$ は $n\times p$ で階数 $p$。射影行列 $H=X(X^\top X)^{-1}X^\top$ とし、
+
+$$
+\Delta(\boldsymbol Y)=\|\boldsymbol Y-H\boldsymbol Y\|^2,\qquad \hat\sigma^2=\Delta(\boldsymbol Y)/n\ \ (\text{MLE、除数 }n).
+$$
+
+$\boldsymbol Z=X\boldsymbol\beta+\boldsymbol\varepsilon'$ は $\boldsymbol Y$ と独立な「将来のデータ」で、$\Delta(\boldsymbol Z)=\|\boldsymbol Z-H\boldsymbol Y\|^2$ とする。
+
+**1. 二つの平方和の分布**（[[射影行列と二次形式]]）
+$$
+W_1=\frac{\Delta(\boldsymbol Y)}{\sigma^2}=\frac{\boldsymbol\varepsilon^\top(I-H)\boldsymbol\varepsilon}{\sigma^2}\sim\chi^2_{n-p},\qquad
+W_2=\frac{\|H\boldsymbol Y-X\boldsymbol\beta\|^2}{\sigma^2}=\frac{\boldsymbol\varepsilon^\top H\boldsymbol\varepsilon}{\sigma^2}\sim\chi^2_p,
+$$
+$H(I-H)=O$ なので $W_1$ と $W_2$ は独立。
+
+**2. 将来データでの残差平方和** $\boldsymbol Z-H\boldsymbol Y=\boldsymbol\varepsilon'+(X\boldsymbol\beta-H\boldsymbol Y)$ で、$\boldsymbol\varepsilon'$ は $\boldsymbol Y$ と独立・平均0なので交差項が消え
+$$
+E[\Delta(\boldsymbol Z)\mid\boldsymbol Y]=n\sigma^2+\|H\boldsymbol Y-X\boldsymbol\beta\|^2=\sigma^2(n+W_2).
+$$
+
+**3. 過大評価の期待値** $\Delta(\boldsymbol Y)/\hat\sigma^2=n$ を使うと
+$$
+E\!\left[\frac{\Delta(\boldsymbol Z)-\Delta(\boldsymbol Y)}{\hat\sigma^2}\right]
+=E\!\left[\frac{n(n+W_2)}{W_1}\right]-n
+=n(n+p)\,E\!\left[\frac1{W_1}\right]-n
+=\boxed{\frac{2n(p+1)}{n-p-2}}.
+$$
+ここで独立性と $E[1/\chi^2_\nu]=1/(\nu-2)$（$\nu>2$、[[カイ二乗分布]]）を使った。$n\to\infty$ で $\boxed{2(p+1)}$。
+
+**4. AICとの対応** 推定値を代入した $-2\log f(\cdot\,;\hat{\boldsymbol\beta},\hat\sigma^2)$ は $n\log(2\pi\hat\sigma^2)+\Delta(\cdot)/\hat\sigma^2$ なので、上の量は「将来データの $-2\times$対数尤度」と「手元データの $-2\times$最大対数尤度」の差の期待値そのもの。自由パラメータは $\boldsymbol\beta$ の $p$ 個と $\sigma^2$ の1個で $k=p+1$ だから、極限 $2(p+1)=2k$ が AIC の罰則に一致する。有限 $n$ の厳密値 $2kn/(n-k-1)$ を罰則に使うのが小標本補正版 AICc。
+
+**問題** $n=20$、$p=3$ のとき、過大評価の厳密な期待値と AIC の罰則を比べよ。
+
+> [!success]- 解答
+>
+> $k=p+1=4$。厳密値は
+>
+> $
+> \frac{2\cdot20\cdot4}{20-3-2}=\frac{160}{15}=10.67,
+> $
+>
+> AIC の罰則は $2k=8$。小標本では AIC の罰則が過大評価を補いきれず、パラメータの多いモデルを選びやすい。$n=200$ なら $1600/195=8.21$ で、ほぼ8に近づく。
 
 ## 関連
 

@@ -4,6 +4,7 @@ stats-category: 推定
 tags:
   - 平均二乗誤差
   - バイアス分散分解
+  - ミニマックス推定量
 created: 2026-10-22
 updated: 2026-10-22
 ---
@@ -71,6 +72,52 @@ $
 > $
 >
 > $a$ で微分して $4a/n+2(a-1)=0$ より $a^*=n/(n+2)$。このMSE最小推定量はバイアスがあり、不偏推定量とは一致しない。
+
+## リスク一定の推定量とミニマックス性
+
+推定量 $T$ のリスク（ここでは MSE）$R(\theta,T)$ の**最大値** $\sup_\theta R(\theta,T)$ を最小にする推定量をミニマックス推定量という。
+
+**ミニマックスの十分条件** ある事前分布に対するベイズ推定量 $T_\pi$ のリスクが $\theta$ によらず一定 $r$ なら、$T_\pi$ はミニマックス。任意の $T$ について
+$$
+\sup_\theta R(\theta,T)\ \ge\ \int R(\theta,T)\pi(\theta)d\theta\ \ge\ \int R(\theta,T_\pi)\pi(\theta)d\theta=r=\sup_\theta R(\theta,T_\pi)
+$$
+（2番目の不等号はベイズ推定量がベイズリスクを最小にすることによる。[[ベイズ推定と損失関数]]）。
+
+**ベルヌーイでの構成**（2024数理 問3 の題材） $X_i\overset{\rm iid}{\sim}\operatorname{Bern}(\theta)$、$S=\sum X_i$、$T=aS+b$ とする。
+$$
+\mathrm{MSE}=a^2n\theta(1-\theta)+(an\theta+b-\theta)^2
+=\{(an-1)^2-a^2n\}\theta^2+\{a^2n+2b(an-1)\}\theta+b^2.
+$$
+$\theta$ によらないためには $\theta^2,\theta$ の係数が0。$(an-1)^2=a^2n$ で縮小側（$an<1$）をとると $1-an=a\sqrt n$、よって
+$$
+a=\frac1{n+\sqrt n},\qquad b=\frac{a^2n}{2(1-an)}=\frac{\sqrt n}{2(n+\sqrt n)},\qquad
+\boxed{T^*=\frac{S+\sqrt n/2}{n+\sqrt n}},\qquad \mathrm{MSE}=b^2=\frac1{4(1+\sqrt n)^2}.
+$$
+$T^*$ は事前分布 $\operatorname{Beta}(\sqrt n/2,\sqrt n/2)$ の事後平均でもあるので、上の十分条件からミニマックス。
+
+**MLEとの比較** $\hat\theta=S/n$ の MSE は $\theta(1-\theta)/n=\{1/4-(\theta-1/2)^2\}/n$。$T^*$ の方が小さいのは
+$$
+\left|\theta-\tfrac12\right|<\frac{\sqrt{1+2\sqrt n}}{2(1+\sqrt n)}
+$$
+のとき（$1/4-(\theta-1/2)^2>n/\{4(1+\sqrt n)^2\}$ を整理）。$\theta$ が $0,1$ に近いと MLE の方が良い。最大リスクで比べればミニマックス推定量が勝つが、すべての $\theta$ で勝つわけではない。
+
+**問題1** $n=16$ のとき、$T^*$ の MSE、MLE の最大 MSE、$T^*$ の方が MSE の小さい $\theta$ の範囲を求めよ。
+
+> [!success]- 解答
+>
+> $\sqrt n=4$。$T^*=(S+2)/20$、MSE $=1/(4\cdot25)=0.01$。MLE の MSE の最大は $\theta=1/2$ で $1/64=0.0156$。範囲は $|\theta-1/2|<\sqrt9/(2\cdot5)=0.3$、すなわち $0.2<\theta<0.8$。
+
+**問題2（尺度推定量の定数）** $X_1,\dots,X_n$ が独立に平均 $\theta$ の指数分布に従う。損失 $L(d,\theta)=d/\theta+\theta/d-2$ のもとで、$d=c\bar X$ のリスクを最小にする $c$ を $n=5$ で求めよ（2019数理 問2 と同型）。
+
+> [!success]- 解答
+>
+> $n\bar X/\theta\sim\operatorname{Ga}(n,1)$ より $E[\bar X/\theta]=1$、$E[\theta/\bar X]=n/(n-1)$（[[ガンマ関数]]の逆数モーメント）。リスクは
+>
+> $
+> R(c)=c+\frac{n}{(n-1)c}-2,
+> $
+>
+> で $\theta$ によらない。$R'(c)=0$ より $c=\sqrt{n/(n-1)}$。$n=5$ では $c=\sqrt5/2=1.118$、最小リスク $2c-2=\sqrt5-2=0.236$。損失が $d/\theta$ と $\theta/d$ について対称なので、不偏推定量（$c=1$、リスク $0.25$）は最適でない。
 
 ## 関連
 

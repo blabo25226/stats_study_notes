@@ -5,6 +5,7 @@ tags:
   - バイアス
   - 偏り
   - 不偏性
+  - 標本標準偏差
 created: 2026-10-22
 updated: 2026-10-22
 ---
@@ -58,6 +59,44 @@ $E[\hat\theta]=\theta$ でも一般に $E[g(\hat\theta)]\ne g(\theta)$。$g$ が
 > $
 >
 > とすれば $E[\tilde q]=p^2$。また $\tilde q=\sum_{i\ne j}X_iX_j/\{n(n-1)\}$ であり、異なる標本間の独立性からも不偏性を確認できる。
+
+## 標本標準偏差の偏り：2次近似と厳密式
+
+$S^2$ は $\sigma^2$ の不偏推定量だが、$S=\sqrt{S^2}$ は $\sigma$ の不偏推定量ではない（2018数理 問1 の題材）。$X_i\overset{\rm iid}{\sim}N(\mu,\sigma^2)$、$S^2$ は除数 $n-1$ とする。
+
+**1. 2次近似** $g(v)=\sqrt v$ は凹で $g''(v)=-\frac14v^{-3/2}$。$\operatorname{Var}(S^2)=2\sigma^4/(n-1)$ を上の2次展開に入れると
+$$
+E[S]\approx\sigma-\frac18\sigma^{-3}\cdot\frac{2\sigma^4}{n-1}=\sigma\left(1-\frac1{4(n-1)}\right),
+\qquad \operatorname{Bias}(S)\approx-\frac{\sigma}{4n}.
+$$
+
+**2. 厳密式** $Y\sim\chi^2_\nu$ のとき
+$$
+E[\sqrt Y]=\int_0^\infty\frac{y^{1/2}y^{\nu/2-1}e^{-y/2}}{2^{\nu/2}\Gamma(\nu/2)}dy=\frac{\sqrt2\,\Gamma\!\left(\frac{\nu+1}2\right)}{\Gamma\!\left(\frac\nu2\right)}
+$$
+（[[ガンマ関数]]による規格化）。$(n-1)S^2/\sigma^2\sim\chi^2_{n-1}$ に $\nu=n-1$ を入れて
+$$
+E[S]=c_4\sigma,\qquad c_4=\sqrt{\frac2{n-1}}\,\frac{\Gamma(n/2)}{\Gamma((n-1)/2)}.
+$$
+$S/c_4$ は $\sigma$ の不偏推定量。
+
+**3. 二つの経路の一致** [[スターリングの公式]]を1項先まで展開すると
+$$
+\frac{\Gamma(z+1/2)}{\Gamma(z)}=\sqrt z\left(1-\frac1{8z}+O(z^{-2})\right).
+$$
+$z=(n-1)/2$ とすれば $c_4=1-\dfrac1{4(n-1)}+O(n^{-2})$ となり、2次近似と一致する。
+
+**問題** $n=9$ のとき $c_4$ を厳密に計算し、2次近似と比べよ。$\sqrt\pi=1.7725$ を用いてよい。
+
+> [!success]- 解答
+>
+> $c_4=\sqrt{2/8}\,\Gamma(4.5)/\Gamma(4)$。$\Gamma(4.5)=3.5\times2.5\times1.5\times0.5\times\sqrt\pi=6.5625\times1.7725=11.632$、$\Gamma(4)=6$ より
+>
+> $
+> c_4=0.5\times\frac{11.632}{6}=0.9693.
+> $
+>
+> 2次近似は $1-1/32=0.96875$。差は $0.0006$ 程度で、$O(n^{-2})$ の項に相当する。
 
 ## 関連
 
