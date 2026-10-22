@@ -119,6 +119,56 @@ $$
 
 **確認例題**：$m=2$を固定して$n\to\infty$なら$2F_{2,n}\Rightarrow\chi_2^2$。$F_{2,n}$単独なら$\chi_2^2/2$。
 
+## 十分統計量・最尤推定量の導出（F）
+
+$X_1,\ldots,X_n\overset{\rm iid}{\sim}F(u,v)$。通常、自由度$u,v$は**実験計画により既知**だが、ここでは両者を推定する仮想的な問題として$u,v>0$を**連続母数**とする。整数自由度に制限する場合も区別する。
+
+### 十分統計量（因子分解と情報の縮約）
+
+F分布の密度を直接書くと
+
+$$
+f(x;u,v)=
+\frac{\Gamma((u+v)/2)}{\Gamma(u/2)\Gamma(v/2)}
+\left(\frac uv\right)^{u/2}
+x^{u/2-1}\left(1+\frac{ux}{v}\right)^{-(u+v)/2},
+\quad x>0.
+$$
+
+尤度はこの密度の積であり、母数の比$u/v$が変わるたび$\sum_i\log(1+ux_i/v)$が変わる。**全順序統計量$(X_{(1)},\ldots,X_{(n)})$は$(u,v)$の十分統計量**。一般に$\sum X_i$や$\sum\log X_i$だけへの固定次元の縮約はできない。実際、全ての$r>0$で$\prod_i(1+rx_i)$が一致すれば多項式の根から標本の多重集合が復元される。
+
+### 最尤推定量（自由度2つの連立スコアと大域比較）
+
+$L=\sum_i\log x_i$、$A=\sum_i\log(1+ux_i/v)$、$B=\sum_i x_i/(v+ux_i)$、$\psi=\Gamma'/\Gamma$と定義する。
+
+$$
+\ell(u,v)=n\left[
+\log\Gamma\left(\frac{u+v}{2}\right)
+-\log\Gamma\left(\frac u2\right)
+-\log\Gamma\left(\frac v2\right)
++\frac u2\log\frac uv\right]
++\left(\frac u2-1\right)L-\frac{u+v}{2}A.
+$$
+
+内点スコアは
+
+$$
+\begin{aligned}
+\partial_u\ell
+=&\frac n2\left[\psi\left(\frac{u+v}{2}\right)-\psi\left(\frac u2\right)
++\log\frac uv+1\right]\\
+&+\frac L2-\frac A2-\frac{u+v}{2}B,\\
+\partial_v\ell
+=&\frac n2\left[\psi\left(\frac{u+v}{2}\right)-\psi\left(\frac v2\right)
+-\frac uv\right]-\frac A2
++\frac{u(u+v)}{2v}B.
+\end{aligned}
+$$
+
+正の領域で$\partial_u\ell=\partial_v\ell=0$を数値的に解き、**局所解同士と$u\to\infty,v\to\infty$等の境界極限**での尤度も比較する。形の一般的な閉形式解や、常に有限MLEが存在する保証はない。整数自由度なら離散的な尤度の比較が必要。
+
+**確認問題**：任意の標本では、自由度が既知なら推定すべき未知母数はない。未知として推定するモデルでは、例えば$X=(1,2)$の順序統計量$(1,2)$が十分統計量で、上記$\ell(u,v)$を最大化する。
+
 ## 関連
 
 - [[t分布]]

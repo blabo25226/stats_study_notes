@@ -127,6 +127,54 @@ $$
 
 **確認例題**：$\nu=1$では$t_1$がコーシーで$T_1^2\sim F(1,1)$。コーシーの期待値は存在しない。
 
+## 十分統計量・最尤推定量の導出（Student t）
+
+$X_i\overset{\rm iid}{\sim}t_\nu$は**位置0・尺度1を固定**した標準t分布とし、自由度$\nu>0$だけを未知母数とする。位置・尺度まで未知にする場合は**別モデル**であり、以下の十分統計量は変わる。
+
+### 十分統計量（対称性と因子分解）
+
+$$
+L(\nu;\boldsymbol x)
+=\left[
+\frac{\Gamma((\nu+1)/2)}
+{\sqrt{\nu\pi}\Gamma(\nu/2)}
+\right]^n
+\prod_i\left(1+\frac{x_i^2}{\nu}\right)^{-(\nu+1)/2}.
+$$
+
+符号と標本順序に依存しないため
+
+$$
+\boxed{T=\operatorname{sort}(X_1^2,\ldots,X_n^2)}
+$$
+
+が$\nu$の十分統計量。一般に**$\sum_iX_i^2$だけでは十分でない**。全順序統計量$(X_{(1)},\ldots,X_{(n)})$も十分だが、標準tでは絶対値の情報だけに縮約できる。
+
+### 最尤推定量（自由度のスコア・境界）
+
+$C(\nu)=\log\Gamma((\nu+1)/2)-\log\Gamma(\nu/2)-\tfrac12\log(\nu\pi)$とおけば
+
+$$
+\ell(\nu)=nC(\nu)-\frac{\nu+1}{2}
+\sum_i\log\left(1+\frac{x_i^2}{\nu}\right).
+$$
+
+ディガンマ関数$\psi$を使って微分すると
+
+$$
+\begin{aligned}
+\ell'(\nu)
+=&\frac n2\left[\psi\left(\frac{\nu+1}{2}\right)
+-\psi\left(\frac\nu2\right)-\frac1\nu\right]\\
+&-\frac12\sum_i\log\left(1+\frac{x_i^2}{\nu}\right)
++\frac{\nu+1}{2\nu}\sum_i\frac{x_i^2}{\nu+x_i^2}.
+\end{aligned}
+$$
+
+**$\ell'(\hat\nu)=0$の正の根は候補にすぎない**。$\nu\downarrow0$や$\nu\to\infty$（標準正規への極限）の尤度とも比較して全域最大を選ぶ。有限のMLEが存在しない場合もある。整数自由度を仮定する教材では候補整数の尤度を比較する。スコアを単純に0にする方法だけで済まない例である。
+
+**確認問題**：標本$(1,-1)$では十分統計量$\operatorname{sort}(1,1)$。自由度のMLEは上の1変数尤度を最大化して決め、標本平均0を自由度推定量として使わない。
+
 ## 関連
 
 - [[F分布]]
