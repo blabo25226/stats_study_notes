@@ -36,6 +36,29 @@ $$
 - $U(0,\theta)$ の最大値 $X_{(n)}$：$E[X_{(n)}]=\dfrac{n}{n+1}\theta$ なのでバイアスは $-\dfrac{\theta}{n+1}$（常に過小）。$\dfrac{n+1}{n}X_{(n)}$ にすると不偏（[[一様分布]]、[[順序統計量]]）。
 - 指数分布 $\mathrm{Ex}(\lambda)$ の最尤推定量 $\hat\lambda=n/\sum X_i$：$\sum X_i\sim\mathrm{Ga}(n,1/\lambda)$ で $E[1/\sum X_i]=\lambda/(n-1)$（$n\ge2$）なので $E[\hat\lambda]=\dfrac{n}{n-1}\lambda$、バイアスは $\dfrac{\lambda}{n-1}$。$\dfrac{n-1}{n}\hat\lambda=\dfrac{n-1}{\sum X_i}$ が不偏（[[指数分布]]、[[ガンマ分布]]）。
 
+## 変換による偏りとオリジナル演習
+
+$E[\hat\theta]=\theta$ でも一般に $E[g(\hat\theta)]\ne g(\theta)$。$g$ が凸なら Jensen の不等式から $E[g(\hat\theta)]\ge g(E[\hat\theta])$ である。
+
+**問題** $X_i\sim\operatorname{Bern}(p)$ 独立、$\hat p=\bar X$ とする。$p^2$ の推定量 $\hat p^2$ のバイアスを求め、不偏に直せ（$n\ge2$）。
+
+> [!success]- 解答
+>
+> $E[\hat p]=p$、$\operatorname{Var}(\hat p)=p(1-p)/n$ より
+>
+> $
+> E[\hat p^2]=p^2+\frac{p(1-p)}n
+> =\frac{n-1}{n}p^2+\frac pn.
+> $
+>
+> 従って $\operatorname{Bias}(\hat p^2)=p(1-p)/n$。この式から
+>
+> $
+> \boxed{\tilde q=\frac{n\hat p^2-\hat p}{n-1}}
+> $
+>
+> とすれば $E[\tilde q]=p^2$。また $\tilde q=\sum_{i\ne j}X_iX_j/\{n(n-1)\}$ であり、異なる標本間の独立性からも不偏性を確認できる。
+
 ## 関連
 
 - [[不偏推定量]]
