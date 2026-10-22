@@ -6,7 +6,7 @@ tags:
   - カイ2乗分布の比
   - 分散分析
 created: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-22
 ---
 
 # F分布
@@ -28,6 +28,146 @@ $$
 - 分散分析との関係: 群間平方和と群内平方和が独立な $\sigma^2\chi^2$ で、その自由度当たりの比が $F$ 分布になる（[[一元配置分散分析]]、独立性は[[コクランの定理]]）。
 - $n\to\infty$ のとき $mF\to\chi^2(m)$（分母が $1$ に収束する）。
 - ベータ分布との関係: $F\sim F(m,n)$ なら $\dfrac{mF/n}{1+mF/n}\sim\mathrm{Beta}(m/2,n/2)$（[[ベータ分布]]）。
+
+## 導出：期待値・分散とカイ二乗分布との関係
+
+$U\sim\chi_m^2$、$V\sim\chi_n^2$ は独立として $F=(U/m)/(V/n)$ とする。$n>2$ なら独立性から
+
+$$
+E[F]=\frac nmE[U]E[V^{-1}]
+=\frac nm\cdot m\cdot\frac1{n-2}=\frac n{n-2}.
+$$
+
+$n>4$ では
+
+$$
+\begin{aligned}
+E[F^2]&=\left(\frac nm\right)^2E[U^2]E[V^{-2}]\\
+&=\frac{n^2}{m^2}\frac{m(m+2)}{(n-2)(n-4)}.
+\end{aligned}
+$$
+
+従って
+
+$$
+\boxed{\operatorname{Var}(F)=\frac{2n^2(m+n-2)}{m(n-2)^2(n-4)}}\qquad(n>4).
+$$
+
+$n\le2$ では平均が存在せず、$2<n\le4$ では分散が有限でない。
+
+**極限**：$m$ を固定し $n\to\infty$ とすると $V/n\xrightarrow{P}1$ なので、スルツキーの定理より $mF\Rightarrow\chi_m^2$。さらに $T\sim t_n$ なら $T^2\sim F(1,n)$。
+
+この形が正規母集団の分散比較や[[一元配置分散分析]]の F 統計量を支える（独立な平方和を各自由度で割る）。
+
+## 過去問型のオリジナル例題
+
+> [!note] 参考
+> **2017年 統計数理 問5**（カイ二乗分布の比）、**2021年 統計数理 問5**（正規二次形式）。
+
+**問題** $F\sim F(4,8)$ の $E[F]$、$\operatorname{Var}(F)$ を求め、存在条件を確認せよ。
+
+> [!success]- 解答
+>
+> $n=8>4$ なので期待値・分散はともに有限。
+>
+> $$
+> E[F]=\frac8{8-2}=\frac43,
+> \quad
+> E[F^2]=\frac{8^2}{4^2}
+> \frac{4(4+2)}{(8-2)(8-4)}=4.
+> $$
+>
+> $$
+> \operatorname{Var}(F)=4-\left(\frac43\right)^2
+> =\boxed{\frac{20}{9}}.
+> $$
+>
+> $F$ は正に歪んだ分布なので、期待値が自由度の比から自明に1となるわけではない。
+
+## F分布 → カイ二乗：分布収束と密度の収束
+
+分子自由度$m>0$を固定し、分母自由度$n\to\infty$とする。独立な$U\sim\chi_m^2,V_n\sim\chi_n^2$について
+
+$$
+F_{m,n}=\frac{U/m}{V_n/n}.
+$$
+
+$E[V_n/n]=1,\operatorname{Var}(V_n/n)=2/n\to0$より$V_n/n\xrightarrow P1$。Slutskyの定理で
+
+$$
+\boxed{mF_{m,n}=\frac U{V_n/n}\xrightarrow{d}\chi_m^2}.
+$$
+
+つまり**$F_{m,n}$自体は$\chi_m^2/m$に収束**し、$\chi_m^2$へ収束するのは$mF_{m,n}$である。
+
+**密度関数の点ごとの収束**も示す。$Y_n=mF_{m,n}$の密度は、$y>0$で
+
+$$
+f_{Y_n}(y)=
+\frac{\Gamma((m+n)/2)}{\Gamma(m/2)\Gamma(n/2)}
+n^{-m/2}y^{m/2-1}\left(1+\frac yn\right)^{-(m+n)/2}.
+$$
+
+Gamma関数比$\Gamma(z+a)/\Gamma(z)\sim z^a$と$(1+y/n)^{-(m+n)/2}\to e^{-y/2}$から
+
+$$
+\boxed{f_{Y_n}(y)\to
+\frac{y^{m/2-1}e^{-y/2}}{2^{m/2}\Gamma(m/2)}}.
+$$
+
+右辺は$\chi_m^2$の**密度**。分母自由度が大きいという条件と、**倍率$m$**を必ず明示する。
+
+**確認例題**：$m=2$を固定して$n\to\infty$なら$2F_{2,n}\Rightarrow\chi_2^2$。$F_{2,n}$単独なら$\chi_2^2/2$。
+
+## 十分統計量・最尤推定量の導出（F）
+
+$X_1,\ldots,X_n\overset{\rm iid}{\sim}F(u,v)$。通常、自由度$u,v$は**実験計画により既知**だが、ここでは両者を推定する仮想的な問題として$u,v>0$を**連続母数**とする。整数自由度に制限する場合も区別する。
+
+### 十分統計量（因子分解と情報の縮約）
+
+F分布の密度を直接書くと
+
+$$
+f(x;u,v)=
+\frac{\Gamma((u+v)/2)}{\Gamma(u/2)\Gamma(v/2)}
+\left(\frac uv\right)^{u/2}
+x^{u/2-1}\left(1+\frac{ux}{v}\right)^{-(u+v)/2},
+\quad x>0.
+$$
+
+尤度はこの密度の積であり、母数の比$u/v$が変わるたび$\sum_i\log(1+ux_i/v)$が変わる。**全順序統計量$(X_{(1)},\ldots,X_{(n)})$は$(u,v)$の十分統計量**。一般に$\sum X_i$や$\sum\log X_i$だけへの固定次元の縮約はできない。実際、全ての$r>0$で$\prod_i(1+rx_i)$が一致すれば多項式の根から標本の多重集合が復元される。
+
+### 最尤推定量（自由度2つの連立スコアと大域比較）
+
+$L=\sum_i\log x_i$、$A=\sum_i\log(1+ux_i/v)$、$B=\sum_i x_i/(v+ux_i)$、$\psi=\Gamma'/\Gamma$と定義する。
+
+$$
+\ell(u,v)=n\left[
+\log\Gamma\left(\frac{u+v}{2}\right)
+-\log\Gamma\left(\frac u2\right)
+-\log\Gamma\left(\frac v2\right)
++\frac u2\log\frac uv\right]
++\left(\frac u2-1\right)L-\frac{u+v}{2}A.
+$$
+
+内点スコアは
+
+$$
+\begin{aligned}
+\partial_u\ell
+=&\frac n2\left[\psi\left(\frac{u+v}{2}\right)-\psi\left(\frac u2\right)
++\log\frac uv+1\right]\\
+&+\frac L2-\frac A2-\frac{u+v}{2}B,\\
+\partial_v\ell
+=&\frac n2\left[\psi\left(\frac{u+v}{2}\right)-\psi\left(\frac v2\right)
+-\frac uv\right]-\frac A2
++\frac{u(u+v)}{2v}B.
+\end{aligned}
+$$
+
+正の領域で$\partial_u\ell=\partial_v\ell=0$を数値的に解き、**局所解同士と$u\to\infty,v\to\infty$等の境界極限**での尤度も比較する。形の一般的な閉形式解や、常に有限MLEが存在する保証はない。整数自由度なら離散的な尤度の比較が必要。
+
+**確認問題**：任意の標本では、自由度が既知なら推定すべき未知母数はない。未知として推定するモデルでは、例えば$X=(1,2)$の順序統計量$(1,2)$が十分統計量で、上記$\ell(u,v)$を最大化する。
 
 ## 関連
 
