@@ -80,6 +80,45 @@ $$
 
 従って標準化$t$値は**相関する多変量t分布**で、最大絶対値の帰無分布を用いて閾値を決める。各差を独立な$t$検定として処理してはいけない。
 
+## Dunnett統計量の**同時**帰無分布の証明
+
+独立な正規群$Y_{ij}\sim N(\mu_j,\sigma^2)$、対照群$j=0$と処置群$j=1,\ldots,k$。$N=\sum_{j=0}^kn_j$、$\nu=N-(k+1)>0$、$MS_E$は群内残差平均平方とする。差$D_j=\bar Y_j-\bar Y_0$について、帰無仮説$H_0:\mu_j=\mu_0$（全$j$）では
+
+$$
+\operatorname{Var}(D_j)=\sigma^2\left(\frac1{n_j}+\frac1{n_0}\right),\qquad
+\operatorname{Cov}(D_j,D_\ell)=\frac{\sigma^2}{n_0}\quad(j\ne\ell).
+$$
+
+各差は同じ対照平均$\bar Y_0$を共有するため、**相関係数**は
+
+$$
+\boxed{R_{j\ell}=
+\frac{1/n_0}{\sqrt{(1/n_j+1/n_0)(1/n_\ell+1/n_0)}}\quad(j\ne\ell)}.
+$$
+
+差のベクトルを標準化して$Z=(Z_1,\ldots,Z_k)^\top\sim N_k(0,R)$。Cochranの定理で
+
+$$
+V=\frac{\nu\,MS_E}{\sigma^2}\sim\chi_\nu^2,\qquad Z\perp V.
+$$
+
+従って全ての対照比較のt統計量は**同じ分母**を共有し
+
+$$
+\boxed{(T_1,\ldots,T_k)^\top
+=\frac{Z}{\sqrt{V/\nu}}\sim t_{k,\nu}(0,R)}
+$$
+
+（相関行列$R$、自由度$\nu$の多変量Student t）。各成分だけを見れば$t_\nu$だが**成分同士は独立ではない**。
+
+両側のDunnett同時検定では$P(\max_j|T_j|\le c_\alpha)=1-\alpha$を満たす臨界値$c_\alpha$を**上記同時分布から**求め、各$|T_j|>c_\alpha$を棄却する。この仕組みで完全帰無下のFWERが$\alpha$になり、部分帰無下も真の比較だけの周辺同時分布が維持されるため**強いFWER制御**を得る。個別の$t$分布の臨界値を使うだけでは多重性を調整できない。
+
+**問題** 対照・2処置群がすべて$n_j=5$なら、2本の比較の相関と残差自由度を求めよ。
+
+> [!success]- 解答
+>
+> $\nu=15-3=\boxed{12}$、$R_{12}=(1/5)/\sqrt{(2/5)(2/5)}=\boxed{1/2}$。二変量t分布の自由度は12、潜在正規相関行列の非対角成分は1/2。
+
 ## 関連
 
 - [[多重比較]]
