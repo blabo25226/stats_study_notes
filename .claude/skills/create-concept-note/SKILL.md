@@ -13,6 +13,7 @@ description: 数学・統計の概念ノートをObsidian向けに新規作成�
 ## Routing
 
 内容に応じて `06`, `08`, `10`, `13`, `14`, `15` など適切なフォルダへ置く。
+配置とMOCへの追記は `.claude/rules/note-routing.md` に従う。`08_数理統計学/` では分野別サブフォルダに置き、その分野の `README.md` に索引があれば追記する。
 
 ## Suggested structure
 

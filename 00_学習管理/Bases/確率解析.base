@@ -4,7 +4,7 @@ filters:
     - or:
         - 'file.inFolder("13_測度論・ルベーグ積分")'
         - 'file.inFolder("14_確率論・確率過程論")'
-        - 'file.inFolder("15_確率微分方程式")'
+        - 'file.inFolder("15_確率微分方程式・フォッカープランク方程式")'
 properties:
   file.name:
     displayName: ノート

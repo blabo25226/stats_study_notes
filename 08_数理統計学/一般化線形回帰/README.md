@@ -3,8 +3,8 @@ test-category: 統計数理
 stats-category: 回帰
 tags:
   - 一般化線形モデル
-  - スコア
-  - Fisher情報
+  - スコア関数
+  - フィッシャー情報量
   - IRLS
 created: 2026-10-22
 updated: 2026-10-22

@@ -3,7 +3,7 @@ test-category: 統計数理
 stats-category: 確率分布
 tags:
   - F分布
-  - カイ2乗分布の比
+  - カイ二乗分布の比
   - 分散分析
 created: 2026-10-19
 updated: 2026-10-22
