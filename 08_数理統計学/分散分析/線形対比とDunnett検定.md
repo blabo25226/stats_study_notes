@@ -41,9 +41,9 @@ $$
 
 独立な群平均 $\bar Y_i$ が分散 $\sigma^2/n_i$ を持つとき、$\hat\psi=\sum_ic_i\bar Y_i$ の分散は
 
-$
+$$
 \operatorname{Var}(\hat\psi)=\sigma^2\sum_i\frac{c_i^2}{n_i}.
-$
+$$
 
 **問題** 3群（対照0・低用量1・高用量2）の各群標本数$n=5$。線形トレンド対比$c=(-1,0,1)$について、推定値と標準誤差を群平均$(2,3,5)$、共通残差平均平方$MS_E=2$から求めよ。
 
@@ -51,12 +51,34 @@ $
 >
 > $\hat\psi=-2+0\cdot3+5=\boxed{3}$。
 >
-> $
+> $$
 > \widehat{\operatorname{Var}}(\hat\psi)=2\left(\frac15+0+\frac15\right)=\frac45,\quad
 > \widehat{\operatorname{SE}}(\hat\psi)=\sqrt{\frac45}.
-> $
+> $$
 >
 > $t=3/\sqrt{4/5}$（自由度は残差自由度）で検定。Dunnettは**対照との差を複数同時に検定する別の多重比較手順**なので、単一の線形トレンド対比と区別する。
+
+## 線形対比t検定とDunnett同時検定の帰無分布
+
+独立な$k$群の観測がそれぞれ$N(\mu_i,\sigma^2)$、群$n_i\ge1$、総数$N>k$とする。$\sum_ic_i=0$の対比$L=\sum_i c_i\bar Y_i$は正規和なので
+
+$$
+L\sim N\!\left(\sum_ic_i\mu_i,\ \sigma^2\sum_i\frac{c_i^2}{n_i}\right).
+$$
+
+群内残差から得る$MSE$は、正規の直交分解より $(N-k)MSE/\sigma^2\sim\chi^2_{N-k}$。$L$と残差平方和は独立。帰無仮説$\sum_ic_i\mu_i=0$の下で
+
+$$
+\boxed{T_L=\frac{L}{\sqrt{MSE\sum_ic_i^2/n_i}}\sim t_{N-k}}.
+$$
+
+**Dunnett法**では対照0と各処置群$j$との差$D_j=\bar Y_j-\bar Y_0$を**同時**に検定する。各差は共通の$\bar Y_0$を持つため
+
+$$
+\operatorname{Cov}(D_j,D_\ell)=\sigma^2/n_0\quad(j\ne\ell).
+$$
+
+従って標準化$t$値は**相関する多変量t分布**で、最大絶対値の帰無分布を用いて閾値を決める。各差を独立な$t$検定として処理してはいけない。
 
 ## 関連
 
