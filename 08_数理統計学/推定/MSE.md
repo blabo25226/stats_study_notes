@@ -6,7 +6,7 @@ tags:
   - バイアス分散分解
   - ミニマックス推定量
 created: 2026-10-22
-updated: 2026-10-22
+updated: 2026-10-26
 ---
 
 # MSE
@@ -47,7 +47,7 @@ $$
 
 $c$ について二次式を最小化すると $c=1/(n+1)$。分散の小さい $2\sigma^4/(n+1)$ のほうが、バイアスがあっても不偏推定量より MSE は小さい。$n=5$ で比べると、不偏が $2/4=0.5$、最尤が $9/25=0.36$、最小が $2/6\approx0.33$（単位 $\sigma^4$）。
 
-## 分解の証明とオリジナル演習
+## 分解の証明
 
 $T$ は母数 $\theta$ の推定量とし、$b=E_\theta T-\theta$ とおく。
 
@@ -61,17 +61,48 @@ $
 
 となる。交差項は $E_\theta[T-E_\theta T]=0$ で消える。**不偏でも分散が大きければMSEは大きい**ので、推定量の選択には分散との比較が必要。
 
-**問題** $X_1,\ldots,X_n\sim N(\mu,\sigma^2)$、$\mu$ は既知とし、$\hat v_a=a n^{-1}\sum_i(X_i-\mu)^2$ で $\sigma^2$ を推定する（$a$ は定数）。$\hat v_a$ のMSEを求め、最小化する $a$ を示せ。
+## 例題（過去問改題）
+
+> [!note] 出典
+> 2017年 統計数理 問2〔2〕〔3〕〔4〕の数値を変更（一般の $n$ を $n=4$ に固定）。最尤推定量そのものの MSE と、$cX_{\max}$ の MSE 最小化を追加。
+
+$X_1,\dots,X_4$ は独立に $U(0,\theta)$ に従い、$X_{\max}$ を最大値とする。$\theta$ の推定量として $\theta'=2\bar X$、$\theta''=\frac54X_{\max}$、最尤推定量 $X_{\max}$ を考える。
+
+(1) $\theta',\theta''$ が不偏であることを示し、分散を比べよ。
+(2) $X_{\max}$ の MSE を求めよ。
+(3) $cX_{\max}$ の形の推定量のうち MSE を最小にする $c$ と、そのときの MSE を求めよ。
 
 > [!success]- 解答
 >
-> $\sum_i(X_i-\mu)^2/\sigma^2\sim\chi_n^2$ より $E[\hat v_a]=a\sigma^2$、$\operatorname{Var}(\hat v_a)=2a^2\sigma^4/n$。
+> (1) $E[X]=\theta/2$ より $E[\theta']=\theta$。$P(X_{\max}\le x)=(x/\theta)^4$ から密度は $4x^3/\theta^4$（[[順序統計量]]）で
 >
-> $
-> \mathrm{MSE}(\hat v_a)=\sigma^4\left[\frac{2a^2}{n}+(a-1)^2\right].
-> $
+> $$
+> E[X_{\max}]=\frac45\theta,\qquad E[X_{\max}^2]=\frac46\theta^2=\frac23\theta^2,\qquad
+> \operatorname{Var}(X_{\max})=\frac23\theta^2-\frac{16}{25}\theta^2=\frac{2}{75}\theta^2.
+> $$
 >
-> $a$ で微分して $4a/n+2(a-1)=0$ より $a^*=n/(n+2)$。このMSE最小推定量はバイアスがあり、不偏推定量とは一致しない。
+> よって $E[\theta'']=\theta$。分散は $\operatorname{Var}(X)=\theta^2/12$ を使い
+>
+> $$
+> \operatorname{Var}(\theta')=4\cdot\frac{\theta^2}{12\cdot4}=\frac{\theta^2}{12}=0.0833\,\theta^2,\qquad
+> \operatorname{Var}(\theta'')=\frac{25}{16}\cdot\frac{2}{75}\theta^2=\frac{\theta^2}{24}=0.0417\,\theta^2.
+> $$
+>
+> どちらも不偏なので MSE は分散に等しく、$\theta''$ のほうが良い。
+>
+> (2) バイアスは $-\theta/5$。分解 $\mathrm{MSE}=\operatorname{Var}+\mathrm{Bias}^2$ より
+>
+> $$
+> \mathrm{MSE}(X_{\max})=\frac{2}{75}\theta^2+\frac{1}{25}\theta^2=\frac{5}{75}\theta^2=\boxed{\frac{\theta^2}{15}}=0.0667\,\theta^2.
+> $$
+>
+> (3) $E[(cX_{\max}-\theta)^2]=\theta^2\left(\dfrac23c^2-\dfrac85c+1\right)$。$c$ で微分して $\dfrac43c-\dfrac85=0$ より $c=\boxed{6/5}$。最小値は
+>
+> $$
+> \theta^2\left(\frac23\cdot\frac{36}{25}-\frac85\cdot\frac65+1\right)=\theta^2\left(\frac{24}{25}-\frac{48}{25}+1\right)=\boxed{\frac{\theta^2}{25}}=0.04\,\theta^2.
+> $$
+>
+> 不偏な $\theta''=\frac54X_{\max}$（$0.0417\theta^2$）よりわずかに小さい。少し大きめに補正して偏りを残すほうが MSE は小さくなる（一般の $n$ では $c=(n+2)/(n+1)$、MSE $=\theta^2/(n+1)^2$）。
 
 ## リスク一定の推定量とミニマックス性
 

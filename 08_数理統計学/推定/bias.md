@@ -7,7 +7,7 @@ tags:
   - 不偏性
   - 標本標準偏差
 created: 2026-10-22
-updated: 2026-10-22
+updated: 2026-10-26
 ---
 
 # bias
@@ -37,28 +37,41 @@ $$
 - $U(0,\theta)$ の最大値 $X_{(n)}$：$E[X_{(n)}]=\dfrac{n}{n+1}\theta$ なのでバイアスは $-\dfrac{\theta}{n+1}$（常に過小）。$\dfrac{n+1}{n}X_{(n)}$ にすると不偏（[[一様分布]]、[[順序統計量]]）。
 - 指数分布 $\mathrm{Ex}(\lambda)$ の最尤推定量 $\hat\lambda=n/\sum X_i$：$\sum X_i\sim\mathrm{Ga}(n,1/\lambda)$ で $E[1/\sum X_i]=\lambda/(n-1)$（$n\ge2$）なので $E[\hat\lambda]=\dfrac{n}{n-1}\lambda$、バイアスは $\dfrac{\lambda}{n-1}$。$\dfrac{n-1}{n}\hat\lambda=\dfrac{n-1}{\sum X_i}$ が不偏（[[指数分布]]、[[ガンマ分布]]）。
 
-## 変換による偏りとオリジナル演習
+## 変換による偏り
 
 $E[\hat\theta]=\theta$ でも一般に $E[g(\hat\theta)]\ne g(\theta)$。$g$ が凸なら Jensen の不等式から $E[g(\hat\theta)]\ge g(E[\hat\theta])$ である。
 
-**問題** $X_i\sim\operatorname{Bern}(p)$ 独立、$\hat p=\bar X$ とする。$p^2$ の推定量 $\hat p^2$ のバイアスを求め、不偏に直せ（$n\ge2$）。
+## 例題（過去問改題）
+
+> [!note] 出典
+> 2016年 統計数理 問1〔1〕〔2〕の数値を変更（母分散 $1\to4$。$n=20$ での偏りの大きさを追加）。
+
+$X_1,\dots,X_n$ は独立に $N(\mu,4)$（分散は既知）に従い、$\theta=e^{\mu}$ を推定する。正規分布の積率母関数 $E[e^{tX}]=\exp(\mu t+\sigma^2t^2/2)$ を用いてよい。
+
+(1) $\theta$ の最尤推定量 $\hat\theta$ を求めよ。
+(2) $\hat\theta$ のバイアスを求めてその符号を述べ、$\theta$ の不偏推定量を $\bar X$ の関数として作れ。
+(3) $n=20$ のとき、バイアスは $\theta$ の何%か。
 
 > [!success]- 解答
 >
-> $E[\hat p]=p$、$\operatorname{Var}(\hat p)=p(1-p)/n$ より
+> (1) $\mu$ の最尤推定量は $\bar X$。最尤推定量の不変性から $\hat\theta=e^{\bar X}$（$\ell(\theta)=-\frac18\sum(x_i-\log\theta)^2+\text{定数}$ を $\theta$ で微分しても同じ）。
 >
-> $
-> E[\hat p^2]=p^2+\frac{p(1-p)}n
-> =\frac{n-1}{n}p^2+\frac pn.
-> $
+> (2) $\bar X\sim N(\mu,4/n)$ なので積率母関数に $t=1$ を入れて
 >
-> 従って $\operatorname{Bias}(\hat p^2)=p(1-p)/n$。この式から
+> $$
+> E[e^{\bar X}]=\exp\!\left(\mu+\frac2n\right),\qquad
+> \operatorname{Bias}(\hat\theta)=e^{\mu}\left(e^{2/n}-1\right)>0.
+> $$
 >
-> $
-> \boxed{\tilde q=\frac{n\hat p^2-\hat p}{n-1}}
-> $
+> $e^x>1$（$x>0$）より常に正（$e^x$ は凸なので Jensen の不等式とも整合）。$e^{-2/n}$ を掛けた
 >
-> とすれば $E[\tilde q]=p^2$。また $\tilde q=\sum_{i\ne j}X_iX_j/\{n(n-1)\}$ であり、異なる標本間の独立性からも不偏性を確認できる。
+> $$
+> \boxed{\tilde\theta=\exp\!\left(\bar X-\frac2n\right)}
+> $$
+>
+> は $E[\tilde\theta]=e^{\mu}$ で不偏。
+>
+> (3) $2/n=0.1$。付表5より $e^{0.10}=1.1052$ なので、バイアスは $\theta(1.1052-1)=0.1052\,\theta$、すなわち約 $\boxed{10.5\%}$ の過大推定。母分散が大きいほど $e^{\sigma^2/(2n)}-1$ が大きく、偏りは大きくなる。
 
 ## 標本標準偏差の偏り：2次近似と厳密式
 
