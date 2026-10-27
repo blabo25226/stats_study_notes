@@ -1,24 +1,25 @@
 filters:
   and:
     - 'file.ext == "md"'
+    - or:
+        - 'file.inFolder("02_統計数理過去問")'
+        - 'file.inFolder("03_統計応用医薬生物学過去問")'
+        - 'file.inFolder("04_統計応用理工学過去問")'
     - 'concepts.contains(this.file)'
 properties:
   file.name:
     displayName: 問題
-  source:
-    displayName: 出典
+  test-category:
+    displayName: 科目
   stats-category:
     displayName: 分野
   difficulty:
     displayName: 難易度
-  status:
-    displayName: 採点
 views:
   - type: table
-    name: この概念を使う問題
+    name: この概念を使う過去問
     order:
       - file.name
-      - source
+      - test-category
       - stats-category
       - difficulty
-      - status

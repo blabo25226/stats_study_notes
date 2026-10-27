@@ -1,0 +1,25 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'file.inFolder("01_現代数理統計学の基礎")'
+    - 'concepts.contains(this.file)'
+properties:
+  file.name:
+    displayName: 問題
+  source:
+    displayName: 出典
+  stats-category:
+    displayName: 分野
+  difficulty:
+    displayName: 難易度
+  status:
+    displayName: 採点
+views:
+  - type: table
+    name: この概念を使う教科書の問題
+    order:
+      - file.name
+      - source
+      - stats-category
+      - difficulty
+      - status
