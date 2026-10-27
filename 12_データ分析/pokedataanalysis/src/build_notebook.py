@@ -3,6 +3,7 @@
 対応ルール
 ----------
 - 1章 = ``chNN_<英語名>.md`` + ``chNN_<英語名>.py`` の組。
+- md 先頭の YAML frontmatter（Obsidian で概念ノートへリンクする ``concepts``）は ipynb に入れない。
 - md は ``<!-- cell: NN-k -->`` の行で区切る。最初の区切りより前は章の導入文（概要）。
   k は英数字（例: ``11-0`` 使うデータ, ``11-1`` 節, ``11-1r`` 結果の読み方, ``11-end`` まとめ）。
   書き方のひな形は ``_template.md``。
@@ -31,6 +32,7 @@ OUT = SRC.parent / "pokedataanalysis.ipynb"
 
 MD_MARK = re.compile(r"^<!--\s*cell:\s*(\d{2}-[0-9A-Za-z]+)\s*-->\s*$", re.M)
 PY_MARK = re.compile(r"^# %%\s+(\d{2}-[0-9A-Za-z]+)\s*$", re.M)
+FRONTMATTER = re.compile(r"\A---\r?\n.*?\r?\n---\r?\n", re.S)
 
 HEADER = """# ポケモンデータで学ぶ統計検定準1級
 
@@ -40,6 +42,11 @@ HEADER = """# ポケモンデータで学ぶ統計検定準1級
 - ソース: `12_データ分析/pokedataanalysis/src/`（このノートブックは `build_notebook.py` で自動生成）
 - 対象外の章: 第14章 マルコフ連鎖、第15章 確率過程の基礎、第27章 時系列解析（データに時間構造がないため）
 """
+
+
+def read_md(path):
+    """章の md を読み、Obsidian 用の frontmatter（concepts など）を除いて返す."""
+    return FRONTMATTER.sub("", path.read_text(encoding="utf-8"), count=1)
 
 
 def split(text, pattern):
@@ -69,7 +76,7 @@ def check_chapter(no, md, py):
     errors = []
     if not py.exists():
         return [f"{md.name}: 対応する {py.name} がない"]
-    _, md_blocks = split(md.read_text(encoding="utf-8"), MD_MARK)
+    _, md_blocks = split(read_md(md), MD_MARK)
     _, py_blocks = split(py.read_text(encoding="utf-8"), PY_MARK)
     md_ids = [i for i, _ in md_blocks]
     py_ids = [i for i, _ in py_blocks]
@@ -103,7 +110,7 @@ def build(selected=None):
         new_code_cell("df = load_data()\ndf.shape"),
     ]
     for no, md, py in chapters(selected):
-        md_head, md_blocks = split(md.read_text(encoding="utf-8"), MD_MARK)
+        md_head, md_blocks = split(read_md(md), MD_MARK)
         _, py_blocks = split(py.read_text(encoding="utf-8"), PY_MARK)
         code = dict(py_blocks)
         if md_head:

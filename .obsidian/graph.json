@@ -8,10 +8,80 @@
   "collapse-color-groups": false,
   "colorGroups": [
     {
-      "query": "stats-category:確率",
+      "query": "path:\"02_統計数理過去問\"",
       "color": {
         "a": 1,
-        "rgb": 14701138
+        "rgb": 2051741
+      }
+    },
+    {
+      "query": "path:\"03_統計応用医薬生物学過去問\"",
+      "color": {
+        "a": 1,
+        "rgb": 14260736
+      }
+    },
+    {
+      "query": "path:\"10_医療統計学\"",
+      "color": {
+        "a": 1,
+        "rgb": 15909424
+      }
+    },
+    {
+      "query": "path:\"08_数理統計学\" [test-category:統計応用]",
+      "color": {
+        "a": 1,
+        "rgb": 15258474
+      }
+    },
+    {
+      "query": "path:\"08_数理統計学\"",
+      "color": {
+        "a": 1,
+        "rgb": 4029401
+      }
+    },
+    {
+      "query": "path:\"01_現代数理統計学の基礎\"",
+      "color": {
+        "a": 1,
+        "rgb": 8368869
+      }
+    },
+    {
+      "query": "path:\"06_数学\"",
+      "color": {
+        "a": 1,
+        "rgb": 2864064
+      }
+    },
+    {
+      "query": "path:\"07_計算機統計学\"",
+      "color": {
+        "a": 1,
+        "rgb": 8088793
+      }
+    },
+    {
+      "query": "path:\"12_データ分析\"",
+      "color": {
+        "a": 1,
+        "rgb": 5025616
+      }
+    },
+    {
+      "query": "path:\"13_測度論・ルベーグ積分\" OR path:\"14_確率論・確率過程論\" OR path:\"15_確率微分方程式・フォッカープランク方程式\"",
+      "color": {
+        "a": 1,
+        "rgb": 14242639
+      }
+    },
+    {
+      "query": "path:\"00_学習管理\"",
+      "color": {
+        "a": 1,
+        "rgb": 10395294
       }
     }
   ],
@@ -25,6 +95,6 @@
   "repelStrength": 10.3125,
   "linkStrength": 1,
   "linkDistance": 270,
-  "scale": 0.2890047060042846,
+  "scale": 0.07480558974287392,
   "close": true
 }
