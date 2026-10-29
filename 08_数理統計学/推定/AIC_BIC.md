@@ -8,7 +8,7 @@ tags:
   - 情報量規準
   - 予測誤差
 created: 2026-10-19
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 # AIC_BIC
@@ -61,7 +61,19 @@ $[0,1)$ を $m$ 等分した小区間 $I_j$ 上で一定値 $\theta_j$ をとる
 
 > [!success]- 解答
 >
-> (1) 尤度は $L=\prod_j\theta_j^{N_j}$。制約 $\sum_j\theta_j=m$ のもとでラグランジュ未定乗数法を使うと $N_j/\theta_j=\text{一定}$ なので
+> (1) **確率モデル。** 観測値 $X_1,\dots,X_n$ は独立同一に密度 $f_m(x;\boldsymbol\theta)$ に従う。未知母数は $\boldsymbol\theta=(\theta_1,\dots,\theta_m)$ で、母数空間は $\theta_j\ge0$、$\sum_j\theta_j=m$。1観測の確率密度関数は
+>
+> $$
+> f_m(x;\boldsymbol\theta)=\sum_{j=1}^m\theta_j\mathbf 1\{x\in I_j\},\qquad x\in[0,1).
+> $$
+>
+> **尤度関数。** $x_i\in I_j$ なら $f_m(x_i;\boldsymbol\theta)=\theta_j$ なので、同じ小区間の観測をまとめて
+>
+> $$
+> L(\boldsymbol\theta)=\prod_{i=1}^n f_m(x_i;\boldsymbol\theta)=\prod_{j=1}^m\theta_j^{N_j}.
+> $$
+>
+> **対数尤度と最大化。** $\ell(\boldsymbol\theta)=\sum_{j}N_j\log\theta_j$（$N_j=0$ の項は $0$）。$N_j=0$ の $\theta_j$ は $\ell$ に寄与しないので、$L$ を大きくするには $\theta_j=0$ とし、残りに配分する。$N_j>0$ の $\theta_j$ について制約 $\sum_j\theta_j=m$ のもとでラグランジュ未定乗数法を使うと $N_j/\theta_j=\text{一定}$ で、$\ell$ は $\log$ の和で凹（制約は線形）なのでこの停留点が最大点。よって
 >
 > $$
 > \hat\theta_j=\frac{mN_j}{n},\qquad

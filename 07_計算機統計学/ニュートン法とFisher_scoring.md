@@ -7,7 +7,7 @@ tags:
   - 尤度方程式
   - IRLS
 created: 2026-10-22
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 # ニュートン法とFisher_scoring
@@ -39,13 +39,13 @@ $$
 
 ## 例
 
-**ポアソン分布の平均**（$\ell=\sum x_i\log\lambda-n\lambda+\text{定数}$）: $S=n\bar x/\lambda-n$、$-\ell''=n\bar x/\lambda^2$、$I=n/\lambda$。
+**ポアソン分布の平均**: 確率モデルは $X_1,\dots,X_n\overset{\rm iid}{\sim}\mathrm{Po}(\lambda)$（未知母数 $\lambda>0$）、確率関数は $p(x;\lambda)=e^{-\lambda}\lambda^x/x!$（$x=0,1,\dots$）。尤度関数は $L(\lambda)=\prod_ie^{-\lambda}\lambda^{x_i}/x_i!$ で、対数尤度は $\ell=\sum x_i\log\lambda-n\lambda+\text{定数}$。$S=n\bar x/\lambda-n$、$-\ell''=n\bar x/\lambda^2$、$I=n/\lambda$。$\bar x>0$ なら $\ell''<0$（狭義凹）なので、スコアの根 $\bar x$ が最尤推定値（推定量は $\bar X$）。反復はこの根を数値的に求める手順として比べる。
 - ニュートン法: $\lambda_{t+1}=\lambda+\lambda-\lambda^2/\bar x=2\lambda-\lambda^2/\bar x$。
 - スコアリング: $\lambda_{t+1}=\lambda+(n\bar x/\lambda-n)/(n/\lambda)=\bar x$。**1回で最尤推定値**に到達。
 
 検算（$\bar x=2$、$\lambda_0=1$）: ニュートン法は $1\to1.5\to1.875\to1.992$。誤差は $1,\,0.5,\,0.125,\,0.0078$ で、$e_{t+1}=e_t^2/\bar x$（$0.5=1/2,\ 0.125=0.25/2,\ 0.0078\approx0.0156/2$）と一致し、2次収束している。ポアソンの対数尤度では $\bar x>0$ のとき $\lambda_0>2\bar x$ だと $\lambda_1<0$ となり破綻する（初期値依存の例）。
 
-**コーシー分布の位置母数** $f(x;\theta)=1/\{\pi(1+(x-\theta)^2)\}$: $S(\theta)=\sum 2(x_i-\theta)/\{1+(x_i-\theta)^2\}$。尤度方程式は**多根**（極大が複数）になりうる。1個あたりの情報量は $1/2$ なので、スコアリングは
+**コーシー分布の位置母数**: 確率モデルは $X_1,\dots,X_n\overset{\rm iid}{\sim}f(x;\theta)=1/\{\pi(1+(x-\theta)^2)\}$（$x\in\mathbb R$、未知母数 $\theta\in\mathbb R$）。尤度関数は $L(\theta)=\prod_if(x_i;\theta)$、対数尤度は $\ell(\theta)=-\sum_i\log\{1+(x_i-\theta)^2\}-n\log\pi$ で、スコアは $S(\theta)=\sum 2(x_i-\theta)/\{1+(x_i-\theta)^2\}$。$\ell$ は凹とは限らず、尤度方程式は**多根**（極大が複数）になりうるので、根の候補どうしの尤度を比べて最大点を選ぶ。1個あたりの情報量は $1/2$ なので、スコアリングは
 $$
 \theta_{t+1}=\theta_t+\frac{4}{n}\sum_i\frac{x_i-\theta_t}{1+(x_i-\theta_t)^2}.
 $$
@@ -84,6 +84,15 @@ $g(\theta)=3\theta-\bar y\{1-(1-\theta)^3\}=0$ の $0<\theta<1$ の解である�
 3. 単純反復 $\theta_{t+1}=\bar y\{1-(1-\theta_t)^3\}/3$（[[EMアルゴリズム]]と同じ形）と収束の速さを比べよ。
 
 > [!success]- 解答
+>
+> 方程式の由来：確率モデルは、記録値 $Y_1,\dots,Y_m$ が独立に上のゼロ切断二項分布に従う（未知母数 $0<\theta<1$）というもの。尤度関数は観測値 $y_1,\dots,y_m$ を代入した
+>
+> $$
+> L(\theta)=\prod_{j=1}^m\frac{\binom3{y_j}\theta^{y_j}(1-\theta)^{3-y_j}}{1-(1-\theta)^3},\qquad
+> \ell(\theta)=m\bar y\log\theta+m(3-\bar y)\log(1-\theta)-m\log\{1-(1-\theta)^3\}+\text{const}.
+> $$
+>
+> スコア $\ell'(\theta)=m\left\{\dfrac{\bar y}{\theta}-\dfrac{3-\bar y}{1-\theta}-\dfrac{3(1-\theta)^2}{1-(1-\theta)^3}\right\}=0$ に $\theta(1-\theta)\{1-(1-\theta)^3\}/m$ を掛けて整理すると $\bar y\{1-(1-\theta)^3\}-3\theta=0$、すなわち $g(\theta)=0$。この分布は自然母数 $\log\{\theta/(1-\theta)\}$ の指数型分布族なので $\ell$ は自然母数について狭義凹で、$1<\bar y<3$ なら $(0,1)$ 内の解は1つでそれが最大点。
 >
 > 1. $\bar y=1.5$ で両辺を $1.5$ で割ると $2\theta=1-(1-\theta)^3=3\theta-3\theta^2+\theta^3$、すなわち $\theta(\theta^2-3\theta+1)=0$。$0<\theta<1$ の解は
 >

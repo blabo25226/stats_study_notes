@@ -9,7 +9,7 @@ tags:
   - ジェンセンの不等式
   - 遺伝子頻度
 created: 2026-10-22
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 # EMアルゴリズム
@@ -32,7 +32,11 @@ $$
 
 ## 例
 
-**二成分正規混合** $\pi\phi(x;\mu_1,\sigma_1^2)+(1-\pi)\phi(x;\mu_2,\sigma_2^2)$。潜在変数 $z_i\in\{1,2\}$ は成分ラベル。
+**二成分正規混合** $\pi\phi(x;\mu_1,\sigma_1^2)+(1-\pi)\phi(x;\mu_2,\sigma_2^2)$。確率モデルは $X_1,\dots,X_n$ が独立にこの混合密度に従う（未知母数 $\theta=(\pi,\mu_1,\mu_2,\sigma_1^2,\sigma_2^2)$、$0<\pi<1$）。最大化したい観測尤度は
+$$
+L(\theta)=\prod_{i=1}^n\bigl\{\pi\phi(x_i;\mu_1,\sigma_1^2)+(1-\pi)\phi(x_i;\mu_2,\sigma_2^2)\bigr\}
+$$
+で、対数をとっても和の対数が残るため陽に最大化できない（さらに $\mu_k=x_i,\ \sigma_k^2\downarrow0$ で非有界になるので、内部の局所最大を求める）。潜在変数 $z_i\in\{1,2\}$ は成分ラベルで、$P(z_i=1)=\pi$、$X_i\mid z_i=k\sim N(\mu_k,\sigma_k^2)$。完全データ尤度は $\prod_i\{\pi\phi(x_i;\mu_1,\sigma_1^2)\}^{\mathbf 1\{z_i=1\}}\{(1-\pi)\phi(x_i;\mu_2,\sigma_2^2)\}^{\mathbf 1\{z_i=2\}}$。
 - E-step（責任度）: $\gamma_i=\dfrac{\pi\phi_1(x_i)}{\pi\phi_1(x_i)+(1-\pi)\phi_2(x_i)}$（$\phi_k$ は現在の $\theta_t$ で評価）。
 - M-step:
 $$
@@ -42,7 +46,11 @@ $$
 $$
 $\mu_2,\sigma_2^2$ は重み $1-\gamma_i$ で同様。完全データ対数尤度が $\gamma_i$ で重み付けした正規分布の対数尤度になるため。
 
-**指数分布の打ち切りデータ**: $X_i\sim\text{Ex}(\lambda)$、$n$ 個のうち $m$ 個が時点 $c$ で打ち切られ（$X_i>c$ とのみ分かる）、残り $r=n-m$ 個の観測値の和を $s$ とする。完全データの対数尤度は $n\log\lambda-\lambda\sum X_i$。メモリレス性より $X-c\mid X>c\sim\text{Ex}(\lambda)$ なので
+**指数分布の打ち切りデータ**: 確率モデルは $X_1,\dots,X_n\overset{\rm iid}{\sim}\text{Ex}(\lambda)$（密度 $\lambda e^{-\lambda x}$、$x>0$、未知母数 $\lambda>0$、打ち切り時点 $c$ は既知）。$n$ 個のうち $m$ 個が時点 $c$ で打ち切られ（$X_i>c$ とのみ分かる）、残り $r=n-m$ 個の観測値の和を $s$ とする。観測尤度は、観測された個体の寄与が密度 $\lambda e^{-\lambda x_i}$、打ち切られた個体の寄与が生存確率 $P(X_i>c)=e^{-\lambda c}$ なので
+$$
+L(\lambda)=\prod_{\text{観測}}\lambda e^{-\lambda x_i}\prod_{\text{打ち切り}}e^{-\lambda c}=\lambda^re^{-\lambda(s+mc)},\qquad \ell(\lambda)=r\log\lambda-\lambda(s+mc).
+$$
+$\ell''=-r/\lambda^2<0$ なので、直接最大化すれば $r\ge1$ のとき $\hat\lambda=r/(s+mc)$。これをEMでも求めてみる。完全データ（打ち切られた $X_i$ の値も分かった場合）の尤度は $\lambda^ne^{-\lambda\sum X_i}$、対数尤度は $n\log\lambda-\lambda\sum X_i$。メモリレス性より $X-c\mid X>c\sim\text{Ex}(\lambda)$ なので
 $$
 E[X\mid X>c]=c+\frac1\lambda.
 $$
@@ -54,7 +62,13 @@ $$
 
 ## 遺伝子計数法：ABO血液型の対立遺伝子頻度
 
-2019医薬 問5 の型。対立遺伝子 A, B, O の頻度を $p,q,r$（$p+q+r=1$）、ハーディ・ワインベルグ平衡を仮定すると遺伝子型の確率は AA $p^2$、AO $2pr$、BB $q^2$、BO $2qr$、AB $2pq$、OO $r^2$。観測できるのは表現型の度数 $n_A,n_B,n_{AB},n_O$（計 $n$）だけで、A型の中の AA と AO の内訳が潜在変数。
+2019医薬 問5 の型。対立遺伝子 A, B, O の頻度を $p,q,r$（$p+q+r=1$、未知母数）、ハーディ・ワインベルグ平衡を仮定すると遺伝子型の確率は AA $p^2$、AO $2pr$、BB $q^2$、BO $2qr$、AB $2pq$、OO $r^2$。観測できるのは表現型の度数 $n_A,n_B,n_{AB},n_O$（計 $n$）だけで、A型の中の AA と AO の内訳が潜在変数。
+
+確率モデルは、$n$ 人の表現型が独立に確率 $(p^2+2pr,\ q^2+2qr,\ 2pq,\ r^2)$ で A, B, AB, O をとる、すなわち $(n_A,n_B,n_{AB},n_O)$ がこの確率の多項分布に従うというもの。最大化したい観測尤度は
+$$
+L(p,q,r)=\frac{n!}{n_A!\,n_B!\,n_{AB}!\,n_O!}(p^2+2pr)^{n_A}(q^2+2qr)^{n_B}(2pq)^{n_{AB}}(r^2)^{n_O}
+$$
+で、$p^2+2pr$ のような和を含むため、制約 $p+q+r=1$ の下のスコア方程式は陽に解けない。そこで遺伝子型の度数を完全データとして EM を使う。
 
 **完全データ**（遺伝子型の度数）の対数尤度は[[多項分布]]から
 $$
@@ -119,13 +133,13 @@ $X\sim\operatorname{Bin}(4,\theta)$ のうち $X\ge1$ のときだけ記録さ�
 
 > [!success]- 解答
 >
-> 1. 1個あたりの確率は $\binom4y\theta^y(1-\theta)^{4-y}/\{1-(1-\theta)^4\}$ なので
+> 1. 確率モデルは、記録値 $Y_1,\dots,Y_m$ が独立にゼロ切断二項分布に従う（未知母数 $0<\theta<1$）というもの。1個あたりの確率関数は $h(y;\theta)=\binom4y\theta^y(1-\theta)^{4-y}/\{1-(1-\theta)^4\}$（$y=1,\dots,4$）なので、観測値を代入した尤度関数は $L(\theta)=\prod_{j=1}^mh(y_j;\theta)$ で
 >
 > $$
-> \ell(\theta)=m\bar y\log\theta+m(4-\bar y)\log(1-\theta)-m\log\{1-(1-\theta)^4\}+\text{const}.
+> \ell(\theta)=\log L(\theta)=m\bar y\log\theta+m(4-\bar y)\log(1-\theta)-m\log\{1-(1-\theta)^4\}+\text{const}.
 > $$
 >
-> $\ell'(\theta)=0$ は $\dfrac{\bar y}{\theta}-\dfrac{4-\bar y}{1-\theta}-\dfrac{4(1-\theta)^3}{1-(1-\theta)^4}=0$ で、両辺に $\theta(1-\theta)\{1-(1-\theta)^4\}$ を掛けて整理すると $4\hat\theta=\bar y\{1-(1-\hat\theta)^4\}$。
+> $\ell'(\theta)=0$ は $\dfrac{\bar y}{\theta}-\dfrac{4-\bar y}{1-\theta}-\dfrac{4(1-\theta)^3}{1-(1-\theta)^4}=0$ で、両辺に $\theta(1-\theta)\{1-(1-\theta)^4\}$ を掛けて整理すると $4\hat\theta=\bar y\{1-(1-\hat\theta)^4\}$。この分布は自然母数 $\log\{\theta/(1-\theta)\}$ の指数型分布族なので $\ell$ は自然母数について狭義凹で、$1<\bar y<4$ なら $(0,1)$ 内の解は1つでそれが最大点。陽には解けないので反復で求める（2., 3.）。
 >
 > 2. 完全データは「記録された $m$ 個」と「記録されなかった $X=0$ の試行 $K$ 個」。完全データ対数尤度は $m\bar y\log\theta+\{4(m+K)-m\bar y\}\log(1-\theta)$ で $K$ について1次式。
 >

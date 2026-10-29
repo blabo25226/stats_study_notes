@@ -7,7 +7,7 @@ tags:
   - 不偏性
   - 標本標準偏差
 created: 2026-10-22
-updated: 2026-10-26
+updated: 2026-10-29
 ---
 
 # bias
@@ -54,7 +54,17 @@ $X_1,\dots,X_n$ は独立に $N(\mu,4)$（分散は既知）に従い、$\theta=
 
 > [!success]- 解答
 >
-> (1) $\mu$ の最尤推定量は $\bar X$。最尤推定量の不変性から $\hat\theta=e^{\bar X}$（$\ell(\theta)=-\frac18\sum(x_i-\log\theta)^2+\text{定数}$ を $\theta$ で微分しても同じ）。
+> (1) **確率モデル。** $X_1,\dots,X_n$ は独立同一に $N(\mu,4)$ に従い、分散 $4$ は既知、未知母数は $\mu\in\mathbb R$。$X_i$ の確率密度関数は
+>
+> $$
+> f(x;\mu)=\frac1{\sqrt{8\pi}}\exp\left\{-\frac{(x-\mu)^2}{8}\right\},\qquad x\in\mathbb R.
+> $$
+>
+> **尤度関数。** $L(\mu)=\prod_{i=1}^n f(x_i;\mu)=(8\pi)^{-n/2}\exp\left\{-\frac18\sum(x_i-\mu)^2\right\}$。
+>
+> **対数尤度とスコア。** $\ell(\mu)=-\frac18\sum(x_i-\mu)^2+\text{定数}$、$\ell'(\mu)=\frac14\sum(x_i-\mu)$。
+>
+> **最大化。** $\ell'(\mu)=0$ より $\mu=\bar x$、$\ell''(\mu)=-n/4<0$ なので最大。よって $\mu$ の最尤推定量は $\bar X$。最尤推定量の不変性から $\hat\theta=e^{\bar X}$（$\ell(\theta)=-\frac18\sum(x_i-\log\theta)^2+\text{定数}$ を $\theta$ で微分しても同じ）。
 >
 > (2) $\bar X\sim N(\mu,4/n)$ なので積率母関数に $t=1$ を入れて
 >
