@@ -1,0 +1,326 @@
+\chapter{縦断データと線形混合モデル}\label{ch:08}
+
+\begin{goalbox}
+\begin{itemize}
+\item 反復測定データの平均ベクトルの推定量の分布を導き，時点間の変化量の標準誤差を計算して検定できる．
+\item 共分散行列から時点間の相関係数を計算できる．
+\item 独立・複合対称・AR(1)・無構造の共分散構造のパラメータ数を数え，平均のパラメータと合わせて AIC で選択できる．
+\item 線形混合効果モデル $\bm Y=\bm X\bm\beta+\bm Z\bm\gamma+\bm\varepsilon$ の周辺分散 $\bm V=\bm Z\bm G\bm Z\transp+\bm R$ と一般化最小二乗推定量を導出できる．
+\item 変量切片が複合対称構造を生むことを示し，与えられた $\bm V$ から $\bm Z,\bm G$ を構成できる．被験者内相関を無視したときの誤りを説明できる．
+\item ベースライン値のあるランダム化試験で，最終値・変化量・ANCOVA の推定量の期待値と分散を導き，相関 $\rho$ に応じた優劣を説明できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2023}{4}：3時点の反復測定（3変量正規）．$\hat{\bm\mu}$ の分布，2つの共分散構造（行列の形は問題文で与えられる）の AIC，相関行列，変化量の平均と標準誤差，$Z$ 検定．
+\item \kakomon{2022}{3}：線形混合モデル．$\bm V=\bm Z\bm G\bm Z\transp+\bm R$，変量効果なしの場合の $\hat{\bm\beta}=(\bm X\transp\bm X)^{-1}\bm X\transp\bm Y$ と不偏性，数値計算，
+      ブロック対角の複合対称構造を生む $\bm Z,\bm G$，被験者内相関を考慮する意義．
+\item \kakomon{2024}{2}：ベースライン調整の3推定量（最終値・変化量・ANCOVA）の分散，期待値が等しくなる条件，相対分散のグラフ．2変量正規分布と回帰モデルは問題文で与えられる（\cref{sec:08-ancova}）．
+\item \kakomon{2022}{5}（共通）：平均への回帰．2変量正規の条件付き分布の公式が与えられる誘導形式である（\cref{app:F}）．
+\end{itemize}
+\end{exambox}
+
+\flowline{同一個体の\\反復測定}{時点別平均\\変化量}{多変量正規\\混合モデル}{個体間独立\\共分散構造}{GLS・AIC\\分散の計算}{個体内相関}
+
+\section{問題設定}\label{sec:08-setting}
+同一の患者から複数時点で測定した値は，患者固有の水準（個体差）を共有するため正の相関をもつ．
+この相関を共分散行列として扱い，(a) 時点別の平均と変化量を推測する，(b) 個体差を変量効果として線形混合モデルで表す．
+相関を無視すると，推定量の標準誤差を誤る（被験者レベルの効果では多くの場合過小評価する）．
+
+\section{反復測定データ}\label{sec:08-repeated}
+\subsection{平均ベクトルの推定と変化量}\label{subsec:08-mean}
+\Hissu\Hinshutsu $N$ 人の $T$ 時点の測定値 $\bm Y_i=(Y_{i1},\dots,Y_{iT})\transp\iid\Normal_T(\bm\mu,\bm\Sigma)$，$\bm\Sigma=(\sigma_{st})$ とする（欠測なし）．
+\begin{meidai}[平均ベクトルと変化量（\kakomon{2023}{4}）]\label[meidai]{prop:08-mean}
+$\hat{\bm\mu}=\frac1N\sum_{i=1}^N\bm Y_i\sim\Normal_T(\bm\mu,\bm\Sigma/N)$．
+時点 $s$ から $t$ への変化量の推定量 $\hat\mu_t-\hat\mu_s=\bm c\transp\hat{\bm\mu}$（$\bm c$ は $t$ 成分 $1$，$s$ 成分 $-1$，他は0）は
+\begin{equation}
+\hat\mu_t-\hat\mu_s\sim\Normal\Bigl(\mu_t-\mu_s,\ \frac{\sigma_{tt}+\sigma_{ss}-2\sigma_{st}}{N}\Bigr).\label{eq:08-change}
+\end{equation}
+\end{meidai}
+\begin{proof}
+独立な多変量正規ベクトルの和は多変量正規で，$\E[\hat{\bm\mu}]=\bm\mu$，$\V[\hat{\bm\mu}]=N\bm\Sigma/N^2=\bm\Sigma/N$．
+線形変換 $\bm c\transp\hat{\bm\mu}$ の分散は $\bm c\transp\bm\Sigma\bm c/N=(\sigma_{tt}+\sigma_{ss}-2\sigma_{st})/N$．
+\end{proof}
+$H_0:\mu_t=\mu_s$ は $Z=(\hat\mu_t-\hat\mu_s)/\SE$ で検定する．$\bm\Sigma$ を推定値で置き換えるので $Z$ は大標本で近似的に $\Normal(0,1)$ に従う
+（各人の変化量 $Y_{it}-Y_{is}$ に対応のある $t$ 検定（\cref{sec:03-t}）を行うのと同じ推定量である）．
+正の相関 $\sigma_{st}>0$ があると，変化量の分散は独立の場合の $(\sigma_{tt}+\sigma_{ss})/N$ より小さくなる．
+時点 $s,t$ の相関係数は $\sigma_{st}/\sqrt{\sigma_{ss}\sigma_{tt}}$ である．
+
+\subsection{共分散構造と AIC}\label{subsec:08-cov}
+\begin{table}[htbp]
+\centering\small
+\caption{主な共分散構造（$T$ 時点）}\label{tab:08-cov}
+\begin{tabular}{@{}lL{62mm}c@{}}
+\toprule
+構造 & $(s,t)$ 成分 & パラメータ数\\
+\midrule
+独立 & $\sigma^2\ind(s=t)$ & 1\\
+複合対称（CS，交換可能） & $\sigma_b^2+\sigma^2\ind(s=t)$ & 2\\
+AR(1) & $\sigma^2\phi^{|s-t|}$ & 2\\
+無構造（UN） & $\sigma_{st}$（すべて自由，$\sigma_{st}=\sigma_{ts}$） & $T(T+1)/2$\\
+\bottomrule
+\end{tabular}
+\end{table}
+\Hinshutsu 構造の選択には AIC $=-2\ell+2k$ を使い（\cref{def:06-aic}），$k$ は\textbf{平均のパラメータ数と共分散のパラメータ数の和}である．
+問題文で行列の形が与えられた構造では，行列に現れる異なる未知パラメータの個数を数えればよい．
+\kakomon{2023}{4}（$T=3$，平均は各時点で自由で3個）では，問題文で与えられた構造（共分散パラメータ3個）が計6個，無構造が $3+6=9$ 個であり，
+$\mathrm{AIC}=412.84+12=424.84$ 対 $409.74+18=427.74$ で前者が選ばれる．ただし差は2.9と小さく，決定的とは言えない．
+\begin{supbox}[補足：REML]
+分散成分の最尤推定量は平均の推定による自由度の損失を考慮しないため下方に偏る（$\hat\sigma^2=\frac1n\sum(x_i-\bar x)^2$ が $\sigma^2$ を過小推定するのと同じ現象）．
+混合モデルの実務ではこれを補正した制限付き最尤法（REML）がよく用いられる．REML の尤度は固定効果の構造に依存するので，固定効果が異なるモデルの比較を REML 尤度の AIC で行ってはいけない．
+\end{supbox}
+
+\section{線形混合効果モデル}\label{sec:08-lmm}
+\subsection{モデル}\label{subsec:08-lmmdef}
+\begin{teigi}[線形混合効果モデル]\label{def:08-lmm}
+\begin{equation}
+\bm Y=\bm X\bm\beta+\bm Z\bm\gamma+\bm\varepsilon,\qquad \bm\gamma\sim\Normal(\bm0,\bm G),\quad \bm\varepsilon\sim\Normal(\bm0,\bm R),\quad \bm\gamma\indep\bm\varepsilon.\label{eq:08-lmm}
+\end{equation}
+$\bm\beta$ は\textbf{固定効果}（集団平均の構造），$\bm\gamma$ は\textbf{変量効果}（個体ごとの確率的なずれ），$\bm X,\bm Z$ は既知の計画行列．
+\end{teigi}
+\begin{meidai}[周辺分布（\kakomon{2022}{3}〔1〕）]\label[meidai]{prop:08-marginal}
+$\E[\bm Y]=\bm X\bm\beta$，$\V[\bm Y]=\bm V=\bm Z\bm G\bm Z\transp+\bm R$．$\bm Y$ は多変量正規分布 $\Normal(\bm X\bm\beta,\bm V)$ に従う．
+\end{meidai}
+\begin{proof}
+$\bm X\bm\beta$ は定数，$\bm\gamma$ と $\bm\varepsilon$ は独立なので
+$\V[\bm Y]=\V[\bm Z\bm\gamma]+\V[\bm\varepsilon]=\bm Z\bm G\bm Z\transp+\bm R$．独立な正規ベクトルの線形結合なので正規．
+\end{proof}
+
+\subsection{一般化最小二乗推定}\label{subsec:08-gls}
+\begin{teiri}[GLS 推定量]\label[teiri]{thm:08-gls}
+$\bm V$ が既知で $\bm X$ が列フルランクなら，$\bm\beta$ の最尤推定量（＝一般化最小二乗推定量）は
+\begin{equation}
+\hat{\bm\beta}=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}\bm Y,\qquad
+\E[\hat{\bm\beta}]=\bm\beta,\qquad \V[\hat{\bm\beta}]=(\bm X\transp\bm V^{-1}\bm X)^{-1}.\label{eq:08-gls}
+\end{equation}
+\end{teiri}
+\begin{proof}
+対数尤度の $\bm\beta$ を含む部分は $-\frac12(\bm Y-\bm X\bm\beta)\transp\bm V^{-1}(\bm Y-\bm X\bm\beta)$ で，これを最大化すると正規方程式
+$\bm X\transp\bm V^{-1}\bm X\bm\beta=\bm X\transp\bm V^{-1}\bm Y$．$\bm A=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}$ とおくと
+$\E[\hat{\bm\beta}]=\bm A\bm X\bm\beta=\bm\beta$，$\V[\hat{\bm\beta}]=\bm A\bm V\bm A\transp=(\bm X\transp\bm V^{-1}\bm X)^{-1}$．
+\end{proof}
+実際は $\bm V$ を推定値 $\hat{\bm V}$ で置き換える．
+変量効果がなく $\bm R=\sigma^2\bm I$ なら $\hat{\bm\beta}=(\bm X\transp\bm X)^{-1}\bm X\transp\bm Y$（通常の最小二乗；\kakomon{2022}{3}〔2〕）．
+このとき $\E[\hat{\bm\beta}]=\bm\beta$ は $\V[\bm Y]$ の形によらず成り立つ（不偏性には $\E[\bm Y]=\bm X\bm\beta$ だけを使う）が，$\V[\hat{\bm\beta}]=\sigma^2(\bm X\transp\bm X)^{-1}$ は相関があると成り立たない．
+
+\subsection{変量切片と複合対称}\label{subsec:08-ri}
+\Hissu 被験者 $i$ の $j$ 回目の測定を $Y_{ij}=\bm x_{ij}\transp\bm\beta+b_i+\varepsilon_{ij}$，$b_i\sim\Normal(0,\sigma_b^2)$，$\varepsilon_{ij}\sim\Normal(0,\sigma^2)$（すべて独立）とする（変量切片モデル）．
+被験者ごとのブロックで $\bm Z_i=\bm 1_{m}$（$m$ は測定回数），$\bm G_i=\sigma_b^2$，$\bm R_i=\sigma^2\bm I_m$ だから
+\[
+\bm V_i=\sigma_b^2\bm 1\bm 1\transp+\sigma^2\bm I=
+\begin{pmatrix}\sigma^2+\sigma_b^2&\sigma_b^2&\cdots\\ \sigma_b^2&\sigma^2+\sigma_b^2&\cdots\\ \vdots&&\ddots\end{pmatrix},
+\qquad \Corr(Y_{ij},Y_{ik})=\frac{\sigma_b^2}{\sigma_b^2+\sigma^2}\ (j\ne k).
+\]
+これが複合対称構造であり，相関（級内相関係数，ICC）は時点差によらない．
+被験者全体では $\bm Z$ は被験者の指示行列（各行は，その測定がどの被験者のものかを示す0/1），$\bm G=\sigma_b^2\bm I$ で，$\bm V$ は $\bm V_i$ を並べたブロック対角行列になる．
+\kakomon{2022}{3}〔3〕のように被験者ごとに異なる変量切片の分散を許すなら，$\bm G$ を対角成分が被験者ごとに異なる対角行列にすればよい．
+変量傾きモデル $Y_{ij}=\bm x_{ij}\transp\bm\beta+b_{0i}+b_{1i}t_j+\varepsilon_{ij}$ では $\bm Z_i=(\bm1,\bm t)$，$\bm G_i$ は $2\times2$ で，分散が時間とともに変化する構造になる．
+
+\paragraph{相関を無視したときの誤り}
+各被験者 $m$ 回測定の変量切片モデルで，被験者レベルの共変量（治療群）の効果を群平均の差で推定するとき，
+各群 $n$ 人の群平均の分散は $\frac{\sigma_b^2+\sigma^2/m}{n}=\frac{(\sigma_b^2+\sigma^2)\{1+(m-1)\mathrm{ICC}\}}{nm}$ である．
+全観測を独立とみなすと分散を $(\sigma_b^2+\sigma^2)/(nm)$ とするので，真の分散の $1/\{1+(m-1)\mathrm{ICC}\}$ に過小評価する（$1+(m-1)\mathrm{ICC}$ をデザイン効果という）．
+変量効果を入れたモデル（\kakomon{2022}{3}〔3〕）は，この被験者内相関を正しく考慮した推測を可能にする．
+
+\subsection{固定効果と変量効果}\label{subsec:08-fixrand}
+\begin{itemize}
+\item \textbf{固定効果}：関心のある特定の水準の効果（治療，時点，性別）．水準の効果そのものを推定・比較する．
+\item \textbf{変量効果}：母集団から抽出されたとみなす水準（被験者，施設）の効果．個々の値ではなく分散 $\sigma_b^2$ に関心がある．
+\end{itemize}
+
+\section{ベースライン調整：最終値・変化量・ANCOVA}\label{sec:08-ancova}
+\Hinshutsu
+ランダム化比較試験で治療前値（ベースライン）$X$ と治療後値 $Y$ を測ったとき，治療効果をどの量で比較するかは過去問の典型的な論点である（\kakomon{2024}{2}）．
+同問では2変量正規分布と回帰モデルが問題文で与えられ，3つの推定量の分散を求めて比較した．
+
+\paragraph{データ構造とモデル}
+$T$群・$C$群各 $n$ 人．各人の $(X_i,Y_i)$ は群ごとに独立に
+\[
+\begin{pmatrix}X_i\\Y_i\end{pmatrix}\sim\Normal\left(\begin{pmatrix}\mu_g^X\\\mu_g^Y\end{pmatrix},\ \sigma^2\begin{pmatrix}1&\rho\\\rho&1\end{pmatrix}\right),\qquad g=T,C
+\]
+に従い，$\sigma^2$，$\rho$ は既知とする．群・時点ごとの標本平均を $\bar X_T,\bar X_C,\bar Y_T,\bar Y_C$ と書く．同じ群の $\bar X_g$ と $\bar Y_g$ の共分散は $\rho\sigma^2/n$，異なる群の平均は独立である．
+
+\begin{meidai}[3つの推定量の期待値と分散（\kakomon{2024}{2}）]\label[meidai]{prop:08-ancova}
+$\Delta_X=\mu_T^X-\mu_C^X$（ベースラインの群間差）とおく．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+推定量 & 式 & 期待値 & 分散\\
+\midrule
+最終値 & $\hat\delta_d=\bar Y_T-\bar Y_C$ & $\mu_T^Y-\mu_C^Y$ & $2\sigma^2/n$\\
+変化量 & $\hat\delta_c=(\bar Y_T-\bar X_T)-(\bar Y_C-\bar X_C)$ & $(\mu_T^Y-\mu_C^Y)-\Delta_X$ & $4\sigma^2(1-\rho)/n$\\
+ANCOVA & $\hat\delta_a=(\bar Y_T-\bar Y_C)-\rho(\bar X_T-\bar X_C)$ & $(\mu_T^Y-\mu_C^Y)-\rho\Delta_X$ & $2\sigma^2(1-\rho^2)/n$\\
+\bottomrule
+\end{tabular}
+\end{center}
+ANCOVA の推定量は，回帰モデル $Y_i=\alpha+\delta_az_i+\rho X_i+\varepsilon_i$（$z_i$ は $T$群で1，$C$群で0，傾き $\rho$ は既知）の最小二乗推定量である．
+\end{meidai}
+\begin{proof}
+\textbf{最終値}：$\V[\bar Y_g]=\sigma^2/n$，2群独立で $2\sigma^2/n$．\\
+\textbf{変化量}：$\V[\bar Y_g-\bar X_g]=(\sigma^2+\sigma^2-2\rho\sigma^2)/n=2\sigma^2(1-\rho)/n$．2群で $4\sigma^2(1-\rho)/n$．\\
+\textbf{ANCOVA}：傾き $\rho$ が既知なので，$U_i=Y_i-\rho X_i$ とおくとモデルは $U_i=\alpha+\delta_az_i+\varepsilon_i$ である．
+残差平方和 $\sum_i(U_i-\alpha-\delta_az_i)^2$ を $\alpha,\delta_a$ で微分して0とおくと，$\hat\alpha=\bar U_C$，$\hat\alpha+\hat\delta_a=\bar U_T$ なので
+$\hat\delta_a=\bar U_T-\bar U_C=(\bar Y_T-\bar Y_C)-\rho(\bar X_T-\bar X_C)$．係数は $(c_1,c_2,c_3,c_4)=(1,-1,-\rho,\rho)$．
+分散は $\V[\bar Y_g-\rho\bar X_g]=(\sigma^2+\rho^2\sigma^2-2\rho\cdot\rho\sigma^2)/n=\sigma^2(1-\rho^2)/n$ の2倍．\\
+期待値は線形性から直ちに得られる．
+\end{proof}
+\paragraph{比較}
+最終値を基準にした相対分散は
+\[
+\frac{\V[\hat\delta_c]}{\V[\hat\delta_d]}=2(1-\rho),\qquad \frac{\V[\hat\delta_a]}{\V[\hat\delta_d]}=1-\rho^2 .
+\]
+\begin{itemize}
+\item 変化量が最終値より精度が高いのは $\rho>1/2$ のときだけである．$\rho<1/2$ では差をとることでかえって誤差が増える．
+\item ANCOVA は $0\le\rho\le1$ のすべてで両者以下の分散をもつ（$1-\rho^2\le1$，$1-\rho^2\le2(1-\rho)\iff(1-\rho)^2\ge0$）．$\rho=1$ のときだけ変化量と一致する．
+\item $\rho$ の推定量としての意味：$\bar Y_g-b\bar X_g$ の分散 $\sigma^2(1+b^2-2b\rho)/n$ は $b=\rho$ で最小である．最終値は $b=0$，変化量は $b=1$ と係数を固定した特別な場合であり，ANCOVA は最適な係数を使っている．
+\item 同じ精度を得るのに必要な症例数は分散に比例するので，ANCOVA は最終値解析の $(1-\rho^2)$ 倍の症例数で済む（$\rho=0.6$ なら64\%）．
+\end{itemize}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=85mm,height=55mm,xmin=0,xmax=1,ymin=0,ymax=2.1,
+  xlabel={相関係数 $\rho$},ylabel={相対分散},xtick={0,0.25,0.5,0.75,1},ytick={0,0.5,1,1.5,2},
+  grid=major,grid style={gray!20},tick label style={font=\scriptsize},
+  legend style={font=\scriptsize,at={(0.03,0.03)},anchor=south west}]
+\addplot[thick,bkblue,domain=0:1] {1};
+\addplot[thick,bkred,dashed,domain=0:1] {2*(1-x)};
+\addplot[thick,bkgreen,domain=0:1,samples=50] {1-x^2};
+\legend{最終値,変化量,ANCOVA}
+\end{axis}
+\end{tikzpicture}
+\caption{最終値の分散を1としたときの相対分散（\kakomon{2024}{2}〔5〕）}\label{fig:08-ancova}
+\end{figure}
+
+\paragraph{期待値が等しくなる条件（\kakomon{2024}{2}〔4〕）}
+3つの期待値が等しいのは $\Delta_X=0$（$\rho\ne0$ のとき）すなわち $\mu_T^X=\mu_C^X$ のときである．
+ランダム化により治療前の母平均は群間で等しいので，この条件はランダム化比較試験では成り立つ．
+このとき3つの推定量はすべて同じ治療効果 $\mu_T^Y-\mu_C^Y$ の不偏推定量であり，違いは分散だけである．
+ランダム化試験でも，実現した $\bar X_T-\bar X_C$ は偶然0でない．ANCOVA は，その偶然の不均衡を $\rho$ の分だけ補正する（変化量は1の分だけ補正しすぎる）．
+
+\paragraph{前後差解析と ANCOVA の違い}
+\begin{itemize}
+\item 前後差（変化量）解析は「各人の $Y-X$」を比べ，ベースラインに係数1を課す．ANCOVA は $X$ を共変量として係数を推定（または既知の $\rho$ を使用）する．
+\item 平均への回帰：ベースラインが高い人ほど次の測定は平均の方へ下がる（\kakomon{2022}{5}，共通問題）．変化量はベースラインと負に相関するので，ベースラインに群間の偶然の差があると変化量の比較は偏った結論に見えやすい．ANCOVA はこの影響を取り除く．
+\item 非ランダム化研究でベースラインが群間で系統的に異なる（$\Delta_X\ne0$）と，変化量と ANCOVA は異なる量を推定し，どちらが正しいかはデータだけでは決まらない（Lord のパラドックス）．
+\end{itemize}
+
+\begin{supbox}[補足：傾きを推定する場合\quad\Hatten]
+実際には $\rho$（一般には回帰係数 $\beta$）は未知で，群内でプールした最小二乗推定値を使う．
+$\bar X_T-\bar X_C$ と傾きの推定誤差の分だけ分散が増え，ランダム化の下で平均すると $\frac{2\sigma^2(1-\rho^2)}{n}\cdot\frac{2n-3}{2n-4}$ になる
+（$\bar X_T-\bar X_C$ と群内平方和の独立性と $\E[\chi^2_1/\chi^2_{2n-2}]=1/(2n-4)$ から導かれる．$n=20$，$\rho=0.6$，$\sigma=10$ で10万回のシミュレーションにより確認した）．$n$ が大きければ補正は無視できる．
+\end{supbox}
+
+\section{仮定}\label{sec:08-assump}
+\begin{itemize}
+\item 個体間の独立性（個体内の相関は共分散構造でモデル化）．
+\item 多変量正規性，平均構造と共分散構造の正しい特定．
+\item 欠測がない（\cref{prop:08-mean}）．欠測がある場合，尤度に基づく解析は欠測が MAR なら妥当，完全ケース解析は MCAR を要する（\cref{ch:16}）．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:08-interp}
+\begin{itemize}
+\item 変化量の検定が有意でも，対照群のない単群の前後比較では時間経過や測定の変動による変化と処置の効果は区別できない．
+\item 共分散構造の選択は推定値そのものより標準誤差に影響する．AIC の差が小さいときは複数の構造で結論が変わらないかを確認する．
+\item ICC が大きいほど，同じ被験者の追加測定から得られる情報は少ない（デザイン効果が大きい）．
+\end{itemize}
+
+\section{手法選択}\label{sec:08-choice}
+\begin{itemize}
+\item 欠測のない多時点の連続データで時点間の変化 → 平均ベクトルの推定と変化量の $Z$ 検定（\cref{eq:08-change}）．
+\item 共分散構造の選択 → 平均と共分散のパラメータ数を数えて AIC．
+\item 個体差を含めて平均構造を推定 → 線形混合効果モデル（変量切片なら複合対称）と GLS 推定．
+\item 被験者レベルの比較で全観測を独立とみなす解析 → 誤り（デザイン効果の分だけ分散を過小評価）．
+\item 治療前後の2時点のランダム化試験で治療効果を推定 → ベースラインを共変量とする ANCOVA（最終値・変化量より分散が小さい）．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:08-err}
+\begin{warnbox}
+\begin{itemize}
+\item 変化量の分散で共分散の項 $-2\sigma_{st}$ を落とす．
+\item 反復測定の全観測を独立とみなして $t$ 検定・OLS の標準誤差を使う．
+\item 無構造のパラメータ数を $T^2$ とする（正しくは $T(T+1)/2$）．AIC で平均のパラメータを数え忘れる．
+\item $\hat{\bm\mu}$ の共分散行列を $\bm\Sigma$ とする（正しくは $\bm\Sigma/N$）．
+\item 変量切片モデルの相関を時点差によって変わるとする（複合対称なので一定）．
+\item 変化量は常に最終値より精度が高いとする（$\rho>1/2$ のときだけ）．
+\item ANCOVA の分散を $2\sigma^2(1-\rho)/n$ とする（それは変化量の分散の半分であり誤り．正しくは $2\sigma^2(1-\rho^2)/n$）．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:08-link}
+\begin{linkbox}
+\begin{itemize}
+\item 多変量正規の線形変換（『現代数理統計学の基礎』命題4.25）から $\hat{\bm\mu}$ と GLS 推定量の分布が得られる．
+\item 条件付き分散・共分散の公式（同書 命題4.11，第4章演習）で $\V[\bm Y]=\E[\V[\bm Y\mid\bm\gamma]]+\V[\E[\bm Y\mid\bm\gamma]]=\bm R+\bm Z\bm G\bm Z\transp$ とも導ける．
+\item 分散の MLE の除数 $n$ による偏り（同書 式(5.5)，\kakomonSM{2017}{1}）が REML の動機である．
+\item \kakomonSM{2022}{5} は対応のある比較を二元配置分散分析として扱い，被験者を固定効果とみるか変量効果とみるかの考え方に通じる．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:08-ex}
+\begin{reidai}[反復測定]\label{reidai:08-1}
+30人の3時点（0，4，8週）の測定値の平均ベクトルの推定値が $(10.2,9.1,8.3)$，
+共分散行列の推定値が $\begin{pmatrix}4.0&2.4&2.0\\2.4&4.4&2.6\\2.0&2.6&4.8\end{pmatrix}$ である．
+\begin{enumerate}[label=(\arabic*)]
+\item 0週から8週の変化量の推定値と標準誤差を求め，$H_0:\mu_8=\mu_0$ を有意水準5\%で検定せよ（$z_{0.025}=1.96$）．
+\item 0週と8週の相関係数を求めよ（$\sqrt{19.2}=4.382$）．
+\item 4時点の研究で，独立，CS，AR(1)，無構造の共分散パラメータ数を答えよ．
+\item 3時点で，無構造（最大対数尤度 $-150.2$）と AR(1)（$-153.9$）の AIC を比較せよ．平均は各時点で自由とする．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[変量切片モデル]\label{reidai:08-2}
+$Y_{ij}=\mu+\delta z_i+b_i+\varepsilon_{ij}$（$j=1,\dots,m$，$b_i\sim\Normal(0,\sigma_b^2)$，$\varepsilon_{ij}\sim\Normal(0,\sigma^2)$，独立）で，各群 $n$ 人とする（$z_i\in\{0,1\}$ は群）．
+\begin{enumerate}[label=(\arabic*)]
+\item 被験者 $i$ の $m$ 個の測定値の共分散行列を書き，これを $\bm Z_i\bm G_i\bm Z_i\transp+\bm R_i$ の形に表せ．
+\item 群平均の差 $\hat\delta$ の分散を求め，全観測を独立とみなした場合の分散との比（デザイン効果）を求めよ．
+\item $\sigma_b^2=3$，$\sigma^2=1$，$m=4$ のときデザイン効果はいくらか．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[ベースライン調整]\label{reidai:08-3}
+各群 $n=50$ 人のランダム化試験で，治療前値 $X$ と治療後値 $Y$ が\cref{sec:08-ancova}のモデルに従い，$\sigma=10$，$\rho=0.6$ とする．
+結果は $\bar X_T=52$，$\bar Y_T=45$，$\bar X_C=50$，$\bar Y_C=48$ であった．
+\begin{enumerate}[label=(\arabic*)]
+\item 最終値・変化量・ANCOVA（傾き $\rho$ 既知）による治療効果の推定値と分散を求めよ．
+\item ANCOVA の推定値で $H_0$：治療効果なし を有意水準5\%（両側）で検定せよ（$\sqrt{2.56}=1.6$）．
+\item 3つの推定値が異なる理由を説明せよ．
+\item 最終値解析で各群100人が必要な試験を，ANCOVA で同じ精度で行うには各群何人必要か．変化量解析ではどうか．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:08-sol}
+\begin{kaitou}{reidai:08-1}
+(1) $8.3-10.2=-1.9$．$\widehat\V=(4.0+4.8-2\times2.0)/30=4.8/30=0.16$，$\SE=0.40$．$Z=-1.9/0.40=-4.75$，$|Z|>1.96$ で有意（共分散行列を推定値で置き換えているので，$Z$ は大標本で近似的に $\Normal(0,1)$）．\\
+(2) $2.0/\sqrt{4.0\times4.8}=2.0/4.382=0.456$．\\
+(3) 独立 1，CS 2，AR(1) 2，無構造 $4\cdot5/2=10$．\\
+(4) 平均のパラメータは3個．無構造：$300.4+2\times(3+6)=318.4$．AR(1)：$307.8+2\times(3+2)=317.8$．AR(1) の AIC が小さい（ただし差は0.6でわずか）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:08-2}
+(1) 対角成分 $\sigma_b^2+\sigma^2$，非対角成分 $\sigma_b^2$ の $m\times m$ 行列（複合対称）．$\bm Z_i=\bm1_m$，$\bm G_i=\sigma_b^2$，$\bm R_i=\sigma^2\bm I_m$ として $\sigma_b^2\bm1\bm1\transp+\sigma^2\bm I_m$．\\
+(2) 被験者平均 $\bar Y_{i\cdot}=\mu+\delta z_i+b_i+\bar\varepsilon_{i\cdot}$ の分散は $\sigma_b^2+\sigma^2/m$ で，群平均はその $n$ 人の平均，2群は独立なので
+$\V[\hat\delta]=2(\sigma_b^2+\sigma^2/m)/n$．独立とみなすと $2(\sigma_b^2+\sigma^2)/(nm)$．
+比は $\dfrac{m\sigma_b^2+\sigma^2}{\sigma_b^2+\sigma^2}=1+(m-1)\mathrm{ICC}$，$\mathrm{ICC}=\sigma_b^2/(\sigma_b^2+\sigma^2)$．\\
+(3) $\mathrm{ICC}=3/4$，$1+3\times0.75=3.25$．独立を仮定すると分散を約3分の1に過小評価する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:08-3}
+(1) 最終値：$45-48=-3$，分散 $2\times100/50=4.0$．
+変化量：$(45-52)-(48-50)=-7+2=-5$，分散 $4\times100\times0.4/50=3.2$．
+ANCOVA：$(45-48)-0.6\times(52-50)=-3-1.2=-4.2$，分散 $2\times100\times(1-0.36)/50=2.56$．\\
+(2) $Z=-4.2/1.6=-2.625$，$|Z|>1.96$ で有意（$\sigma,\rho$ 既知なので $Z$ は $H_0$ の下で正確に $\Normal(0,1)$）．\\
+(3) ランダム化でも実現したベースラインは $T$群が2高い．最終値はこの偶然の差を補正せず（係数0），変化量は係数1で補正しすぎ，ANCOVA は相関 $\rho=0.6$ の分だけ補正する．
+3つとも期待値は同じ（ランダム化により $\Delta_X=0$）で，分散は ANCOVA が最小である．\\
+(4) 必要な症例数は分散に比例する．ANCOVA：$100\times(1-0.36)=64$ 人．変化量：$100\times2\times0.4=80$ 人．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $\hat{\bm\mu}\sim\Normal(\bm\mu,\bm\Sigma/N)$，変化量の分散 $(\sigma_{tt}+\sigma_{ss}-2\sigma_{st})/N$，相関 $\sigma_{st}/\sqrt{\sigma_{ss}\sigma_{tt}}$．
+\item 共分散構造のパラメータ数：独立 1，CS 2，AR(1) 2，UN $T(T+1)/2$．AIC は平均＋共分散のパラメータ数で計算．
+\item LMM：$\bm V=\bm Z\bm G\bm Z\transp+\bm R$，$\hat{\bm\beta}=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}\bm Y$，$\V[\hat{\bm\beta}]=(\bm X\transp\bm V^{-1}\bm X)^{-1}$．
+\item 変量切片 → 複合対称，ICC $=\sigma_b^2/(\sigma_b^2+\sigma^2)$．相関を無視するとデザイン効果 $1+(m-1)\mathrm{ICC}$ だけ分散を過小評価．
+\item ベースライン調整：相対分散は最終値1，変化量 $2(1-\rho)$，ANCOVA $1-\rho^2$．ランダム化なら期待値は同じで ANCOVA が最も精度が高い．
+\end{itemize}
+\end{summarybox}

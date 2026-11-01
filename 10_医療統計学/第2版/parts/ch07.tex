@@ -1,0 +1,394 @@
+\chapter{疫学研究・交絡・層別・マッチング}\label{ch:07}
+
+\begin{goalbox}
+\begin{itemize}
+\item 交絡の定義と条件を述べ，粗（crude）効果と調整（adjusted）効果の違いを説明できる．
+\item Simpson のパラドックスを例示し，その原因を交絡として説明できる．
+\item 粗と調整の差の原因として，交絡・オッズ比の非併合性（非可縮性）・効果修飾を区別できる．
+\item 層別 $2\times2$ 表で，層別 Cochran 検定（\cref{sec:04-mh}）により共通の関連を検定できる．
+\item 層間のオッズ比の均一性を Woolf の均一性検定で検定し，均一性を確認する方法を記述できる．
+\item 条件付き超幾何分布から CMH 検定と Peto 型推定量を導き，Mantel--Haenszel 共通オッズ比推定量の考え方と前提を説明して計算できる．
+\item 粗 OR と MH OR の差を，交絡・効果修飾・非可縮性に切り分けて解釈できる．
+\item マッチングの目的と，マッチしたデータの解析の考え方を説明できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2017}{4}〔5〕：層別のオッズ比が均一であることをデータから確認する方法を述べる（Woolf の均一性検定，Breslow--Day 検定）．
+      〔1〕〜〔4〕の層別 OR と超幾何分布の期待値・分散は\cref{sec:04-mh}，1段階近似による共通 OR（式は問題文で与えられる）の導出と限界は\cref{subsec:07-peto}．
+\item \kakomon{2021}{3}〔3〕〔4〕：層別 Cochran 検定（\cref{sec:04-mh}）と，性別で層別すると結論が変わる（Simpson のパラドックス）ことの考察．
+\item \kakomon{2022}{2}〔4〕〔5〕：マッチしたペアで粗 OR と調整 OR が異なる理由（交絡ではなく非併合性），間接比較．MH 推定量（式は問題文で与えられる）の考え方は\cref{subsec:07-mhest}．
+\item \kakomon{2019}{2}：直接標準化と傾向スコアは問題文で定義が与えられる（\cref{app:F}）．交絡による粗リスク差と調整リスク差の違いの解釈は本章で扱う．
+\end{itemize}
+\end{exambox}
+
+\flowline{層別2×2表\\共変量}{層共通の関連\\共通 OR}{CMH・MH\\Woolf}{均一性\\未測定交絡なし}{重み付き和\\超幾何分散}{粗と調整の差\\の理由}
+
+\section{問題設定}\label{sec:07-setting}
+観察研究では治療・曝露 $X$ の選択が患者の特性 $Z$ に依存する．$Z$ が結果 $Y$ にも影響するなら，
+$X$ と $Y$ の粗い関連には $Z$ を介した関連が混入する．
+本章では，層（$Z$ の値）ごとの $2\times2$ 表 $k=1,\dots,K$（$a_k,b_k,c_k,d_k$，行和 $n_{1k},n_{0k}$，列和 $m_{1k},m_{0k}$，総数 $N_k$）を
+主なデータ形式とする（行：曝露あり/なし，列：イベントあり/なし）．
+
+\section{基本概念}\label{sec:07-basic}
+\subsection{交絡}\label{subsec:07-confound}
+\begin{teigi}[交絡因子]\label{def:07-confounder}
+次の3条件を満たす変数 $Z$ を交絡因子という．
+(i) 曝露 $X$ と関連する．(ii) 曝露がない集団でも結果 $Y$ の危険因子である．(iii) 曝露から結果への経路上の中間変数ではない．
+\end{teigi}
+\Youchui 中間変数（治療→血圧低下→脳卒中予防の「血圧」など）で調整すると，治療効果の一部を消してしまう．
+治療後に測定された変数で調整してはいけない．
+
+\begin{supbox}[補足：潜在結果による定式化]
+各個体に，治療を受けた場合の結果 $Y(1)$ と受けなかった場合の結果 $Y(0)$ を考える．
+平均因果効果は $\E[Y(1)]-\E[Y(0)]$ である．観測できるのは $Y=XY(1)+(1-X)Y(0)$ だけなので，
+$\E[Y\mid X=1]-\E[Y\mid X=0]$ が因果効果に等しいためには $\{Y(1),Y(0)\}\indep X$（交換可能性）が必要で，ランダム化はこれを保証する．
+観察研究では $Z$ を条件として $\{Y(1),Y(0)\}\indep X\mid Z$（未測定の交絡がない）と $0<\Prob(X=1\mid Z)<1$（正値性）を仮定し，
+$\E[Y(x)]=\E_Z\bigl[\E[Y\mid X=x,Z]\bigr]$ によって因果効果を識別する．
+\end{supbox}
+
+\subsection{粗効果と調整効果・Simpson のパラドックス}\label{subsec:07-simpson}
+\Hinshutsu 併合した表の関連の向きや大きさが，層別の関連と食い違う現象を \textbf{Simpson のパラドックス}という．
+\kakomon{2021}{3} では，併合表の OR は1を下回り有意差もなかったが，性別で層別するとどちらの層でも OR が1を大きく上回り，層別 Cochran 検定は有意になった．
+新規治療群に女性（有効率が低い層）が多く，既存治療群に男性（有効率が高い層）が多かったためである．
+性別が治療の選択（条件(i)）と有効率（条件(ii)）の両方に関連する交絡因子であり，併合すると「治療群は有効率の低い層が多い」ことが治療の効果に混入する．
+
+\subsection{効果修飾}\label{sec:07-modification}
+\begin{teigi}[効果修飾]\label{def:07-modification}
+曝露の効果の大きさが $Z$ の値によって異なることを，$Z$ による効果修飾（effect modification；交互作用）という．
+\end{teigi}
+交絡は推定の\textbf{偏り}であり調整によって除くべきもの，効果修飾は\textbf{自然の性質}であり報告すべきものである．
+効果修飾があれば共通 OR を1つの数値で要約することは適切でなく，層ごとの効果を示す．
+また効果修飾の有無は尺度に依存する：RD が層間で一定なら，ベースラインリスクが異なる層では RR は一定でない（\cref{subsec:02-collapse}，\cref{reidai:02-3}(4)）．
+
+\subsection{非併合性（非可縮性）}\label{subsec:07-noncollapse}
+\Hissu OR は\textbf{非併合的}（non-collapsible）である：$Z$ が交絡因子でなく（$Z\indep X$），層別の OR がすべて等しくても，併合表の OR はそれと一致しない（一般に1に近い側にずれる）．
+RD と RR は，$Z\indep X$ で層別の値が等しければ併合表の値もそれに一致する（併合的）．
+したがって「粗 OR と調整 OR が違う」ことは交絡の証拠にならない．粗 OR は集団全体の周辺効果，調整 OR は $Z$ を固定した条件付き効果であり，\textbf{推定しているパラメータが異なる}（\cref{subsec:02-collapse}）．
+
+\section{数理：層別解析}\label{sec:07-strat}
+\subsection{層別 Cochran 検定}\label{subsec:07-mh}
+\Hissu\Hinshutsu 全層で曝露と結果が独立（各層の OR $=1$）という帰無仮説の検定は，\cref{sec:04-mh}で定義した層別 Cochran（Cochran--Mantel--Haenszel）検定
+$\{\sum_k(a_k-\E[a_k])\}^2/\sum_k\V[a_k]\approx\chi^2_1$ による（$\E[a_k]$，$\V[a_k]$ は周辺度数を固定した超幾何分布の期待値と分散，\cref{eq:04-hyper}）．
+\begin{itemize}
+\item 各層の $O-E$ を\textbf{足してから2乗する}ので，層間で効果の向きが揃っているときに検出力が高い．向きが逆の層があると打ち消し合う．
+\item 層を併合せずに検定するので，層の変数（\kakomon{2021}{3} の性別）による交絡を除いた検定になる．
+\item 層ごとの差を独立に足す構造なので，層が多数で各層が小さい（極端にはペア）場合にも使える．
+\end{itemize}
+
+\subsection{オッズ比の均一性の検定}\label{subsec:07-homog}
+\Hinshutsu 層共通の OR を1つの値で要約したり，層別 Cochran 検定で「共通の関連」を主張したりする前に，層間で OR が等しいか（$H_0:\OR_1=\dots=\OR_K$）を確認する（\kakomon{2017}{4}〔5〕）．
+\begin{teiri}[Woolf の均一性検定]\label[teiri]{thm:07-woolf}
+各層の対数オッズ比の推定値と分散の推定値を
+\[
+\hat\theta_k=\log\frac{a_kd_k}{b_kc_k},\qquad v_k=\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k},\qquad w_k=\frac1{v_k}
+\]
+とし，重み付き平均を $\hat\theta_w=\sum_kw_k\hat\theta_k\big/\sum_kw_k$ とする．$H_0:\theta_1=\dots=\theta_K$ の下で，各層の標本サイズが大きければ
+\begin{equation}
+Q=\sum_{k=1}^Kw_k(\hat\theta_k-\hat\theta_w)^2\ \approx\ \chi^2_{K-1}.\label{eq:07-woolf}
+\end{equation}
+$Q>\chi^2_{K-1}(\alpha)$ なら均一性を棄却する（層間で OR が異なる＝OR の尺度での効果修飾がある）．
+\end{teiri}
+\begin{proof}[導出の概略]
+各層の $\hat\theta_k$ は漸近的に $\Normal(\theta_k,v_k)$ に従い（$v_k$ は\cref{eq:04-varlogOR}の推定値），層は独立である．
+$v_k$ を既知の定数とみなすと，$H_0$（共通値 $\theta$）の下で $\sum_kw_k(\hat\theta_k-\theta)^2\sim\chi^2_K$ であり，
+$\hat\theta_k-\theta=(\hat\theta_k-\hat\theta_w)+(\hat\theta_w-\theta)$ と $\sum_kw_k(\hat\theta_k-\hat\theta_w)=0$ から
+\[
+\sum_kw_k(\hat\theta_k-\theta)^2=Q+\Bigl(\sum_kw_k\Bigr)(\hat\theta_w-\theta)^2 .
+\]
+右辺第2項は $\hat\theta_w\sim\Normal(\theta,1/\sum w_k)$ より $\chi^2_1$，$Q$ はこれと独立に $\chi^2_{K-1}$ に従う（正規標本の平方和の分解と同じ）．
+$v_k$ を推定値で置き換えても漸近的に同じ分布になる．
+\end{proof}
+$K=2$ なら $Q=(\hat\theta_1-\hat\theta_2)^2/(v_1+v_2)$ となり，2つの対数 OR の差の Wald 検定と同じである．
+$\hat\theta_w$ は $H_0$ の下での共通対数 OR の逆分散重み付き推定値である．
+$a_k,b_k,c_k,d_k$ にゼロのセルがあると $\hat\theta_k$，$v_k$ が定義できないので，各層の度数が十分あるときに用いる．
+
+\paragraph{その他の確認方法}
+\begin{itemize}
+\item \textbf{Breslow--Day 検定}：同じ $H_0$ を，層共通の OR を推定し，その OR の下で周辺度数を固定したときの各層の $a_k$ の期待値と観測値を比べて検定する（自由度 $K-1$）．各層の対数オッズ比を使わないので，セルに0があっても計算できる点が Woolf の検定と異なる（ただし各層が大きいことを前提にした漸近検定である．本書では統計量の式は扱わない）．
+\item \textbf{ロジスティック回帰}：曝露・層の主効果に「曝露×層」の交互作用項（$K-1$ 個）を加えたモデルとの尤度比検定（自由度 $K-1$；\cref{sec:06-test}）．
+\item 各層の OR と信頼区間を並べて図示し，向きや大きさが揃っているかを見る．
+\end{itemize}
+\Youchui 層数が少なく各層が小さいと均一性の検定は検出力が低いので，有意でないことは均一性の証明にならない．
+
+\section{共通オッズ比の推定：条件付き尤度・Mantel--Haenszel・Peto・逆分散}\label{sec:07-commonor}
+\Hissu\Hinshutsu
+層別 Cochran 検定は「全層で OR $=1$ か」を検定するだけで，関連の大きさは与えない．
+層間で OR が等しい（$\psi_1=\dots=\psi_K=\psi$）と仮定して $\psi$ を1つの数値で推定するのが\emphx{共通オッズ比}の推定である．
+過去問では\kakomon{2017}{4}（Peto 型の1段階推定と逆分散重み），\kakomon{2022}{2}（MH 推定量）で，推定式が問題文で与えられて出題された．
+式が与えられても，その推定量が「何を仮定し，なぜその形なのか」を知っていれば，計算の見通しと解釈の設問（〔4〕〔5〕）で差がつく．
+
+\subsection{条件付き超幾何分布}\label{subsec:07-ncHG}
+層 $k$ で行和を固定し（コホート・臨床試験），$a_k\sim\Bin(n_{1k},\pi_{1k})$，$c_k\sim\Bin(n_{0k},\pi_{0k})$ が独立とする（症例対照研究で列和を固定しても，曝露 OR と疾病 OR が等しいので以下は同じ形になる）．
+\begin{meidai}[条件付き超幾何分布]\label[meidai]{prop:07-nchg}
+列和 $m_{1k}=a_k+c_k$ も与えたときの $a_k$ の条件付き分布は
+\begin{equation}
+\Prob(a_k=a\mid n_{1k},n_{0k},m_{1k})=\frac{\binom{n_{1k}}{a}\binom{n_{0k}}{m_{1k}-a}\psi_k^{\,a}}{\sum_u\binom{n_{1k}}{u}\binom{n_{0k}}{m_{1k}-u}\psi_k^{\,u}},\qquad
+\psi_k=\frac{\pi_{1k}/(1-\pi_{1k})}{\pi_{0k}/(1-\pi_{0k})}\label{eq:07-nchg}
+\end{equation}
+（$u$ は周辺度数と両立する範囲を動く）．この分布は層の OR $\psi_k$ だけに依存し，ベースラインリスク $\pi_{0k}$ には依存しない．$\psi_k=1$ なら超幾何分布（\cref{eq:04-hyper}）になる．
+\end{meidai}
+\begin{proof}
+$\Prob(a_k=a,\,c_k=m_{1k}-a)=\binom{n_{1k}}{a}\pi_{1k}^a(1-\pi_{1k})^{n_{1k}-a}\binom{n_{0k}}{m_{1k}-a}\pi_{0k}^{m_{1k}-a}(1-\pi_{0k})^{n_{0k}-m_{1k}+a}$．
+$a$ を含む部分をまとめると $\binom{n_{1k}}{a}\binom{n_{0k}}{m_{1k}-a}\Bigl\{\frac{\pi_{1k}}{1-\pi_{1k}}\cdot\frac{1-\pi_{0k}}{\pi_{0k}}\Bigr\}^a$ に $a$ によらない因子
+$(1-\pi_{1k})^{n_{1k}}\pi_{0k}^{m_{1k}}(1-\pi_{0k})^{n_{0k}-m_{1k}}$ を掛けたものである．
+$\Prob(m_{1k})$ はこれを $a$ について足したものなので，比をとると $a$ によらない因子が約分されて\cref{eq:07-nchg}を得る．
+\end{proof}
+層ごとに異なるベースラインリスク（局外母数）が条件付けで消えることが，層別解析の要点である．各層が小さく層が多いとき（極端にはマッチドペア），局外母数を層ごとに推定する通常の最尤法は偏るが，条件付き尤度は使える．
+
+\subsection{条件付き尤度と Peto 型1段階推定}\label{subsec:07-peto}
+共通 OR $\psi=e^\beta$ の下で，各層の\cref{eq:07-nchg}の積を\emphx{条件付き尤度}という．その対数は
+\[
+l_c(\beta)=\sum_k\Bigl\{a_k\beta-\log\sum_u\tbinom{n_{1k}}{u}\tbinom{n_{0k}}{m_{1k}-u}e^{\beta u}\Bigr\}+\text{const}.
+\]
+第2項は指数型分布族の正規化定数なので，微分すると条件付き分布の期待値・分散が現れる：
+\begin{equation}
+U(\beta)=l_c'(\beta)=\sum_k\bigl(a_k-\E_\beta[a_k]\bigr),\qquad I(\beta)=-l_c''(\beta)=\sum_k\V_\beta[a_k].\label{eq:07-condscore}
+\end{equation}
+$\beta=0$ では $\E_0[a_k]$，$\V_0[a_k]$ は超幾何分布の期待値・分散（\cref{eq:04-hyper}）であり，
+\begin{itemize}
+\item $U(0)^2/I(0)=\{\sum(a_k-E_k)\}^2/\sum V_k$ は層別 Cochran（CMH）検定そのもの（条件付き尤度のスコア検定）．
+\item $\beta=0$ から Newton--Raphson 法で1回だけ更新すると
+\begin{equation}
+\hat\beta_{\mathrm{Peto}}=0+\frac{U(0)}{I(0)}=\frac{\sum_k(a_k-E_k)}{\sum_kV_k},\qquad \V[\hat\beta_{\mathrm{Peto}}]\approx\frac1{\sum_kV_k}.\label{eq:07-peto}
+\end{equation}
+\end{itemize}
+これが Peto 型（1段階）推定量である．1層だけなら $(a_k-E_k)/V_k$ で，\kakomon{2017}{4}〔2〕の式にあたる．
+層ごとの値 $(a_k-E_k)/V_k$ を重み $V_k$（その分散の逆数）で平均しても同じ式になる（\kakomon{2017}{4}〔3〕，\cref{sec:18-mh}）．
+\Youchui 1回の更新で止めるので，真の $\beta$ が0から離れると近似が悪くなる．問題文の「真のオッズ比が1に近いときには」はこの意味である．
+\kakomon{2017}{4} では層1で Peto 型 $31.9$ に対し実際の OR は $7.71$，統合値も Peto 型 $6.22$ に対し MH 推定値は $5.27$ であり（本書で計算），OR が5前後と1から遠いデータでは Peto 型は大きめに出る．
+試験では指示どおりの推定量で計算し，解釈の設問でこの限界に触れればよい．
+
+\subsection{Mantel--Haenszel 推定量}\label{subsec:07-mhest}
+\begin{teigi}[Mantel--Haenszel 共通オッズ比推定量 \cite{mh1959}]\label{def:07-mhor}
+\begin{equation}
+\widehat\OR_{\mathrm{MH}}=\frac{\sum_ka_kd_k/N_k}{\sum_kb_kc_k/N_k}.\label{eq:07-mhor}
+\end{equation}
+$a_k$：曝露ありでイベントあり，$b_k$：曝露ありでイベントなし，$c_k$：曝露なしでイベントあり，$d_k$：曝露なしでイベントなし，$N_k$：層 $k$ の総数．
+\end{teigi}
+\paragraph{推定の考え方}
+行和を固定した積二項モデルで，$a_k$ と $d_k=n_{0k}-c_k$ は独立なので
+\[
+\E[a_kd_k]=n_{1k}\pi_{1k}\cdot n_{0k}(1-\pi_{0k}),\qquad \E[b_kc_k]=n_{1k}(1-\pi_{1k})\cdot n_{0k}\pi_{0k},\qquad
+\frac{\E[a_kd_k]}{\E[b_kc_k]}=\psi_k .
+\]
+したがって共通 OR $\psi$ の下で各層で $\E[a_kd_k-\psi b_kc_k]=0$ が\textbf{正確に}成り立つ．これを重み $1/N_k$ で足した推定方程式
+$\sum_k(a_kd_k-\psi b_kc_k)/N_k=0$ を $\psi$ について解いたものが\cref{eq:07-mhor}である．
+\paragraph{重み付き平均としての表現}
+$w_k=b_kc_k/N_k$ とおくと $a_kd_k/N_k=w_k\widehat\OR_k$ なので
+\[
+\widehat\OR_{\mathrm{MH}}=\frac{\sum_kw_k\widehat\OR_k}{\sum_kw_k},\qquad w_k=\frac{b_kc_k}{N_k}.
+\]
+層の OR を（対数ではなく）OR の尺度で平均している．$\OR_k=1$ で $\pi_{1k}=\pi_{0k}=\pi_k$ のとき，Woolf の分散（デルタ法）は
+$\V[\widehat\OR_k]\approx\frac1{n_{1k}\pi_k}+\frac1{n_{1k}(1-\pi_k)}+\frac1{n_{0k}\pi_k}+\frac1{n_{0k}(1-\pi_k)}=\frac{N_k}{n_{1k}n_{0k}\pi_k(1-\pi_k)}$ で，
+その逆数 $n_{1k}n_{0k}\pi_k(1-\pi_k)/N_k$ は $\E[b_kc_k]/N_k$ に等しい．つまり MH の重みは「OR が1に近いときの逆分散重み」を，分散を推定せずに実現している．
+\paragraph{性質と前提}
+\begin{itemize}
+\item \textbf{前提}：層間で OR が共通であること（均一性）．効果修飾があると「共通 OR」は存在せず，MH 推定値は層の OR の重み付き平均という記述的な要約にすぎない．
+\item 各層が大きいときも，層が多数で各層が小さい（マッチドペアなど）ときも一致推定量である．通常の最尤法（層ごとにベースラインを推定）は後者で一致性を失う．
+\item 重みは度数の積なので，ゼロセルがある層も計算に参加できる（逆分散法は $\log0$ で計算不能）．
+\item 層の OR がすべて等しければ，MH 推定値はその値に一致する．
+\end{itemize}
+\paragraph{リスク比版とマッチドペア（\kakomon{2022}{2}〔3〕）}
+同様に $\E[a_kn_{0k}]=n_{1k}n_{0k}\pi_{1k}$，$\E[c_kn_{1k}]=n_{1k}n_{0k}\pi_{0k}$ から，共通リスク比の MH 推定量は
+$\widehat\RR_{\mathrm{MH}}=\sum_k(a_kn_{0k}/N_k)\big/\sum_k(c_kn_{1k}/N_k)$ である．
+ペアを層とすると（$N_k=2$，$n_{1k}=n_{0k}=1$），$a_kd_k=1$ となるのは「曝露ありのみイベント」のペア，$b_kc_k=1$ となるのは「曝露なしのみイベント」のペアだけなので
+$\widehat\OR_{\mathrm{MH}}=(\text{不一致ペアの比})$ となり，条件付き OR（\cref{subsec:04-condor}）に一致する．
+\kakomon{2022}{2} では $\widehat\OR_{\mathrm{MH}}=2632/662=3.98$，$\widehat\RR_{\mathrm{MH}}=(442+2632)/(442+662)=2.78$ で，後者は粗 RR と一致する（RR は併合的，OR は非併合的）．
+
+\begin{supbox}[補足：共通 OR 推定量の分散公式（Robins--Breslow--Greenland）\quad\Hatten]
+$R_k=a_kd_k/N_k$，$S_k=b_kc_k/N_k$，$P_k=(a_k+d_k)/N_k$，$Q_k=(b_k+c_k)/N_k$，$R=\sum R_k$，$S=\sum S_k$ として
+\[
+\widehat\V[\log\widehat\OR_{\mathrm{MH}}]=\frac{\sum P_kR_k}{2R^2}+\frac{\sum(P_kS_k+Q_kR_k)}{2RS}+\frac{\sum Q_kS_k}{2S^2}
+\]
+が，大きな層の場合にも小さな層が多数の場合にも一致性をもつ分散推定量として知られる \cite{rbg1986}．
+過去問では問われていない．本書では，\cref{reidai:07-2}と同じ層の大きさで真の共通 OR を2とした2万回のシミュレーションで $\log\widehat\OR_{\mathrm{MH}}$ の分散 $0.049$ に対しこの式の平均が $0.049$ となることを確認した．
+\end{supbox}
+
+\subsection{3つの推定量の比較}\label{subsec:07-compare}
+\begin{center}\small
+\begin{tabular}{@{}L{22mm}L{44mm}L{36mm}L{38mm}@{}}
+\toprule
+推定量 & 式 & 長所 & 注意\\
+\midrule
+逆分散（Woolf） & $\exp\bigl(\sum w_k\hat\theta_k/\sum w_k\bigr)$，$w_k=1/(\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k})$ & 分散 $1/\sum w_k$ が簡単．均一性の $Q$ と同時に計算できる & ゼロセルで不能．各層が大きいことが前提\\
+Mantel--Haenszel & \cref{eq:07-mhor} & ゼロセル・疎な層に強い．推定方程式が不偏 & 分散の式がやや複雑\\
+Peto（1段階） & \cref{eq:07-peto} & CMH 検定と同じ量で計算できる & OR が1から遠いと偏る\\
+\bottomrule
+\end{tabular}
+\end{center}
+各層が大きく OR が1に近ければ3つはほぼ一致する．大きく食い違うときは，OR が1から遠いか，疎な層があるか，層間で OR が異なる（効果修飾）可能性を疑う．
+
+\begin{pointbox}[粗 OR と調整 OR の差を見たときの切り分け]
+\begin{center}\small
+\begin{tabular}{@{}L{24mm}L{58mm}L{58mm}@{}}
+\toprule
+現象 & 定義 & データでの手がかり\\
+\midrule
+交絡 & 層変数 $Z$ が曝露と関連し，かつ結果の危険因子 & $Z$ と曝露の関連（層ごとの曝露割合が異なる）．RD・RR でも粗と調整が異なる\\
+効果修飾 & 層ごとの効果（その尺度での）が異なる & 層の OR の不均一（Woolf の $Q$，Breslow--Day，交互作用項）\\
+非可縮性 & $Z$ が曝露と独立でも周辺 OR と条件付き OR が異なる & $Z$ と曝露が独立なのに粗 OR $\ne$ MH OR．RR・RD では差が出ない\\
+\bottomrule
+\end{tabular}
+\end{center}
+3つは同時に起こりうる．交絡がある観察研究では，粗 OR と MH OR の差には交絡と非可縮性の両方が混ざる．
+\end{pointbox}
+
+\section{マッチング}\label{sec:07-match}
+\Hinshutsu マッチングは，交絡因子の分布を群間でそろえるために，背景の似た個体を組にするデザインである．
+\begin{itemize}
+\item \textbf{マッチした症例対照研究}：症例と対照がペア．マッチ因子が曝露と関連していれば，対照の曝露分布も症例に近づくので，マッチを無視した粗 OR は通常1の方向に偏る．
+      ペアを層とみなし，不一致ペアの比による条件付き OR $n_{12}/n_{21}$ と McNemar 検定（\cref{sec:04-mcnemar}）で解析する．
+      層別 Cochran 検定をペアを層として適用すると McNemar 検定に一致する．
+\item \textbf{マッチしたコホート}（\kakomon{2022}{2}）：同じ事故の運転者（着用）と同乗者（非着用）がペア．
+      事故状況 $Z$ の分布は両群で完全に等しく $Z\indep X$ なので，$Z$ による交絡はない．
+      それでも粗 OR とペアで調整した OR が異なるのは OR の非併合性（\cref{subsec:07-noncollapse}）による．RR は併合的なので粗 RR と調整 RR は一致する．
+\end{itemize}
+\paragraph{間接比較（\kakomon{2022}{2}〔5〕）}
+「着用の運転者 vs 非着用の同乗者」の RR には座席の違いと着用の違いが混ざっている．
+両者とも非着用の事故データから座席の効果（同乗者/運転者の RR）を推定し，前者の RR をそれで割ったものを着用の効果の推定値とする．
+これは座席の効果と着用の効果が RR の尺度で乗法的（交互作用なし）という仮定に基づく．
+
+\section{仮定}\label{sec:07-assump}
+\begin{itemize}
+\item \textbf{未測定の交絡がない}：調整した変数以外に交絡因子がない．データからは検証できない最大の仮定．
+\item \textbf{正値性}：どの層にも曝露あり・なしの個体がいる．
+\item 層共通の効果で要約するなら，層間で効果が均一（均一性の検定で確認する）．
+\item Woolf の均一性検定：各層の度数が十分大きい（ゼロセルがない）．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:07-interp}
+\begin{itemize}
+\item 粗効果と調整効果が異なる理由として，(a) 交絡（\kakomon{2019}{2}，\kakomon{2021}{3}），(b) OR の非併合性（\kakomon{2022}{2}），(c) 効果修飾による要約の違い，を区別して述べる（(b)(c)の数値例は\cref{reidai:02-3}）．
+\item 調整しても，因果効果と言えるのは未測定の交絡がない場合に限られる．観察研究の結論には「測定されていない交絡因子の影響は否定できない」を添える．
+\item 層別の結果が逆向きなら共通の要約はせず，層別に報告する．
+\end{itemize}
+
+\section{手法選択}\label{sec:07-choice}
+\begin{table}[htbp]
+\centering\small
+\caption{交絡の調整法}\label{tab:07-choice}
+\begin{tabular}{@{}L{48mm}L{87mm}@{}}
+\toprule
+状況 & 方法\\
+\midrule
+デザイン段階 & ランダム化（最善），層別ランダム化，マッチング，限定（対象を1層に絞る）\\
+少数のカテゴリ交絡因子・共通の関連の検定 & 層別 Cochran 検定（\cref{sec:04-mh}）\\
+層間で OR が等しいかの確認 & Woolf の均一性検定，交互作用項の尤度比検定，層別 OR の図示\\
+ペアマッチ & 条件付き OR $n_{12}/n_{21}$，McNemar 検定（\cref{sec:04-mcnemar}）\\
+連続・多数の交絡因子 & ロジスティック回帰による調整 OR（\cref{ch:06}）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{よくある誤り}\label{sec:07-err}
+\begin{warnbox}
+\begin{itemize}
+\item 粗 OR と調整 OR の差をすべて交絡と解釈する（非併合性を無視）．
+\item 効果修飾がある（層で OR が逆向き）のに共通 OR で要約する．
+\item 均一性の検定が有意でないことを「均一である」証拠とする．
+\item Woolf の $Q$ で，$\hat\theta_w$ の代わりに併合表の対数 OR を使う．
+\item 効果修飾の有無を尺度を明示せずに述べる（RD で均一でも RR では不均一になりうる）．
+\item 中間変数・治療後の変数で調整する．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:07-link}
+\begin{linkbox}
+\begin{itemize}
+\item Woolf の $Q$ の分布は，正規標本の平方和の分解 $\sum(X_i-\mu)^2=\sum(X_i-\bar X)^2+n(\bar X-\mu)^2$（『現代数理統計学の基礎』第5章）を重み付きにしたものである．
+\item 逆分散重み付き平均が線形不偏推定量の中で分散最小であることは同書第6章演習（問9）．
+\item 超幾何分布の分散（同書 式(3.10)）が $\V[a_k]$ の源であり，周辺度数での条件付けによって局外母数（各層のベースラインリスク）が消えることが層別 Cochran 検定の要点である．
+\item \kakomonSM{2022}{2} では「条件付け（選択）によって見かけの相関が生じる」ことが問われた．これは選択バイアスや合流点での条件付けの数理的な原型である．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:07-ex}
+\begin{reidai}[Simpson のパラドックスと均一性]\label{reidai:07-1}
+2病院で治療の有無と改善の有無を集計した．
+病院A（軽症中心）：治療100人中90人改善，無治療500人中400人改善．
+病院B（重症中心）：治療500人中300人改善，無治療100人中50人改善．
+\begin{enumerate}[label=(\arabic*)]
+\item 各病院の OR と，併合した表の OR を求めよ．
+\item 層別 Cochran 検定の統計量を求め，有意水準5\%で検定せよ．各層の $\E[a_k]$，$\V[a_k]$（\cref{eq:04-hyper}）も示せ（$\chi^2_1(0.05)=3.841$）．
+\item Woolf の均一性検定を行え（$\log2.25=0.811$，$\log1.5=0.405$）．
+\item 併合した OR が層別の OR と逆向きになった理由を説明せよ．
+\end{enumerate}
+\end{reidai}
+交絡がない状況で非併合性と効果修飾を区別する例題は\cref{reidai:02-3}にある（本例題(4)の交絡と比較するとよい）．
+
+\begin{reidai}[共通オッズ比の推定と粗 OR]\label{reidai:07-2}
+ある曝露と疾患の関連を年齢層（3層）で層別したコホートデータ（人数）である．
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{曝露あり} & \multicolumn{2}{c}{曝露なし}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+年齢層 & 発症あり $a_k$ & 発症なし $b_k$ & 発症あり $c_k$ & 発症なし $d_k$\\
+\midrule
+層1（若年） & 30 & 70 & 10 & 70\\
+層2（中年） & 60 & 60 & 20 & 40\\
+層3（高齢） & 90 & 30 & 20 & 10\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=(\arabic*)]
+\item 各層の OR と，層を併合した粗 OR を求めよ．
+\item Mantel--Haenszel 共通 OR を求めよ．
+\item 各層の $\E[a_k]$，$\V[a_k]$（\cref{eq:04-hyper}）を求め，層別 Cochran（CMH）検定を有意水準5\%で行え．さらに Peto 型推定値（\cref{eq:07-peto}）を求めよ（$\chi^2_1(0.05)=3.841$，$e^{0.735}=2.085$）．
+\item Woolf の均一性検定を行え（$\log3=1.0986$，$\log2=0.6931$，$\log1.5=0.4055$，$\chi^2_2(0.05)=5.991$）．
+\item 粗 OR と MH OR の差を，交絡・効果修飾・非可縮性の観点から解釈せよ．
+\item （任意・発展）RBG の分散公式で $\log\widehat\OR_{\mathrm{MH}}$ の標準誤差を求め，共通 OR の95\%CI を作れ（$\log2.130=0.756$，$e^{0.329}=1.389$，$e^{1.183}=3.265$）．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:07-sol}
+\begin{kaitou}{reidai:07-1}
+(1) A：$\frac{90\times100}{10\times400}=2.25$．B：$\frac{300\times50}{200\times50}=1.50$．
+併合：治療600人中390人，無治療600人中450人で $\frac{390\times150}{210\times450}=0.62$．\\
+(2) A：$E=100\times490/600=81.67$，$V=\frac{100\cdot500\cdot490\cdot110}{600^2\cdot599}=12.50$．
+B：$E=500\times350/600=291.67$，$V=\frac{500\cdot100\cdot350\cdot250}{600^2\cdot599}=20.29$．
+$\sum(O-E)=(90-81.67)+(300-291.67)=16.67$，$\sum V=32.79$，$16.67^2/32.79=8.47>3.841$ で有意．\\
+(3) $v_A=\frac1{90}+\frac1{10}+\frac1{400}+\frac1{100}=0.1236$，$w_A=8.09$．
+$v_B=\frac1{300}+\frac1{200}+\frac1{50}+\frac1{50}=0.0483$，$w_B=20.69$．
+$\hat\theta_w=(8.09\times0.811+20.69\times0.405)/28.78=14.94/28.78=0.519$．
+$Q=8.09\times(0.811-0.519)^2+20.69\times(0.405-0.519)^2=0.690+0.269=0.96<3.841$（自由度 $K-1=1$）．
+（検算：$K=2$ では $Q=(0.811-0.405)^2/(0.1236+0.0483)=0.1648/0.1719=0.96$．）
+均一性は棄却されない．ただし2層のみで検出力は低く，均一の証明ではない．\\
+(4) 治療は重症（改善率の低い）病院Bに多く（500人），無治療は軽症の病院Aに多い．病院（重症度）が治療と改善の両方に関連する交絡因子で，
+併合すると「治療群は重症が多いから改善率が低い」ことが治療の効果に混入し，向きが逆転した．
+\end{kaitou}
+
+\begin{kaitou}{reidai:07-2}
+(1) 層1：$\frac{30\times70}{70\times10}=3.0$，層2：$\frac{60\times40}{60\times20}=2.0$，層3：$\frac{90\times10}{30\times20}=1.5$．
+併合：曝露あり340人中180人，曝露なし180人中50人が発症で $\frac{180\times130}{160\times50}=2.70$．\\
+(2) $N_k=180,180,150$．$\sum a_kd_k/N_k=\frac{2100}{180}+\frac{2400}{180}+\frac{900}{150}=11.667+13.333+6.000=31.000$，
+$\sum b_kc_k/N_k=\frac{700}{180}+\frac{1200}{180}+\frac{600}{150}=3.889+6.667+4.000=14.556$．$\widehat\OR_{\mathrm{MH}}=31.000/14.556=2.13$．\\
+(3) 層1：$E=\frac{100\times40}{180}=22.22$，$V=\frac{100\cdot80\cdot40\cdot140}{180^2\cdot179}=7.725$．
+層2：$E=\frac{120\times80}{180}=53.33$，$V=\frac{120\cdot60\cdot80\cdot100}{180^2\cdot179}=9.932$．
+層3：$E=\frac{120\times110}{150}=88.00$，$V=\frac{120\cdot30\cdot110\cdot40}{150^2\cdot149}=4.725$．
+$\sum(O-E)=7.78+6.67+2.00=16.44$，$\sum V=22.38$，$\chi^2_{\mathrm{CMH}}=16.44^2/22.38=12.08>3.841$ で有意．
+Peto 型：$\hat\beta=16.44/22.38=0.735$，$\widehat\OR=e^{0.735}=2.085$（MH と近い．層の OR が2前後で，1から極端には遠くない）．\\
+(4) $v_k=\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k}$ は $0.1619,\,0.1083,\,0.1944$，$w_k=6.18,\,9.23,\,5.14$，$\sum w=20.55$．
+$\hat\theta_w=(6.18\times1.0986+9.23\times0.6931+5.14\times0.4055)/20.55=15.27/20.55=0.743$．
+$Q=6.18\times0.356^2+9.23\times(-0.050)^2+5.14\times(-0.338)^2=0.78+0.02+0.59=1.39<5.991$．均一性は棄却されない（ただし3層のみで検出力は低い）．\\
+(5) 層ごとの曝露割合は $100/180=0.56$，$120/180=0.67$，$120/150=0.80$，発症割合は $40/180=0.22$，$80/180=0.44$，$110/150=0.73$ で，年齢は曝露とも発症とも関連する．
+したがって年齢は交絡因子であり，粗 OR $2.70$ は年齢による交絡で大きくなっている．年齢で調整した MH OR $2.13$ が曝露の効果の要約として適切である．
+ただし OR は非可縮なので，交絡がなくても粗 OR と調整 OR は一致しない（差の一部は非可縮性による可能性がある）．
+層の OR は $3.0\to1.5$ と年齢とともに小さい傾向があるが，(4)で均一性は棄却されず，効果修飾の証拠は弱い．共通 OR で要約するときも層別 OR を併記する．\\
+(6)（任意）$R_k=11.667,\,13.333,\,6.000$，$S_k=3.889,\,6.667,\,4.000$，$P_k=\frac{100}{180},\frac{100}{180},\frac{100}{150}$，$Q_k=\frac{80}{180},\frac{80}{180},\frac{50}{150}$ を代入すると
+$\widehat\V=0.0475$，$\SE=0.218$．$0.756\pm1.96\times0.218=(0.329,\,1.183)$ で，共通 OR の95\%CI は $(1.39,\,3.27)$．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 交絡因子：曝露と関連，結果の危険因子，中間変数でない．交絡は偏り，効果修飾は自然の性質．
+\item Simpson のパラドックス：併合と層別で関連の向きが逆転．原因は交絡．
+\item OR は非併合的：交絡がなくても粗 OR $\ne$ 層別 OR．RD・RR は併合的．
+\item 層別 Cochran 検定 $\{\sum(a_k-E_k)\}^2/\sum V_k$（\cref{sec:04-mh}）．効果の向きが揃うとき検出力が高い．条件付き尤度のスコア検定である．
+\item 共通 OR：MH $\sum a_kd_k/N_k\big/\sum b_kc_k/N_k$（推定方程式 $\E[a_kd_k-\psi b_kc_k]=0$，ゼロセル・疎な層に強い），Peto $\exp\{\sum(O-E)/\sum V\}$（OR が1に近いとき），逆分散（Woolf）．前提は OR の均一性．
+\item 均一性：Woolf の $Q=\sum w_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$，$w_k=1/(1/a_k+1/b_k+1/c_k+1/d_k)$．Breslow--Day 検定，交互作用の尤度比検定も同じ目的．有意でなくても均一の証明ではない．
+\item 粗と調整の差の原因：交絡，非併合性，効果修飾（後二者の区別の例は\cref{reidai:02-3}）．調整しても未測定交絡は残る．
+\end{itemize}
+\end{summarybox}

@@ -1,0 +1,292 @@
+\chapter{Bayes 解析の基礎}\label{ch:17}
+
+\begin{goalbox}
+\begin{itemize}
+\item 事前分布・尤度・事後分布・事前予測分布（周辺分布）・事後予測分布を区別して書ける．
+\item Beta--Binomial の共役事前分布による事後分布・事後平均・事後モードを導出できる．
+\item 事後平均が「MLE と事前平均の重み付き平均」（縮小）になることを説明できる．
+\item 一様事前分布の下で，$Y$ の周辺分布が離散一様分布になることを示し，事後確率 $\Prob(\pi\ge\pi_0\mid y)$ による判定ができる．
+\item 人時間を考慮したポアソンモデルで，率の最尤推定量 $\hat\lambda=Y/T$ を求められる．
+\item Gamma--Poisson モデルの事後分布と事後予測分布（負の二項分布）を導出し，ガンマ混合による過分散を説明できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2022}{4}：有効例数 $Y\sim\Bin(n,\pi)$，一様事前分布．尤度と MLE，事後分布 $\Be(y+1,n-y+1)$，事後モード $=y/n$，
+      事後平均 $(y+1)/(n+2)$ と MLE・事前平均の関係，$Y$ の周辺分布（離散一様），$\Prob(\pi\ge1/2\mid y)\ge0.8$ となる最小の $y$（$n=5$ で $y=4$）．
+\item \kakomon{2025}{2}〔1〕：人口の異なる2市の死亡数（ポアソン）から共通の死亡率の MLE（1.8）．
+      同問〔2〕〜〔5〕（率の差の検定，ガンマ事前分布と事後予測分布）は，分散の推定量や事前密度が問題文で与えられる誘導付きの設問である．導出は\cref{sec:17-gammapois}．
+\item 統計数理では\kakomonSM{2021}{3}（ポアソン平均の十分性・MLE・スコア型区間），\kakomonSM{2024}{3}（Beta 事前分布の事後平均と同じ形の推定量）．
+\end{itemize}
+\end{exambox}
+
+\flowline{二項データ\\件数＋人時間}{比率・率}{共役 Bayes\\ポアソン MLE}{事前分布\\二項・ポアソン性}{事後 $=$ 事前 $\times$ 尤度}{縮小と\\事前の影響}
+
+\section{ポアソン率の最尤推定}\label{sec:17-poisson}
+観察人時間（または人口）$T$ の集団で起きたイベント数を $Y$ とし，率 $\lambda$（単位人時間あたり）で
+\[
+Y\sim\Po(\lambda T),\qquad \Prob(Y=y)=\frac{e^{-\lambda T}(\lambda T)^y}{y!}
+\]
+とする．\kakomon{2025}{2} のように「1万人あたり $\Po(\theta)$」が独立なら，ポアソン分布の再生性により人口 $T$ 万人の死亡数は $\Po(T\theta)$ である．
+\begin{meidai}\label[meidai]{prop:17-mle}
+$\hat\lambda=Y/T$，$\V[\hat\lambda]=\lambda/T$（推定値 $Y/T^2$），デルタ法により $\V[\log\hat\lambda]\approx1/(\lambda T)$（推定値 $1/Y$）．
+複数の集団で率が共通なら $\hat\lambda=\sum_g Y_g/\sum_g T_g$．
+\end{meidai}
+\begin{proof}
+$\log L=y\log\lambda-\lambda T+\text{const}$，$\partial\log L/\partial\lambda=y/\lambda-T=0$．共通の率では $\log L=(\sum_g y_g)\log\lambda-\lambda\sum_g T_g$ で同様．
+$\V[Y]=\lambda T$ より $\V[\hat\lambda]=\lambda/T$．$\log$ の微分 $1/\lambda$ を掛けて $\V[\log\hat\lambda]\approx(1/\lambda)^2\lambda/T$．
+\end{proof}
+\kakomon{2025}{2}〔1〕：$\hat\theta=(4+14)/(2+8)=1.8$（1万人あたり）．
+率の近似95\%信頼区間は $\exp\bigl(\log\hat\lambda\pm1.96/\sqrt Y\bigr)$（$z_{0.025}=1.96$）である．
+この尤度 $\lambda^ye^{-\lambda T}$ は，打ち切りのある指数モデルの尤度 $\lambda^de^{-\lambda W}$（\cref{prop:10-expmle}）と同じ形である．
+
+\section{Bayes 推測の基本}\label{sec:17-bayes}
+\Hissu
+パラメータ $\theta$ に事前分布 $p(\theta)$ を置き，データ $y$ を観測した後の事後分布を
+\[
+p(\theta\mid y)=\frac{p(y\mid\theta)p(\theta)}{p(y)}\propto p(y\mid\theta)\,p(\theta),\qquad p(y)=\int p(y\mid\theta)p(\theta)\,\dd\theta
+\]
+とする．$p(y)$ は\emphx{事前予測分布}（周辺分布）であり，将来のデータ $\tilde y$ の\emphx{事後予測分布}は
+\[
+p(\tilde y\mid y)=\int p(\tilde y\mid\theta)\,p(\theta\mid y)\,\dd\theta
+\]
+（$\tilde y$ と $y$ が $\theta$ を与えて独立な場合）．
+点推定には事後平均（2乗損失の Bayes 推定量），事後モード（事後分布の最頻値），事後中央値を，区間推定には事後分布の $2.5\%$ 点と $97.5\%$ 点による信用区間を用いる．
+事後分布が事前分布と同じ分布族になる事前分布を\emphx{共役事前分布}という．
+
+\section{Beta--Binomial モデル}\label{sec:17-betabin}
+\Hissu
+\begin{teiri}[Beta--Binomial]\label[teiri]{thm:17-betabin}
+$Y\mid\pi\sim\Bin(n,\pi)$，$\pi\sim\Be(a,b)$ なら
+\begin{equation}
+\pi\mid y\sim\Be(a+y,\ b+n-y),\qquad \E[\pi\mid y]=\frac{a+y}{a+b+n}=\frac{n}{a+b+n}\cdot\frac yn+\frac{a+b}{a+b+n}\cdot\frac{a}{a+b}.\label{eq:17-betabin}
+\end{equation}
+事後モードは $(a+y-1)/(a+b+n-2)$（$a+y\ge1$，$b+n-y\ge1$，$a+b+n>2$ のとき）．$Y$ の周辺分布は
+$\Prob(Y=y)=\binom ny\dfrac{B(a+y,b+n-y)}{B(a,b)}$（ベータ二項分布）．
+\end{teiri}
+\begin{proof}
+$p(\pi\mid y)\propto\pi^y(1-\pi)^{n-y}\cdot\pi^{a-1}(1-\pi)^{b-1}=\pi^{a+y-1}(1-\pi)^{b+n-y-1}$ はベータ分布の核．
+平均は $\Be(\alpha,\beta)$ の平均 $\alpha/(\alpha+\beta)$，モードは密度の対数を微分して0とおいた $(\alpha-1)/(\alpha+\beta-2)$．
+周辺分布は $\int_0^1\binom ny\pi^y(1-\pi)^{n-y}\frac{\pi^{a-1}(1-\pi)^{b-1}}{B(a,b)}\dd\pi$ をベータ関数で表したもの．
+\end{proof}
+事後平均は MLE $y/n$ と事前平均 $a/(a+b)$ の重み付き平均で，重みは「データの大きさ $n$」と「事前分布の大きさ $a+b$（事前の仮想的な標本サイズ）」の比である．
+$n\to\infty$ で事前の影響は消える．
+
+\paragraph{一様事前分布（\kakomon{2022}{4}）}
+$a=b=1$ なら事後分布 $\Be(y+1,n-y+1)$，事後モード $y/n$（MLE と一致），事後平均 $\frac{y+1}{n+2}=\frac{n}{n+2}\cdot\frac yn+\frac{2}{n+2}\cdot\frac12$．
+$Y$ の周辺分布は
+\[
+\Prob(Y=y)=\binom ny B(y+1,n-y+1)=\frac{n!}{y!(n-y)!}\cdot\frac{y!(n-y)!}{(n+1)!}=\frac{1}{n+1}\quad(y=0,\dots,n),
+\]
+すなわち離散一様分布である．
+
+\paragraph{事後確率による判定}
+「$\Prob(\pi\ge\pi_0\mid y)\ge\gamma$ なら有効」とする判定では，事後確率は
+$\Prob(\pi\ge\pi_0\mid y)=\dfrac{(n+1)!}{y!(n-y)!}\displaystyle\int_{\pi_0}^1\pi^y(1-\pi)^{n-y}\dd\pi$（一様事前分布）で，$y$ について増加する．
+積分の代わりに次の関係を使うこともできる．
+\begin{meidai}\label[meidai]{prop:17-betatail}
+$\pi\mid y\sim\Be(y+1,n-y+1)$ のとき $\Prob(\pi>p\mid y)=\Prob(W\le y)$，$W\sim\Bin(n+1,p)$．
+\end{meidai}
+\begin{proof}
+$m$ 個の独立な $\Unif(0,1)$ の $k$ 番目に小さい値 $U_{(k)}$ は $\Be(k,m-k+1)$ に従い，
+「$U_{(k)}\le p$」は「$m$ 個のうち $k$ 個以上が $p$ 以下」と同値なので $\Prob(\Be(k,m-k+1)\le p)=\Prob(\Bin(m,p)\ge k)$．
+これを $k=y+1$，$m=n+1$ で用い，余事象をとる．
+\end{proof}
+\kakomon{2022}{4} では $n=5$，$p=1/2$ で $\Prob(\pi\ge\frac12\mid y=3)=\Prob(\Bin(6,\tfrac12)\le3)=42/64=0.656$，
+$y=4$ で $57/64=0.891$．よって $0.8$ 以上となる最小の $y$ は4．
+（問題文で与えられる積分値を使っても，$y=3$ で $60\times\frac{7}{640}=0.656$，$y=4$ で $30\times\frac{19}{640}=0.891$ と同じ値になる．）
+
+\paragraph{事後予測}
+次の $\tilde n$ 人での有効数 $\tilde Y$ の事後予測分布は，$\Be(a+y,b+n-y)$ を事前分布とみなしたベータ二項分布で，
+次の1人が有効である確率は事後平均 $\E[\pi\mid y]$ に等しい．
+
+\section{正規--正規モデル}\label{sec:17-normal}
+$\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Normal(\xi,\tau^2)$ なら
+\[
+\mu\mid\bar x\sim\Normal\Bigl(\frac{(n/\sigma^2)\bar x+(1/\tau^2)\xi}{n/\sigma^2+1/\tau^2},\ \frac{1}{n/\sigma^2+1/\tau^2}\Bigr).
+\]
+事後平均は精度（分散の逆数）で重み付けた $\bar x$ と事前平均 $\xi$ の平均であり，Beta--Binomial と同じく縮小の形をしている．
+
+\section{Gamma--Poisson モデルと負の二項分布}\label{sec:17-gammapois}
+\Hinshutsu
+件数データ（死亡数，感染件数，有害事象数）の率 $\theta$ に事前分布を置くときの共役モデルである．
+\kakomon{2025}{2}〔3〕〜〔5〕では事前密度が問題文で与えられ，事後分布・事後予測分布・その期待値が問われた．
+同じ構造は「ポアソン分布の平均がガンマ分布に従って個体ごとにばらつく」混合モデルとして，過分散のある件数データの解析（負の二項回帰）にも現れる．
+
+\begin{warnbox}[ガンマ分布のパラメータ化に注意]
+本書の $\Ga(\alpha,\beta)$ は形状 $\alpha$・\textbf{率} $\beta$ で，密度 $\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1}e^{-\beta\theta}$，平均 $\alpha/\beta$，分散 $\alpha/\beta^2$ である（\kakomon{2025}{2} の問題文と同じ）．
+『現代数理統計学の基礎』などで使われる形状・\textbf{尺度} $s$ の表記では密度 $\frac{1}{\Gamma(\alpha)s^\alpha}\theta^{\alpha-1}e^{-\theta/s}$，平均 $\alpha s$ で，$s=1/\beta$ である．
+試験では問題文の密度の式を必ず確認し，$e^{-\beta\theta}$ か $e^{-\theta/\beta}$ かで判断する．
+\end{warnbox}
+
+\paragraph{データ構造}
+人時間（または人口）$T$ の集団で件数 $Y$ を観測し，$Y\mid\theta\sim\Po(T\theta)$ とする（\cref{sec:17-poisson}）．
+将来，人時間 $T'$ の集団で件数 $\tilde Y$ を観測し，$\theta$ を与えると $\tilde Y\mid\theta\sim\Po(T'\theta)$ で $Y$ と独立とする．
+\begin{teiri}[Gamma--Poisson]\label[teiri]{thm:17-gammapois}
+事前分布 $\theta\sim\Ga(\alpha,\beta)$（形状・率）の下で
+\begin{enumerate}[label=(\arabic*)]
+\item 事後分布：$\theta\mid y\sim\Ga(\alpha+y,\ \beta+T)$．事後平均は
+\begin{equation}
+\E[\theta\mid y]=\frac{\alpha+y}{\beta+T}=\frac{T}{\beta+T}\cdot\frac yT+\frac{\beta}{\beta+T}\cdot\frac\alpha\beta .\label{eq:17-gpmean}
+\end{equation}
+\item 事後予測分布：$a=\alpha+y$，$b=\beta+T$，$p=b/(b+T')$ として
+\begin{equation}
+\Prob(\tilde Y=k\mid y)=\frac{\Gamma(a+k)}{\Gamma(a)\,k!}\,p^{a}(1-p)^{k},\qquad k=0,1,2,\dots\label{eq:17-nb}
+\end{equation}
+すなわち負の二項分布 $\NB(a,p)$（失敗回数の形）であり，$\E[\tilde Y\mid y]=T'a/b$，$\V[\tilde Y\mid y]=T'a/b+T'^2a/b^2$．
+\end{enumerate}
+\end{teiri}
+\begin{proof}
+(1) 事後密度は尤度と事前密度の積に比例する：
+$p(\theta\mid y)\propto e^{-T\theta}(T\theta)^y\cdot\theta^{\alpha-1}e^{-\beta\theta}\propto\theta^{\alpha+y-1}e^{-(\beta+T)\theta}$．
+これは $\Ga(\alpha+y,\beta+T)$ の密度の核である．平均は形状/率．\cref{eq:17-gpmean}の右辺を通分すると左辺に一致する．\\
+(2) $\theta$ を積分消去する：
+\begin{align*}
+\Prob(\tilde Y=k\mid y)&=\int_0^\infty\frac{e^{-T'\theta}(T'\theta)^k}{k!}\cdot\frac{b^a}{\Gamma(a)}\theta^{a-1}e^{-b\theta}\,\dd\theta
+=\frac{T'^kb^a}{k!\,\Gamma(a)}\int_0^\infty\theta^{a+k-1}e^{-(b+T')\theta}\dd\theta\\
+&=\frac{T'^kb^a}{k!\,\Gamma(a)}\cdot\frac{\Gamma(a+k)}{(b+T')^{a+k}} .
+\end{align*}
+最後はガンマ関数の定義（$\int_0^\infty\theta^{c-1}e^{-r\theta}\dd\theta=\Gamma(c)/r^c$）による．$b^a/(b+T')^a=p^a$，$T'^k/(b+T')^k=(1-p)^k$ より\cref{eq:17-nb}．\\
+期待値・分散は繰り返し期待値・条件付き分散の公式から：$\E[\tilde Y\mid y]=\E[T'\theta\mid y]=T'a/b$，
+$\V[\tilde Y\mid y]=\E[\V[\tilde Y\mid\theta]\mid y]+\V[\E[\tilde Y\mid\theta]\mid y]=\E[T'\theta\mid y]+\V[T'\theta\mid y]=T'a/b+T'^2a/b^2$．
+（$\NB(a,p)$ の平均 $a(1-p)/p$，分散 $a(1-p)/p^2$ に $p=b/(b+T')$ を代入しても同じ．）
+\end{proof}
+\paragraph{解釈}
+\begin{itemize}
+\item 事後平均は MLE $y/T$ と事前平均 $\alpha/\beta$ の重み付き平均で，重みは「観察人時間 $T$」と「事前の仮想的な人時間 $\beta$」の比である（Beta--Binomial の\cref{eq:17-betabin}と同じ構造）．$T\to\infty$ で事前の影響は消える．
+\item 事後予測分布の分散 $T'a/b+T'^2a/b^2$ は，同じ平均のポアソン分布の分散 $T'a/b$ より大きい．第2項は $\theta$ の不確かさによる上乗せである．
+      MLE を代入した $\Po(T'\hat\theta)$ で予測すると，この不確かさを無視して予測区間が狭くなる．
+\item \textbf{過分散}：事前予測分布（$y$ を観測する前）も同じ計算で $Y\sim\NB(\alpha,\beta/(\beta+T))$，平均 $\mu=T\alpha/\beta$，分散 $\mu+\mu^2/\alpha$ となる．
+      「個体（地域）ごとに率 $\theta_i$ がガンマ分布に従ってばらつき，件数はその率のポアソン分布」という混合モデルは，分散が平均を上回る件数データを表す．
+      $\alpha\to\infty$（率のばらつきが0）でポアソン分布に戻る．
+\end{itemize}
+\paragraph{\kakomon{2025}{2} の数値}
+共通の $\theta$（1万人あたり）で $Y=4+14=18$，$T=2+8=10$（万人），事前 $\Ga(1,1)$ とすると，事後 $\Ga(19,11)$，事後平均 $19/11=1.727$．
+$C$ 市（$T'=5$）の死亡数の事後予測分布は $\NB(19,\,11/16)$ で，期待値 $5\times19/11=8.64$．
+MLE に基づく予測 $5\times1.8=9$ より小さいのは，事後平均 $1.727$ が MLE $1.8$ を事前平均 $1$ の方へ縮小しているためである（\cref{eq:17-gpmean}で $\frac{10}{11}\times1.8+\frac{1}{11}\times1=1.727$）．
+同問〔2〕の率の差の検定は，$\hat\theta_A=2$，$\hat\theta_B=1.75$，分散の推定値 $4/2^2+14/8^2=1.219$ から $Z=0.25/\sqrt{1.219}=0.23$ で有意でない
+（問題文の指示どおり各市の分散を別々に推定している．帰無仮説の下での共通率 $1.8$ で分散を推定すると $1.8/2+1.8/8=1.125$ で $Z=0.24$ となり，結論は同じ）．
+
+\section{頻度論との違い}\label{sec:17-vs}
+\begin{itemize}
+\item 頻度論ではパラメータは定数で，確率は手順の繰り返しに関するもの．Bayes ではパラメータの不確かさを確率分布で表し，「$\Prob(\pi\ge0.5\mid\text{データ})$」を直接述べられる．
+\item 信用区間は「データを与えたとき $\theta$ が区間に入る確率が95\%」と解釈できる．信頼区間はそうは解釈できない．
+\item 事前分布が結論に影響する．小標本では影響が大きく，事前分布の選択の根拠と感度分析が必要である．
+\item Bayes の判定規則（事後確率の閾値）も，頻度論的な性質（第1種の過誤確率・検出力）を評価できる（\cref{reidai:17-2}(2)）．
+\end{itemize}
+
+\section{仮定}\label{sec:17-assump}
+\begin{itemize}
+\item 二項モデル：各人の結果が独立で，有効確率 $\pi$ が共通．
+\item ポアソンモデル：イベントが独立で，率が観察期間・集団内で一定．
+\item Bayes：事前分布の妥当性．共役事前分布は計算の便宜であり，それ自体が正しい保証はない．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:17-interp}
+\begin{itemize}
+\item 「事後平均 0.30，95\%信用区間 0.15--0.47」：データと事前情報を合わせると，有効率は95\%の確率でこの範囲にある．
+\item 事後平均が MLE と違うのは，事前平均への縮小による．データが多いほど両者は近づく．
+\item 一様事前分布では事後モードは MLE と一致するが，事後平均は $1/2$ の側に寄る．
+\end{itemize}
+
+\section{手法選択}\label{sec:17-choice}
+\begin{itemize}
+\item 小標本の2値アウトカムで既存情報（または一様事前）を使いたい → Beta--Binomial の事後分布と事後確率による判定．
+\item 将来の患者の有効数の予測 → 事後予測分布（ベータ二項）．
+\item 観察期間・人口が異なる件数データの率 → ポアソンモデルの MLE $\hat\lambda=Y/T$．
+\item 率に事前情報を入れる・将来の件数を予測する → Gamma--Poisson の事後分布と事後予測分布（負の二項）．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:17-err}
+\begin{warnbox}
+\begin{itemize}
+\item 事後モードと事後平均を混同する（一様事前で MLE と一致するのはモード）．
+\item ベータ分布のパラメータを $\Be(y,n-y)$ とする（一様事前 $\Be(1,1)$ の1を足し忘れる）．
+\item 事前予測分布（周辺分布）と事後予測分布を混同する．
+\item 事後予測を，事後平均を代入した二項分布 $\Bin(\tilde n,\E[\pi\mid y])$ とする（$\pi$ の不確かさを無視）．
+\item 人時間を無視して件数どうしを比べる．
+\item ガンマ分布の率と尺度を取り違える（事後分布を $\Ga(\alpha+y,\beta+T)$ とすべきところを尺度のまま $\beta+T$ と足す）．
+\item 事後予測分布をポアソン分布 $\Po(T'\E[\theta\mid y])$ とする（$\theta$ の不確かさを無視．正しくは負の二項）．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:17-link}
+\begin{linkbox}
+\begin{itemize}
+\item ベータ--二項（『現代数理統計学の基礎』例4.14，例6.12）．
+\item 二項の累積確率とベータ分布の関係（同書第3章演習問19）が\cref{prop:17-betatail}である．
+\item \kakomonSM{2024}{3} の MSE 一定の推定量 $(S_n+\sqrt n/2)/(n+\sqrt n)$ は $\Be(\sqrt n/2,\sqrt n/2)$ 事前分布の事後平均と同じ形である．
+\item \kakomonSM{2021}{3} のポアソン平均の区間 $\frac1n(t+2\mp2\sqrt{t+1})$ は，正規近似 $(t-n\lambda)^2\le4n\lambda$ を解いたスコア型区間である．
+\item ポアソン分布のガンマ混合が負の二項分布になることは，ガンマ関数の積分 $\int_0^\infty\theta^{c-1}e^{-r\theta}\dd\theta=\Gamma(c)/r^c$ と，条件付き分散の公式 $\V[Y]=\E[\V[Y\mid\theta]]+\V[\E[Y\mid\theta]]$ の典型的な応用である（同書 第4章）．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:17-ex}
+\begin{reidai}[Beta--Binomial]\label{reidai:17-1}
+先行研究から有効率の事前分布を $\Be(2,8)$ とし，新しい試験で20人中7人が有効であった．
+\begin{enumerate}[label=(\arabic*)]
+\item 事前平均，事後分布，事後平均，事後モードを求めよ．
+\item 事後平均を MLE と事前平均の重み付き平均として表せ．
+\item （任意）次の2人の有効数 $\tilde Y$ の事後予測分布を求めよ（2人の結果は $\pi$ を与えて互いに独立で，既存データとも独立とする）．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[事後確率による判定]\label{reidai:17-2}
+一様事前分布の下，$n=9$ 人の試験で「$\Prob(\pi>0.5\mid y)\ge0.9$ なら有望」と判定する．
+$\Bin(10,0.5)$ の累積確率 $\Prob(W\le y)$ は $y=5,6,7,8$ でそれぞれ $0.623,0.828,0.945,0.989$ である．
+\begin{enumerate}[label=(\arabic*)]
+\item 有望と判定される最小の有効数を求めよ．
+\item 真の有効率が0.5のとき，有望と判定される確率を求めよ（$\Bin(9,0.5)$ で $\Prob(Y\ge7)=0.0898$）．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[Gamma--Poisson と事後予測]\label{reidai:17-3}
+ある病棟の院内感染の率 $\theta$（1000患者日あたり）に，過去の情報から事前分布 $\Ga(2,4)$（形状2・率4，密度 $\propto\theta e^{-4\theta}$）を置く．
+今年は16（千患者日）で10件の感染があった．件数は $\theta$ を与えて $\Po(16\theta)$ に従うとする．
+\begin{enumerate}[label=(\arabic*)]
+\item 事前平均，MLE，事後分布と事後平均を求め，事後平均を MLE と事前平均の重み付き平均で表せ．
+\item 来月（5千患者日）の感染件数 $\tilde Y$ の事後予測分布を求め，その期待値と分散を求めよ．同じ期待値のポアソン分布の分散と比べよ．
+\item $\Prob(\tilde Y=0\mid y)$ と $\Prob(\tilde Y=1\mid y)$ を求めよ（$0.8^{12}=0.0687$）．
+\item 事前分布の「4」を尺度と取り違えて密度 $\propto\theta e^{-\theta/4}$ とすると，事後平均はいくらになるか．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:17-sol}
+\begin{kaitou}{reidai:17-1}
+(1) 事前平均 $2/10=0.2$．事後 $\Be(2+7,\,8+13)=\Be(9,21)$，平均 $9/30=0.30$，モード $8/28=0.286$．\\
+(2) $0.30=\frac{20}{30}\times0.35+\frac{10}{30}\times0.2$（事前の仮想標本10人，データ20人，MLE $7/20=0.35$）．\\
+(3)（任意）$\Prob(\tilde Y=0\mid y)=\E[(1-\pi)^2\mid y]=\frac{21}{30}\cdot\frac{22}{31}=\frac{462}{930}=0.497$，
+$\Prob(\tilde Y=2\mid y)=\E[\pi^2\mid y]=\frac{9}{30}\cdot\frac{10}{31}=\frac{90}{930}=0.097$，
+$\Prob(\tilde Y=1\mid y)=2\E[\pi(1-\pi)\mid y]=2\cdot\frac{9\cdot21}{30\cdot31}=\frac{378}{930}=0.406$．
+（$\Be(\alpha,\beta)$ で $\E[\pi^2]=\frac{\alpha(\alpha+1)}{(\alpha+\beta)(\alpha+\beta+1)}$ など．）
+\end{kaitou}
+
+\begin{kaitou}{reidai:17-2}
+(1) \cref{prop:17-betatail}より $\Prob(\pi>0.5\mid y)=\Prob(W\le y)$，$W\sim\Bin(10,0.5)$．$\ge0.9$ となる最小の $y$ は7（$0.945$）．\\
+(2) $\Prob(Y\ge7\mid\pi=0.5)=0.0898$．この Bayes 判定の「第1種の過誤確率」は約9\%である．
+\end{kaitou}
+
+\begin{kaitou}{reidai:17-3}
+(1) 事前平均 $2/4=0.5$，MLE $10/16=0.625$．事後 $\Ga(2+10,\,4+16)=\Ga(12,20)$，事後平均 $12/20=0.60$．
+$0.60=\frac{16}{20}\times0.625+\frac{4}{20}\times0.5=0.50+0.10$（データ16千患者日，事前の仮想的な観察4千患者日）．\\
+(2) \cref{thm:17-gammapois}で $a=12$，$b=20$，$T'=5$，$p=20/25=0.8$．$\tilde Y\mid y\sim\NB(12,0.8)$：
+$\Prob(\tilde Y=k\mid y)=\frac{\Gamma(12+k)}{\Gamma(12)k!}0.8^{12}0.2^k$．
+期待値 $5\times12/20=3$，分散 $3+25\times12/400=3+0.75=3.75$．平均3のポアソン分布の分散3より大きく，差の0.75は $\theta$ の不確かさによる．\\
+(3) $\Prob(\tilde Y=0)=0.8^{12}=0.0687$，$\Prob(\tilde Y=1)=12\times0.8^{12}\times0.2=0.165$．
+（$0.8^{12}$ は $0.8^2=0.64$，$0.64^2=0.4096$，$0.4096^2=0.1678$，$0.1678\times0.4096=0.0687$ と四則演算で求まる．）\\
+(4) 尺度4は率 $1/4$ にあたり，事前 $\Ga(2,0.25)$（事前平均8）．事後 $\Ga(12,\,16.25)$，事後平均 $12/16.25=0.738$．
+正しい $0.60$ と大きく異なる．事前平均が $0.5$ から $8$ に変わり，事前の重みも小さくなるためである．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 事後 $\propto$ 尤度 $\times$ 事前．事前予測分布 $p(y)=\int p(y\mid\theta)p(\theta)\dd\theta$，事後予測分布 $p(\tilde y\mid y)=\int p(\tilde y\mid\theta)p(\theta\mid y)\dd\theta$．
+\item Beta--Binomial：$\Be(a+y,b+n-y)$，事後平均は MLE と事前平均の重み付き平均（重み $n$ と $a+b$）．
+\item 一様事前：事後 $\Be(y+1,n-y+1)$，モード $y/n$，平均 $(y+1)/(n+2)$，$Y$ の周辺分布は離散一様 $1/(n+1)$．
+\item 事後確率による判定：$\Prob(\pi>p\mid y)=\Prob(\Bin(n+1,p)\le y)$．
+\item 正規--正規：事後平均は精度で重み付けた平均．
+\item ポアソン率：$Y\sim\Po(\lambda T)$ で $\hat\lambda=Y/T$，$\V[\log\hat\lambda]\approx1/Y$．
+\item Gamma--Poisson：$\Ga(\alpha,\beta)$（形状・率）事前で事後 $\Ga(\alpha+y,\beta+T)$，事後予測は $\NB(a,\,b/(b+T'))$，分散 $T'a/b+T'^2a/b^2$．ガンマ混合ポアソン＝負の二項＝過分散．
+\end{itemize}
+\end{summarybox}

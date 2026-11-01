@@ -1,0 +1,436 @@
+\chapter{生存時間解析の基礎}\label{ch:09}
+
+\begin{goalbox}
+\begin{itemize}
+\item 生存関数・密度・ハザード・累積ハザードの関係 $h=f/S$，$H=-\log S$，$S=e^{-H}$，$f=hS$ を使える．
+\item $H(T)\sim\Ex(1)$ を示し，乱数生成に使える．
+\item 打ち切りの種類と「独立な打ち切り」の仮定を説明できる．
+\item リスク集合を数え，Kaplan--Meier 推定値の表を作成し，生存曲線を描き，中央生存時間を読み取れる．
+\item ログランク検定の $O-E$ と分散を時点ごとの $2\times2$ 表から導出し，手計算できる．
+\item Nelson--Aalen 推定量を計算して KM との大小を示し，境界内平均生存時間（RMST）を定義・計算・解釈できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2016}{3}：2群各5例の KM 曲線，ログランク検定のスコア $u=\sum(d_t-n_{1t}/n_t)$ と分散 $v=\sum\frac{n_{1t}}{n_t}\frac{n_t-n_{1t}}{n_t}$ から $\chi^2=5.62$，$P=0.018$．
+\item \kakomon{2017}{1}〔1〕〜〔3〕：$\lambda=f/S$，$\Lambda=-\log S$，$\Prob(\Lambda(T)>t)=e^{-t}$ の証明．〔6〕：乱数生成．
+\item \kakomon{2019}{1}〔1〕：5例の KM 推定値の表と曲線．〔2〕Nelson--Aalen 型推定値が KM 以上であることの証明（式は与えられる：\cref{sec:09-na}），〔3〕〜〔5〕境界内平均生存時間（RMST）の定義・分散・指数モデルでの推定（\cref{sec:09-rmst}）．
+\item \kakomon{2021}{1}〔1〕〔2〕：$f=\lambda S$，8例の KM から $1-\hat S(t)$ のグラフ（競合リスクとの比較は\cref{sec:10-compete}）．
+\item \kakomon{2022}{1}〔2〕：$S_0(t)=\exp(-\int_0^t\lambda_0)$．
+\end{itemize}
+Cox モデル・指数モデル・競合リスクは\cref{ch:10}で扱う．
+\end{exambox}
+
+\flowline{時間＋打ち切り\\$(Y_i,\delta_i)$}{$S(t)$・中央値\\群間差}{KM\\ログランク}{独立打ち切り}{リスク集合\\$O-E$・分散}{生存曲線\\の比較}
+
+\section{問題設定}\label{sec:09-setting}
+被験者 $i$ のイベント（死亡・再発など）までの時間を $T_i$，打ち切り時間を $C_i$ とすると，観測されるのは
+\[
+Y_i=\min(T_i,C_i),\qquad \delta_i=\ind(T_i\le C_i)\quad(1\text{：イベント},\ 0\text{：打ち切り})
+\]
+である．打ち切りのある観測 $(Y_i,\delta_i=0)$ は「$T_i>Y_i$」という情報しか与えない．
+打ち切りを除外したり，打ち切り時点をイベント時点とみなしたりすると偏った推定になる．
+
+\begin{warnbox}[打ち切り指示変数の向きに注意]
+過去問では年度によって指示変数の向きが逆である．
+\kakomon{2016}{3}，\kakomon{2019}{1} は「1：打ち切り，0：イベント」，\kakomon{2018}{1}，\kakomon{2021}{1} は「0：打ち切り，1：イベント」．
+表を読む前に必ず確認すること．
+\end{warnbox}
+
+\section{生存時間の分布を表す関数}\label{sec:09-functions}
+\Hissu
+\begin{teigi}[生存関数・ハザード関数]\label{def:09-hazard}
+$T\ge0$ を連続な確率変数，分布関数 $F$，密度 $f$ とする．
+\begin{align*}
+S(t)&=\Prob(T>t)=1-F(t)\quad\text{（生存関数）},\\
+h(t)&=\lim_{\Delta\to0}\frac{\Prob(t\le T<t+\Delta\mid T\ge t)}{\Delta}\quad\text{（ハザード関数）},\\
+H(t)&=\int_0^th(u)\,\dd u\quad\text{（累積ハザード関数）}.
+\end{align*}
+\end{teigi}
+ハザードは「時点 $t$ まで生存した人が，次の瞬間にイベントを起こす率」であり，確率ではない（1を超えうる．単位は時間$^{-1}$）．
+
+\begin{teiri}[基本関係式]\label[teiri]{thm:09-relations}
+\begin{equation}
+h(t)=\frac{f(t)}{S(t)}=-\frac{\dd}{\dd t}\log S(t),\qquad H(t)=-\log S(t),\qquad S(t)=e^{-H(t)},\qquad f(t)=h(t)S(t).\label{eq:09-relations}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$\{t\le T<t+\Delta\}\subset\{T\ge t\}$ より $h(t)=\lim\frac{F(t+\Delta)-F(t)}{\Delta\,S(t)}=\frac{f(t)}{S(t)}$．
+$f=-S'$ なので $h=-(\log S)'$ で，$S(0)=1$ から $H(t)=-\log S(t)$．残りはこれを書き直したもの．
+\end{proof}
+
+\begin{meidai}[$H(T)$ は標準指数分布（\kakomon{2017}{1}〔3〕）]\label[meidai]{prop:09-HT}
+$T$ が連続なら $\Prob(H(T)>t)=e^{-t}$，すなわち $H(T)\sim\Ex(1)$．
+\end{meidai}
+\begin{proof}
+確率積分変換より $F(T)\sim\Unif(0,1)$．
+$\Prob(H(T)>t)=\Prob(S(T)<e^{-t})=\Prob(F(T)>1-e^{-t})=e^{-t}$．
+\end{proof}
+\paragraph{乱数生成への応用}
+$V\sim\Unif(0,1)$ なら $-\log V\sim\Ex(1)$ なので，$T=H^{-1}(-\log V)$ は累積ハザード $H$ をもつ．
+たとえば $h(t)=\frac32\sqrt t\,e^{z/2}$（\kakomon{2017}{1}〔6〕）なら $H(t)=t^{3/2}e^{z/2}$ より $T=\{-e^{-z/2}\log V\}^{2/3}$．
+
+\subsection{代表的なパラメトリック分布}\label{subsec:09-param}
+\begin{table}[htbp]
+\centering\small
+\caption{代表的な生存時間分布}\label{tab:09-dist}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+分布 & $h(t)$ & $H(t)$ & $S(t)$ & 特徴\\
+\midrule
+指数 $\Ex(\lambda)$ & $\lambda$ & $\lambda t$ & $e^{-\lambda t}$ & ハザード一定，無記憶性，平均 $1/\lambda$\\
+Weibull & $\alpha\gamma(\gamma t)^{\alpha-1}$ & $(\gamma t)^{\alpha}$ & $e^{-(\gamma t)^\alpha}$ & $\alpha>1$ 増加，$\alpha<1$ 減少\\
+\bottomrule
+\end{tabular}
+\end{table}
+中央生存時間 $t_{0.5}$ は $S(t_{0.5})=0.5$ の解で，指数分布なら $t_{0.5}=\log2/\lambda$．
+平均生存時間は $\E[T]=\int_0^\infty S(t)\,\dd t$（生存曲線下の面積）．
+
+\section{打ち切り}\label{sec:09-censor}
+\begin{itemize}
+\item \textbf{右側打ち切り}：イベントが観察終了時点より後に起こることだけがわかる．試験終了による管理的打ち切り，転居などによる追跡不能がある．
+\item \textbf{独立（無情報）な打ち切り}：打ち切られた人のその後のハザードが，同じ時点でリスク集合に残っている人と同じであること．
+      「状態が悪化したから来院しなくなった」といった打ち切りは，この仮定を破る．
+\end{itemize}
+本章と\cref{ch:10}の方法（KM，ログランク，Cox，指数モデル）はすべて独立な打ち切りを仮定する．
+他因死などの競合するイベントは打ち切りではない（\cref{sec:10-compete}）．
+
+\section{Kaplan--Meier 推定量}\label{sec:09-km}
+\Hissu\Hinshutsu
+\subsection{定義}
+相異なるイベント時点を $t_{(1)}<\dots<t_{(r)}$ とし，
+$n_j$ を時点 $t_{(j)}$ の直前にイベントも打ち切りも起きていない人数（\emphx{リスク集合}の大きさ），$d_j$ を $t_{(j)}$ のイベント数とする．
+\begin{teigi}[Kaplan--Meier 推定量]\label{def:09-km}
+\begin{equation}
+\hat S(t)=\prod_{j:\,t_{(j)}\le t}\Bigl(1-\frac{d_j}{n_j}\Bigr).\label{eq:09-km}
+\end{equation}
+\end{teigi}
+$t_{(j)}\le t<t_{(j+1)}$ なら $S(t)=\prod_{k\le j}\Prob(T>t_{(k)}\mid T\ge t_{(k)})$ と条件付き確率の積に分解でき（イベントのない区間では生存確率は減らない），
+各因子を「時点 $t_{(k)}$ のリスク集合 $n_k$ 人のうち生き残った割合」$1-d_k/n_k$ で推定したものが\cref{eq:09-km}である．
+打ち切られた人は打ち切り時点まではリスク集合に含まれ，その後の分母から外れる．
+
+\subsection{表の作り方（手順）}
+\begin{enumerate}
+\item 観察時間を昇順に並べる．同じ時点にイベントと打ち切りがあるときは，\textbf{イベントが先}（打ち切られた人はその時点のリスク集合に含める）．
+\item 各イベント時点 $t_{(j)}$ で $n_j$（その時点以上の観察時間をもつ人数）と $d_j$ を数える．
+\item $\hat S$ を前の値に $(1-d_j/n_j)$ を掛けて更新する．打ち切り時点では $\hat S$ は変わらず，次の $n$ が1減る．
+\end{enumerate}
+\kakomon{2019}{1} の5例（10，13，$18^+$，19，$23^+$）では，
+$\hat S(10)=4/5=0.8$，$\hat S(13)=0.8\times3/4=0.6$，$\hat S(19)=0.6\times1/2=0.3$．
+最長の観察が打ち切り（$23^+$）なので曲線は0に到達しない．
+
+\subsection{曲線と中央生存時間}
+KM 曲線は右連続な階段関数で，イベント時点でのみ下がる．打ち切り時点は曲線上に目印（$+$）を付けることが多い．
+中央生存時間の推定値は $\hat S(t)\le0.5$ となる最小の $t$ である．曲線が0.5まで下がらなければ中央値は推定できない．
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=90mm,height=55mm,xmin=0,xmax=16,ymin=0,ymax=1.05,
+  xlabel={時間（週）},ylabel={$\hat S(t)$},xtick={0,3,6,10,15},ytick={0,0.25,0.5,0.75,1},
+  grid=major,grid style={gray!20},tick label style={font=\scriptsize}]
+\addplot[very thick,bkblue,const plot] coordinates {(0,1)(3,0.875)(6,0.5833)(10,0.3889)(15,0)(16,0)};
+\addplot[only marks,mark=+,mark size=3pt,thick,bkorange] coordinates {(5,0.875)(8,0.5833)(12,0.3889)};
+\addplot[dashed,gray] coordinates {(0,0.5)(16,0.5)};
+\end{axis}
+\end{tikzpicture}
+\caption{\cref{reidai:09-2}の KM 曲線（$+$ は打ち切り）．中央生存時間は10週．}\label{fig:09-km}
+\end{figure}
+
+\subsection{Greenwood の分散公式}\label{subsec:09-greenwood}
+\begin{pointbox}[Greenwood の近似公式（デルタ法による漸近近似）]
+\begin{equation}
+\widehat\V[\hat S(t)]\approx\hat S(t)^2\sum_{j:\,t_{(j)}\le t}\frac{d_j}{n_j(n_j-d_j)}.\label{eq:09-greenwood}
+\end{equation}
+\end{pointbox}
+これは厳密な分散ではなく，次の2つの近似を重ねたものである．
+$\hat p_j=1-d_j/n_j$ とすると $\log\hat S(t)=\sum_j\log\hat p_j$ で，$n_j$ を与えると $n_j-d_j\sim\Bin(n_j,p_j)$．
+\begin{enumerate}
+\item \textbf{近似1}：異なる時点の $\hat p_j$ を（条件付きで）無相関とみなし，$\V[\log\hat S]\approx\sum_j\V[\log\hat p_j]$ とする．
+\item \textbf{近似2}：デルタ法で $\V[\log\hat p_j]\approx\V[\hat p_j]/p_j^2=(1-p_j)/(n_jp_j)$ とし，$p_j$ に $\hat p_j$ を代入して $d_j/\{n_j(n_j-d_j)\}$．
+      最後に $g(x)=e^x$ のデルタ法で $\V[\hat S]\approx\hat S^2\V[\log\hat S]$．
+\end{enumerate}
+\kakomon{2016}{3} の解答の「標準偏差」欄はこの公式による（試験で公式自体を問われたことはない）．
+最後のイベントでリスク集合が尽きる（$n_j=d_j$）と公式は定義できない．
+
+\section{ログランク検定}\label{sec:09-logrank}
+\Hissu\Hinshutsu
+\subsection{導出}
+2群の生存関数の同一性 $H_0:S_1(t)=S_0(t)$（すべての $t$）を検定する．
+各イベント時点 $t_{(j)}$ で，リスク集合を群×（イベントあり／なし）の $2\times2$ 表にまとめる．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+時点 $t_{(j)}$ & イベント & イベントなし & リスク集合\\
+\midrule
+群1 & $d_{1j}$ & $n_{1j}-d_{1j}$ & $n_{1j}$\\
+群0 & $d_{0j}$ & $n_{0j}-d_{0j}$ & $n_{0j}$\\
+\midrule
+計 & $d_j$ & $n_j-d_j$ & $n_j$\\
+\bottomrule
+\end{tabular}
+\end{center}
+$H_0$ の下で周辺度数を固定すると，$d_{1j}$ は超幾何分布に従い
+\begin{equation}
+E_{1j}=\E[d_{1j}]=d_j\frac{n_{1j}}{n_j},\qquad V_j=\V[d_{1j}]=\frac{d_j\,n_{1j}\,n_{0j}\,(n_j-d_j)}{n_j^2(n_j-1)}.\label{eq:09-lrmoments}
+\end{equation}
+\begin{teiri}[ログランク検定]\label[teiri]{thm:09-logrank}
+\begin{equation}
+U=\sum_j(d_{1j}-E_{1j})=O_1-E_1,\qquad V=\sum_jV_j,\qquad \chi^2_{\mathrm{LR}}=\frac{U^2}{V}\ \xrightarrow{d}\ \chi^2_1\quad(H_0\text{ の下，漸近的に}).\label{eq:09-logrank}
+\end{equation}
+\end{teiri}
+時点ごとの表を層とみなした層別 Cochran（CMH）検定（\cref{sec:04-mh}）と同じ形の統計量である．
+ただし層別の $2\times2$ 表と違い，時点ごとの表は独立ではない（前の時点のイベントが後のリスク集合を決める）．それでも分散が足し合わせられる理由は次のとおり．
+\paragraph{分散を足せる理由}
+$\mathcal F_{j-1}$ を，時点 $t_{(j)}$ の直前までの情報（したがって $n_{1j},n_{0j}$ を含む）にその時点の総イベント数 $d_j$ を加えたものとする．
+$H_0$ の下で $\E[d_{1j}-E_{1j}\mid\mathcal F_{j-1}]=0$，$\V[d_{1j}\mid\mathcal F_{j-1}]=V_j$ であり，$i<j$ なら $d_{1i}-E_{1i}$ は $\mathcal F_{j-1}$ で定まるので，反復期待値により
+\[
+\E[(d_{1i}-E_{1i})(d_{1j}-E_{1j})]=\E\bigl[(d_{1i}-E_{1i})\,\E[d_{1j}-E_{1j}\mid\mathcal F_{j-1}]\bigr]=0 .
+\]
+よって時点間の共分散は0で，$\V[U]=\sum_j\V[d_{1j}-E_{1j}]=\sum_j\E[V_j]$（条件付き平均が0なので分散は条件付き分散の期待値）．
+$V=\sum_jV_j$ はその推定量である．（このような「過去を条件とした平均が0」の和をマルチンゲールという．$\chi^2_1$ への収束はマルチンゲールの中心極限定理による．証明は略．）
+
+\paragraph{各時点のイベント数が1の場合}
+$d_j=1$ なら $V_j=\frac{n_{1j}n_{0j}}{n_j^2}=\frac{n_{1j}}{n_j}\Bigl(1-\frac{n_{1j}}{n_j}\Bigr)$ で，
+「確率 $n_{1j}/n_j$ の Bernoulli 分布の分散」である（\kakomon{2016}{3}〔2〕の説明のとおり）．
+\kakomon{2016}{3} では群1について $U=-2.3222$，$V=0.9591$，$\chi^2=5.62$，$\sqrt{5.62}=2.37$ から両側 $P=0.018$ となる．
+
+\subsection{性質}
+\begin{itemize}
+\item ログランク検定は Cox 比例ハザードモデルの $H_0:\beta=0$ のスコア検定と一致する（同順位がなければ厳密に；\cref{prop:10-score}）．
+      したがって\textbf{比例ハザード型の局所対立仮説（HR が1に近い）の下で効率的}（局所的に最も検出力が高い）である．
+\item 生存曲線が交差する（ハザード比が途中で逆転する）と，前半と後半の $O-E$ が打ち消し合い検出力を失う．
+\item 両群の $O-E$ の和は0（$\sum_j(d_j-d_j)=0$）なので，どちらの群で計算しても $\chi^2$ は同じ．
+\end{itemize}
+
+\section{Nelson--Aalen 推定量}\label{sec:09-na}
+\kakomon{2019}{1}〔2〕では，推定量の式が与えられ，それが KM 推定値以上であることの証明が問われた．
+\begin{teigi}[Nelson--Aalen 推定量]\label{def:09-na}
+累積ハザードの推定量と，それによる生存関数の推定量を
+\begin{equation}
+\tilde H(t)=\sum_{j:\,t_{(j)}\le t}\frac{d_j}{n_j},\qquad \tilde S(t)=\exp\{-\tilde H(t)\}=\prod_{j:\,t_{(j)}\le t}\exp\Bigl(-\frac{d_j}{n_j}\Bigr)\label{eq:09-na}
+\end{equation}
+とする（記号は\cref{def:09-km}と同じ）．
+\end{teigi}
+\paragraph{考え方}
+時点 $t_{(j)}$ でリスク集合 $n_j$ 人のうち $d_j$ 人にイベントが起きたので，$d_j/n_j$ はその時点のハザードの増分（離散ハザード）の推定値である．
+累積ハザードはその和で推定し（$H(t)=\int_0^th$ の離散版），関係 $S=e^{-H}$（\cref{thm:09-relations}）で生存関数に変換したものが $\tilde S$ である．
+一方，KM は同じ離散ハザード $d_j/n_j$ から $S=\prod(1-\text{離散ハザード})$ という離散時間の関係で生存関数を作る．
+\begin{meidai}[$\tilde S\ge\hat S$（\kakomon{2019}{1}〔2〕）]\label[meidai]{prop:09-na}
+任意の $t$ で $\tilde S(t)\ge\hat S(t)$．
+\end{meidai}
+\begin{proof}
+すべての実数 $x$ で $e^{-x}\ge1-x$ である（$g(x)=e^{-x}-(1-x)$ は $g(0)=0$，$g'(x)=1-e^{-x}$ が $x<0$ で負，$x>0$ で正なので $x=0$ で最小）．
+$0\le d_j/n_j\le1$ なので各因子で $\exp(-d_j/n_j)\ge1-d_j/n_j\ge0$．非負の数の積なので，各因子の大小がそのまま積の大小になり $\tilde S(t)\ge\hat S(t)$．
+\end{proof}
+$d_j/n_j$ が小さい（リスク集合が大きい）ときは $e^{-x}\approx1-x$ で両者はほぼ一致し，差は右端（$n_j$ が小さい）で大きくなる．
+最後のイベントで $d_j=n_j$ なら KM は0になるが，$\tilde S$ は $e^{-1}$ 倍になるだけで0にならない．
+\paragraph{分散}
+$n_j$ を与えると $d_j$ はおよそ平均 $n_jh_j$ の二項（稀なら Poisson）分布に従うので，$\V[d_j/n_j]\approx d_j/n_j^2$ で推定し，時点間の和
+$\widehat\V[\tilde H(t)]=\sum_{t_{(j)}\le t}d_j/n_j^2$ を用いることが多い（デルタ法で $\V[\tilde S]\approx\tilde S^2\,\V[\tilde H]$）．
+
+\section{境界内平均生存時間（RMST）}\label{sec:09-rmst}
+\Hinshutsu
+最長の観察が打ち切りだと KM 曲線は0に到達せず，平均生存時間 $\E[T]=\int_0^\infty S(t)\dd t$ は推定できない．
+また中央生存時間は曲線が0.5まで下がらなければ推定できない．そこで，あらかじめ決めた時間 $\tau$ までの平均を用いる（\kakomon{2019}{1}〔3〕〜〔5〕）．
+\begin{teigi}[境界内平均生存時間]\label{def:09-rmst}
+$X(\tau)=\min(T,\tau)$ とし，$\mathrm{RMST}(\tau)=\E[X(\tau)]$ を境界内平均生存時間（restricted mean survival time）という．
+\end{teigi}
+\begin{meidai}[生存曲線下面積としての表現]\label[meidai]{prop:09-rmst}
+\begin{equation}
+\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,\dd t,\qquad \E[X(\tau)^2]=\int_0^\tau2t\,S(t)\,\dd t .\label{eq:09-rmst}
+\end{equation}
+指数分布 $S(t)=e^{-\lambda t}$ なら
+\begin{equation}
+\mathrm{RMST}(\tau)=\frac{1-e^{-\lambda\tau}}{\lambda},\qquad
+\V[X(\tau)]=\frac{2\{1-e^{-\lambda\tau}(1+\lambda\tau)\}}{\lambda^2}-\Bigl(\frac{1-e^{-\lambda\tau}}{\lambda}\Bigr)^2 .\label{eq:09-rmstexp}
+\end{equation}
+\end{meidai}
+\begin{proof}
+$X(\tau)=\int_0^\tau\ind\{T>t\}\dd t$（$T\ge\tau$ なら $\tau$，$T<\tau$ なら $T$）．期待値と積分を交換して（被積分関数は非負）$\E[X(\tau)]=\int_0^\tau\Prob(T>t)\dd t$．
+同様に $X(\tau)^2=\int_0^\tau2t\,\ind\{X(\tau)>t\}\dd t$ で，$0\le t<\tau$ では $\{X(\tau)>t\}=\{T>t\}$ なので第2式．
+指数分布では $\int_0^\tau e^{-\lambda t}\dd t=(1-e^{-\lambda\tau})/\lambda$，部分積分で
+$\int_0^\tau2te^{-\lambda t}\dd t=\bigl[-\frac{2t}{\lambda}e^{-\lambda t}\bigr]_0^\tau+\frac2\lambda\int_0^\tau e^{-\lambda t}\dd t=-\frac{2\tau}{\lambda}e^{-\lambda\tau}+\frac{2(1-e^{-\lambda\tau})}{\lambda^2}$
+$=\frac{2\{1-e^{-\lambda\tau}(1+\lambda\tau)\}}{\lambda^2}$．
+\end{proof}
+\paragraph{推定}
+\begin{itemize}
+\item ノンパラメトリック：KM 曲線の $[0,\tau]$ の下の面積（階段関数なので長方形の和）．$\tau$ は最長の観察時間以下に選ぶ．
+\item パラメトリック：指数モデルの MLE $\hat\lambda=d/W$（\cref{prop:10-expmle}）を\cref{eq:09-rmstexp}に代入する．
+      \kakomon{2019}{1}〔5〕では $\hat\lambda=3/83=0.0361$，$\tau=20$ で $\widehat{\mathrm{RMST}}=14.24$，$\widehat\V[X(\tau)]=48.0$（本書で検算）．
+\end{itemize}
+\paragraph{解釈}
+2群の RMST の差は「$\tau$ までの期間で，平均して何か月長く生存するか」であり，比例ハザードを仮定しない．
+HR が時間とともに変わる場合や，曲線が交差する場合にも定義でき，絶対的な時間の単位で示せる点が臨床的に解釈しやすい．
+ただし値は $\tau$ の選び方に依存するので，$\tau$ は事前に決める．
+$\V[X(\tau)]$ は個人の $X(\tau)$ のばらつきであって，推定量 $\widehat{\mathrm{RMST}}$ の分散ではない（$n$ 人の標本平均なら $\V[X(\tau)]/n$ が目安）．
+
+\section{仮定}\label{sec:09-assump}
+\begin{itemize}
+\item 独立（無情報）な打ち切り．打ち切りが予後と関連すると KM は偏る．
+\item 被験者の独立性．
+\item 登録時期によって生存の分布が変わらないこと（登録が長期に及ぶ場合）．
+\item ログランク検定の最適性は比例ハザードを前提とする（検定の妥当性自体は $H_0$ の下で保たれる）．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:09-interp}
+\begin{itemize}
+\item KM 曲線は右端ほどリスク集合が小さく不安定である．リスク集合の人数を併記するのが望ましい．
+\item 「5年生存率 $\hat S(5)$」と中央生存時間は KM から直接読める要約であり，比較にはログランク検定や HR を用いる．
+\item ログランク検定が有意でも差の大きさはわからない．HR（\cref{ch:10}）で大きさを示す．
+\end{itemize}
+
+\section{手法選択}\label{sec:09-choice}
+\begin{itemize}
+\item 生存曲線の推定・中央生存時間 → KM．
+\item 2群の比較 → ログランク検定（比例ハザード型の差に強い）．
+\item 共変量の調整・効果の大きさ → Cox 回帰．ハザード一定が妥当なら指数モデル（\cref{ch:10}）．
+\item 他因死などの競合イベントがある → 競合リスクの考え方（\cref{sec:10-compete}）．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:09-err}
+\begin{warnbox}
+\begin{itemize}
+\item 打ち切り例を分母から最初から除く，または打ち切り時点で死亡とみなす．
+\item 同じ時点の打ち切りをイベントより先に処理してリスク集合を1減らす．
+\item 打ち切り時点で KM 曲線を下げる．
+\item ログランクの分散を $\sum E_{1j}$（ポアソン近似）で代用し，出題の指示（二項分散・超幾何分散）と異なる計算をする．
+\item 生存曲線が交差しているのに，ログランク検定の非有意を「差がない」根拠とする．
+\item ハザードを「確率」と説明する．
+\item 最長の観察が打ち切りなのに，KM 曲線の下の全面積を平均生存時間とする（RMST は $\tau$ までの面積）．
+\item RMST を KM の値の和（時点の幅を掛けない）で計算する．$\V[X(\tau)]$ を推定量の分散と取り違える．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:09-link}
+\begin{linkbox}
+\begin{itemize}
+\item ハザード関数と $F(x)=1-\exp\{-\int_0^x\lambda\}$ は『現代数理統計学の基礎』式(3.24)(3.25)，Weibull 分布は式(3.26)
+      （同書は $f=abx^{b-1}e^{-ax^b}$ と書き，$a$ は累積ハザードの係数）．打ち切り・KM・ログランクは同書の範囲外である．
+\item $E[X]=\int_0^\infty\{1-F(x)\}\dd x$（同書第2章演習，\kakomonSM{2024}{4}）は平均生存時間＝生存曲線下面積の根拠．
+\item 確率積分変換（同書 命題2.19）が $H(T)\sim\Ex(1)$ の証明の要．\kakomonSM{2021}{1} は $h(x)=1-e^{-x}$ による $\Ex(1)$ と $\Unif(0,1)$ の対応を扱った．
+\item 最小値のハザードは各ハザードの和（同書第5章演習）：競合リスク（\cref{sec:10-compete}）で $\lambda=\sum\lambda_j$ となる理由．
+\item Greenwood の公式は，二項比率の対数のデルタ法（同書第5章演習）を時点ごとに足し合わせた近似である．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:09-ex}
+\begin{reidai}[関数の関係]\label{reidai:09-1}
+ハザード関数が $h(t)=2t/\theta^2$ $(t\ge0,\ \theta>0)$ の生存時間 $T$ について，
+$H(t)$，$S(t)$，$f(t)$，中央生存時間を求めよ．また $\Unif(0,1)$ 乱数 $V$ から $T$ を生成する式を示せ．
+\end{reidai}
+
+\begin{reidai}[KM 推定と中央生存時間]\label{reidai:09-2}
+8例の観察時間（週，$+$ は打ち切り）が $3,\ 5^+,\ 6,\ 6,\ 8^+,\ 10,\ 12^+,\ 15$ であった．
+\begin{enumerate}[label=(\arabic*)]
+\item KM 推定値の表（$t_{(j)},n_j,d_j,\hat S$）を作れ．
+\item 中央生存時間を求めよ．
+\item （任意）$t=10$ における $\hat S(10)$ の標準誤差を，Greenwood の近似分散公式（\cref{eq:09-greenwood}，デルタ法による漸近近似）で求めよ（$\sqrt{0.04051}=0.2013$）．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[ログランク検定の手計算]\label{reidai:09-3}
+群A：$2,\ 4,\ 5^+,\ 7,\ 9^+$，群B：$6,\ 8,\ 10^+,\ 12,\ 14^+$（月）．
+\begin{enumerate}[label=(\arabic*)]
+\item 各イベント時点のリスク集合と群Aの期待イベント数，分散（\cref{eq:09-lrmoments}）を表にせよ．
+\item ログランク統計量を求め，有意水準5\%で検定せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[Nelson--Aalen 推定と RMST]\label{reidai:09-4}
+\cref{reidai:09-2}のデータ（$3,\ 5^+,\ 6,\ 6,\ 8^+,\ 10,\ 12^+,\ 15$ 週）を用いる．
+\begin{enumerate}[label=(\arabic*)]
+\item Nelson--Aalen 推定値 $\tilde H(t)$，$\tilde S(t)$ の表を作り，KM と比べよ．$\tilde H(10)$ の分散の推定値も求めよ
+（$e^{-0.125}=0.883$，$e^{-0.458}=0.632$，$e^{-0.792}=0.453$，$e^{-1.792}=0.167$）．
+\item KM 推定値から $\tau=12$ 週の RMST を求めよ．
+\item 指数モデルを当てはめて $\tau=12$ 週の RMST を求め，(2) と比べよ（$e^{-0.923}=0.397$）．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:09-sol}
+\begin{kaitou}{reidai:09-1}
+$H(t)=\int_0^t2u/\theta^2\,\dd u=t^2/\theta^2$，$S(t)=e^{-t^2/\theta^2}$，$f(t)=hS=\frac{2t}{\theta^2}e^{-t^2/\theta^2}$（Weibull，形状2）．
+中央値：$t^2/\theta^2=\log2$ より $t_{0.5}=\theta\sqrt{\log2}$．
+$H(T)\sim\Ex(1)$ と $-\log V\sim\Ex(1)$ より $T^2/\theta^2=-\log V$，$T=\theta\sqrt{-\log V}$．
+\end{kaitou}
+
+\begin{kaitou}{reidai:09-2}
+(1)
+\begin{center}\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$t_{(j)}$ & $n_j$ & $d_j$ & $1-d_j/n_j$ & $\hat S$\\
+\midrule
+3 & 8 & 1 & 7/8 & 0.875\\
+6 & 6 & 2 & 4/6 & 0.583\\
+10 & 3 & 1 & 2/3 & 0.389\\
+15 & 1 & 1 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+（5週と8週の打ち切りでリスク集合が1ずつ減る．12週の打ち切りの後，15週のリスク集合は1人．）\\
+(2) $\hat S(t)\le0.5$ となる最小の $t$ は10週（\cref{fig:09-km}）．\\
+(3)（任意）$\sum d_j/\{n_j(n_j-d_j)\}=\frac{1}{8\cdot7}+\frac{2}{6\cdot4}+\frac{1}{3\cdot2}=0.0179+0.0833+0.1667=0.2679$．
+$\widehat\V\approx0.389^2\times0.2679=0.0405$，$\SE\approx0.201$．
+Greenwood の公式はデルタ法による漸近的な近似分散であり厳密な分散ではないので，8例程度の小標本ではこの SE は目安にすぎない．
+\end{kaitou}
+
+\begin{kaitou}{reidai:09-3}
+(1)
+\begin{center}\small
+\begin{tabular}{@{}cccccccc@{}}
+\toprule
+時点 & $n_{Aj}$ & $n_{Bj}$ & $n_j$ & $d_{Aj}$ & $d_j$ & $E_{Aj}=n_{Aj}/n_j$ & $V_j=n_{Aj}n_{Bj}/n_j^2$\\
+\midrule
+2 & 5 & 5 & 10 & 1 & 1 & 0.500 & 0.250\\
+4 & 4 & 5 & 9 & 1 & 1 & 0.444 & 0.247\\
+6 & 2 & 5 & 7 & 0 & 1 & 0.286 & 0.204\\
+7 & 2 & 4 & 6 & 1 & 1 & 0.333 & 0.222\\
+8 & 1 & 4 & 5 & 0 & 1 & 0.200 & 0.160\\
+12 & 0 & 2 & 2 & 0 & 1 & 0 & 0\\
+\midrule
+計 & & & & 3 & & 1.764 & 1.083\\
+\bottomrule
+\end{tabular}
+\end{center}
+（各時点 $d_j=1$ なので $E_{Aj}$，$V_j$ は簡単な形になる．群Aは5月の打ち切り後，6月には2人．）\\
+(2) $U=3-1.764=1.236$，$\chi^2=1.236^2/1.083=1.41<\chi^2_1(0.05)=3.841$ で有意でない（$\chi^2_1$ は漸近分布による近似）．
+群Aは期待より多くのイベントを起こしているが，標本が小さく差があるとは言えない．
+\end{kaitou}
+
+\begin{kaitou}{reidai:09-4}
+(1)
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$t_{(j)}$ & $n_j$ & $d_j$ & $\tilde H$ & $\tilde S=e^{-\tilde H}$ & $\hat S$（KM）\\
+\midrule
+3 & 8 & 1 & $0.125$ & 0.883 & 0.875\\
+6 & 6 & 2 & $0.125+0.333=0.458$ & 0.632 & 0.583\\
+10 & 3 & 1 & $0.458+0.333=0.792$ & 0.453 & 0.389\\
+15 & 1 & 1 & $0.792+1=1.792$ & 0.167 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+すべての時点で $\tilde S\ge\hat S$（\cref{prop:09-na}）．差は右端ほど大きく，15週では KM が0になるのに対し $\tilde S=0.167$．
+$\widehat\V[\tilde H(10)]=\frac1{64}+\frac2{36}+\frac19=0.0156+0.0556+0.1111=0.182$．\\
+(2) KM は階段関数なので長方形の和：$3\times1+3\times0.875+4\times0.583+2\times0.389=3+2.625+2.333+0.778=8.74$ 週．
+12週までの期間で平均8.7週生存（イベントなし）である．\\
+(3) イベント数 $d=5$，総観察時間 $W=3+5+6+6+8+10+12+15=65$，$\hat\lambda=5/65=0.0769$．
+$\widehat{\mathrm{RMST}}(12)=(1-e^{-0.923})/0.0769=(1-0.397)/0.0769=7.84$ 週．
+KM による値（8.74）より小さい．このデータでは前半のイベントが少なく後半に集中しており，ハザード一定の指数モデルは前半の生存を過小評価している．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $h=f/S=-(\log S)'$，$H=-\log S$，$S=e^{-H}$，$f=hS$．$H(T)\sim\Ex(1)$ で乱数生成 $T=H^{-1}(-\log V)$．
+\item 打ち切り指示変数の向きを確認．独立な打ち切りが全手法の前提．競合イベントは打ち切りではない．
+\item KM：$\hat S(t)=\prod_{t_{(j)}\le t}(1-d_j/n_j)$．同時点ではイベントを先に．中央値は $\hat S\le0.5$ の最小時点．
+\item Greenwood（近似）：$\hat S^2\sum d_j/\{n_j(n_j-d_j)\}$．
+\item ログランク：$E_{1j}=d_jn_{1j}/n_j$，$V_j=d_jn_{1j}n_{0j}(n_j-d_j)/\{n_j^2(n_j-1)\}$（$d_j=1$ なら $n_{1j}n_{0j}/n_j^2$），$\chi^2=(O-E)^2/V$．
+      時点間は条件付き平均0の和なので分散は足せる．比例ハザード型の局所対立仮説で効率的．
+\item Nelson--Aalen：$\tilde H=\sum d_j/n_j$，$\tilde S=e^{-\tilde H}\ge\hat S$（$e^{-x}\ge1-x$）．
+\item RMST：$\E[\min(T,\tau)]=\int_0^\tau S$．KM なら長方形の和，指数なら $(1-e^{-\lambda\tau})/\lambda$．比例ハザード不要で時間単位で解釈できる．
+\end{itemize}
+\end{summarybox}

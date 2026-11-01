@@ -1,0 +1,496 @@
+\appendix
+
+% ============================================================
+\chapter{手法選択フローチャート}\label[appendix]{app:A}
+% ============================================================
+アウトカムの型と観測の構造から手法を選ぶための一覧である．
+本書で定義した手法だけを載せている．
+まず\cref{fig:A-flow}で候補を絞り，\cref{tab:A-select}で推定対象と対応する節を確認する．
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+  typ/.style={draw=bkblue,fill=bkblue!8,rounded corners=2pt,font=\small\bfseries,text width=17mm,align=center,minimum height=10mm},
+  lst/.style={draw=bkgray!60,fill=white,rounded corners=2pt,font=\small,text width=132mm,align=left,inner sep=4pt},
+  hd/.style={font=\small\bfseries,text=bkblue},
+  arr/.style={-{Stealth[length=2.2mm]},bkblue,thick}]
+\node[lst,anchor=north west] (cl) at (0,0) {%
+\textbf{独立2群}：正規・等分散 → 2標本 $t$，不等分散 → Welch，非正規・外れ値 → 順位和（Mann--Whitney）\\
+\textbf{対応あり}：正規 → 対応のある $t$，対称 → 符号付き順位，形の仮定なし → 符号検定\\
+\textbf{3群以上}：一元配置分散分析 / Kruskal--Wallis，用量の順序 → 線形対比\\
+\textbf{対数正規（PK）・生物学的同等性} → 対数変換して差の 90\%CI};
+\node[lst,anchor=north west] (bl) at ([yshift=-5mm]cl.south west) {%
+\textbf{独立2群}：$\chi^2$（大標本）/ Fisher（小標本），RD・RR・OR の区間（対数スケールの Wald）\\
+\textbf{対応あり}（前後・ペア・同一患者に2検査）→ McNemar，条件付き OR $n_{12}/n_{21}$\\
+\textbf{層別・交絡} → 層別 Cochran（CMH）検定，OR の均一性 → Woolf の検定，\textbf{多数の共変量} → ロジスティック回帰\\
+\textbf{順序のある $K$ 群} → Cochran--Armitage，\textbf{診断} → 感度・特異度・PPV・NPV・ROC/AUC};
+\node[lst,anchor=north west] (pl) at ([yshift=-5mm]bl.south west) {%
+\textbf{人時間つき件数} → ポアソン率 $\hat\lambda=Y/T$，$\V[\log\hat\lambda]\approx1/Y$\\
+\textbf{小標本の割合＋事前情報} → Beta--Binomial の事後分布・事後確率};
+\node[lst,anchor=north west] (sl) at ([yshift=-5mm]pl.south west) {%
+\textbf{記述} → Kaplan--Meier（分散は Greenwood の近似公式）\\
+\textbf{2群比較} → ログランク検定\\
+\textbf{調整・効果の大きさ} → Cox（HR，部分尤度），ハザード一定 → 指数モデル\\
+\textbf{競合イベント} → 原因別ハザードと累積発生関数で解釈（原因別 Cox と Fine--Gray の係数の違い）};
+\node[lst,anchor=north west] (ml) at ([yshift=-5mm]sl.south west) {%
+\textbf{連続・反復測定} → 線形混合モデル（変量切片＝複合対称），共分散構造は AIC で選択\\
+\textbf{欠測} → MCAR なら完全ケース，MAR なら尤度法（EM アルゴリズム）};
+\foreach \l/\t/\n in {cl/連続/c,bl/2 値/b,pl/{カウント\\・率}/p,sl/生存時間/s,ml/{反復測定\\・欠測}/m}{
+  \node[typ,left=6mm of \l] (\n) {\t};
+  \draw[arr] (\n.east)--(\l.west);}
+\node[hd,anchor=south] at ([yshift=2mm]c.north) {アウトカム};
+\node[hd,anchor=south west] at ([yshift=2mm]cl.north west) {状況 → 手法};
+\end{tikzpicture}
+\caption{アウトカムからの手法選択}\label{fig:A-flow}
+\end{figure}
+\clearpage
+
+\begin{center}\small
+\begin{longtable}{@{}L{36mm}L{30mm}L{52mm}c@{}}
+\caption{データ構造・推定対象・手法の対応}\label{tab:A-select}\\
+\toprule
+データ構造 & 推定対象 & 手法 & 節\\
+\midrule
+\endfirsthead
+\toprule
+データ構造 & 推定対象 & 手法 & 節\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+連続・対応あり & 差の平均・中央値 & 対応のある $t$，符号付き順位，符号 & \ref{sec:03-signrank}\\
+連続・独立2群 & 平均差，$\Prob(X>Y)$ & 2標本 $t$，Welch，順位和（Mann--Whitney） & \ref{sec:03-ranksum}\\
+連続・3群以上 & 群平均の差 & 一元配置分散分析，Kruskal--Wallis & \ref{sec:14-anova}，\ref{subsec:03-kw}\\
+連続・多時点 & 時点別平均差・変化量 & 線形混合モデル，共分散構造の AIC & \ref{sec:08-lmm}\\
+2 値・独立2群 & RD，RR，OR & $\chi^2$，Fisher，対数スケールの Wald 区間 & \ref{subsec:04-var}\\
+2 値・$K$ 群 & 一様性・傾向 & $\chi^2_{K-1}$，Cochran--Armitage & \ref{sec:04-trend}\\
+2 値・対応あり & 周辺割合の差，条件付き OR & McNemar，LRT，$n_{12}/n_{21}$ & \ref{sec:04-mcnemar}\\
+2 値・層別 & 全層で関連なしの検定 & 層別 Cochran（CMH）検定 & \ref{sec:04-mh}\\
+2 値・層別 & OR の均一性 & Woolf の検定 & \ref{subsec:07-homog}\\
+2 値・共変量 & 調整 OR，予測確率 & ロジスティック回帰，LRT，AIC & \ref{ch:06}\\
+診断検査 & 感度・特異度・PPV・AUC & ROC，McNemar，多項分布＋デルタ法 & \ref{ch:05}\\
+件数＋人時間 & 率 & ポアソン率の MLE & \ref{sec:17-poisson}\\
+生存時間 & $S(t)$，中央値 & KM，Greenwood（近似） & \ref{sec:09-km}\\
+生存時間・2群 & 分布の差 & ログランク & \ref{sec:09-logrank}\\
+生存時間・共変量 & HR & Cox，部分尤度 & \ref{sec:10-cox}\\
+生存時間・ハザード一定 & ハザード・HR & 指数モデル，デルタ法 & \ref{sec:10-exp}\\
+競合リスク & 原因別ハザード，累積発生関数 & 原因別 Cox と Fine--Gray の解釈 & \ref{sec:10-compete}\\
+同等性・生物学的同等性 & 差・比がマージン内 & $(1-2\alpha)$CI による判定 & \ref{sec:13-be}\\
+中間解析 & 早期中止 & $\alpha$ 消費関数 & \ref{sec:14-gsd}\\
+多重比較・多重評価項目 & FWER 制御 & Bonferroni，Holm，閉検定手順 & \ref{sec:14-mult}\\
+用量反応 & 傾向 & 線形対比 & \ref{sec:14-contrast}\\
+欠測あり & 完全データでの効果 & 完全ケース（MCAR），尤度法・EM（MAR） & \ref{sec:16-methods}\\
+小標本＋事前情報 & 事後確率・予測 & Beta--Binomial & \ref{sec:17-betabin}\\
+\end{longtable}
+\end{center}
+
+% ============================================================
+\chapter{必須公式集}\label[appendix]{app:B}
+% ============================================================
+各公式の右欄は「いつ使うか」である．記号は本文の定義に従う．
+誘導付きの出題にとどまる概念の公式は載せていない（\cref{app:F}）．第2版で本文に移した概念（メタアナリシス，MH，ANCOVA，RMST，多重補完など）の公式は加えた．
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.5}
+\begin{longtable}{@{}L{25mm}L{80mm}L{45mm}@{}}
+\toprule
+項目 & 公式 & いつ使うか\\
+\midrule
+\endfirsthead
+\toprule
+項目 & 公式 & いつ使うか\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{3}{@{}l}{\textbf{効果指標・分割表}}\\
+RD & $\hat\pi_1-\hat\pi_0$，$\V=\frac{\hat\pi_1(1-\hat\pi_1)}{n_1}+\frac{\hat\pi_0(1-\hat\pi_0)}{n_0}$ & 絶対的な効果．NNT $=1/\mathrm{ARR}$（利益），NNH $=1/\mathrm{ARI}$（害）\\
+RR & $\frac{a/n_1}{c/n_0}$，$\V[\log\widehat{\RR}]\approx\frac1a-\frac1{n_1}+\frac1c-\frac1{n_0}$ & コホート・RCTの相対効果\\
+OR & $\frac{ad}{bc}$，$\V[\log\widehat{\OR}]\approx\frac1a+\frac1b+\frac1c+\frac1d$ & 症例対照研究，ロジスティック\\
+区間 & $\exp\{\log\hat\theta\pm z_{\alpha/2}\widehat{\SE}\}$（対数スケールの Wald 区間を逆変換） & RR・OR の信頼区間\\
+OR と RR & $\OR=\RR\frac{1-\pi_0}{1-\pi_1}$ & 稀な疾患なら OR $\approx$ RR\\
+Pearson $\chi^2$ & $\frac{N(ad-bc)^2}{n_1n_0m_1m_0}\approx\chi^2_1$ & 独立2群の比率の比較\\
+一様性 & $\frac{\sum n_i(p_i-p)^2}{p(1-p)}\approx\chi^2_{K-1}$ & $K$ 群の比率\\
+傾向性 & $\frac{\{\sum y_i(x_i-\bar x)\}^2}{p(1-p)\sum n_i(x_i-\bar x)^2}\approx\chi^2_1$ & 用量に順序がある比率\\
+McNemar & $\frac{(n_{12}-n_{21})^2}{n_{12}+n_{21}}\approx\chi^2_1$，$\V[\hat\delta]=\frac{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2}{n}$ & 対応のある2 値\\
+条件付き OR & $n_{12}/n_{21}$（不一致ペアの比） & マッチドペア\\
+超幾何 & $\E[a]=\frac{n_1m_1}{N}$，$\V[a]=\frac{n_1n_0m_1m_0}{N^2(N-1)}$ & CMH 検定，ログランク\\
+CMH & $\chi^2_{\mathrm{CMH}}=\frac{\{\sum_k(a_k-\E[a_k])\}^2}{\sum_k\V[a_k]}\approx\chi^2_1$ & 層別表で関連なしの検定\\
+Woolf & $Q=\sum_kw_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$，$w_k=1/v_k$ & 層間の OR の均一性\\
+MH & $\widehat\OR_{\mathrm{MH}}=\frac{\sum a_kd_k/N_k}{\sum b_kc_k/N_k}$，$\widehat\RR_{\mathrm{MH}}=\frac{\sum a_kn_{0k}/N_k}{\sum c_kn_{1k}/N_k}$ & 層共通の OR・RR（ゼロセル・疎な層に強い）\\
+Peto & $\log\widehat\OR=\frac{\sum(a_k-E_k)}{\sum V_k}$，$\V\approx\frac1{\sum V_k}$ & OR が1に近いときの共通 OR\\
+\multicolumn{3}{@{}l}{\textbf{診断}}\\
+感度・特異度 & $\Prob(+\mid D)$，$\Prob(-\mid\bar D)$ & 検査性能（有病率に依存しない）\\
+PPV・NPV & $\frac{Se\,p}{Se\,p+(1-Sp)(1-p)}$，$\frac{Sp(1-p)}{Sp(1-p)+(1-Se)p}$ & 有病率 $p$ の集団での的中率\\
+AUC & $\Prob(X_1>X_0)$，経験 $\frac{1}{n_1n_0}\sum\sum I(x_{1i}>x_{0j})$，2正規 $\Phi\bigl(\frac{\mu_1-\mu_0}{\sqrt{\sigma_1^2+\sigma_0^2}}\bigr)$ & ROC 曲線の要約\\
+対応のある感度 & $\V[\hat\delta]=\frac1n\{\pi_{+-}+\pi_{-+}-(\pi_{+-}-\pi_{-+})^2\}$ & 同一患者に2検査\\
+\multicolumn{3}{@{}l}{\textbf{回帰・混合モデル}}\\
+ロジスティック & $\ell=\sum\{y_i\bm x_i\transp\bm\beta-\log(1+e^{\bm x_i\transp\bm\beta})\}$，$\bm U=\bm X\transp(\bm y-\bm\pi)$，$\bm I=\bm X\transp\bm W\bm X$ & 2 値アウトカムの調整 OR\\
+LRT & $2(\ell_1-\ell_0)\approx\chi^2_{\text{パラメータ数の差}}$ & 入れ子モデルの比較\\
+AIC & $-2\ell(\hat{\bm\theta})+2k$ & モデル・共分散構造の選択\\
+混合モデル & $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，$\hat{\bm\beta}=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}\bm Y$ & 反復測定\\
+ベースライン調整 & 分散 $\frac{2\sigma^2}n$（最終値），$\frac{4\sigma^2(1-\rho)}n$（変化量），$\frac{2\sigma^2(1-\rho^2)}n$（ANCOVA） & 前後測定のある RCT\\
+\multicolumn{3}{@{}l}{\textbf{順位検定}}\\
+符号 & $T\sim\Bin(n,\frac12)$，$\E=\frac n2$，$\V=\frac n4$ & 対応あり・分布の仮定なし\\
+符号付き順位 & $\E[W^+]=\frac{n(n+1)}4$，$\V=\frac{n(n+1)(2n+1)}{24}$ & 対応あり・対称分布\\
+順位和 & $\E[W]=\frac{m(N+1)}2$，$\V=\frac{mn(N+1)}{12}$，$W=U+\frac{m(m+1)}2$，$\E_0[U]=\frac{mn}2$ & 独立2群・非正規\\
+Kruskal--Wallis & $H=\frac{12}{N(N+1)}\sum n_i\bigl(\bar R_i-\frac{N+1}2\bigr)^2\approx\chi^2_{k-1}$ & 3群以上・非正規\\
+\multicolumn{3}{@{}l}{\textbf{生存時間}}\\
+基本関係 & $h=\frac fS$，$H=-\log S$，$S=e^{-H}$，$f=hS$ & 分布の変換\\
+KM & $\hat S(t)=\prod_{t_{(j)}\le t}\bigl(1-\frac{d_j}{n_j}\bigr)$ & 打ち切りのある生存曲線\\
+Greenwood & $\widehat\V[\hat S]\approx\hat S^2\sum\frac{d_j}{n_j(n_j-d_j)}$（近似公式） & KM の分散\\
+ログランク & $E_{1j}=\frac{d_jn_{1j}}{n_j}$，$V_j=\frac{d_jn_{1j}n_{0j}(n_j-d_j)}{n_j^2(n_j-1)}$，$\frac{(O-E)^2}{V}\approx\chi^2_1$ & 生存曲線の2群比較\\
+Cox & $h_0(t)e^{\bm\beta\transp\bm x}$，$L=\prod_j\frac{e^{\bm\beta\transp\bm x_{(j)}}}{\sum_{R_j}e^{\bm\beta\transp\bm x_l}}$，$S=S_0^{\exp(\bm\beta\transp\bm x)}$ & HR の推定・調整\\
+指数モデル & $L=\lambda^de^{-\lambda W}$，$\hat\lambda=\frac dW$，$I=\frac d{\lambda^2}$，$\V[\log\hat\lambda]\approx\frac1d$ & ハザード一定・率\\
+競合リスク & $S=\exp\{-\sum_j\Lambda_j\}$，$F_j=\int_0^t\lambda_jS$，$F_j(t)\le1-e^{-\Lambda_j(t)}$ & $1-$KM の過大推定\\
+CIF の推定 & $\hat F_j(t)=\sum_{t_{(i)}\le t}\hat S(t_{(i)}^-)\frac{d_{ji}}{n_i}$，$\hat S+\sum_j\hat F_j=1$ & 競合リスク下の累積発生\\
+Nelson--Aalen & $\tilde H=\sum\frac{d_j}{n_j}$，$\tilde S=e^{-\tilde H}\ge\hat S$ & 累積ハザード\\
+RMST & $\int_0^\tau S(t)\dd t$，指数なら $\frac{1-e^{-\lambda\tau}}\lambda$ & 曲線が0に届かない・PH 不成立\\
+\multicolumn{3}{@{}l}{\textbf{メタアナリシス}}\\
+固定効果 & $\hat\theta=\frac{\sum w_kY_k}{\sum w_k}$，$\V=\frac1{\sum w_k}$，$w_k=\frac1{\sigma_k^2}$ & 共通効果の統合\\
+異質性 & $Q=\sum w_k(Y_k-\hat\theta)^2\approx\chi^2_{K-1}$，$I^2=\frac{Q-(K-1)}Q$ & 研究間のばらつき\\
+変量効果 & $\hat\tau^2_{\mathrm{DL}}=\frac{Q-(K-1)}{\sum w-\sum w^2/\sum w}$，$w_k^*=\frac1{\sigma_k^2+\tau^2}$，$\V[\hat\mu]=\frac1{\sum w_k^*}$ & 効果の分布の平均\\
+\multicolumn{3}{@{}l}{\textbf{設計・臨床試験}}\\
+検出力 & $\mu=z_\alpha+z_\beta$，検出力 $\Phi(\mu-z_\alpha)$ & すべての症例数計算の基本\\
+平均の差 & $n=\frac{2\sigma^2(z_{\alpha/2}+z_\beta)^2}{\Delta^2}$（各群） & 連続アウトカム\\
+比率の差 & $n=\frac{\{z_{\alpha/2}\sqrt{2\bar\pi\bar q}+z_\beta\sqrt{\pi_1q_1+\pi_0q_0}\}^2}{(\pi_1-\pi_0)^2}$ & 2 値アウトカム\\
+イベント数 & 指数：$r=\frac{2(z_{\alpha/2}+z_\beta)^2}{(\log\HR)^2}$（各群），ログランク：$D=\frac{(z_{\alpha/2}+z_\beta)^2}{p(1-p)(\log\HR)^2}$ & 生存時間試験\\
+同等性 & $(1-2\alpha)$CI $\subset(-\Delta,\Delta)$，BE：GMR の90\%CI $\subset(0.80,1.25)$ & 同等性・生物学的同等性\\
+$\alpha$ 消費 & $\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$，増分 $\alpha(t_k)-\alpha(t_{k-1})$ & 中間解析\\
+多重性 & Bonferroni $\alpha/m$，Holm $p_{(k)}\le\alpha/(m-k+1)$ & 複数の検定\\
+分散分析 & $F=\frac{S_A/(a-1)}{S_E/(N-a)}\sim F(a-1,N-a)$ & 3群以上の平均\\
+対比 & $Z_c=\frac{\sum c_j\bar Y_j}{\sqrt{\sigma^2\sum c_j^2/n_j}}$，直線傾向には $c_j\propto x_j-\bar x$ & 用量反応\\
+\multicolumn{3}{@{}l}{\textbf{欠測・ポアソン・ベイズ}}\\
+EM（ABO） & E：$\E[f_{AA}\mid n_A]=n_A\frac{p}{p+2r}$，M：遺伝子の数え上げ & 不完全データの MLE\\
+ポアソン & $\hat\lambda=\frac YT$，$\V[\log\hat\lambda]\approx\frac1Y$ & 人時間つき件数\\
+Beta--Binomial & $\Be(a+y,b+n-y)$，事後平均 $\frac{a+y}{a+b+n}$ & 割合の Bayes 推測\\
+Gamma--Poisson & $\Ga(\alpha+y,\beta+T)$（形状・率），予測 $\NB\bigl(\alpha+y,\frac{\beta+T}{\beta+T+T'}\bigr)$ & 率の Bayes 推測・件数の予測\\
+Rubin & $T=\bar W+(1+\frac1m)B$ & 多重補完の統合\\
+\end{longtable}
+\end{center}
+
+% ============================================================
+\chapter{医薬生物学用語集}\label[appendix]{app:C}
+% ============================================================
+\begin{center}\small\renewcommand{\arraystretch}{1.05}
+\begin{longtable}{@{}L{32mm}L{40mm}L{78mm}@{}}
+\toprule
+用語 & 英語 & 説明\\
+\midrule
+\endfirsthead
+\toprule
+用語 & 英語 & 説明\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+評価項目 & endpoint & 治療効果を評価する変数．主要評価項目は事前に規定する．複数（co-primary など）とする場合は，成功の条件と多重性の処理も事前に規定する\\
+代替評価項目 & surrogate endpoint & 真の評価項目（死亡など）の代わりに用いる検査値など\\
+イベント & event & 生存時間解析で観察する事象（死亡・再発）\\
+打ち切り & censoring & イベント前に観察が終わること．右側打ち切りが基本\\
+独立な打ち切り & independent censoring & 打ち切りがその後の予後と無関係であること\\
+リスク集合 & risk set & ある時点の直前にイベントも打ち切りもない人の集合\\
+ハザード & hazard & 生存者の瞬間的なイベント発生率 $f/S$\\
+累積ハザード & cumulative hazard & $H(t)=\int_0^th=-\log S(t)$\\
+ハザード比 & hazard ratio (HR) & 2群のハザードの比．比例ハザードなら時間によらず一定\\
+比例ハザード & proportional hazards & HR が時間によらず一定であること\\
+中央生存時間 & median survival time & $S(t)=0.5$ となる時点\\
+競合リスク & competing risk & あるイベントの発生により他のイベントが起こりえなくなる状況\\
+原因別ハザード & cause-specific hazard & 無事な人での原因 $j$ の瞬間的発生率\\
+累積発生関数 & cumulative incidence function (CIF) & $\Prob(T\le t,J=j)$\\
+部分分布ハザード & subdistribution hazard & CIF に対応するハザード（Fine--Gray）\\
+無作為化 & randomization & 治療を確率的に割り付けること．交絡を防ぐ\\
+層別無作為化 & stratified randomization & 予後因子の層ごとに割り付けのバランスをとる\\
+盲検化 & blinding & 割付を被験者・医師・評価者に知らせないこと\\
+二重盲検 & double-blind & 被験者と医師の双方が割付を知らない\\
+プラセボ & placebo & 有効成分を含まない偽薬\\
+並行群間比較 & parallel group design & 各被験者が1つの治療のみを受けるデザイン\\
+クロスオーバー & crossover design & 各被験者が時期を変えて複数の治療を受けるデザイン\\
+休薬期間 & washout period & クロスオーバーで持ち越し効果を除くための期間\\
+持ち越し効果 & carryover effect & 前の時期の治療効果が次の時期に残ること\\
+優越性 & superiority & 対照より優れること\\
+同等性 & equivalence & 差がマージン $(-\Delta,\Delta)$ 内にあること\\
+非劣性 & non-inferiority & 対照より $\Delta$ を超えて劣らないこと\\
+非劣性マージン & non-inferiority margin & 許容できる最大の劣り幅\\
+生物学的同等性 & bioequivalence (BE) & 後発品と先発品の吸収の速度・量が同等であること\\
+幾何平均比 & geometric mean ratio (GMR) & 対数スケールの平均差を逆変換した比\\
+分析感度 & assay sensitivity & 試験が治療間の差を検出できる能力\\
+ITT & intention-to-treat & 割り付けられた群のまま全例を解析する原則\\
+推定対象 & estimand & 推定したい治療効果の定義（ICH E9(R1)）\\
+中間事象 & intercurrent event & 治療開始後に起こり，評価項目の解釈または存在に影響する事象\\
+感度 & sensitivity & 罹患者が陽性になる確率\\
+特異度 & specificity & 非罹患者が陰性になる確率\\
+陽性的中率 & positive predictive value (PPV) & 陽性者が罹患している確率\\
+陰性的中率 & negative predictive value (NPV) & 陰性者が罹患していない確率\\
+有病率 & prevalence & 集団で疾患を有する割合\\
+尤度比 & likelihood ratio (LR) & $Se/(1-Sp)$ など．検査後オッズ＝LR×検査前オッズ\\
+ROC 曲線 & receiver operating characteristic curve & (偽陽性率, 真陽性率) の軌跡\\
+AUC & area under the curve & ROC 曲線下面積 $=\Prob(X_1>X_0)$．薬物動態では血中濃度曲線下面積\\
+リスク & risk & 一定期間の発生確率（累積発生割合）\\
+率 & rate & 人時間あたりの発生数\\
+オッズ比 & odds ratio (OR) & オッズの比．症例対照研究で推定可能\\
+リスク比 & risk ratio (RR) & リスクの比．相対リスク\\
+リスク差 & risk difference (RD) & リスクの差\\
+NNT & number needed to treat & $1/\mathrm{ARR}$（ARR：絶対リスク減少）．1人の発症を防ぐのに治療が必要な人数\\
+NNH & number needed to harm & $1/\mathrm{ARI}$（ARI：絶対リスク増加）．治療により1人余分に害が生じる人数\\
+コホート研究 & cohort study & 曝露で分けて追跡する観察研究\\
+症例対照研究 & case-control study & 症例と対照を集めて過去の曝露を比べる研究\\
+交絡 & confounding & 曝露と結果の両方に関連する因子による偏り\\
+効果修飾 & effect modification & 効果の大きさが第3の変数で変わること\\
+層別 & stratification & 交絡因子の値ごとに分けて解析すること\\
+マッチング & matching & 背景の似た個体を組にすること\\
+非可縮性 & non-collapsibility & 交絡がなくても層別と併合で値が変わる性質（OR，HR）\\
+Simpson のパラドックス & Simpson's paradox & 併合した関連が層別の関連と逆転する現象\\
+欠測 & missing data & 予定された測定が得られないこと\\
+MCAR・MAR・MNAR & missing completely at random / at random / not at random & 欠測がデータと無関係／観測値のみに依存／欠測値自体に依存\\
+完全ケース解析 & complete-case analysis & 欠測のない個体のみを用いる解析\\
+感度分析 & sensitivity analysis & 仮定を変えたときの結論の頑健性の確認\\
+中間解析 & interim analysis & 試験途中で行う解析\\
+情報時間 & information time & 最終解析に対する情報量の割合\\
+$\alpha$ 消費関数 & alpha spending function & 中間解析で使う第1種の過誤の配分を定める関数\\
+早期中止 & early stopping & 有効・無効・安全性により試験を途中で終えること\\
+多重性 & multiplicity & 複数の検定による第1種の過誤の増大\\
+FWER & familywise error rate & 少なくとも1つの真の帰無仮説を棄却する確率\\
+閉検定手順 & closed testing procedure & 共通部分仮説をすべて検定して強い FWER 制御を行う方法\\
+用量反応 & dose-response & 用量とともに効果が変化する関係\\
+対比 & contrast & 係数の和が0の平均の線形結合\\
+混合効果モデル & mixed-effects model & 固定効果と変量効果を含むモデル\\
+級内相関係数 & intraclass correlation (ICC) & 同一個体内の測定値の相関\\
+事前分布・事後分布 & prior / posterior distribution & Bayes 推測でのパラメータの分布\\
+共役事前分布 & conjugate prior & 事後分布が事前分布と同じ分布族になる事前分布\\
+信用区間 & credible interval & 事後分布の分位点で作る区間\\
+事前予測分布 & prior predictive distribution & データの周辺分布 $\int p(y\mid\theta)p(\theta)\dd\theta$\\
+人時間 & person-time & 各人の観察期間の合計．率の分母\\
+事後予測分布 & posterior predictive distribution & 将来のデータの予測分布\\
+\end{longtable}
+\end{center}
+
+% ============================================================
+\chapter{過去問対応表}\label[appendix]{app:D}
+% ============================================================
+必要能力の略号：定＝定義，計＝計算，導＝導出，検＝検定，モ＝モデル化，選＝手法選択，解＝解釈．
+問5は4分野共通問題（「共」）で，対応する本文の章，または共通問題の付録（「G」，\cref{app:G}）を示す．
+「F」は設問の一部（または全部）が誘導付きの概念で，\cref{app:F}に一覧したことを表す．
+
+\begin{center}\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}ccL{36mm}L{58mm}L{16mm}c@{}}
+\toprule
+年 & 問 & 主テーマ & 副テーマ & 必要能力 & 章\\
+\midrule
+\endfirsthead
+\toprule
+年 & 問 & 主テーマ & 副テーマ & 必要能力 & 章\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+2016 & 1 & 対応のある連続データ & 対応のある $t$，符号検定（正確な P 値），符号付き順位（正規近似），外れ値の影響 & 検 計 導 解 & \ref{ch:03}\\
+2016 & 2 & 4群の比率 & 一様性 $\chi^2_3$，$P=0.077$ の解釈，Cochran--Armitage & 検 導 解 選 & \ref{ch:04}\\
+2016 & 3 & 生存時間解析 & KM 曲線，ログランク（$\chi^2=5.62$），Cox 部分尤度 & 計 導 & \ref{ch:09},\ref{ch:10}\\
+2016 & 4 & 対数正規と BE & 対数正規の性質（F），クロスオーバーの90\%CI による BE 判定 & 導 計 解 & \ref{ch:13},F\\
+2016 & 5共 & 2標本 $t$ 検定 & 群ごとの CI と検定，CI の重なり（約29\%） & 計 検 解 & \ref{ch:01}\\
+2017 & 1 & ハザードの理論 & $\lambda=f/S$，$\Lambda=-\log S$，$\Lambda(T)\sim\Ex(1)$，Cox の2重対数表現，乱数生成 & 導 モ & \ref{ch:09},\ref{ch:10}\\
+2017 & 2 & 群逐次デザイン & $\alpha$ 消費関数，情報時間，$\Cov[Z(0.4),Z(1)]=\sqrt{0.4}$，限界値 & 計 導 & \ref{ch:14}\\
+2017 & 3 & 第II相二段階 & 二段階デザインの $\alpha,\beta$，PET，期待症例数（F） & 導 計 & F\\
+2017 & 4 & 層別症例対照 & 曝露 OR，超幾何の平均分散，Peto 型1段階推定と共通 OR，均一性の確認 & 計 導 解 & \ref{ch:04},\ref{ch:07}\\
+2017 & 5共 & 割付法 & 単純無作為化と偏りを抑える割付，CI 幅から $n$ & 計 導 & \ref{ch:02},\ref{ch:12}\\
+2018 & 1 & 指数生存モデル & 打ち切り尤度，MLE，Fisher 情報，デルタ法，必要イベント数 & 導 計 & \ref{ch:10},\ref{ch:12}\\
+2018 & 2 & マッチドペア2 値 & 多項分布，$\V[\hat\delta]$，CI，制約付き MLE，LRT & 導 検 & \ref{ch:04}\\
+2018 & 3 & ROC 解析 & 感度・偽陽性率，経験 ROC，Youden，AUC＝Mann--Whitney & 計 導 解 & \ref{ch:05}\\
+2018 & 4 & ロジスティック回帰 & 対数尤度，調整 OR，AIC，Bernoulli の KL，リスクスコアの解釈 & 導 解 & \ref{ch:06},\ref{ch:05}\\
+2018 & 5共 & 正規混合 & 平均・分散，二峰性の条件 & 導 & G\\
+2019 & 1 & KM・指数モデル & KM 表，打ち切りのある指数分布の MLE，Nelson--Aalen 型推定・RMST & 計 導 & \ref{ch:09},\ref{ch:10}\\
+2019 & 2 & 交絡と標準化 & 粗 RD，直接標準化・傾向スコア（F） & 計 導 解 & F\\
+2019 & 3 & 対応のある診断比較 & 感度・PPV，McNemar 型，8セル多項＋デルタ法 & 計 検 導 & \ref{ch:05},\ref{ch:04}\\
+2019 & 4 & 小標本2群比較 & Student $t$ の仮定，順位和の正確な分布，離散性による問題 & 検 計 解 & \ref{ch:03}\\
+2019 & 5共 & 適合度と EM & 適合度 $\chi^2$，自由度の根拠，ABO 血液型の EM & 検 導 & \ref{ch:16}\\
+2021 & 1 & 競合リスク & $f=\lambda S$，$1-$KM，CIF の導出（F）と推定，過大推定の考察 & 導 計 解 & \ref{ch:09},\ref{ch:10},F\\
+2021 & 2 & 同等性と BE & 片側 $t$ 検定・IUT（F），90\%CI による BE 判定 & 導 検 解 & \ref{ch:13},F\\
+2021 & 3 & 2×2表と層別 & OR と CI，積二項尤度，スコア型 $X$，層別 Cochran 検定，Simpson & 計 導 検 解 & \ref{ch:04},\ref{ch:07}\\
+2021 & 4 & 変量効果メタ & 周辺分布，対数尤度，$\hat\mu$，$\V[\hat\mu]$，CI & 導 計 & \ref{ch:18}\\
+2021 & 5共 & 診断の正規モデル & 感度・特異度，PPV・NPV，閾値，有病率の影響 & 計 解 & \ref{ch:05}\\
+2022 & 1 & Cox 比例ハザード & 比例性，$S_0^{\exp(\beta x)}$，2重対数プロット（F），HR の CI と解釈 & 導 計 解 & \ref{ch:10},F\\
+2022 & 2 & マッチと非可縮性 & 粗 RR・OR，MH 推定量，条件付き OR，非可縮性，間接比較 & 計 解 & \ref{ch:04},\ref{ch:07}\\
+2022 & 3 & 線形混合モデル & $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，OLS/GLS，複合対称，被験者内相関 & 導 計 モ & \ref{ch:08}\\
+2022 & 4 & Beta--Binomial & 事後分布・モード・平均，周辺分布，事後確率による判定 & 導 計 解 & \ref{ch:17}\\
+2022 & 5共 & 平均への回帰 & 2変量正規の条件付き分布（F） & 導 計 解 & F,G\\
+2023 & 1 & ロジスティック回帰 & 対数オッズ，集計データの尤度，MLE，LRT，PPV・NPV & 計 導 検 & \ref{ch:06},\ref{ch:05}\\
+2023 & 2 & 単群指数試験の症例数 & MLE，Fisher 情報，Wald 型 $Z$ による症例数（F） & 導 計 & \ref{ch:10},F\\
+2023 & 3 & メタアナリシス & 固定効果 MLE，$Q$ の分解と期待値，DL，$I^2$ & 導 計 & \ref{ch:18}\\
+2023 & 4 & 反復測定 & $\hat{\bm\mu}$ の分布，共分散構造の AIC，相関行列，変化量の検定 & 計 モ 検 & \ref{ch:08}\\
+2023 & 5共 & 条件付き確率と二項検定 & Monty Hall，正確な P 値と正規近似 & 計 & \ref{ch:05},G\\
+2024 & 1 & 診断・ROC・McNemar & 感度等の表，台形 AUC，対応のある2 値の分散と McNemar & 計 導 検 & \ref{ch:05},\ref{ch:04}\\
+2024 & 2 & ベースライン調整 & 最終値・変化量・ANCOVA の分散 & 導 計 解 & \ref{ch:08}\\
+2024 & 3 & 欠測と多重補完 & 欠測と群の $\chi^2$，Rubin のルール・$\E[B]$ & 計 導 & \ref{ch:16}\\
+2024 & 4 & 多重性と用量反応 & FWER（F），Bonferroni，分散分析で保護した検定，多対1の相関（F），対比 & 計 導 選 & \ref{ch:14},F\\
+2024 & 5共 & 重回帰の抑制 & 正規方程式，決定係数 & 導 & G\\
+2025 & 1 & 順位和検定の検出力 & 位置ずれ，$\E[R_X]$，$\Prob(X>Y)$，検出力の式 & 導 計 & \ref{ch:03}\\
+2025 & 2 & ポアソン率と Bayes & 共通率 MLE，率の差の検定，Gamma--Poisson & 導 計 解 & \ref{ch:17}\\
+2025 & 3 & 競合リスクの理論 & 原因別ハザードの関係式（F），原因別 Cox の解釈 & 導 解 & \ref{ch:10},F\\
+2025 & 4 & 多重性 & 独立 $p$ 値の FWER・Šidák 型・Simes・相関の影響（F），Bonferroni & 計 導 & \ref{ch:14},F\\
+2025 & 5共 & ランダム化回答法 & 誤分類の補正，MLE，$p$ の選択 & 導 解 & G\\
+\end{longtable}
+\end{center}
+
+% ============================================================
+\chapter{総合チェックリスト}\label[appendix]{app:E}
+% ============================================================
+試験前に，各項目を\textbf{何も見ずに}説明・導出できるか確認する．できない項目は対応する章に戻る．
+\newcommand{\chk}{\item[$\square$]}
+
+\section*{\cref{ch:01,ch:02}　問題の読み方・効果指標}
+\begin{itemize}
+\chk 設問からデザイン・観測単位・アウトカムの型・推定対象を書き出せる．
+\chk $P=0.077$，「CI が1を含む」，「有意差なし」を正しく解釈できる．
+\chk 群ごとの CI の重なりと2標本検定の関係（約29\%）を導ける．
+\chk $\OR=\RR(1-\pi_0)/(1-\pi_1)$ と，症例対照研究で OR だけが推定できる理由を示せる．
+\chk OR の非可縮性を数値例で説明できる．estimand の5要素を挙げられる．
+\end{itemize}
+\section*{\cref{ch:03}　連続・順位検定}
+\begin{itemize}
+\chk 符号検定・符号付き順位・順位和（Mann--Whitney）の帰無仮説と仮定を区別できる．
+\chk $\mathrm{sign}(Z)$ と $|Z|$ の独立性から $W^+$ の帰無分布を導ける．
+\chk 交換可能性と全順位和が一定であることから $\Cov(R_i,R_j)=-\sigma^2/(N-1)$ を導き，$\E[W],\V[W]$ を求められる．
+\chk 小標本の 正確な分布を数え上げ，最小の P 値を求められる．
+\chk $W=U+m(m+1)/2$ と，$\Prob(X>Y)$ を用いた検出力を導ける．
+\end{itemize}
+\section*{\cref{ch:04}　分割表}
+\begin{itemize}
+\chk $X^2=N(ad-bc)^2/(n_1n_0m_1m_0)$ をスコア型統計量として導ける．
+\chk 二項分布の中心極限定理と多変量デルタ法から $\log\widehat{\RR}$ の漸近正規性を示し，Wald 区間を作れる．
+\chk Cochran--Armitage の $\hat\beta$ と $\V[\hat\beta\mid H_0]$ を導き，一様性検定との使い分けを説明できる．
+\chk McNemar の分散・検定・LRT（ラグランジュ乗数法）を導ける．条件付き OR $=n_{12}/n_{21}$ を条件付き尤度から導ける．
+\chk 超幾何分布の平均・分散から CMH 検定を書ける．
+\end{itemize}
+\section*{\cref{ch:05}　診断}
+\begin{itemize}
+\chk 感度・特異度・PPV・NPV を定義し，有病率から PPV を計算できる．
+\chk 経験 ROC を描き，台形公式で AUC を計算できる．
+\chk AUC $=\Prob(X_1>X_0)$ と経験 AUC＝Mann--Whitney を示せる．
+\chk 同一被験者の2検査の感度を McNemar で，PPV を多項＋デルタ法で比較する方法を説明できる．
+\end{itemize}
+\section*{\cref{ch:06,ch:07}　ロジスティック・交絡}
+\begin{itemize}
+\chk ロジスティックモデルの対数尤度・スコア・情報行列を導ける．2群なら $2\times2$ 表の対数オッズ比と一致することを示せる．
+\chk LRT の自由度，AIC のパラメータ数を正しく数えられる．
+\chk 交絡と効果修飾を区別し，Simpson のパラドックスを例示できる．
+\chk OR の非可縮性と交絡の違いを説明できる．
+\chk Woolf の均一性検定を計算し，Breslow--Day 検定の目的を説明できる．
+\chk 条件付き超幾何分布から CMH 検定（スコア検定）と Peto 型推定量（1段階の Newton 法）を導ける．
+\chk MH 共通 OR を推定方程式 $\E[a_kd_k-\psi b_kc_k]=0$ から説明し，複数の層から計算して粗 OR との差を交絡・非可縮性・効果修飾で解釈できる．
+\end{itemize}
+\section*{\cref{ch:08}　縦断・混合モデル}
+\begin{itemize}
+\chk 反復測定の平均ベクトルの分布から変化量の SE を求められる．
+\chk $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，GLS 推定量，変量切片が複合対称を生むことを示せる．
+\chk 共分散構造のパラメータ数を数え，AIC を計算できる．
+\chk 最終値・変化量・ANCOVA の分散 $2\sigma^2/n$，$4\sigma^2(1-\rho)/n$，$2\sigma^2(1-\rho^2)/n$ を導き，優劣を $\rho$ で説明できる．
+\end{itemize}
+\section*{\cref{ch:09,ch:10}　生存時間}
+\begin{itemize}
+\chk $h=f/S$，$H=-\log S$，$H(T)\sim\Ex(1)$ を証明できる．
+\chk KM の表を作り，曲線を描き，中央値を読める．Greenwood の近似公式がどこで近似しているか説明できる．
+\chk ログランクの $E_{1j},V_j$ を超幾何分布から導き，分散を時点で足せる理由を説明し，手計算できる．
+\chk Cox の部分尤度を書き下し，$S=S_0^{\exp(\beta x)}$ を示せる．
+\chk 打ち切りのある指数分布の尤度・MLE・Fisher 情報を導き，デルタ法で HR の検定を作れる．
+\chk 原因別ハザード・累積発生関数を定義し，$1-$KM が CIF を過大推定することを示せる．
+\chk 競合リスクのデータから $\hat F_j$ の表を作り，$\hat S+\sum\hat F_j=1$ で検算できる．
+\chk Nelson--Aalen 推定値を計算し $\tilde S\ge\hat S$ を示せる．RMST を KM の面積・指数モデルで計算し解釈できる．
+\chk 原因別 Cox と Fine--Gray の係数の解釈の違いを説明できる．
+\end{itemize}
+\section*{\cref{ch:12,ch:13,ch:14}　臨床試験デザイン}
+\begin{itemize}
+\chk $\mu=z_\alpha+z_\beta$ を導き，平均・比率・イベント数の症例数を計算できる．
+\chk Schoenfeld の式をログランク分散から導ける．
+\chk BE の判定規則（対数変換，GMR の90\%CI $\subset(0.80,1.25)$）を説明し，クロスオーバーデータで判定できる．
+\chk $\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$ と $\alpha$ 消費関数による限界値の決め方を説明できる．
+\chk FWER，Bonferroni，Holm，閉検定手順を説明でき，分散分析で保護した対比較が FWER を制御する条件を示せる．
+\chk 直線的な用量反応に対する最適な対比係数を導ける．
+\end{itemize}
+\section*{\cref{ch:16,ch:17}　欠測・ベイズ}
+\begin{itemize}
+\chk MCAR・MAR・MNAR を定義・分類でき，MAR での尤度の無視可能性を示せる．
+\chk 完全ケース解析が偏る条件を説明できる．
+\chk ABO 血液型の EM の E ステップ・M ステップを導き，試験の公式解答の反復との違いを説明できる．
+\chk ポアソン率の MLE と $\V[\log\hat\lambda]\approx1/Y$ を導ける．
+\chk Beta--Binomial の事後分布・周辺分布・事後予測分布を導ける．
+\chk $\Prob(\pi>p\mid y)=\Prob(\Bin(n+1,p)\le y)$ を用いて事後確率による判定ができる．
+\chk Gamma--Poisson の事後分布と事後予測分布（負の二項）を導け，ガンマ分布の率と尺度を区別できる．
+\chk Rubin のルールで多重補完を統合し，$(1+1/m)$ の意味と MAR・適切な補完の前提を説明できる．
+\end{itemize}
+\section*{\cref{ch:18}　メタアナリシス}
+\begin{itemize}
+\chk 固定効果モデルの尤度から逆分散重み付き推定量と分散 $1/\sum w_k$ を導き，Cauchy--Schwarz で分散最小を示せる．
+\chk $Q$ の分解から $\E[Q]$ を導き，DL 推定量と $I^2$（等分散なら $\tau^2/(\tau^2+\sigma^2)$ の推定量）を求められる．
+\chk 変量効果の $\hat\mu$ と CI を計算し，固定効果との推定対象の違いを説明できる．
+\end{itemize}
+\section*{\cref{app:G}　試験本番}
+\begin{itemize}
+\chk 全5問の〔1〕〔2〕と最終小問を読み，5分以内に3問を選ぶ手順を決めている．
+\chk 90分3問の時間を測った演習を行い，1問30分を超えたときの切り上げ方を決めている．
+\end{itemize}
+
+% ============================================================
+\chapter{誘導付きで出題された概念}\label[appendix]{app:F}
+% ============================================================
+次の概念は，過去問では定義・式・手順が問題文で与えられ，誘導に従えば解ける形で出題された．
+問題文の式を正しく読み，期待値・分散・尤度の計算を自力で進める力があれば対応できる．
+過去問演習では「何が与えられ，何を自分で計算するか」を確認するとよい．
+
+\paragraph{第2版で本文に移した概念}
+初版ではこの付録に一覧していたが，出題頻度・汎用性・近年の出題を考慮し，第2版では導出・例題とともに本文で扱う．
+\begin{center}\small
+\begin{tabular}{@{}L{62mm}L{40mm}L{38mm}@{}}
+\toprule
+概念 & 出題 & 本文\\
+\midrule
+固定効果・変量効果メタアナリシス，$Q$，DL，$I^2$ & \kakomon{2021}{4}，\kakomon{2023}{3} & \cref{ch:18}\\
+Peto 型1段階推定，逆分散重みの共通 OR & \kakomon{2017}{4}〔2〕〜〔4〕 & \cref{subsec:07-peto}\\
+Mantel--Haenszel の RR・OR 推定量 & \kakomon{2022}{2}〔3〕 & \cref{subsec:07-mhest}\\
+最終値・変化量・ANCOVA の比較 & \kakomon{2024}{2} & \cref{sec:08-ancova}\\
+Nelson--Aalen 型推定 & \kakomon{2019}{1}〔2〕 & \cref{sec:09-na}\\
+境界内平均生存時間（RMST） & \kakomon{2019}{1}〔3〕〜〔5〕 & \cref{sec:09-rmst}\\
+Aalen--Johansen 型の累積発生関数の推定量 & \kakomon{2021}{1}〔4〕 & \cref{subsec:10-compete-aj}\\
+多重補完の Rubin のルール，$\E[B]$ & \kakomon{2024}{3}〔2〕〜〔5〕 & \cref{sec:16-mi}\\
+Gamma--Poisson の事後分布・事後予測分布，率の差の検定 & \kakomon{2025}{2}〔2〕〜〔5〕 & \cref{sec:17-gammapois}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{誘導付きの出題にとどまる概念}
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}L{36mm}L{31mm}L{79mm}@{}}
+\toprule
+概念 & 出題 & 問題文で与えられていたもの\\
+\midrule
+\endfirsthead
+\toprule
+概念 & 出題 & 問題文で与えられていたもの\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{3}{@{}l}{\textbf{連続データ・同等性}}\\
+対数正規分布の性質（中央値・密度・平均・分散・CV） & \kakomon{2016}{4}〔1〕〜〔4〕 & 密度の式（「示せ」形式），正規分布の積率母関数\\
+TOST・IUT（2つの片側検定） & \kakomon{2021}{2}〔1〕 & 2つの片側仮説，$H_0=H_{01}\cup H_{02}$，「両方棄却で棄却」という手順\\
+\multicolumn{3}{@{}l}{\textbf{分割表・交絡}}\\
+直接標準化 & \kakomon{2019}{2}〔2〕 & 重み $w_k$ と標準化リスク $R_{xw}$ の定義\\
+傾向スコアとバランス特性 & \kakomon{2019}{2}〔3〕〜〔5〕 & 傾向スコアの定義と性質（文章で提示）\\
+\multicolumn{3}{@{}l}{\textbf{縦断データ}}\\
+平均への回帰 & \kakomon{2022}{5}（共通） & 2変量正規の条件付き分布の公式（要点は\cref{subsec:G-rtm}）\\
+Toeplitz 型の共分散構造 & \kakomon{2023}{4}〔2〕 & 共分散行列の形（表で提示）．AIC の式とパラメータ数は前提\\
+\multicolumn{3}{@{}l}{\textbf{生存時間}}\\
+2重対数プロット & \kakomon{2022}{1}〔3〕 & 軸の定義と「比例ハザードなら平行」という主張\\
+原因別ハザード・累積発生関数の関係式 & \kakomon{2021}{1}〔3〕，\kakomon{2025}{3}〔1〕〜〔4〕 & $\lambda_j$，$F_j$，$f_j$ の定義と Weibull 型の原因別ハザードの式（定義と CIF の推定は\cref{sec:10-compete}）\\
+単群指数試験の症例数（Wald 型 $Z$） & \kakomon{2023}{2}〔4〕〔5〕 & $Z$ の式，$\hat\lambda$ の漸近正規性，情報量を $\lambda_1$ で評価する指示\\
+\multicolumn{3}{@{}l}{\textbf{臨床試験デザイン・多重性}}\\
+Simon の二段階デザイン & \kakomon{2017}{3} & 手順 $(n_1,r_1,n_2,r)$，記号 $b(x;\pi,n)$，二項確率の表\\
+独立な検定の FWER（Šidák 型） & \kakomon{2024}{4}〔1〕，\kakomon{2025}{4}〔1〕 & FWER の定義と独立性（2025年は $p$ 値が独立に一様分布）\\
+Dunnett 型の相関，対比どうしの相関 & \kakomon{2024}{4}〔4〕〔6〕 & 各検定統計量 $Z_j$ と対比統計量の式\\
+Simes 法 & \kakomon{2025}{4}〔1〕 & 棄却規則 $p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$\\
+相関のある検定の FWER & \kakomon{2025}{4}〔2〕 & 2変量正規，$\phi(\rho)$ の定義，証明なしで使ってよい不等式\\
+\end{longtable}
+\end{center}

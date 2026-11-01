@@ -1,0 +1,383 @@
+\chapter{欠測データと EM アルゴリズム}\label{ch:16}
+
+\begin{goalbox}
+\begin{itemize}
+\item 欠測メカニズム MCAR・MAR・MNAR を定義し，具体例を分類できる．
+\item 完全ケース解析が偏らない条件・偏る条件を説明し，偏りの大きさを計算できる．
+\item 欠測の有無と群・共変量の関連を検定し，その結果から言えること・言えないことを述べられる．
+\item 観測されない度数を含む多項分布モデル（ABO 血液型）で，EM アルゴリズムの E ステップ・M ステップを導出し，反復法を構成できる．
+\item 多重補完の結果を Rubin のルール $T=\bar W+(1+1/m)B$ で統合し，その意味（全分散の公式）と MAR・適切な補完の前提を説明できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2024}{3}〔1〕：改善割合を比較する試験で，欠測（$T$群30人，$C$群10人）と群の独立性の $\chi^2$ 検定（12.5，有意）．
+      同問〔2〕〜〔5〕（多重補完の統合）は，統合の式が問題文で与えられる誘導付きの設問である．Rubin のルールの意味と〔4〕〔5〕の導出は\cref{sec:16-mi}．
+\item 統計数理では\kakomonSM{2016}{5}（MCAR の検定：有意でなくても MCAR とは言えない），\kakomonSM{2022}{5}（対応のあるデータで片方が欠測したときの検定）．
+\item \kakomon{2019}{5}（共通）〔4〕：ABO 血液型の遺伝子頻度の推定．完全データの尤度の最大化（M ステップ）と観測されない度数の期待値（E ステップ）を誘導され，反復法を構成する．
+\end{itemize}
+\end{exambox}
+
+\flowline{欠測を含む\\データ}{完全データでの\\推定対象}{完全ケース・\\尤度（EM）}{MCAR/MAR}{E・M ステップ\\の反復}{MAR は\\検証不能}
+
+\section{問題設定}\label{sec:16-setting}
+完全データを $\bm Y=(\bm Y_{\mathrm{obs}},\bm Y_{\mathrm{mis}})$，欠測の指示変数を $\bm R$（観測なら1）とする．
+解析の目的は，欠測がなかった場合に推定したかった量（estimand）を，観測されたデータから偏りなく推定することである．
+臨床試験では，欠測の多くは中止・脱落によって起こり，脱落は治療の効果や副作用と関連しうる．
+
+\section{欠測メカニズム}\label{sec:16-mech}
+\Hissu
+\begin{teigi}[欠測メカニズム（Rubin の分類）]\label{def:16-mech}
+欠測の起こり方を，欠測指示 $\bm R$ の条件付き分布によって次の3つに分類する．
+\begin{itemize}
+\item \textbf{MCAR}（missing completely at random）：$\Prob(\bm R\mid\bm Y_{\mathrm{obs}},\bm Y_{\mathrm{mis}})=\Prob(\bm R)$．欠測はデータと無関係．
+\item \textbf{MAR}（missing at random）：$\Prob(\bm R\mid\bm Y_{\mathrm{obs}},\bm Y_{\mathrm{mis}})=\Prob(\bm R\mid\bm Y_{\mathrm{obs}})$．欠測は観測された値（共変量・過去の測定値）だけに依存．
+\item \textbf{MNAR}（missing not at random）：MAR でない．すなわち，観測値を与えても欠測が観測されていない値そのものに依存する．
+\end{itemize}
+\end{teigi}
+例：検体の破損による欠測は MCAR．前回の測定値が悪い患者が来院しなくなるのは（前回値が観測されていれば）MAR．
+今回の症状が悪化したこと自体が来院しない理由なら MNAR．
+
+\begin{meidai}[MAR の下での尤度の無視可能性]\label[meidai]{prop:16-ignor}
+MAR で，データのパラメータ $\theta$ と欠測メカニズムのパラメータ $\psi$ が別個（distinct）なら，
+観測データの尤度は $L(\theta,\psi)=f(\bm R\mid\bm Y_{\mathrm{obs}};\psi)\,f(\bm Y_{\mathrm{obs}};\theta)$ と分解され，
+$\theta$ の推測は欠測メカニズムをモデル化せずに $f(\bm Y_{\mathrm{obs}};\theta)$ だけで行える．
+\end{meidai}
+\begin{proof}
+$f(\bm Y_{\mathrm{obs}},\bm R)=\int f(\bm Y_{\mathrm{obs}},\bm Y_{\mathrm{mis}};\theta)f(\bm R\mid\bm Y_{\mathrm{obs}},\bm Y_{\mathrm{mis}};\psi)\,\dd\bm Y_{\mathrm{mis}}$．
+MAR なら第2因子は $\bm Y_{\mathrm{mis}}$ によらず積分の外に出せて，残りは $\int f(\bm Y;\theta)\dd\bm Y_{\mathrm{mis}}=f(\bm Y_{\mathrm{obs}};\theta)$．
+\end{proof}
+反復測定の混合モデル（\cref{ch:08}）のような尤度に基づく解析が MAR の下で妥当なのはこのためである．
+\cref{sec:16-em} の EM アルゴリズムは，この観測データの尤度 $f(\bm Y_{\mathrm{obs}};\theta)$ を最大化する計算法である．
+
+\paragraph{データから言えること}
+欠測の有無と観測された変数（群，ベースライン値）の関連を調べれば，MCAR を\textbf{否定}することはできる．
+\kakomon{2024}{3}〔1〕では欠測が $T$ 群30\%，$C$ 群10\%で，$2\times2$ 表の独立性の $\chi^2$ 統計量（\cref{ch:04}）は
+$\chi^2=\frac{200(30\times90-70\times10)^2}{100\cdot100\cdot40\cdot160}=12.5>\chi^2_1(0.05)=3.84$ なので，欠測は群と独立でない．
+しかし関連がないことは MCAR の証明にならず（\kakomonSM{2016}{5}），MAR と MNAR は観測データからは区別できない．
+
+\section{主な解析法}\label{sec:16-methods}
+\Hissu
+主な対処法と，それが妥当となる条件を\cref{tab:16-methods}にまとめる．以下では完全ケース解析と逆確率重み付けを詳しく見る．
+\paragraph{完全ケース解析の偏り}
+$(X_i,Y_i,R_i)$（$i=1,\dots,n$）を i.i.d.\ とし，$Y$ の平均 $\E[Y]$ を推定したいとする．
+観測の有無 $R$ は共変量 $X$（全員観測）だけに依存する（MAR）：$\Prob(R=1\mid X,Y)=\pi(X)$，$\pi(x)=\Prob(R=1\mid X=x)>0$．
+完全ケース平均 $\bar Y_{\mathrm{cc}}=\sum_iR_iY_i\big/\sum_iR_i$ は，大数の法則により
+$\frac1n\sum_iR_iY_i\to\E[RY]$，$\frac1n\sum_iR_i\to\Prob(R=1)$ だから，観測された集団の条件付き母平均
+\[
+\E[Y\mid R=1]=\frac{\E[RY]}{\Prob(R=1)}=\sum_x\E[Y\mid X=x]\Prob(X=x\mid R=1)
+\]
+に確率収束する．$\Prob(X=x\mid R=1)\propto\pi(x)\Prob(X=x)$ は $X$ の母集団分布 $\Prob(X=x)$ と異なるので，$\E[Y\mid X=x]$ が $x$ により異なれば
+$\E[Y\mid R=1]\ne\E[Y]$ となり，$\bar Y_{\mathrm{cc}}$ は $\E[Y]$ の一致推定量でない（確率極限の意味で偏る）．
+MCAR なら $\pi(x)$ が一定なので $\E[Y\mid R=1]=\E[Y]$ である．
+\paragraph{逆確率重み付け（IPW）}
+観測された個体に重み $1/\pi(X_i)$ を付ける．MAR の下で $\E[R\mid X,Y]=\pi(X)$ なので，母集団レベルの恒等式
+\[
+\E\Bigl[\frac{RY}{\pi(X)}\Bigr]=\E\Bigl[\frac{\E[R\mid X,Y]\,Y}{\pi(X)}\Bigr]=\E[Y],\qquad \E\Bigl[\frac{R}{\pi(X)}\Bigr]=1
+\]
+が成り立つ（観測されやすい層の過剰代表が重みで打ち消される）．これから，$\pi$ が既知なら
+\begin{itemize}
+\item $\hat\mu_{\mathrm{IPW}}=\frac1n\sum_iR_iY_i/\pi(X_i)$ は $\E[Y]$ の不偏推定量で，大数の法則により一致推定量でもある．
+\item 重みの和で割った比 $\hat\mu_{\mathrm{H}}=\sum_i\{R_iY_i/\pi(X_i)\}\big/\sum_i\{R_i/\pi(X_i)\}$（Hájek 型）は，分子・分母がそれぞれ $\E[Y]$，1 に確率収束するので一致推定量であるが，比なので有限標本では一般に不偏でない．
+\end{itemize}
+実際には $\pi(x)$ はモデル（ロジスティック回帰など）で推定するので，有限標本での不偏性は厳密には成り立たず，一致性はモデルが正しいことに依存する（数値例は\cref{reidai:16-2}）．
+
+\Youchui LOCF（最終観測値の引き継ぎ）は「脱落後の値が変わらない」という強い仮定であり，保守的とも限らない．
+なお，予測分布から欠測値を複数回補完して結果を統合する\textbf{多重補完}も MAR の下で用いられる（\cref{sec:16-mi}）．
+MAR は検証できない仮定なので，実務では MNAR を想定した感度分析も行う（具体的な方法は本書では扱わない）．
+
+\begin{table}[htbp]
+\centering\small
+\caption{欠測への対処法と妥当となる条件}\label{tab:16-methods}
+\begin{tabular}{@{}lL{48mm}L{52mm}@{}}
+\toprule
+方法 & 内容 & 妥当性\\
+\midrule
+完全ケース解析 & 欠測のある個体を除く & MCAR で不偏（精度は低下）．MAR では一般に偏る（欠測が解析モデルの共変量のみに依存する場合の回帰係数は例外）\\
+単一補完（平均値，LOCF） & 欠測を1つの値で埋める & 推定対象により偏り（LOCF など），常に分散を過小評価（補完値を確定値として扱う）\\
+尤度に基づく方法 & 観測データの尤度を最大化（EM など） & MAR で妥当（モデルが正しければ）\\
+逆確率重み付け（IPW） & 観測確率の逆数で重み付け & MAR で妥当（観測確率のモデルが正しければ）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{EM アルゴリズム}\label{sec:16-em}
+\Hissu
+\subsection{一般形}
+観測データ $\bm y$ の尤度 $L(\theta;\bm y)=f(\bm y;\theta)$ の最大化が難しいが，観測されない部分 $\bm z$ を加えた\textbf{完全データ} $(\bm y,\bm z)$ の対数尤度 $\ell_c(\theta;\bm y,\bm z)$ なら容易に最大化できるとき，
+現在の値 $\theta^{(t)}$ から次の2ステップを交互に繰り返す．
+\begin{itemize}
+\item \textbf{E ステップ}：観測データ $\bm y$ を条件とした期待値 $Q(\theta\mid\theta^{(t)})=\E_{\theta^{(t)}}\bigl[\ell_c(\theta;\bm y,\bm Z)\bigm|\bm y\bigr]$ を計算する．
+\item \textbf{M ステップ}：$\theta^{(t+1)}=\arg\max_\theta Q(\theta\mid\theta^{(t)})$．
+\end{itemize}
+$\ell_c$ が観測されない度数について線形（多項分布など）なら，E ステップは「観測されない度数を，観測データを条件とした期待値で置き換える」ことと同じである．
+この標準的な EM では，各反復で観測データの尤度は減少しない：$L(\theta^{(t+1)};\bm y)\ge L(\theta^{(t)};\bm y)$（証明は省略）．
+この性質は，E ステップの期待値が\textbf{観測データ $\bm y$ を条件とした}ものであることに依存する．
+
+\subsection{例：ABO 血液型の遺伝子頻度}
+遺伝子 O，A，B の頻度を $r,p,q$（$r+p+q=1$）とし，ハーディ・ワインベルグ平衡で遺伝子型 OO, AA, AO, BB, BO, AB の確率が
+$r^2,p^2,2pr,q^2,2qr,2pq$ とする．観測されるのは表現型の度数 $n_O,n_A,n_B,n_{AB}$（合計 $N$）だけで，
+$f_{OO}=n_O$，$f_{AA}+f_{AO}=n_A$，$f_{BB}+f_{BO}=n_B$，$f_{AB}=n_{AB}$ のうち，A型・B型の内訳 $f_{AA},f_{AO},f_{BB},f_{BO}$ が観測されない．
+
+\paragraph{M ステップ（完全データの最尤推定）}
+完全データの対数尤度は，定数を除いて
+\[
+\ell_c=(2f_{OO}+f_{AO}+f_{BO})\log r+(2f_{AA}+f_{AO}+f_{AB})\log p+(2f_{BB}+f_{BO}+f_{AB})\log q .
+\]
+制約 $r+p+q=1$ の下で，ラグランジュ乗数 $\lambda$ を用いて $\ell_c-\lambda(r+p+q-1)$ を偏微分して0とおくと，
+$2f_{OO}+f_{AO}+f_{BO}=\lambda r$ などの3式を得る．3式を足すと左辺は全遺伝子数 $2N$ なので $\lambda=2N$．よって
+\begin{equation}
+\hat r=\frac{2f_{OO}+f_{AO}+f_{BO}}{2N},\qquad
+\hat p=\frac{2f_{AA}+f_{AO}+f_{AB}}{2N},\qquad
+\hat q=\frac{2f_{BB}+f_{BO}+f_{AB}}{2N}\label{eq:16-mstep}
+\end{equation}
+（遺伝子の数え上げ）．
+\paragraph{E ステップ（観測データを条件とした期待値）}
+A型の各人は，独立に確率 $\dfrac{p^2}{p^2+2pr}$ で AA，残りの確率で AO である（条件付き確率 $\Prob(\text{AA}\mid\text{A型})$）．
+よって $n_A$ を与えると $f_{AA}\mid n_A\sim\Bin\bigl(n_A,\ p^2/(p^2+2pr)\bigr)$ で，
+\begin{equation}
+\E[f_{AA}\mid n_A]=n_A\frac{p^2}{p^2+2pr}=n_A\frac{p}{p+2r},\qquad \E[f_{AO}\mid n_A]=n_A\frac{2r}{p+2r},\label{eq:16-estep}
+\end{equation}
+B型も同様に $\E[f_{BB}\mid n_B]=n_B\,q/(q+2r)$，$\E[f_{BO}\mid n_B]=n_B\,2r/(q+2r)$．
+すなわち，観測された A型の人数を，現在のパラメータでの AA と AO の条件付き確率で按分する．
+\paragraph{反復法}
+初期値 $(r^{(0)},p^{(0)},q^{(0)})$ から，\cref{eq:16-estep} に $(r^{(t)},p^{(t)},q^{(t)})$ を代入して $f_{AA}^{(t)},f_{AO}^{(t)},f_{BB}^{(t)},f_{BO}^{(t)}$ を求め（E ステップ），
+それを\cref{eq:16-mstep} に代入して $(r^{(t+1)},p^{(t+1)},q^{(t+1)})$ を求める（M ステップ），を変化が十分小さくなるまで繰り返す．
+按分なので $f_{AA}^{(t)}+f_{AO}^{(t)}=n_A$ が常に成り立ち，$r+p+q=1$ も保たれる．
+
+\begin{warnbox}[試験の公式解答との相違]
+\kakomon{2019}{5}〔4〕(ii) の公式解答（解答例）は，(i) で求めた $p,q$ を用いた観測されない度数の期待値として
+$\E[f_{AA}]=Np^2$，$\E[f_{AO}]=n_A-Np^2$（B型も同様に $Nq^2$，$n_B-Nq^2$）を示し，これと (i) の式（\cref{eq:16-mstep}）を交互に用いる反復を EM アルゴリズムとして示している．
+また，$f_{AO}=N\cdot2pr$ とする反復は，$f_{AA}+f_{AO}=n_A$ が成り立つとは限らないのでうまくいかない，と注記している．
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{両者は一般に同じ反復にならない}．$Np^2$ は観測値 $n_A$ を条件としない期待値であり，
+      標準的な E ステップ $n_Ap^2/(p^2+2pr)$（\cref{eq:16-estep}）とは $n_A=N(p^2+2pr)$ のときを除いて異なる．
+      収束先も一般には異なる：公式解答の反復の不動点は $2Np=Np^2+n_A+n_{AB}$，すなわち $(1-p)^2=(n_O+n_B)/N$ を満たし，
+      これは観測データの最尤推定値とは一般に一致しない（数値例は\cref{reidai:16-3}の解答の後の補足）．
+\item \textbf{「各反復で観測データの尤度が減少しない」は標準 EM についてのみ成り立つ}．公式解答の反復にはこの保証はなく，MLE への収束も保証されない．
+\item \textbf{試験での答え方}：問題文の誘導（(i) を M ステップ，(ii) を E ステップとして交互に反復する枠組み）には必ず従う．
+      (ii) の期待値は，何を条件とした期待値かを明記して書く．観測値 $n_A,n_B$ を条件とした $n_Ap^2/(p^2+2pr)$ などが標準的な EM の E ステップであり，
+      採点基準は公表されていないので，標準形で書いたうえで，公式解答の形 $Np^2$（観測値を条件としない期待値）とは異なることを一言添えておくとよい．
+\end{enumerate}
+\end{warnbox}
+
+\section{多重補完と Rubin のルール}\label{sec:16-mi}
+\Hinshutsu
+\kakomon{2024}{3}〔2〕〜〔5〕では，3つの補完データセットの結果を Rubin のルール（式は問題文で与えられる）で統合し，補完推定量の条件付き分散と補完間分散 $B$ の期待値を求めた．
+式は与えられても，$W$ と $B$ が何の分散を表すか，なぜ $(1+1/m)$ が付くかを理解していれば，〔4〕〔5〕の導出の方針が立つ．
+
+\paragraph{手順}
+\begin{enumerate}
+\item 観測データから欠測値の予測分布（MAR の下で，観測された変数を条件とした分布）を作り，そこから欠測値を独立に $m$ 回抽出して $m$ 個の完全データセットを作る．
+\item 各データセット $k=1,\dots,m$ で，欠測がなかった場合と同じ解析を行い，推定値 $\hat\theta_k$ とその分散の推定値 $\hat V_k$ を得る．
+\item 次の Rubin のルールで統合する．
+\end{enumerate}
+\begin{teigi}[Rubin のルール \cite{rubin1987}]\label{def:16-rubin}
+\begin{gather}
+\bar\theta=\frac1m\sum_{k=1}^m\hat\theta_k,\qquad \bar W=\frac1m\sum_{k=1}^m\hat V_k\ (\text{補完内分散}),\qquad B=\frac1{m-1}\sum_{k=1}^m(\hat\theta_k-\bar\theta)^2\ (\text{補完間分散}),\notag\\
+T=\bar W+\Bigl(1+\frac1m\Bigr)B .\label{eq:16-rubin}
+\end{gather}
+$\bar\theta$ の分散の推定値を $T$ とし，信頼区間は $\bar\theta\pm t_\nu(0.025)\sqrt T$，自由度 $\nu=(m-1)(1+1/r)^2$，$r=(1+1/m)B/\bar W$ とする．
+\end{teigi}
+（\kakomon{2024}{3} では補完数を $K$，$\bar W$ を $W$ と書いている．）
+
+\paragraph{$T$ の意味（導出の考え方）}
+目標は「観測データ $Y_{\mathrm{obs}}$ だけから $\theta$ を推定したときの不確かさ」である．完全データ $(Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ での推定量を $\hat\theta(Y_{\mathrm{mis}})$ と書くと，条件付き分散の公式（全分散の公式）より
+\[
+\V[\theta\mid Y_{\mathrm{obs}}]=\underbrace{\E\bigl[\V[\theta\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}}]\bigm|Y_{\mathrm{obs}}\bigr]}_{\text{欠測がなくても残る不確かさ}\ \approx\ \bar W}
++\underbrace{\V\bigl[\E[\theta\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}}]\bigm|Y_{\mathrm{obs}}\bigr]}_{\text{欠測値がわからないことによる不確かさ}\ \approx\ B}.
+\]
+第1項は各補完データでの分散 $\hat V_k$ の平均で，第2項は補完ごとの推定値のばらつき（$Y_{\mathrm{mis}}$ を予測分布から引くたびに $\hat\theta_k$ が変わる程度）で推定する．
+これは $m=\infty$ の場合の $\bar W+B$ である．
+有限の $m$ では $\bar\theta$ は「無限回補完したときの平均」の推定値にすぎず，$m$ 個の独立な $\hat\theta_k$ の平均なので余分な分散 $B/m$ をもつ．これを加えて $\bar W+B+B/m=\bar W+(1+1/m)B$ となる．
+\begin{itemize}
+\item $r=(1+1/m)B/\bar W$ は欠測による分散の相対的な増加，$\hat\lambda=(1+1/m)B/T$ はおおよその「欠測による情報の損失割合」である．
+\item 単一補完（$m=1$ で補完値を確定値として扱う）は $B$ を無視するので，分散を過小評価する（\cref{tab:16-methods}）．
+\end{itemize}
+
+\paragraph{MAR との関係と「適切な」補完}
+多重補完が妥当なのは，(i) 欠測が MAR で，(ii) 補完モデルが欠測の有無に関係する変数（群，ベースライン値など）を含み，(iii) 補完が\textbf{パラメータの不確かさも反映する}（予測分布のパラメータをまず事後分布などから引き，そのパラメータで欠測値を引く）ときである．
+MNAR なら補完モデル自体が偏り，Rubin のルールは偏りを補正しない．
+(iii) を欠くと $B$ が小さくなりすぎることを，\kakomon{2024}{3}〔4〕〔5〕の設定で確認する．
+\begin{meidai}[補完間分散の期待値（\kakomon{2024}{3}〔4〕〔5〕）]\label[meidai]{prop:16-EB}
+1群で観測 $N$ 人中 $y$ 人が改善（$\hat p=y/N$），欠測 $M$ 人とする．補完 $k$ で欠測者の改善数 $Y_k^m$ を引き，$\hat\theta_k=(y+Y_k^m)/(N+M)$ とする．
+\begin{enumerate}[label=(\arabic*)]
+\item $Y_k^m\sim\Bin(M,\hat p)$（パラメータを $\hat p$ に固定，2024年の設定）なら
+$\V[\hat\theta_k\mid y]=\dfrac{M\hat p(1-\hat p)}{(N+M)^2}$，$\E[B\mid y]=\V[\hat\theta_k\mid y]$．
+\item $p^*$ を近似的に平均 $\hat p$，分散 $\hat p(1-\hat p)/N$ の分布から引き，$Y_k^m\mid p^*\sim\Bin(M,p^*)$ とする（適切な補完）なら
+$\V[\hat\theta_k\mid y]\approx\dfrac{\hat p(1-\hat p)}{(N+M)^2}\Bigl(M+\dfrac{M^2}{N}\Bigr)$．
+\item $\bar W\approx\hat p(1-\hat p)/(N+M)$ とすると，(2) では $\bar W+B\approx\hat p(1-\hat p)/N$（観測データだけの分散）となるが，(1) ではそれより小さい．
+\end{enumerate}
+2群の差 $\hat\theta_k=\hat p_{T,k}-\hat p_{C,k}$ では，群間で補完が独立なので条件付き分散は2群の和になる．
+\end{meidai}
+\begin{proof}
+(1) $y$ を与えると $\hat\theta_k$ の変動は $Y_k^m$ だけによるので $\V[\hat\theta_k\mid y]=\V[Y_k^m]/(N+M)^2=M\hat p(1-\hat p)/(N+M)^2$．
+$\hat\theta_1,\dots,\hat\theta_m$ は $y$ を与えて i.i.d.\ なので，不偏分散 $B$ の条件付き期待値はこの分散に等しい．\\
+(2) 条件付き分散の公式で $\V[Y_k^m]=\E[Mp^*(1-p^*)]+\V[Mp^*]\approx M\hat p(1-\hat p)+M^2\hat p(1-\hat p)/N$（$\E[p^*(1-p^*)]\approx\hat p(1-\hat p)$ と近似）．\\
+(3) (2) より $\bar W+B\approx\frac{\hat p(1-\hat p)}{(N+M)^2}\Bigl\{(N+M)+M+\frac{M^2}N\Bigr\}=\frac{\hat p(1-\hat p)}{(N+M)^2}\cdot\frac{(N+M)^2}{N}=\frac{\hat p(1-\hat p)}{N}$．
+(1) では $M^2/N$ の項がないので小さい．
+\end{proof}
+したがって 2024年の補完方法（パラメータを固定した二項分布）は，多重補完の考え方を示す簡略版であり，実際には補完パラメータの不確かさも反映させる必要がある．
+\kakomon{2024}{3}〔2〕〔3〕の数値は，各補完データの分散 $\hat p_T(1-\hat p_T)/100+\hat p_C(1-\hat p_C)/100$ が $0.003732$，$0.003871$，$0.003718$，
+$\bar W=0.003774$，$B=0.0001$，$T=0.003774+\frac43\times0.0001=0.003907$ である（本書で検算）．
+
+\section{仮定}\label{sec:16-assump}
+\begin{itemize}
+\item 完全ケース解析：MCAR（またはそれに準じる条件）．
+\item 尤度法（EM を含む）・IPW：MAR（検証不能），モデルの正しさ（IPW では観測確率のモデル）．
+\item 多重補完：MAR，補完モデルの正しさ（解析に使う変数と欠測に関係する変数を含む），パラメータの不確かさを反映した補完．
+\item ABO の EM：ハーディ・ワインベルグ平衡（遺伝子型の確率が遺伝子頻度の積），個体の独立性．
+\end{itemize}
+
+\section{結果の解釈}\label{sec:16-interp}
+\begin{itemize}
+\item 群によって欠測割合が異なる（\kakomon{2024}{3}）なら，完全ケース解析は偏る可能性が高い．欠測の理由（有害事象，効果不十分）を群ごとに確認する．
+\item 欠測と観測変数の関連が有意でなくても MCAR の証明にはならない．MAR か MNAR かはデータから判定できない．
+\item EM の収束値は観測データの尤度の（局所）最大点である．複数の初期値から始めて同じ値に収束するかを確かめるとよい．
+\end{itemize}
+
+\section{手法選択}\label{sec:16-choice}
+\begin{itemize}
+\item 欠測が MCAR とみなせる → 完全ケース解析（不偏だが精度は低下）．
+\item 欠測が観測された共変量・過去の値に依存（MAR）→ 尤度に基づく方法（混合モデル（\cref{ch:08}），EM），IPW，または多重補完（Rubin のルールで統合）．
+\item 観測されない度数・潜在的なクラスを含む多項モデルで MLE を求める → EM アルゴリズム．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:16-err}
+\begin{warnbox}
+\begin{itemize}
+\item 欠測と群・共変量の関連が有意でないことを MCAR の証明とする．
+\item 単一補完したデータを完全データとして分析し，標準誤差を過小評価する．
+\item Rubin のルールで $B$ に $(1+1/m)$ を掛け忘れる．$B$ の除数を $m$ とする（正しくは $m-1$）．$\bar W$ と $B$ を取り違える．
+\item 補完した推定値を平均するだけで分散は1つの補完データの値を使う．
+\item MAR を「欠測がランダム（データと無関係）」と読み違える（それは MCAR）．
+\item EM の E ステップで，観測値を条件としない期待値（$Np^2$ など）を用いて，標準 EM の性質（尤度の単調性・MLE への収束）が成り立つとする．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:16-link}
+\begin{linkbox}
+\begin{itemize}
+\item E ステップの $f_{AA}\mid n_A\sim\Bin(n_A,p^2/(p^2+2pr))$ は，多項分布の一部のセルを併合したときの条件付き分布（多項分布の条件付き分布は多項分布）である．
+\item M ステップは多項分布の MLE（セルの相対度数）を遺伝子単位で数えたものである．
+\item \kakomonSM{2018}{3}（0切断二項分布の反復解法）は，観測されないゼロの個数を補う EM アルゴリズムの更新と一致する．
+\item Rubin のルールの $T=\bar W+(1+1/m)B$ は，条件付き分散の公式 $\V[X]=\E[\V[X\mid Y]]+\V[\E[X\mid Y]]$（同書 命題4.11）と，$m$ 個の平均の分散 $B/m$ の組み合わせである．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:16-ex}
+\begin{reidai}[欠測メカニズムの分類]\label{reidai:16-1}
+次の欠測を MCAR・MAR・MNAR に分類せよ（必要な仮定があれば述べよ）．
+\begin{enumerate}[label=(\arabic*)]
+\item 検査機器の故障で，ある日の全患者の測定値が欠測した．
+\item 第4週の血圧が高かった患者ほど第8週に来院しなかった（第4週の値は観測済み）．
+\item 抑うつ尺度の評価で，症状が最も悪い時期の患者が回答を拒否した．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[完全ケース解析の偏り]\label{reidai:16-2}
+$(X_i,Y_i,R_i)$（$i=1,\dots,n$）は i.i.d.\ で，2 値の共変量 $X$ は $\Prob(X=0)=\Prob(X=1)=0.5$，$\E[Y\mid X=0]=10$，$\E[Y\mid X=1]=20$（したがって $\E[Y]=15$）．
+$Y$ の観測確率は $X$ だけで決まり，$\pi(0)=\Prob(R=1\mid X=0)=0.9$，$\pi(1)=0.5$ である（$X$ は全員観測）．
+以下で問うのは有限標本での期待値ではなく，母集団レベルの量（推定量の確率極限）である．
+\begin{enumerate}[label=(\arabic*)]
+\item 欠測メカニズムは何か．
+\item 完全ケース平均 $\bar Y_{\mathrm{cc}}=\sum_iR_iY_i/\sum_iR_i$ が $n\to\infty$ で確率収束する先，すなわち観測された集団の条件付き母平均 $\E[Y\mid R=1]$ を求め，真の平均 $\E[Y]=15$ と比べよ．
+\item $\E[RY/\pi(X)]$ と $\E[R/\pi(X)]$ を求め，IPW 推定量 $\frac1n\sum_iR_iY_i/\pi(X_i)$ と Hájek 型の比 $\sum_i\{R_iY_i/\pi(X_i)\}/\sum_i\{R_i/\pi(X_i)\}$ がそれぞれ何に確率収束するかを答えよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[ABO 血液型の EM アルゴリズム]\label{reidai:16-3}
+$N=200$ 人の表現型が $n_O=60$，$n_A=80$，$n_B=40$，$n_{AB}=20$ であった．初期値を $(r^{(0)},p^{(0)},q^{(0)})=(0.5,\,0.25,\,0.25)$ とする．
+\begin{enumerate}[label=(\arabic*)]
+\item 標準的な EM の E ステップで $f_{AA},f_{AO},f_{BB},f_{BO}$ を求め，M ステップで $(r^{(1)},p^{(1)},q^{(1)})$ を求めよ．
+\item （任意）E ステップの代わりに\kakomon{2019}{5}の公式解答の形 $f_{AA}=Np^2$，$f_{AO}=n_A-Np^2$（B型も同様）を用いた場合の $(r^{(1)},p^{(1)},q^{(1)})$ を求め，(1) と比べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[多重補完の統合]\label{reidai:16-4}
+ある試験の主要評価項目（平均値の差）について，欠測値を $m=5$ 回補完し，各補完データで推定値 $\hat\theta_k$ と分散の推定値 $\hat V_k$ を得た．
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$k$ & 1 & 2 & 3 & 4 & 5\\
+\midrule
+$\hat\theta_k$ & 1.2 & 1.0 & 1.4 & 1.1 & 1.3\\
+$\hat V_k$ & 0.04 & 0.05 & 0.04 & 0.06 & 0.06\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=(\arabic*)]
+\item $\bar\theta$，$\bar W$，$B$，$T$ を求めよ．
+\item $r$，自由度 $\nu$，$\hat\lambda=(1+1/m)B/T$ を求め，$\theta$ の95\%信頼区間を作れ（$t_{28}(0.025)=2.048$，$\sqrt{0.08}=0.2828$）．
+\item 1番目の補完データだけを完全データとして解析した場合の95\%信頼区間（正規近似）と比べ，何が問題か述べよ．
+\item 別の試験で，1群について観測80人中40人が改善し，20人が欠測した．\cref{prop:16-EB}(1)の補完（$Y^m\sim\Bin(20,0.5)$）と(2)の適切な補完について，$\V[\hat\theta_k\mid y]$ と $\bar W+B$（$\bar W\approx\hat p(1-\hat p)/100$）を求め，観測データだけの分散 $\hat p(1-\hat p)/80$ と比べよ．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:16-sol}
+\begin{kaitou}{reidai:16-1}
+(1) MCAR（故障が患者の状態と無関係なら）．
+(2) MAR（欠測が観測済みの第4週の値に依存し，それを与えれば第8週の値によらないなら）．第8週の値自体に依存するなら MNAR．
+(3) MNAR（欠測が欠測値そのもの＝その時点の症状に依存）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:16-2}
+(1) 欠測は観測された $X$ だけに依存するので MAR．\\
+(2) $\Prob(X=0,R=1)=0.5\times0.9=0.45$，$\Prob(X=1,R=1)=0.5\times0.5=0.25$，$\Prob(R=1)=0.70$．
+MAR より $\E[RY\mid X=x]=\pi(x)\E[Y\mid X=x]$ なので $\E[RY]=0.45\times10+0.25\times20=9.5$．よって
+\[
+\E[Y\mid R=1]=\frac{\E[RY]}{\Prob(R=1)}=\frac{9.5}{0.70}=13.57 .
+\]
+大数の法則により $\frac1n\sum R_iY_i\to9.5$，$\frac1n\sum R_i\to0.70$ だから，$\bar Y_{\mathrm{cc}}$ は $13.57$ に確率収束する（$\E[Y\mid R=1]$ の一致推定量）．
+真の平均 $\E[Y]=15$ とは $13.57-15=-1.43$ ずれており，完全ケース平均は $\E[Y]$ の一致推定量でない（観測されにくい $X=1$ の層が過少代表される）．\\
+(3) $\E[RY/\pi(X)]=0.45\times10/0.9+0.25\times20/0.5=5+10=15=\E[Y]$，$\E[R/\pi(X)]=0.45/0.9+0.25/0.5=1$．
+$\pi$ は既知なので，$\frac1n\sum R_iY_i/\pi(X_i)$ は期待値が15（不偏）で，大数の法則により15に確率収束する．
+Hájek 型の比は分子 $\to15$，分母 $\to1$ より15に確率収束する（一致．ただし有限標本で不偏とは限らない）．いずれも完全ケース平均の偏りが除かれる．
+（$X$ ごとの完全ケース平均を $X$ の分布 $(0.5,0.5)$ で平均する層別の推定も，$0.5\times10+0.5\times20=15$ に確率収束する．）
+\end{kaitou}
+
+\begin{kaitou}{reidai:16-3}
+(1) $p/(p+2r)=0.25/1.25=0.2$，$q/(q+2r)=0.2$ なので
+$f_{AA}=80\times0.2=16$，$f_{AO}=64$，$f_{BB}=40\times0.2=8$，$f_{BO}=32$．\cref{eq:16-mstep}より
+\[
+r^{(1)}=\frac{120+64+32}{400}=0.54,\qquad p^{(1)}=\frac{32+64+20}{400}=0.29,\qquad q^{(1)}=\frac{16+32+20}{400}=0.17 .
+\]
+(2)（任意）$f_{AA}=200\times0.0625=12.5$，$f_{AO}=67.5$，$f_{BB}=12.5$，$f_{BO}=27.5$ で
+\begin{gather*}
+r^{(1)}=\frac{120+67.5+27.5}{400}=0.5375,\qquad p^{(1)}=\frac{25+67.5+20}{400}=0.28125,\\
+q^{(1)}=\frac{25+27.5+20}{400}=0.18125 .
+\end{gather*}
+同じ初期値から異なる値になり，両者は別の反復である．
+\end{kaitou}
+\begin{supbox}[補足：公式解答型の反復の極限]
+公式解答型の反復では $p^{(t+1)}=\{Np^2+n_A+n_{AB}\}/(2N)$（$p=p^{(t)}$）なので，不動点は $Np^2-2Np+(n_A+n_{AB})=0$，すなわち
+$(1-p)^2=(n_O+n_B)/N$ を満たす（\cref{sec:16-em}の warnbox）．この数値では $(1-p)^2=100/200=0.5$，$0<p<1$ より $p=1-\sqrt{0.5}=1-0.7071=0.293$，
+同様に $(1-q)^2=(n_O+n_A)/N=0.7$ から $q=1-\sqrt{0.7}=1-0.8367=0.163$．
+一方，標準 EM は観測データの最尤推定値に収束し，計算機で反復すると $\hat p=0.2923$，$\hat q=0.1630$ となる．
+$p$ が $0.2929$ と $0.2923$ でわずかに異なるように，\textbf{標準 EM と公式解答型の反復は一般に同じ値に収束しない}．
+\end{supbox}
+
+\begin{kaitou}{reidai:16-4}
+(1) $\bar\theta=6.0/5=1.2$．$\bar W=0.25/5=0.05$．偏差 $0,-0.2,0.2,-0.1,0.1$ の平方和 $0.10$ より $B=0.10/4=0.025$．
+$T=0.05+1.2\times0.025=0.08$．\\
+(2) $r=0.03/0.05=0.6$，$\nu=4\times(1+1/0.6)^2=4\times(8/3)^2=28.4$，$\hat\lambda=0.03/0.08=0.375$（分散の約4割が欠測による）．
+95\%CI は $1.2\pm2.048\times0.2828=1.2\pm0.579=(0.62,\,1.78)$（自由度28の値を用いた）．\\
+(3) $1.2\pm1.96\times\sqrt{0.04}=1.2\pm0.39=(0.81,\,1.59)$．補完値を確定値として扱うので補完間の変動 $B$ が無視され，区間が狭すぎる（被覆確率が名目の95\%を下回る）．\\
+(4) $\hat p=0.5$，$N=80$，$M=20$，$N+M=100$．
+(1) の補完：$\V[\hat\theta_k\mid y]=20\times0.25/100^2=0.0005$，$\bar W+B\approx0.0025+0.0005=0.0030$．
+(2) の補完：$0.25\times(20+400/80)/100^2=0.25\times25/10000=0.000625$，$\bar W+B\approx0.0025+0.000625=0.003125$．
+観測データだけの分散は $0.25/80=0.003125$ で，(2) と一致し，(1) は約4\%小さい．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item MCAR：データと無関係．MAR：観測値のみに依存．MNAR：欠測値自体に依存．MAR と MNAR はデータで区別できない．
+\item 欠測と観測変数の関連の検定で MCAR は否定できるが，非有意でも MCAR の証明にはならない．
+\item MAR＋パラメータの分離で，尤度は欠測メカニズムを無視できる．完全ケースは MCAR で不偏，MAR では一般に偏る（IPW で補正できる）．単一補完は分散を過小評価．
+\item EM：E ステップ＝観測データを条件とした完全データ対数尤度の期待値，M ステップ＝その最大化．標準 EM では観測データの尤度は減少しない．
+\item ABO：E ステップ $\E[f_{AA}\mid n_A]=n_Ap^2/(p^2+2pr)$，M ステップ $\hat p=(2f_{AA}+f_{AO}+f_{AB})/(2N)$ など（遺伝子の数え上げ）．
+\item \kakomon{2019}{5} の公式解答の $\E[f_{AA}]=Np^2$ は観測値を条件としない期待値で，標準 EM とは別の反復になる．
+\item 多重補完：$T=\bar W+(1+1/m)B$（補完内＋補完間＋有限 $m$ の補正）．MAR と適切な補完（パラメータの不確かさも反映）が前提．単一補完は $B$ を無視して分散を過小評価．
+\end{itemize}
+\end{summarybox}

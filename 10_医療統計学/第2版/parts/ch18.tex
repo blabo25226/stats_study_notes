@@ -1,0 +1,364 @@
+\chapter{メタアナリシス}\label{ch:18}
+
+\begin{goalbox}
+\begin{itemize}
+\item 複数の研究の効果推定値 $Y_k$ と分散 $\sigma_k^2$ から，固定効果モデルと変量効果モデルを式で書き，推定対象の違いを説明できる．
+\item 逆分散重み付き推定量 $\hat\theta=\sum w_kY_k/\sum w_k$ を最尤法で導出し，期待値・分散 $1/\sum w_k$ を求め，それが線形不偏推定量の中で分散最小であることを証明できる．
+\item Cochran の $Q$ を分解して $\E[Q]$ を導き，DerSimonian--Laird 推定量 $\hat\tau^2$ と $I^2$ を求められる．
+\item 変量効果モデルでの $\hat\mu$ と信頼区間を計算し，固定効果の結果と比べて解釈できる．
+\item 2×2 表の研究を統合するときの逆分散法・Mantel--Haenszel 法・Peto 法の関係を説明できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2021}{4}：脂質異常症治療薬の4試験の対数リスク比．変量効果モデル $Y_k=\mu+\delta_k+\varepsilon_k$ の周辺分布，対数尤度，$\hat\mu$ の導出，
+      $\hat\tau^2=0.013$ での $\hat\mu$ の数値，$\tau^2=0.014$ を既知とした $\V[\hat\mu]$ と95\%信頼区間．
+\item \kakomon{2023}{3}：高脂血症治療薬の筋肉関連有害事象の4試験の対数オッズ比．固定効果の対数尤度と MLE，その期待値・分散，
+      $Q$ の分解と $\E[Q]$，$\tau^2$ のモーメント推定量，$\sigma_k^2=\sigma^2$ の下での $\tau^2/(\tau^2+\sigma^2)$ の推定量（$Q=7.15$ で $0.58$）．
+\item 関連：\kakomon{2017}{4}〔2〕〜〔4〕の「層ごとの対数オッズ比を分散の逆数で重み付けて平均する」操作は，層を研究とみなせば固定効果メタアナリシスと同じ計算である（\cref{sec:18-mh}）．
+\end{itemize}
+2回とも，推定量や $Q$ の分解は問題文で与えられ，受験者は「確率モデル→尤度→最大化」「期待値・分散の計算」「数値代入」を行う形であった．
+誘導があっても，逆分散重みの意味と $\E[Q]$ の計算を知っていれば短時間で正確に解ける．
+\end{exambox}
+
+\flowline{研究ごとの\\推定値 $Y_k$ と\\分散 $\sigma_k^2$}{共通効果 $\theta$\\平均効果 $\mu$}{逆分散重み\\DL 法}{正規近似\\$\sigma_k^2$ 既知\\研究の独立}{$\hat\theta$，$Q$，\\$\hat\tau^2$，$I^2$}{異質性と\\一般化可能性}
+
+\section{問題設定とデータ構造}\label{sec:18-setting}
+$K$ 個の研究 $k=1,\dots,K$ から，効果の推定値 $Y_k$ とその分散 $\sigma_k^2$ が得られる．
+$Y_k$ は対数リスク比，対数オッズ比，対数ハザード比，平均値の差などであり，比の指標は\textbf{対数スケールで統合}し，結果を指数変換して示す
+（対数をとると推定量の分布が正規分布に近く，分散が\cref{eq:04-varlogOR}などのデルタ法で得られるため）．
+2×2 表で報告される研究なら，研究 $k$ の表（$a_k,b_k,c_k,d_k$）から
+\[
+Y_k=\log\frac{a_kd_k}{b_kc_k},\qquad \sigma_k^2=\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k}
+\]
+とする（\kakomon{2023}{3} の表1の $Y_k$ はこの式による．$\sigma_k^2$ は約 $0.09$〜$0.12$）．
+
+$\sigma_k^2$ は各研究の標本サイズから十分精度よく推定されているとして\textbf{既知の定数とみなす}．これが本章の全ての式の前提であり，
+研究が小さいとこの近似は粗くなる．重みを $w_k=1/\sigma_k^2$（精度）と書く．
+
+\section{固定効果モデルと逆分散重み付き推定量}\label{sec:18-fixed}
+\Hissu\Hinshutsu
+\begin{teigi}[固定効果（共通効果）モデル]\label{def:18-fe}
+$Y_1,\dots,Y_K$ は独立で $Y_k\sim\Normal(\theta,\sigma_k^2)$．すべての研究が共通の真の効果 $\theta$ をもち，研究間の違いは研究内の誤差だけによる．
+\end{teigi}
+
+\begin{meidai}[逆分散重み付き推定量（\kakomon{2023}{3}〔1〕〔2〕）]\label[meidai]{prop:18-fe}
+固定効果モデルの下で $\theta$ の最尤推定量とその期待値・分散は
+\begin{equation}
+\hat\theta=\frac{\sum_kw_kY_k}{\sum_kw_k},\qquad \E[\hat\theta]=\theta,\qquad \V[\hat\theta]=\frac{1}{\sum_kw_k},\qquad w_k=\frac1{\sigma_k^2}.\label{eq:18-fe}
+\end{equation}
+さらに $\hat\theta\sim\Normal(\theta,1/\sum_kw_k)$ なので，$\theta$ の95\%信頼区間は $\hat\theta\pm1.96/\sqrt{\sum_kw_k}$ である．
+\end{meidai}
+\begin{proof}
+\textbf{確率モデル}：$Y_k\sim\Normal(\theta,\sigma_k^2)$，独立，$\sigma_k^2$ 既知．
+\textbf{確率密度関数}：$f(y_k;\theta)=(2\pi\sigma_k^2)^{-1/2}\exp\{-(y_k-\theta)^2/(2\sigma_k^2)\}$．
+\textbf{尤度関数}：独立性より $L(\theta)=\prod_kf(y_k;\theta)$．
+\textbf{対数尤度}：
+\[
+l(\theta)=-\frac12\sum_{k=1}^K\Bigl\{\log(2\pi\sigma_k^2)+w_k(y_k-\theta)^2\Bigr\}.
+\]
+\textbf{スコア}：$l'(\theta)=\sum_kw_k(y_k-\theta)=0$ を解いて $\hat\theta=\sum w_ky_k/\sum w_k$．
+$l''(\theta)=-\sum_kw_k<0$ なので最大である．
+\textbf{期待値}：$\E[\hat\theta]=\sum w_k\theta/\sum w_k=\theta$．
+\textbf{分散}：独立性より $\V[\hat\theta]=\sum_kw_k^2\sigma_k^2/(\sum_kw_k)^2=\sum_kw_k/(\sum_kw_k)^2=1/\sum_kw_k$
+（$w_k^2\sigma_k^2=w_k$ を使った）．
+$\hat\theta$ は独立な正規変数の線形結合なので正規分布に従う．
+\end{proof}
+
+\paragraph{なぜ分散の逆数で重み付けるのか}
+最尤法を持ち出さなくても，逆分散重みは「分散を最小にする重み」として導ける．この性質は正規性を必要としない．
+\begin{teiri}[逆分散重みの最適性]\label[teiri]{thm:18-blue}
+$Y_1,\dots,Y_K$ が独立で $\E[Y_k]=\theta$，$\V[Y_k]=\sigma_k^2$（既知）とする．$\theta$ の線形不偏推定量 $\tilde\theta=\sum_kc_kY_k$ の中で分散が最小のものは $c_k=w_k/\sum_jw_j$ のとき，すなわち $\hat\theta$ であり，最小分散は $1/\sum_kw_k$ である．
+\end{teiri}
+\begin{proof}
+不偏性 $\E[\tilde\theta]=\theta\sum_kc_k=\theta$（すべての $\theta$ で）より $\sum_kc_k=1$．分散は $\V[\tilde\theta]=\sum_kc_k^2\sigma_k^2$．
+Cauchy--Schwarz の不等式を $c_k\sigma_k$ と $1/\sigma_k$ に適用すると
+\[
+1=\Bigl(\sum_kc_k\Bigr)^2=\Bigl(\sum_k c_k\sigma_k\cdot\frac1{\sigma_k}\Bigr)^2\le\Bigl(\sum_kc_k^2\sigma_k^2\Bigr)\Bigl(\sum_k\frac1{\sigma_k^2}\Bigr)
+=\V[\tilde\theta]\sum_kw_k .
+\]
+よって $\V[\tilde\theta]\ge1/\sum_kw_k$．等号は $c_k\sigma_k\propto1/\sigma_k$，すなわち $c_k\propto w_k$ のときに限り成り立ち，$\sum c_k=1$ から $c_k=w_k/\sum_jw_j$．
+（ラグランジュ乗数法で $\sum c_k^2\sigma_k^2-2\lambda(\sum c_k-1)$ を最小化しても $c_k=\lambda/\sigma_k^2$ を得る．）
+\end{proof}
+精度の高い（大きな）研究ほど重みが大きい．単純平均 $\bar Y=\sum Y_k/K$ も不偏だが，分散 $\sum\sigma_k^2/K^2$ は $1/\sum w_k$ 以上で，研究の大きさが不揃いなほど損失が大きい（\cref{reidai:18-2}）．
+
+\Youchui 定理の前提は「$\sigma_k^2$ が既知」「$Y_k$ が不偏で独立」である．実際には $\sigma_k^2$ は推定値なので，$1/\sum w_k$ は推定量の分散の近似である．
+また，異質性がある（$\theta_k$ が研究ごとに異なる）とき，$\hat\theta$ が推定しているのは「各研究の真の効果の，精度による重み付き平均 $\sum w_k\theta_k/\sum w_k$」であり，$\V[\hat\theta]=1/\sum w_k$ は研究間の変動を含まない．
+
+\section{異質性：Cochran の \texorpdfstring{$Q$}{Q} と \texorpdfstring{$I^2$}{I²}}\label{sec:18-q}
+\Hissu
+\begin{teigi}[Cochran の $Q$]\label{def:18-q}
+$Q=\sum_{k=1}^Kw_k(Y_k-\hat\theta)^2$，$\hat\theta$ は固定効果推定量（\cref{eq:18-fe}）．
+\end{teigi}
+$\theta_1=\dots=\theta_K$（均一性）の下で $Q\sim\chi^2_{K-1}$ であり（\cref{thm:07-woolf}の証明と同じ平方和の分解．層別 OR の Woolf の均一性検定は $Q$ の一例），$Q>\chi^2_{K-1}(\alpha)$ なら均一性を棄却する．
+\begin{teiri}[$Q$ の分解と期待値（\kakomon{2023}{3}〔3〕）]\label[teiri]{thm:18-EQ}
+任意の $\theta$ について
+\begin{equation}
+Q=\sum_kw_k(Y_k-\theta)^2-\Bigl(\sum_kw_k\Bigr)(\hat\theta-\theta)^2 .\label{eq:18-qdecomp}
+\end{equation}
+$Y_k$ が独立で $\E[Y_k]=\theta$（変量効果モデルでは $\theta$ を $\mu$ と読む）なら，$\V[Y_k]$ が何であっても
+\begin{equation}
+\E[Q]=\sum_kw_k\V[Y_k]-\frac{\sum_kw_k^2\V[Y_k]}{\sum_kw_k}.\label{eq:18-EQ}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$Y_k-\theta=(Y_k-\hat\theta)+(\hat\theta-\theta)$ を2乗して $w_k$ を掛けて足すと
+\[
+\sum_kw_k(Y_k-\theta)^2=Q+2(\hat\theta-\theta)\sum_kw_k(Y_k-\hat\theta)+(\hat\theta-\theta)^2\sum_kw_k .
+\]
+$\hat\theta$ の定義から $\sum_kw_k(Y_k-\hat\theta)=\sum w_kY_k-\hat\theta\sum w_k=0$ なので中央の項は消え，\cref{eq:18-qdecomp}を得る．
+期待値をとる．$\E[Y_k]=\theta$ より $\E[(Y_k-\theta)^2]=\V[Y_k]$．また $\E[\hat\theta]=\theta$ で，独立性から
+$\E[(\hat\theta-\theta)^2]=\V[\hat\theta]=\sum_kw_k^2\V[Y_k]/(\sum_kw_k)^2$．したがって
+$\E[Q]=\sum_kw_k\V[Y_k]-(\sum_kw_k)\cdot\sum_kw_k^2\V[Y_k]/(\sum_kw_k)^2$ で，\cref{eq:18-EQ}になる．
+\end{proof}
+固定効果モデルなら $\V[Y_k]=\sigma_k^2=1/w_k$ を代入して $\E[Q]=K-\sum w_k/\sum w_k=K-1$（$\chi^2_{K-1}$ の期待値と一致）．
+$Q$ が $K-1$ より大きいほど，研究内誤差だけでは説明できないばらつきがあることを示す．
+
+\paragraph{$I^2$}
+$Q$ は研究数や研究の大きさに依存するので，異質性の程度を比で表すのが $I^2$ である．
+\begin{equation}
+I^2=\max\Bigl\{0,\ \frac{Q-(K-1)}{Q}\Bigr\}.\label{eq:18-i2}
+\end{equation}
+「観測された推定値のばらつきのうち，研究内の誤差ではなく研究間の真の差による部分の割合」と解釈される \cite{higgins2002,higgins2003}．
+この解釈が厳密に分散比として導けるのは，すべての研究の分散が等しい場合である（\kakomon{2023}{3}〔5〕，次節の\cref{eq:18-i2eq}）．
+目安として25\%，50\%，75\% がそれぞれ低・中・高の異質性とされる \cite{higgins2003}．
+
+\section{変量効果モデルと DerSimonian--Laird 推定量}\label{sec:18-random}
+\Hissu\Hinshutsu
+\begin{teigi}[変量効果モデル]\label{def:18-re}
+$Y_k=\theta_k+\varepsilon_k$，$\theta_k=\mu+\delta_k$，$\varepsilon_k\sim\Normal(0,\sigma_k^2)$，$\delta_k\sim\Normal(0,\tau^2)$，すべて独立．
+$\theta_k$ は研究 $k$ の真の効果，$\mu$ は真の効果の分布の平均（平均効果），$\tau^2$ は研究間分散である．$\tau^2=0$ なら固定効果モデルに帰着する．
+\end{teigi}
+\begin{meidai}[周辺分布・尤度・$\tau^2$ を与えたときの MLE（\kakomon{2021}{4}〔1〕〜〔3〕）]\label[meidai]{prop:18-re}
+(1) $Y_k\sim\Normal(\mu,\sigma_k^2+\tau^2)$，$k=1,\dots,K$ は独立．\\
+(2) 対数尤度は
+\[
+\log L(\mu,\tau^2)=-\frac12\sum_{k=1}^K\Bigl\{\log2\pi+\log(\sigma_k^2+\tau^2)+\frac{(y_k-\mu)^2}{\sigma_k^2+\tau^2}\Bigr\}.
+\]
+(3) $\tau^2$ を与えたときの $\mu$ の MLE と分散は，$w_k^*=1/(\sigma_k^2+\tau^2)$ として
+\begin{equation}
+\hat\mu=\frac{\sum_kw_k^*Y_k}{\sum_kw_k^*},\qquad \V[\hat\mu]=\frac{1}{\sum_kw_k^*}.\label{eq:18-re}
+\end{equation}
+\end{meidai}
+\begin{proof}
+(1) $Y_k=\mu+\delta_k+\varepsilon_k$ は独立な正規変数の和なので正規分布（再生性）に従い，$\E[Y_k]=\mu$，$\V[Y_k]=\tau^2+\sigma_k^2$．
+研究ごとに $(\delta_k,\varepsilon_k)$ が独立なので $Y_k$ も独立．\\
+(2) $Y_k$ の密度 $\{2\pi(\sigma_k^2+\tau^2)\}^{-1/2}\exp\{-(y_k-\mu)^2/(2(\sigma_k^2+\tau^2))\}$ の積の対数．\\
+(3) $\partial\log L/\partial\mu=\sum_kw_k^*(y_k-\mu)=0$．$\partial^2\log L/\partial\mu^2=-\sum w_k^*<0$．
+分散は\cref{prop:18-fe}と同じ計算で，$\sigma_k^2$ を $\sigma_k^2+\tau^2$ に置き換えたもの．
+\end{proof}
+$\hat\mu$ も\cref{thm:18-blue}の意味で最適な重み（$\V[Y_k]$ の逆数）を使っている．
+実際には $\tau^2$ を推定値 $\hat\tau^2$ で置き換える．$\tau^2$ の推定の不確かさは $1/\sum w_k^*$ に含まれないので，研究数が少ないと信頼区間は狭すぎる傾向がある．
+
+\subsection{DerSimonian--Laird 推定量}\label{subsec:18-dl}
+$\tau^2$ の MLE は $\partial\log L/\partial\tau^2=0$ を数値的に解く必要があるが，$Q$ の期待値を使うと閉じた形のモーメント推定量が得られる．
+\begin{teiri}[DerSimonian--Laird 推定量（\kakomon{2023}{3}〔4〕，\cite{dl1986}）]\label[teiri]{thm:18-dl}
+変量効果モデルで $\V[Y_k]=\tau^2+1/w_k$（$w_k=1/\sigma_k^2$ は固定効果の重み）を\cref{eq:18-EQ}に代入すると
+\[
+\E[Q]=(K-1)+\tau^2\Bigl(\sum_kw_k-\frac{\sum_kw_k^2}{\sum_kw_k}\Bigr).
+\]
+$\E[Q]=Q$ とおいて $\tau^2$ について解き，負なら0に切り詰めて
+\begin{equation}
+\hat\tau^2_{\mathrm{DL}}=\max\left\{0,\ \frac{Q-(K-1)}{\sum_kw_k-\sum_kw_k^2/\sum_kw_k}\right\}.\label{eq:18-dl}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$\sum_kw_k(\tau^2+1/w_k)=\tau^2\sum_kw_k+K$，$\sum_kw_k^2(\tau^2+1/w_k)/\sum_kw_k=\tau^2\sum_kw_k^2/\sum_kw_k+1$ を\cref{eq:18-EQ}に代入する．
+分母 $\sum w_k-\sum w_k^2/\sum w_k$ は，$\sum_kw_k^2\le(\sum_kw_k)^2$ より非負で，$K\ge2$ なら正である．
+\end{proof}
+\paragraph{等分散の場合と $I^2$（\kakomon{2023}{3}〔5〕）}
+全研究で $\sigma_k^2=\sigma^2$（$w_k=w=1/\sigma^2$）なら $\sum w-\sum w^2/\sum w=Kw-w=w(K-1)$ で $\hat\tau^2=\sigma^2\{Q-(K-1)\}/(K-1)$．
+よって $\hat\tau^2+\sigma^2=\sigma^2Q/(K-1)$ となり，比をとると $\sigma^2$ が消えて
+\begin{equation}
+\widehat{\Bigl(\frac{\tau^2}{\tau^2+\sigma^2}\Bigr)}=\frac{\hat\tau^2}{\hat\tau^2+\sigma^2}=\frac{Q-(K-1)}{Q}=I^2 .\label{eq:18-i2eq}
+\end{equation}
+$Q=7.15$，$K=4$ なら $(7.15-3)/7.15=0.58$．研究内分散が異なる一般の場合，$I^2$ は $\sigma^2$ を「典型的な」研究内分散に置き換えた近似的な意味をもつ．
+
+\paragraph{DL 推定量と ML 推定量}
+DL 推定量は反復不要で広く使われるが，ML や REML の推定値とは一般に異なる．
+\kakomon{2021}{4} のデータでは，問題文の $\hat\tau^2_{\mathrm{ML}}=0.013$ に対し $Q=6.36$，$\hat\tau^2_{\mathrm{DL}}\approx0.032$ である（本書で数値計算により確認）．
+どの推定量を使うかは問題文の指示に従う．
+
+\section{信頼区間・予測区間と結果の解釈}\label{sec:18-interp}
+\Hinshutsu
+\begin{itemize}
+\item 固定効果：推定対象は「全研究に共通の効果 $\theta$」（異質性があれば精度による重み付き平均）．95\%CI は $\hat\theta\pm1.96/\sqrt{\sum w_k}$．
+\item 変量効果：推定対象は「研究間で変動する真の効果の分布の平均 $\mu$」．95\%CI は $\hat\mu\pm1.96/\sqrt{\sum w_k^*}$．研究間変動を反映して固定効果より広く，$\hat\tau^2=0$ なら一致する．
+\item 変量効果の重み $1/(\sigma_k^2+\tau^2)$ は，$\tau^2$ が大きいほど研究間で均等に近づき，小さな研究の相対的な重みが大きくなる．小さな研究ほど効果が大きい（出版バイアスなど）ときは，変量効果の推定値の方がその影響を強く受ける．
+\item 比の指標は対数スケールで区間を作り，両端を指数変換する（区間は点推定値に関して非対称になる）．
+\end{itemize}
+\paragraph{\kakomon{2021}{4} の数値}
+$\tau^2=0.014$（既知）とすると $w_k^*=1/(\sigma_k^2+0.014)$ で $\hat\mu\approx0.007$，$\sqrt{\V[\hat\mu]}\approx0.105$，95\%CI $[-0.198,\,0.212]$（対数リスク比；$\hat\tau^2=0.013$ では $\hat\mu\approx0.008$）．
+区間が0を含み，高用量と標準用量で心血管以外の死亡リスクに差があるとは言えない．RR に戻すと $[e^{-0.198},e^{0.212}]=[0.82,\,1.24]$．
+
+\begin{supbox}[補足：予測区間（出典：\cite{higgins2009}）\quad\Hatten]
+新しい研究（あるいは新しい臨床現場）での真の効果 $\theta_{\mathrm{new}}=\mu+\delta_{\mathrm{new}}$ の範囲を示すには，
+$\V[\theta_{\mathrm{new}}-\hat\mu]=\tau^2+\V[\hat\mu]$ に基づく予測区間 $\hat\mu\pm t_{K-2}(0.025)\sqrt{\hat\tau^2+\V[\hat\mu]}$ が提案されている．
+$\mu$ の信頼区間が0を含まなくても，予測区間が0を含むことはよくある．過去問では問われていない．
+\end{supbox}
+
+\paragraph{フォレストプロット}
+各研究の点推定値と95\%CI を横棒で，重みを四角形の大きさで示し，最下段に統合推定値をひし形で示す図をフォレストプロットという（\cref{fig:18-forest}）．
+横軸は比の指標の対数目盛で，縦線が「効果なし」（$\log\OR=0$）を表す．
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=40mm,y=6mm]
+\draw[gray] (0,0.3)--(0,-6.6);
+\foreach \x/\l in {-1/-1.0,-0.5/-0.5,0/0,0.5/0.5}{\draw (\x,-6.6)--(\x,-6.75) node[below,font=\scriptsize]{\l};}
+\node[font=\scriptsize] at (-0.25,-7.6) {対数オッズ比};
+\foreach \y/\m/\s/\w/\name in {-1/-0.40/0.2000/1.2/研究1,-2/-0.05/0.1414/1.7/研究2,-3/-0.60/0.3000/0.8/研究3,-4/0.15/0.1732/1.4/研究4}{
+  \draw[thick] ({\m-1.96*\s},\y)--({\m+1.96*\s},\y);
+  \fill[bkblue] ({\m-0.02*\w},{\y-0.133*\w})rectangle({\m+0.02*\w},{\y+0.133*\w});
+  \node[anchor=east,font=\scriptsize] at (-1.25,\y) {\name};}
+\fill[bkorange] (-0.298,-5)--(-0.1186,-4.7)--(0.0607,-5)--(-0.1186,-5.3)--cycle;
+\node[anchor=east,font=\scriptsize] at (-1.25,-5) {固定効果};
+\fill[bkred!70] (-0.4614,-6)--(-0.1684,-5.7)--(0.1247,-6)--(-0.1684,-6.3)--cycle;
+\node[anchor=east,font=\scriptsize] at (-1.25,-6) {変量効果（DL）};
+\end{tikzpicture}
+\caption{\cref{reidai:18-1}のフォレストプロット}\label{fig:18-forest}
+\end{figure}
+
+\section{Mantel--Haenszel 法・Peto 法との関係}\label{sec:18-mh}
+\Hinshutsu
+2×2 表で報告される研究（あるいは1つの研究内の層）を統合する固定効果の方法は，逆分散法だけではない．
+層別解析の\cref{sec:07-commonor}で扱う3つの推定量は，研究を層とみなせばそのままメタアナリシスの推定量になる．
+\begin{center}\small
+\begin{tabular}{@{}L{25mm}L{52mm}L{63mm}@{}}
+\toprule
+方法 & 統合する量と重み & 特徴\\
+\midrule
+逆分散法（Woolf） & $\log\widehat\OR_k$ を $w_k=1/(\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k})$ で平均 & 本章の一般論そのもの．ゼロセルがあると使えない．各研究が大きいことが前提\\
+Mantel--Haenszel & $\widehat\OR_k$ を $b_kc_k/N_k$ で平均（\cref{eq:07-mhor}） & ゼロセルに強い．研究（層）が小さく数が多い場合も一致推定量\\
+Peto & $\sum(O_k-E_k)/\sum V_k$（$\log\OR$ の1段階推定） & OR が1に近く群の大きさが釣り合うときに良い近似．\kakomon{2017}{4} の推定量\\
+\bottomrule
+\end{tabular}
+\end{center}
+\paragraph{Peto 法は逆分散法の一種}
+研究 $k$ の Peto 型推定値 $\hat\beta_k=(O_k-E_k)/V_k$ の分散は近似的に $1/V_k$ である（\cref{sec:07-commonor}）．
+これを\cref{eq:18-fe}に当てはめると重みは $V_k$ で
+\[
+\hat\beta=\frac{\sum_kV_k\cdot(O_k-E_k)/V_k}{\sum_kV_k}=\frac{\sum_k(O_k-E_k)}{\sum_kV_k},\qquad \V[\hat\beta]=\frac1{\sum_kV_k}
+\]
+となる．\kakomon{2017}{4}〔3〕の「対数オッズ比の重み付き平均」とその分散 $1/\sum V_k$ は，まさにこの固定効果メタアナリシスの計算である．
+\paragraph{MH 法の重み}
+MH 推定量は OR の尺度での重み付き平均で，重み $b_kc_k/N_k$ は「$\OR_k=1$ のとき $\widehat\OR_k$ の分散の逆数」と期待値の意味で一致する（\cref{sec:07-commonor}）．
+したがって OR が1に近いとき MH 法と逆分散法の結果は近く，各研究が大きければどちらも同じ $\OR$ の一致推定量である．
+差が出るのは，ゼロセルや小さな研究を含む場合と，OR が1から遠い場合である（\cref{reidai:18-3}）．
+
+\section{仮定と適用上の注意}\label{sec:18-assump}
+\begin{itemize}
+\item 各研究の推定値の正規近似と，$\sigma_k^2$ を既知とみなせること（小さな研究，イベントの稀な研究では不正確）．
+\item 研究の独立性（同じ患者が複数の研究に含まれない）．
+\item 効果の指標が研究間で同じ意味をもつこと（同じ尺度，同じ比較）．
+\item 変量効果モデル：真の効果が正規分布に従い，研究の大きさと無関係であること．研究数が少ないと $\tau^2$ の推定が不安定．
+\item 選択された研究が偏っていないこと（出版バイアス）．
+\end{itemize}
+\begin{supbox}[補足：出版バイアス]
+有意な結果の研究ほど出版されやすいと，統合推定値は効果を過大評価する．
+横軸に効果，縦軸に精度（$1/\SE$）をとったファネルプロットの非対称性で検討する．
+\end{supbox}
+\Youchui $Q$ 検定は研究数が少ないと検出力が低い．有意でなくても異質性がないとは言えないので，$I^2$ と $\hat\tau^2$ で程度を示す．
+異質性が大きいときは統合値だけでなく，その原因（対象集団，用量，追跡期間）を部分集団解析やメタ回帰で探索する．
+
+\section{手法選択}\label{sec:18-choice}
+\Youchui $Q$ 検定の結果や $I^2$ の大きさだけで固定効果か変量効果かを機械的に選ばず，まず推定対象を決める（\cref{sec:18-interp}）．そのうえで，以下を目安とする．
+\begin{itemize}
+\item 研究が同一のプロトコルで行われ異質性が小さい → 固定効果（逆分散法，MH 法，Peto 法）．
+\item 異なる集団・条件の研究を統合し平均的効果を知りたい → 変量効果（DL，ML，REML）．
+\item 2 値データでイベントが稀，ゼロセルがある → MH 法や Peto 法（逆分散法はゼロセルで計算できない）．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:18-err}
+\begin{warnbox}
+\begin{itemize}
+\item 比の指標を元のスケールで平均する（対数スケールで統合する）．
+\item 重みに分散そのもの $\sigma_k^2$ を使う．標準誤差の逆数 $1/\sigma_k$ を使う（正しくは $1/\sigma_k^2$）．
+\item 変量効果の重みに $1/\sigma_k^2$ を使う（正しくは $1/(\sigma_k^2+\tau^2)$）．
+\item $\V[\hat\theta]=1/\sum w_k$ を「$\sum\V[Y_k]/K^2$」と混同する（後者は単純平均の分散）．
+\item $Q$ の自由度を $K$ とする（正しくは $K-1$）．$\hat\tau^2<0$ をそのまま使う．
+\item $\E[Q]$ の計算で $\E[(\hat\theta-\theta)^2]$ を $\sum w_k\V[Y_k]/(\sum w_k)^2$ とする（正しくは $w_k^2$）．
+\item $Q$ 検定が非有意なら固定効果でよいと機械的に判断する．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:18-link}
+\begin{linkbox}
+\begin{itemize}
+\item 逆分散重み付き平均が線形不偏推定量の中で最良であること（\cref{thm:18-blue}）は『現代数理統計学の基礎』第6章演習（問9）で扱われ，Gauss--Markov の定理（一般化最小二乗）の最も簡単な場合である．
+\item 変量効果モデルは正規--正規の階層モデル（同書 4.2.4項，6.4.1項の経験ベイズ，\cref{sec:17-normal}）であり，各研究の $\theta_k$ の事後平均は $Y_k$ を $\hat\mu$ の方へ縮小した値になる．
+\item $\E[Q]$ の計算は平方和の分解 $\sum(X_i-\mu)^2=\sum(X_i-\bar X)^2+n(\bar X-\mu)^2$ の重み付き版で，不偏分散の除数 $n-1$ の導出と同じ構造である．
+\item DL 推定量はモーメント法（同書 6.1節）であり，ML 推定量と一般に一致しない．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:18-ex}
+\begin{reidai}[固定効果と変量効果]\label{reidai:18-1}
+4研究の対数オッズ比 $Y_k$ と分散 $\sigma_k^2$ が $(-0.40,0.04)$，$(-0.05,0.02)$，$(-0.60,0.09)$，$(0.15,0.03)$ である．
+\begin{enumerate}[label=(\arabic*)]
+\item 固定効果推定値とその95\%CI を求め，OR の尺度に直せ（$e^{-0.298}=0.742$，$e^{0.061}=1.063$）．
+\item $Q$ を求め，均一性を検定せよ（$\chi^2_3(0.05)=7.815$）．$I^2$ を求めよ．
+\item DL 法で $\hat\tau^2$ を求めよ．
+\item 変量効果推定値とその95\%CI を求め，(1)と比べて解釈せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[逆分散重みの効率と等分散の場合]\label{reidai:18-2}
+\begin{enumerate}[label=(\arabic*)]
+\item 3研究の推定値 $Y_k$ が独立で同じ $\theta$ を推定し，分散が $0.01$，$0.04$，$0.04$ である．単純平均 $\bar Y$ と逆分散重み付き平均 $\hat\theta$ の分散をそれぞれ求め，比 $\V[\hat\theta]/\V[\bar Y]$ を求めよ．
+\item (1)で重みを $c_k\propto1/\sigma_k$（標準誤差の逆数）とした推定量の分散を求め，$\hat\theta$ と比べよ．
+\item $K=5$ 研究がすべて同じ分散 $\sigma^2=0.05$ をもち，$Q=12.0$ であった．$\hat\tau^2_{\mathrm{DL}}$ と $I^2$ を求め，$I^2=\hat\tau^2/(\hat\tau^2+\sigma^2)$ を確かめよ（$\chi^2_4(0.05)=9.488$）．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[2×2 表の研究の統合]\label{reidai:18-3}
+2つの試験の結果（治療群・対照群のイベント数／人数）が，試験1：$10/100$，$20/100$，試験2：$15/200$，$25/200$ である．
+\begin{enumerate}[label=(\arabic*)]
+\item 各試験の OR，$\log\OR$ とその分散（Woolf）を求めよ（$\log0.444=-0.811$，$\log0.568=-0.566$）．
+\item 逆分散法による共通 OR を求めよ（$e^{-0.665}=0.514$）．
+\item MH 推定量による共通 OR を求め，(2)と比べよ．
+\item 試験3：$0/20$，$2/20$ を追加する．逆分散法と MH 法のそれぞれで何が起こるか述べ，MH 推定値を求めよ．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:18-sol}
+\begin{kaitou}{reidai:18-1}
+(1) $w=(25,\,50,\,11.11,\,33.33)$，$\sum w=119.44$，$\sum wY=-10-2.5-6.667+5=-14.17$．
+$\hat\theta=-14.17/119.44=-0.119$，$\SE=1/\sqrt{119.44}=0.0915$，95\%CI $-0.119\pm1.96\times0.0915=(-0.298,\,0.061)$．OR で $0.89$，95\%CI $(0.74,\,1.06)$．\\
+(2) $Q=\sum w_k(Y_k+0.119)^2=1.980+0.235+2.575+2.405=7.19<7.815$．均一性は棄却されない．$I^2=(7.19-3)/7.19=0.58$．\\
+(3) $\sum w^2=625+2500+123.5+1111.1=4359.6$，$\sum w-\sum w^2/\sum w=119.44-36.50=82.95$．$\hat\tau^2=(7.19-3)/82.95=0.0506$．\\
+(4) $w^*=1/(\sigma_k^2+0.0506)=(11.04,\,14.17,\,7.11,\,12.41)$，$\sum w^*=44.74$，$\sum w^*Y=-7.53$．
+$\hat\mu=-0.168$，$\SE=1/\sqrt{44.74}=0.150$，95\%CI $(-0.461,\,0.125)$．\\
+変量効果では小さい研究（研究3）の相対的な重みが $11.11/119.44=9\%$ から $7.11/44.74=16\%$ に増え，点推定が負の側に移った．区間は研究間変動を反映して広くなった．
+$Q$ 検定は有意でないが $I^2=58\%$ で中程度の異質性があり，研究数が4と少ないため検定の検出力が低いことに注意する（\cref{fig:18-forest}）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:18-2}
+(1) $\V[\bar Y]=(0.01+0.04+0.04)/9=0.010$．$w=(100,25,25)$，$\V[\hat\theta]=1/150=0.00667$．比は $0.667$：単純平均は逆分散重みより分散が1.5倍大きい．\\
+(2) $c\propto(10,5,5)$ で $c=(0.5,0.25,0.25)$．分散 $0.25\times0.01+0.0625\times0.04\times2=0.0025+0.005=0.0075>0.00667$．
+\cref{thm:18-blue}より最小は $c_k\propto1/\sigma_k^2$ に限られる．\\
+(3) $Q=12.0>9.488$ で均一性は棄却される．$\hat\tau^2=\sigma^2\{Q-(K-1)\}/(K-1)=0.05\times8/4=0.10$．
+$I^2=(12-4)/12=0.667$，$\hat\tau^2/(\hat\tau^2+\sigma^2)=0.10/0.15=0.667$ で一致する（\cref{eq:18-i2eq}）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:18-3}
+(1) 試験1：$a=10,b=90,c=20,d=80$，$\OR=800/1800=0.444$，$\log\OR=-0.811$，$v=\frac1{10}+\frac1{90}+\frac1{20}+\frac1{80}=0.1736$．
+試験2：$a=15,b=185,c=25,d=175$，$\OR=2625/4625=0.568$，$\log\OR=-0.566$，$v=\frac1{15}+\frac1{185}+\frac1{25}+\frac1{175}=0.1178$．\\
+(2) $w=(5.76,\,8.49)$，$\hat\theta=(5.76\times(-0.811)+8.49\times(-0.566))/14.25=-9.48/14.25=-0.665$，$\OR=0.514$．\\
+(3) $\sum a_kd_k/N_k=800/200+2625/400=4+6.5625=10.5625$，$\sum b_kc_k/N_k=1800/200+4625/400=9+11.5625=20.5625$．
+$\widehat\OR_{\mathrm{MH}}=10.5625/20.5625=0.514$．OR が1に比較的近く，各試験のセルが十分大きいので両者はほぼ一致する．\\
+(4) 試験3は $a=0,b=20,c=2,d=18$．$\log\OR_3=\log0=-\infty$，$v_3=\infty$ で逆分散法は（0.5を足すなどの補正なしには）計算できない．
+MH 法は $a_3d_3/N_3=0$，$b_3c_3/N_3=40/40=1$ を加えるだけでよく，$\widehat\OR_{\mathrm{MH}}=10.5625/21.5625=0.490$．
+ゼロセルの研究も分母に情報を与え，推定値をわずかに小さくした．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 固定効果：$Y_k\sim\Normal(\theta,\sigma_k^2)$．MLE $\hat\theta=\sum w_kY_k/\sum w_k$，$\V=1/\sum w_k$，$w_k=1/\sigma_k^2$．線形不偏推定量の中で分散最小（Cauchy--Schwarz）．
+\item $Q=\sum w_k(Y_k-\hat\theta)^2\sim\chi^2_{K-1}$（均一性の下）．$\E[Q]=\sum w\V[Y]-\sum w^2\V[Y]/\sum w$．
+\item 変量効果：$Y_k\sim\Normal(\mu,\sigma_k^2+\tau^2)$，$\hat\mu=\sum w_k^*Y_k/\sum w_k^*$，$w_k^*=1/(\sigma_k^2+\tau^2)$，$\V=1/\sum w_k^*$．
+\item DL：$\hat\tau^2=\max\{0,(Q-K+1)/(\sum w-\sum w^2/\sum w)\}$．$I^2=(Q-K+1)/Q$（等分散なら $\hat\tau^2/(\hat\tau^2+\sigma^2)$）．
+\item 固定効果は共通効果，変量効果は効果の分布の平均．変量効果の CI は広く，小研究の重みが相対的に大きい．
+\item 2×2 表の統合：逆分散（Woolf），MH（ゼロセル・小さな層に強い），Peto（$\sum(O-E)/\sum V$，OR が1に近いとき）．
+\end{itemize}
+\end{summarybox}
