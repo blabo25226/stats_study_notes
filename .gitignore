@@ -17,3 +17,8 @@ __pycache__/
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/cache
+
+他者分析/
+
+# LaTeX のビルド出力
+10_医療統計学/build_v2/
