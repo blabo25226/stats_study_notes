@@ -2,7 +2,7 @@
 
 使い方:
     python build.py            # 連結のみ
-    python build.py compile    # 連結 + lualatex 3回（work/build に出力）．警告があれば非0で終了
+    python build.py compile    # 連結 + lualatex 3回（../build_v2 に出力し，PDF を親フォルダにコピー）．警告があれば非0で終了
 """
 import pathlib
 import re
@@ -11,7 +11,7 @@ import sys
 
 WORK = pathlib.Path(__file__).resolve().parent
 PARTS = WORK / "parts"
-OUT = WORK.parent / "医療統計学参考書_第2版.tex"
+OUT = WORK.parent / "医療統計学参考書.tex"
 BUILD = WORK.parent / "build_v2"  # lualatex は非ASCIIの出力先を扱えないため
 
 ORDER = [

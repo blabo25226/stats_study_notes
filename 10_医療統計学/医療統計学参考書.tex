@@ -17,6 +17,25 @@
 % ---------- 表・リスト・図 ----------
 \usepackage{booktabs,longtable,array,multirow,tabularx,makecell}
 \usepackage{enumitem}
+\usepackage{multicol}
+% 第2版：2段組の目次で「第10章」が章題に重ならないよう章番号の幅を広げる（ltjsbook の \l@chapter の幅だけ変更）
+\makeatletter
+\renewcommand*{\l@chapter}[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \addvspace{1.0em \@plus\jsc@mpt}
+    \begingroup
+      \parindent\z@
+      \rightskip\@tocrmarg
+      \parfillskip-\rightskip
+      \leavevmode\headfont
+      \setlength\@lnumwidth{\jsc@tocl@width}\advance\@lnumwidth 4.2\zw
+      \advance\leftskip\@lnumwidth \hskip-\leftskip
+      #1\nobreak\hfil\nobreak\hbox to\@pnumwidth{\hss#2}\par
+      \penalty\@highpenalty
+    \endgroup
+  \fi}
+\makeatother
 \setlist{itemsep=0.2\baselineskip,topsep=0.4\baselineskip}
 \usepackage{graphicx}
 \usepackage{xcolor}
@@ -241,7 +260,7 @@
 \end{center}
 \vfill
 \begin{center}
-{\small 学習用電子参考書　2026年版}
+{\small 学習用電子参考書　第2版（2026年11月）}
 \end{center}
 \end{titlepage}
 
@@ -279,13 +298,24 @@
 \paragraph{扱う範囲の決め方}
 過去問の中には，手法の定義・統計量の式・手順が問題文にすべて書かれていて，
 その手法を初めて見る受験者でも誘導に従えば解ける設問がある（例：メタアナリシスの変量効果モデル，多重補完の Rubin のルール，Simon の二段階デザイン）．
-このような「誘導付きでしか出題されていない概念」は本文では扱わず，\cref{app:F}に年・問番号と問題文で与えられた内容だけを一覧した．
+このような「誘導付きでしか出題されていない概念」のうち，出題頻度・汎用性が低いものは本文では扱わず，\cref{app:F}に年・問番号と問題文で与えられた内容だけを一覧した．
+ただし第2版では，誘導付きでも近年繰り返し出題され，背景を知っていると速く正確に解けるもの（メタアナリシス，MH 推定量，多重補完など）は本文で導出する．
 誘導はあっても鍵となる公式や判定規則を知らないと詰まる設問（ログランク検定，McNemar 検定，群逐次デザインの $\alpha$ の配分など）は本文で扱う．
 また，統計検定準1級の範囲と重なる内容（$t$ 検定・順位検定，$\chi^2$ 検定，ロジスティック回帰の基本，Kaplan--Meier 法，感度・特異度と ROC，共役事前分布，EM アルゴリズムなど）は，
 重要な公式と例題を中心に短くまとめている．
 
 過去問の本文は転載せず，「\kakomon{2022}{2}」のように年と問番号で参照する．
 例題はすべて，過去問と同じ能力を問うように作ったオリジナル問題である．
+
+\paragraph{第2版について}
+第2版では，初版の章立て・説明・例題を維持したうえで，次を追加・補強した（変更点の一覧は別紙の改訂履歴にある）．
+\begin{itemize}
+\item \textbf{メタアナリシス}を独立の章（\cref{ch:18}）として新設した．逆分散重みの導出と最適性，$Q$・$I^2$・DerSimonian--Laird 推定量を例題とともに扱う．
+\item \textbf{層別解析}（\cref{sec:07-commonor}）：条件付き超幾何分布から CMH 検定と Peto 型推定量を導き，Mantel--Haenszel 推定量の考え方・前提と，粗 OR との差の切り分けを加えた．
+\item 初版で「誘導付きの概念」として付録Fに一覧した項目のうち，近年出題され汎用性の高いもの（多重補完，Gamma--Poisson，ANCOVA，RMST，Nelson--Aalen，累積発生関数の推定）を本文に移し，例題を付けた．
+\item 共通問題（問5）の分析と，問題選択・途中点・時間配分の手順を\cref{app:G}にまとめた．他者の合格体験記などは，申告・意見を区別して参照した．
+\item 学習ロードマップを，出題頻度・導出しやすさ・計算量・応用可能性の4軸で見直し，直前2週間の計画を加えた．
+\end{itemize}
 
 % ------------------------------------------------------------
 \section*{本書の対象読者}
@@ -375,7 +405,7 @@
 統計応用は人文科学・社会科学・理工学・医薬生物学の4分野から1つを選んで受験し，
 大問5問のうち3問を選択して解答する（1問あたり約30分）\cite{web:lec,web:academaid}．
 医薬生物学の大問のうち問1〜問4が分野固有の問題，問5は4分野共通の問題である
-（本書で分析した9回すべてでこの構成であった）．
+（本書で分析した9回すべてでこの構成であった）．問5の分析と試験本番の手順は\cref{app:G}にまとめた．
 
 \paragraph{9回分の傾向}
 医薬生物学の問1〜4（計36問）を主テーマで分類すると，おおよそ次のようになる
@@ -422,7 +452,7 @@
 \markboth{出題マップ}{出題マップ}
 
 表中の数字は医薬生物学の問番号，「5c」は4分野共通の問5で内容が関連するものを表す．
-その章が設問の一部しか扱わない場合（残りは誘導付きで\cref{app:F}に一覧）も含めて示した．
+その章が設問の一部しか扱わない場合（残りは誘導付きで\cref{app:F}に一覧）も含めて示した．\cref{ch:18}の2017年は層別の共通 OR（Peto 型の逆分散重み平均）で，計算が固定効果メタアナリシスと同じであるため示した．
 設問単位の詳細な分類（副テーマ・必要能力）は\cref{app:D}の過去問対応表にある．
 
 \begin{center}\small
@@ -438,14 +468,15 @@
 \ref{ch:05} & 診断検査・ROC & & & 3,4 & 3 & 5c & & 1 & 1 & \\
 \ref{ch:06} & ロジスティック回帰 & & & 4 & & & & 1 & & \\
 \ref{ch:07} & 交絡・層別・マッチング & & 4 & & & 3 & 2 & & & \\
-\ref{ch:08} & 縦断データ・線形混合モデル & & & & & & 3 & 4 & & \\
+\ref{ch:08} & 縦断データ・混合モデル・ANCOVA & & & & & & 3,5c & 4 & 2 & \\
 \ref{ch:09} & 生存時間解析の基礎 & 3 & 1 & & 1 & 1 & 1 & & & \\
 \ref{ch:10} & Cox・指数モデル・競合リスク & 3 & 1 & 1 & 1 & 1 & 1 & & & 3\\
 \ref{ch:12} & 検出力・症例数 & & 5c & 1 & & & & 5c & & 1\\
 \ref{ch:13} & 同等性・生物学的同等性 & 4 & & & & 2 & & & & \\
 \ref{ch:14} & 中間解析・多重性・用量反応 & 2 & 2 & & & & & & 4 & 4\\
 \ref{ch:16} & 欠測データ・EM & & & & 5c & & & & 3 & \\
-\ref{ch:17} & Bayes 解析の基礎 & & & & & & 4 & & & 2\\
+\ref{ch:17} & Bayes・Gamma--Poisson & & & & & & 4 & & & 2\\
+\ref{ch:18} & メタアナリシス & & 4 & & & 4 & & 3 & & \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -455,7 +486,8 @@
 \item 生存時間（\cref{ch:09,ch:10}）は2016〜2023年の毎回出題され，2025年は競合リスクの理論として出た．
 \item 分割表（\cref{ch:04}）は形を変えて繰り返し出る．特に「対応のある2 値」（McNemar型）は2018・2019・2024年，
       層別解析は2017・2021・2022年に出ている．
-\item 近年は臨床試験の方法論（多重性・欠測・混合モデル・ベースライン調整）が増えている．
+\item 近年は臨床試験の方法論（多重性・欠測・混合モデル・ベースライン調整・メタアナリシス）が増えている．
+\item 出題回数は過去の実績であり，次の試験で出る確率ではない．9回で1回しか出ていない分野も，近年の出題であれば同じ形式で再出題されうる．
 \end{itemize}
 
 % ------------------------------------------------------------
@@ -463,39 +495,94 @@
 \addcontentsline{toc}{chapter}{推奨学習ロードマップ}
 \markboth{学習ロードマップ}{学習ロードマップ}
 
+\paragraph{4つの軸}
+初版は主に出題頻度で優先順位を付けた．第2版では次の4軸で評価する．
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{出題頻度}：9回の問1〜4での出題回数（事実．ただし将来の出題確率ではない）．
+\item \textbf{導出しやすさ}：準1級・『現代数理統計学の基礎』の知識（尤度，期待値・分散，デルタ法，正規分布）からどれだけ直接導けるか．
+\item \textbf{計算量}：本番で表の作成・数値計算に要する時間．多いほど練習で速度を上げる必要がある．
+\item \textbf{応用可能性}：同じ考え方が他の分野・問5で使えるか．
+\end{enumerate}
+\begin{center}\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}L{44mm}cL{30mm}L{30mm}L{35mm}@{}}
+\toprule
+分野（章） & 頻度 & 導出しやすさ & 計算量 & 応用可能性\\
+\midrule
+生存時間（\ref{ch:09}，\ref{ch:10}） & 7 & 指数尤度は数理そのもの．KM・ログランクは手順 & KM 表・ログランク表が長い & 尤度・デルタ法・CIF・RMST\\
+2 値・分割表・層別（\ref{ch:04}，\ref{ch:07}） & 7 & 多項・超幾何・デルタ法 & 層が多いと長い & メタ・診断・マッチング\\
+診断・ROC（\ref{ch:05}） & 5 & Bayes の定理 & 少ない & 問5（2021，2023）\\
+臨床試験デザイン（\ref{ch:12}〜\ref{ch:14}） & 10 & 正規近似と検出力 & 中 & 症例数は他分野にも\\
+縦断・ANCOVA（\ref{ch:08}） & 3 & 多変量正規の線形変換 & 少ない & 平均への回帰（問5）\\
+ロジスティック（\ref{ch:06}） & 3 & 尤度・スコア & 中 & 分割表との対応\\
+ノンパラ（\ref{ch:03}） & 3 & 順位の組合せ & 列挙が長いことがある & AUC（\ref{ch:05}）\\
+メタアナリシス（\ref{ch:18}） & 2 & 正規尤度・分散の計算 & 少ない & 層別・Peto・変量効果\\
+Bayes・ポアソン（\ref{ch:17}） & 2 & 共役分布の計算 & 少ない & 混合分布・過分散\\
+欠測・多重補完（\ref{ch:16}） & 1 & 全分散の公式 & 少ない & EM（問5 2019）\\
+\bottomrule
+\end{tabular}
+\end{center}
+（頻度は前ページまでの表による．臨床試験デザインは中間解析・多重性・症例数・同等性の合計．）
+
+\paragraph{読み取りと優先順位}
+\begin{itemize}
+\item \textbf{最優先}：生存時間と分割表・層別．頻度が高く，応用範囲も広い．計算量が多いので，時間を計って表を作る練習を重ねる．
+\item \textbf{次に}：メタアナリシス・Bayes・欠測・ANCOVA．頻度は低いが，導出が数理統計の基本操作だけで済み計算量も少ないので，短い学習時間で得点源にできる（近年の出題でもある）．
+\item 診断・臨床試験デザイン・ロジスティック・ノンパラは，公式と解釈の型を押さえ，過去問で計算の手順を確認する．
+\item 問5（共通）は確率・推測の基礎で解ける年が多い．専用の対策より，数理統計の基本操作を速く正確にすることが効く（\cref{app:G}）．
+\end{itemize}
+
 \begin{center}
-\begin{tikzpicture}[node distance=5mm and 4mm,
-  st/.style={draw=bkblue,rounded corners=2pt,fill=bkblue!5,text width=62mm,align=left,font=\small,inner sep=4pt},
+\begin{tikzpicture}[node distance=4mm and 4mm,
+  st/.style={draw=bkblue,rounded corners=2pt,fill=bkblue!5,text width=70mm,align=left,font=\small,inner sep=4pt},
   lb/.style={font=\small\bfseries,text=bkorange,text width=22mm,align=right}]
 \node[st](s1){\cref{ch:01} 読み方，\cref{ch:02} デザインと効果指標，\cref{ch:04} 分割表，\cref{ch:03} 連続・順位検定};
 \node[lb,left=of s1]{段階1\\基礎体力};
-\node[st,below=of s1](s2){\cref{ch:09} 生存時間の基礎，\cref{ch:10} Cox・指数モデル・競合リスク};
+\node[st,below=of s1](s2){\cref{ch:09} 生存時間の基礎・RMST，\cref{ch:10} Cox・指数モデル・競合リスク};
 \node[lb,left=of s2]{段階2\\最頻出};
-\node[st,below=of s2](s3){\cref{ch:05} 診断・ROC，\cref{ch:06} ロジスティック回帰，\cref{ch:07} 交絡・層別};
+\node[st,below=of s2](s3){\cref{ch:07} 交絡・層別（MH），\cref{ch:18} メタアナリシス，\cref{ch:05} 診断・ROC，\cref{ch:06} ロジスティック回帰};
 \node[lb,left=of s3]{段階3\\2 値の応用};
 \node[st,below=of s3](s4){\cref{ch:12} 検出力・症例数，\cref{ch:13} 同等性，\cref{ch:14} 中間解析・多重性};
 \node[lb,left=of s4]{段階4\\臨床試験};
-\node[st,below=of s4](s5){\cref{ch:08} 縦断・混合モデル，\cref{ch:16} 欠測・EM，\cref{ch:17} Bayes};
+\node[st,below=of s4](s5){\cref{ch:08} 縦断・ANCOVA，\cref{ch:16} 欠測・多重補完，\cref{ch:17} Bayes・Gamma--Poisson};
 \node[lb,left=of s5]{段階5\\近年の論点};
-\node[st,below=of s5,fill=bkorange!8,draw=bkorange](s6){付録A 手法選択表，付録B 公式集，付録E チェックリスト，付録F 誘導付き概念，過去問演習};
+\node[st,below=of s5,fill=bkorange!8,draw=bkorange](s6){付録B 公式集，付録E チェックリスト，付録G 問5と本番の手順，90分の過去問演習};
 \node[lb,left=of s6]{直前期};
 \foreach \a/\b in {s1/s2,s2/s3,s3/s4,s4/s5,s5/s6}\draw[-{Stealth},thick,bkblue](\a)--(\b);
 \end{tikzpicture}
 \end{center}
 
-\begin{itemize}
-\item 段階1で，効果指標（RD・RR・OR・HR）と「独立か対応ありか」の区別を固める．以降のすべての章の前提になる．
-\item 段階2は最頻出分野である．KM推定値の表の作成，ログランク検定の手計算，打ち切りのある指数分布の尤度，
-      Cox部分尤度の書き下しは，時間を計って何度も練習する．
-\item 段階3・4は，式の導出よりも「どの手法をなぜ使うか」「結果をどう解釈するか」の記述が得点源になる．
-\item 段階5は出題回数こそ少ないが，近年の出題が多く，一度理解すれば短時間で得点できる．
-\item 誘導付きでしか出題されていない概念（\cref{app:F}）は，過去問演習で「問題文の誘導に従って期待値・分散を計算する」練習として触れれば十分である．
-\item 直前期は付録Eのチェックリストで，自力で導出できない項目を潰す．
-\end{itemize}
+\section*{直前2週間の計画（2026年11月15日の試験に向けて）}
+\addcontentsline{toc}{section}{直前2週間の計画}
+新しい分野を広げるより，「過去に出た形を時間内に書き切る」ことを優先する．各日の過去問は時間を計り，選択にかかった時間も記録する．
+\begin{center}\small
+\begin{tabular}{@{}lL{62mm}L{60mm}@{}}
+\toprule
+日程 & 本書 & 過去問（時間を計って）\\
+\midrule
+11/1--2 & 付録E で自力で導出できない項目を洗い出す．第2版の新しい節（\cref{ch:18}，\cref{sec:07-commonor}）を読む & \kakomon{2023}{3}，\kakomon{2017}{4}\\
+11/3--5 & \cref{ch:09,ch:10}（RMST・CIF を含む） & \kakomon{2016}{3}，\kakomon{2019}{1}，\kakomon{2021}{1}，\kakomon{2018}{1}\\
+11/6--7 & \cref{ch:04,ch:07}，\cref{ch:05} & \kakomon{2021}{3}，\kakomon{2022}{2}，\kakomon{2024}{1}\\
+11/8 & \cref{ch:18,ch:17,ch:16} & \kakomon{2021}{4}，\kakomon{2025}{2}，\kakomon{2024}{3}\\
+11/9 & \cref{ch:08}，\cref{ch:12,ch:13,ch:14} & \kakomon{2024}{2}，\kakomon{2024}{4}，\kakomon{2017}{2}\\
+11/10 & \cref{app:G}（問5の補強と手順） & 問5を2〜3年分（各30分）\\
+11/11--12 & --- & 90分・5問から3問の通し演習を2回（選択手順の練習）\\
+11/13 & 付録B の公式集，演習の誤りの見直し & 間違えた小問だけ解き直す\\
+11/14 & 付録E の最終確認のみ．新しい問題は解かない & ---\\
+\bottomrule
+\end{tabular}
+\end{center}
+統計数理も同じ日に受験する場合は，数理の演習時間を別に確保し，上の計画を圧縮する（医薬の問題でも数理統計の基本操作が直接問われるので，数理の演習は医薬の対策にもなる）．
 
-\tableofcontents
+% 第2版：目次は2段組（節まで載せると1段組で7ページになるため）
+\chapter*{目次}
+\markboth{目次}{目次}
+\begin{multicols}{2}\footnotesize\sloppy
+\makeatletter\@starttoc{toc}\makeatother
+\end{multicols}
 
-\mainmatter
+% \mainmatter は見開き調整で白紙を1ページ入れるため，改ページだけ行う
+\clearpage\makeatletter\@mainmattertrue\makeatother
 \pagenumbering{arabic}
 
 % ===== ch01.tex =====
@@ -863,7 +950,7 @@ $\iff$ $\sqrt k>0.2538/0.2231=1.138$ $\iff$ $k>1.29$．仮定の下では，お�
 \begin{itemize}
 \item \kakomon{2017}{4}：症例対照研究（後ろ向き研究）の層別データで\textbf{曝露オッズ比}を推定．
 \item \kakomon{2019}{2}：コホート研究の粗リスク差と調整リスク差．
-\item \kakomon{2022}{2}：マッチしたペアの死亡データで，粗リスク比・粗オッズ比と，ペアを層とした層別の推定値（式は問題文で与えられる．\cref{app:F}）を比較し，「交絡の有無」と「推定されるパラメータの違い」から説明（オッズ比の非可縮性）．
+\item \kakomon{2022}{2}：マッチしたペアの死亡データで，粗リスク比・粗オッズ比と，ペアを層とした層別の推定値（式は問題文で与えられる．MH 推定量は\cref{subsec:07-mhest}）を比較し，「交絡の有無」と「推定されるパラメータの違い」から説明（オッズ比の非可縮性）．
 \item \kakomon{2017}{5}（共通）：単純無作為化と偏りを抑える割付法の群サイズの分布．
 \item HRの解釈は\kakomon{2022}{1}．
 \end{itemize}
@@ -1581,8 +1668,8 @@ $\V[W^+]=\frac18\{2(3^2+2^2+1^2)\}=\frac{28}{8}=3.5$，
 \item \kakomon{2019}{3}〔2〕：同一患者での2検査の感度比較（不一致ペアの二項分布 $\Bin(23,0.5)$，McNemar型）．
 \item \kakomon{2021}{3}：オッズ比の信頼区間（対数オッズ比の分散の推定式は問題文で与えられる），積二項尤度，$\hat E[n_{11}]$ と $\hat V[n_{11}-\hat E[n_{11}]]$ の導出，層別 Cochran 検定．
 \item \kakomon{2024}{1}〔2〕〔3〕：$Z_i=X_i-Y_i$ の平均と分散から McNemar 統計量 $W=(n_{10}-n_{01})^2/(n_{10}+n_{01})$ を導出．
-\item \kakomon{2017}{4}：層別表の超幾何分布の期待値・分散（\cref{eq:04-hyper}）．共通オッズ比の推定式は問題文で与えられる（\cref{app:F}）．
-\item \kakomon{2022}{2}：マッチドペアの層別推定値（推定式は問題文で与えられる．\cref{app:F}）．マッチドペアでは条件付きオッズ比 $n_{12}/n_{21}$ に一致する（\cref{subsec:04-condor}）．解釈は\cref{subsec:02-collapse}と\cref{ch:07}．
+\item \kakomon{2017}{4}：層別表の超幾何分布の期待値・分散（\cref{eq:04-hyper}）．共通オッズ比の推定式は問題文で与えられる（導出と限界は\cref{sec:07-commonor}）．
+\item \kakomon{2022}{2}：マッチドペアの層別推定値（推定式は問題文で与えられる．MH 推定量の考え方は\cref{subsec:07-mhest}）．マッチドペアでは条件付きオッズ比 $n_{12}/n_{21}$ に一致する（\cref{subsec:04-condor}）．解釈は\cref{subsec:02-collapse}と\cref{ch:07}．
 \end{itemize}
 \end{exambox}
 
@@ -1871,7 +1958,7 @@ $\sum_kY_k$ に中心極限定理による正規近似を適用すると（層�
 \paragraph{何を検出する検定か}
 分子は各層の $O-E$ の\emph{和}なので，効果が層間で同じ向き（とくに共通オッズ比 $\psi_k\equiv\psi\ne1$）のときに検出力が高い．
 効果の向きが層によって逆だと打ち消し合って検出力を失う．
-層間でオッズ比が等しいかどうか（均一性）の検討は\cref{ch:07}で扱う．
+層間でオッズ比が等しいかどうか（均一性）の検討と，共通オッズ比の推定（条件付き超幾何分布，Mantel--Haenszel 推定量，Peto 型推定量）は\cref{ch:07}（\cref{sec:07-commonor}）で扱う．
 
 \section{仮定}\label{sec:04-assump}
 \begin{itemize}
@@ -2658,6 +2745,8 @@ M1 対 M2：$G^2=2(117.9-116.8)=2.2<5.991$（自由度2）で重症度の追加�
 \item 粗と調整の差の原因として，交絡・オッズ比の非併合性（非可縮性）・効果修飾を区別できる．
 \item 層別 $2\times2$ 表で，層別 Cochran 検定（\cref{sec:04-mh}）により共通の関連を検定できる．
 \item 層間のオッズ比の均一性を Woolf の均一性検定で検定し，均一性を確認する方法を記述できる．
+\item 条件付き超幾何分布から CMH 検定と Peto 型推定量を導き，Mantel--Haenszel 共通オッズ比推定量の考え方と前提を説明して計算できる．
+\item 粗 OR と MH OR の差を，交絡・効果修飾・非可縮性に切り分けて解釈できる．
 \item マッチングの目的と，マッチしたデータの解析の考え方を説明できる．
 \end{itemize}
 \end{goalbox}
@@ -2665,14 +2754,14 @@ M1 対 M2：$G^2=2(117.9-116.8)=2.2<5.991$（自由度2）で重症度の追加�
 \begin{exambox}
 \begin{itemize}
 \item \kakomon{2017}{4}〔5〕：層別のオッズ比が均一であることをデータから確認する方法を述べる（Woolf の均一性検定，Breslow--Day 検定）．
-      〔1〕〜〔4〕の層別 OR と超幾何分布の期待値・分散は\cref{sec:04-mh}，1段階近似による共通 OR は問題文で与えられる（\cref{app:F}）．
+      〔1〕〜〔4〕の層別 OR と超幾何分布の期待値・分散は\cref{sec:04-mh}，1段階近似による共通 OR（式は問題文で与えられる）の導出と限界は\cref{subsec:07-peto}．
 \item \kakomon{2021}{3}〔3〕〔4〕：層別 Cochran 検定（\cref{sec:04-mh}）と，性別で層別すると結論が変わる（Simpson のパラドックス）ことの考察．
-\item \kakomon{2022}{2}〔4〕〔5〕：マッチしたペアで粗 OR と調整 OR が異なる理由（交絡ではなく非併合性），間接比較．MH 推定量の式は問題文で与えられる（\cref{app:F}）．
+\item \kakomon{2022}{2}〔4〕〔5〕：マッチしたペアで粗 OR と調整 OR が異なる理由（交絡ではなく非併合性），間接比較．MH 推定量（式は問題文で与えられる）の考え方は\cref{subsec:07-mhest}．
 \item \kakomon{2019}{2}：直接標準化と傾向スコアは問題文で定義が与えられる（\cref{app:F}）．交絡による粗リスク差と調整リスク差の違いの解釈は本章で扱う．
 \end{itemize}
 \end{exambox}
 
-\flowline{層別2×2表\\共変量}{層共通の関連\\均一性}{層別Cochran\\Woolf}{均一性\\未測定交絡なし}{重み付き和\\超幾何分散}{粗と調整の差\\の理由}
+\flowline{層別2×2表\\共変量}{層共通の関連\\共通 OR}{CMH・MH\\Woolf}{均一性\\未測定交絡なし}{重み付き和\\超幾何分散}{粗と調整の差\\の理由}
 
 \section{問題設定}\label{sec:07-setting}
 観察研究では治療・曝露 $X$ の選択が患者の特性 $Z$ に依存する．$Z$ が結果 $Y$ にも影響するなら，
@@ -2761,6 +2850,129 @@ $a_k,b_k,c_k,d_k$ にゼロのセルがあると $\hat\theta_k$，$v_k$ が定�
 \end{itemize}
 \Youchui 層数が少なく各層が小さいと均一性の検定は検出力が低いので，有意でないことは均一性の証明にならない．
 
+\section{共通オッズ比の推定：条件付き尤度・Mantel--Haenszel・Peto・逆分散}\label{sec:07-commonor}
+\Hissu\Hinshutsu
+層別 Cochran 検定は「全層で OR $=1$ か」を検定するだけで，関連の大きさは与えない．
+層間で OR が等しい（$\psi_1=\dots=\psi_K=\psi$）と仮定して $\psi$ を1つの数値で推定するのが\emphx{共通オッズ比}の推定である．
+過去問では\kakomon{2017}{4}（Peto 型の1段階推定と逆分散重み），\kakomon{2022}{2}（MH 推定量）で，推定式が問題文で与えられて出題された．
+式が与えられても，その推定量が「何を仮定し，なぜその形なのか」を知っていれば，計算の見通しと解釈の設問（〔4〕〔5〕）で差がつく．
+
+\subsection{条件付き超幾何分布}\label{subsec:07-ncHG}
+層 $k$ で行和を固定し（コホート・臨床試験），$a_k\sim\Bin(n_{1k},\pi_{1k})$，$c_k\sim\Bin(n_{0k},\pi_{0k})$ が独立とする（症例対照研究で列和を固定しても，曝露 OR と疾病 OR が等しいので以下は同じ形になる）．
+\begin{meidai}[条件付き超幾何分布]\label[meidai]{prop:07-nchg}
+列和 $m_{1k}=a_k+c_k$ も与えたときの $a_k$ の条件付き分布は
+\begin{equation}
+\Prob(a_k=a\mid n_{1k},n_{0k},m_{1k})=\frac{\binom{n_{1k}}{a}\binom{n_{0k}}{m_{1k}-a}\psi_k^{\,a}}{\sum_u\binom{n_{1k}}{u}\binom{n_{0k}}{m_{1k}-u}\psi_k^{\,u}},\qquad
+\psi_k=\frac{\pi_{1k}/(1-\pi_{1k})}{\pi_{0k}/(1-\pi_{0k})}\label{eq:07-nchg}
+\end{equation}
+（$u$ は周辺度数と両立する範囲を動く）．この分布は層の OR $\psi_k$ だけに依存し，ベースラインリスク $\pi_{0k}$ には依存しない．$\psi_k=1$ なら超幾何分布（\cref{eq:04-hyper}）になる．
+\end{meidai}
+\begin{proof}
+$\Prob(a_k=a,\,c_k=m_{1k}-a)=\binom{n_{1k}}{a}\pi_{1k}^a(1-\pi_{1k})^{n_{1k}-a}\binom{n_{0k}}{m_{1k}-a}\pi_{0k}^{m_{1k}-a}(1-\pi_{0k})^{n_{0k}-m_{1k}+a}$．
+$a$ を含む部分をまとめると $\binom{n_{1k}}{a}\binom{n_{0k}}{m_{1k}-a}\Bigl\{\frac{\pi_{1k}}{1-\pi_{1k}}\cdot\frac{1-\pi_{0k}}{\pi_{0k}}\Bigr\}^a$ に $a$ によらない因子
+$(1-\pi_{1k})^{n_{1k}}\pi_{0k}^{m_{1k}}(1-\pi_{0k})^{n_{0k}-m_{1k}}$ を掛けたものである．
+$\Prob(m_{1k})$ はこれを $a$ について足したものなので，比をとると $a$ によらない因子が約分されて\cref{eq:07-nchg}を得る．
+\end{proof}
+層ごとに異なるベースラインリスク（局外母数）が条件付けで消えることが，層別解析の要点である．各層が小さく層が多いとき（極端にはマッチドペア），局外母数を層ごとに推定する通常の最尤法は偏るが，条件付き尤度は使える．
+
+\subsection{条件付き尤度と Peto 型1段階推定}\label{subsec:07-peto}
+共通 OR $\psi=e^\beta$ の下で，各層の\cref{eq:07-nchg}の積を\emphx{条件付き尤度}という．その対数は
+\[
+l_c(\beta)=\sum_k\Bigl\{a_k\beta-\log\sum_u\tbinom{n_{1k}}{u}\tbinom{n_{0k}}{m_{1k}-u}e^{\beta u}\Bigr\}+\text{const}.
+\]
+第2項は指数型分布族の正規化定数なので，微分すると条件付き分布の期待値・分散が現れる：
+\begin{equation}
+U(\beta)=l_c'(\beta)=\sum_k\bigl(a_k-\E_\beta[a_k]\bigr),\qquad I(\beta)=-l_c''(\beta)=\sum_k\V_\beta[a_k].\label{eq:07-condscore}
+\end{equation}
+$\beta=0$ では $\E_0[a_k]$，$\V_0[a_k]$ は超幾何分布の期待値・分散（\cref{eq:04-hyper}）であり，
+\begin{itemize}
+\item $U(0)^2/I(0)=\{\sum(a_k-E_k)\}^2/\sum V_k$ は層別 Cochran（CMH）検定そのもの（条件付き尤度のスコア検定）．
+\item $\beta=0$ から Newton--Raphson 法で1回だけ更新すると
+\begin{equation}
+\hat\beta_{\mathrm{Peto}}=0+\frac{U(0)}{I(0)}=\frac{\sum_k(a_k-E_k)}{\sum_kV_k},\qquad \V[\hat\beta_{\mathrm{Peto}}]\approx\frac1{\sum_kV_k}.\label{eq:07-peto}
+\end{equation}
+\end{itemize}
+これが Peto 型（1段階）推定量である．1層だけなら $(a_k-E_k)/V_k$ で，\kakomon{2017}{4}〔2〕の式にあたる．
+層ごとの値 $(a_k-E_k)/V_k$ を重み $V_k$（その分散の逆数）で平均しても同じ式になる（\kakomon{2017}{4}〔3〕，\cref{sec:18-mh}）．
+\Youchui 1回の更新で止めるので，真の $\beta$ が0から離れると近似が悪くなる．問題文の「真のオッズ比が1に近いときには」はこの意味である．
+\kakomon{2017}{4} では層1で Peto 型 $31.9$ に対し実際の OR は $7.71$，統合値も Peto 型 $6.22$ に対し MH 推定値は $5.27$ であり（本書で計算），OR が5前後と1から遠いデータでは Peto 型は大きめに出る．
+試験では指示どおりの推定量で計算し，解釈の設問でこの限界に触れればよい．
+
+\subsection{Mantel--Haenszel 推定量}\label{subsec:07-mhest}
+\begin{teigi}[Mantel--Haenszel 共通オッズ比推定量 \cite{mh1959}]\label{def:07-mhor}
+\begin{equation}
+\widehat\OR_{\mathrm{MH}}=\frac{\sum_ka_kd_k/N_k}{\sum_kb_kc_k/N_k}.\label{eq:07-mhor}
+\end{equation}
+$a_k$：曝露ありでイベントあり，$b_k$：曝露ありでイベントなし，$c_k$：曝露なしでイベントあり，$d_k$：曝露なしでイベントなし，$N_k$：層 $k$ の総数．
+\end{teigi}
+\paragraph{推定の考え方}
+行和を固定した積二項モデルで，$a_k$ と $d_k=n_{0k}-c_k$ は独立なので
+\[
+\E[a_kd_k]=n_{1k}\pi_{1k}\cdot n_{0k}(1-\pi_{0k}),\qquad \E[b_kc_k]=n_{1k}(1-\pi_{1k})\cdot n_{0k}\pi_{0k},\qquad
+\frac{\E[a_kd_k]}{\E[b_kc_k]}=\psi_k .
+\]
+したがって共通 OR $\psi$ の下で各層で $\E[a_kd_k-\psi b_kc_k]=0$ が\textbf{正確に}成り立つ．これを重み $1/N_k$ で足した推定方程式
+$\sum_k(a_kd_k-\psi b_kc_k)/N_k=0$ を $\psi$ について解いたものが\cref{eq:07-mhor}である．
+\paragraph{重み付き平均としての表現}
+$w_k=b_kc_k/N_k$ とおくと $a_kd_k/N_k=w_k\widehat\OR_k$ なので
+\[
+\widehat\OR_{\mathrm{MH}}=\frac{\sum_kw_k\widehat\OR_k}{\sum_kw_k},\qquad w_k=\frac{b_kc_k}{N_k}.
+\]
+層の OR を（対数ではなく）OR の尺度で平均している．$\OR_k=1$ で $\pi_{1k}=\pi_{0k}=\pi_k$ のとき，Woolf の分散（デルタ法）は
+$\V[\widehat\OR_k]\approx\frac1{n_{1k}\pi_k}+\frac1{n_{1k}(1-\pi_k)}+\frac1{n_{0k}\pi_k}+\frac1{n_{0k}(1-\pi_k)}=\frac{N_k}{n_{1k}n_{0k}\pi_k(1-\pi_k)}$ で，
+その逆数 $n_{1k}n_{0k}\pi_k(1-\pi_k)/N_k$ は $\E[b_kc_k]/N_k$ に等しい．つまり MH の重みは「OR が1に近いときの逆分散重み」を，分散を推定せずに実現している．
+\paragraph{性質と前提}
+\begin{itemize}
+\item \textbf{前提}：層間で OR が共通であること（均一性）．効果修飾があると「共通 OR」は存在せず，MH 推定値は層の OR の重み付き平均という記述的な要約にすぎない．
+\item 各層が大きいときも，層が多数で各層が小さい（マッチドペアなど）ときも一致推定量である．通常の最尤法（層ごとにベースラインを推定）は後者で一致性を失う．
+\item 重みは度数の積なので，ゼロセルがある層も計算に参加できる（逆分散法は $\log0$ で計算不能）．
+\item 層の OR がすべて等しければ，MH 推定値はその値に一致する．
+\end{itemize}
+\paragraph{リスク比版とマッチドペア（\kakomon{2022}{2}〔3〕）}
+同様に $\E[a_kn_{0k}]=n_{1k}n_{0k}\pi_{1k}$，$\E[c_kn_{1k}]=n_{1k}n_{0k}\pi_{0k}$ から，共通リスク比の MH 推定量は
+$\widehat\RR_{\mathrm{MH}}=\sum_k(a_kn_{0k}/N_k)\big/\sum_k(c_kn_{1k}/N_k)$ である．
+ペアを層とすると（$N_k=2$，$n_{1k}=n_{0k}=1$），$a_kd_k=1$ となるのは「曝露ありのみイベント」のペア，$b_kc_k=1$ となるのは「曝露なしのみイベント」のペアだけなので
+$\widehat\OR_{\mathrm{MH}}=(\text{不一致ペアの比})$ となり，条件付き OR（\cref{subsec:04-condor}）に一致する．
+\kakomon{2022}{2} では $\widehat\OR_{\mathrm{MH}}=2632/662=3.98$，$\widehat\RR_{\mathrm{MH}}=(442+2632)/(442+662)=2.78$ で，後者は粗 RR と一致する（RR は併合的，OR は非併合的）．
+
+\begin{supbox}[補足：共通 OR 推定量の分散公式（Robins--Breslow--Greenland）\quad\Hatten]
+$R_k=a_kd_k/N_k$，$S_k=b_kc_k/N_k$，$P_k=(a_k+d_k)/N_k$，$Q_k=(b_k+c_k)/N_k$，$R=\sum R_k$，$S=\sum S_k$ として
+\[
+\widehat\V[\log\widehat\OR_{\mathrm{MH}}]=\frac{\sum P_kR_k}{2R^2}+\frac{\sum(P_kS_k+Q_kR_k)}{2RS}+\frac{\sum Q_kS_k}{2S^2}
+\]
+が，大きな層の場合にも小さな層が多数の場合にも一致性をもつ分散推定量として知られる \cite{rbg1986}．
+過去問では問われていない．本書では，\cref{reidai:07-2}と同じ層の大きさで真の共通 OR を2とした2万回のシミュレーションで $\log\widehat\OR_{\mathrm{MH}}$ の分散 $0.049$ に対しこの式の平均が $0.049$ となることを確認した．
+\end{supbox}
+
+\subsection{3つの推定量の比較}\label{subsec:07-compare}
+\begin{center}\small
+\begin{tabular}{@{}L{22mm}L{44mm}L{36mm}L{38mm}@{}}
+\toprule
+推定量 & 式 & 長所 & 注意\\
+\midrule
+逆分散（Woolf） & $\exp\bigl(\sum w_k\hat\theta_k/\sum w_k\bigr)$，$w_k=1/(\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k})$ & 分散 $1/\sum w_k$ が簡単．均一性の $Q$ と同時に計算できる & ゼロセルで不能．各層が大きいことが前提\\
+Mantel--Haenszel & \cref{eq:07-mhor} & ゼロセル・疎な層に強い．推定方程式が不偏 & 分散の式がやや複雑\\
+Peto（1段階） & \cref{eq:07-peto} & CMH 検定と同じ量で計算できる & OR が1から遠いと偏る\\
+\bottomrule
+\end{tabular}
+\end{center}
+各層が大きく OR が1に近ければ3つはほぼ一致する．大きく食い違うときは，OR が1から遠いか，疎な層があるか，層間で OR が異なる（効果修飾）可能性を疑う．
+
+\begin{pointbox}[粗 OR と調整 OR の差を見たときの切り分け]
+\begin{center}\small
+\begin{tabular}{@{}L{24mm}L{58mm}L{58mm}@{}}
+\toprule
+現象 & 定義 & データでの手がかり\\
+\midrule
+交絡 & 層変数 $Z$ が曝露と関連し，かつ結果の危険因子 & $Z$ と曝露の関連（層ごとの曝露割合が異なる）．RD・RR でも粗と調整が異なる\\
+効果修飾 & 層ごとの効果（その尺度での）が異なる & 層の OR の不均一（Woolf の $Q$，Breslow--Day，交互作用項）\\
+非可縮性 & $Z$ が曝露と独立でも周辺 OR と条件付き OR が異なる & $Z$ と曝露が独立なのに粗 OR $\ne$ MH OR．RR・RD では差が出ない\\
+\bottomrule
+\end{tabular}
+\end{center}
+3つは同時に起こりうる．交絡がある観察研究では，粗 OR と MH OR の差には交絡と非可縮性の両方が混ざる．
+\end{pointbox}
+
 \section{マッチング}\label{sec:07-match}
 \Hinshutsu マッチングは，交絡因子の分布を群間でそろえるために，背景の似た個体を組にするデザインである．
 \begin{itemize}
@@ -2844,6 +3056,31 @@ $a_k,b_k,c_k,d_k$ にゼロのセルがあると $\hat\theta_k$，$v_k$ が定�
 \end{reidai}
 交絡がない状況で非併合性と効果修飾を区別する例題は\cref{reidai:02-3}にある（本例題(4)の交絡と比較するとよい）．
 
+\begin{reidai}[共通オッズ比の推定と粗 OR]\label{reidai:07-2}
+ある曝露と疾患の関連を年齢層（3層）で層別したコホートデータ（人数）である．
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{曝露あり} & \multicolumn{2}{c}{曝露なし}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+年齢層 & 発症あり $a_k$ & 発症なし $b_k$ & 発症あり $c_k$ & 発症なし $d_k$\\
+\midrule
+層1（若年） & 30 & 70 & 10 & 70\\
+層2（中年） & 60 & 60 & 20 & 40\\
+層3（高齢） & 90 & 30 & 20 & 10\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=(\arabic*)]
+\item 各層の OR と，層を併合した粗 OR を求めよ．
+\item Mantel--Haenszel 共通 OR を求めよ．
+\item 各層の $\E[a_k]$，$\V[a_k]$（\cref{eq:04-hyper}）を求め，層別 Cochran（CMH）検定を有意水準5\%で行え．さらに Peto 型推定値（\cref{eq:07-peto}）を求めよ（$\chi^2_1(0.05)=3.841$，$e^{0.735}=2.085$）．
+\item Woolf の均一性検定を行え（$\log3=1.0986$，$\log2=0.6931$，$\log1.5=0.4055$，$\chi^2_2(0.05)=5.991$）．
+\item 粗 OR と MH OR の差を，交絡・効果修飾・非可縮性の観点から解釈せよ．
+\item （任意・発展）RBG の分散公式で $\log\widehat\OR_{\mathrm{MH}}$ の標準誤差を求め，共通 OR の95\%CI を作れ（$\log2.130=0.756$，$e^{0.329}=1.389$，$e^{1.183}=3.265$）．
+\end{enumerate}
+\end{reidai}
+
 \section{解答}\label{sec:07-sol}
 \begin{kaitou}{reidai:07-1}
 (1) A：$\frac{90\times100}{10\times400}=2.25$．B：$\frac{300\times50}{200\times50}=1.50$．
@@ -2861,12 +3098,34 @@ $Q=8.09\times(0.811-0.519)^2+20.69\times(0.405-0.519)^2=0.690+0.269=0.96<3.841$�
 併合すると「治療群は重症が多いから改善率が低い」ことが治療の効果に混入し，向きが逆転した．
 \end{kaitou}
 
+\begin{kaitou}{reidai:07-2}
+(1) 層1：$\frac{30\times70}{70\times10}=3.0$，層2：$\frac{60\times40}{60\times20}=2.0$，層3：$\frac{90\times10}{30\times20}=1.5$．
+併合：曝露あり340人中180人，曝露なし180人中50人が発症で $\frac{180\times130}{160\times50}=2.70$．\\
+(2) $N_k=180,180,150$．$\sum a_kd_k/N_k=\frac{2100}{180}+\frac{2400}{180}+\frac{900}{150}=11.667+13.333+6.000=31.000$，
+$\sum b_kc_k/N_k=\frac{700}{180}+\frac{1200}{180}+\frac{600}{150}=3.889+6.667+4.000=14.556$．$\widehat\OR_{\mathrm{MH}}=31.000/14.556=2.13$．\\
+(3) 層1：$E=\frac{100\times40}{180}=22.22$，$V=\frac{100\cdot80\cdot40\cdot140}{180^2\cdot179}=7.725$．
+層2：$E=\frac{120\times80}{180}=53.33$，$V=\frac{120\cdot60\cdot80\cdot100}{180^2\cdot179}=9.932$．
+層3：$E=\frac{120\times110}{150}=88.00$，$V=\frac{120\cdot30\cdot110\cdot40}{150^2\cdot149}=4.725$．
+$\sum(O-E)=7.78+6.67+2.00=16.44$，$\sum V=22.38$，$\chi^2_{\mathrm{CMH}}=16.44^2/22.38=12.08>3.841$ で有意．
+Peto 型：$\hat\beta=16.44/22.38=0.735$，$\widehat\OR=e^{0.735}=2.085$（MH と近い．層の OR が2前後で，1から極端には遠くない）．\\
+(4) $v_k=\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k}$ は $0.1619,\,0.1083,\,0.1944$，$w_k=6.18,\,9.23,\,5.14$，$\sum w=20.55$．
+$\hat\theta_w=(6.18\times1.0986+9.23\times0.6931+5.14\times0.4055)/20.55=15.27/20.55=0.743$．
+$Q=6.18\times0.356^2+9.23\times(-0.050)^2+5.14\times(-0.338)^2=0.78+0.02+0.59=1.39<5.991$．均一性は棄却されない（ただし3層のみで検出力は低い）．\\
+(5) 層ごとの曝露割合は $100/180=0.56$，$120/180=0.67$，$120/150=0.80$，発症割合は $40/180=0.22$，$80/180=0.44$，$110/150=0.73$ で，年齢は曝露とも発症とも関連する．
+したがって年齢は交絡因子であり，粗 OR $2.70$ は年齢による交絡で大きくなっている．年齢で調整した MH OR $2.13$ が曝露の効果の要約として適切である．
+ただし OR は非可縮なので，交絡がなくても粗 OR と調整 OR は一致しない（差の一部は非可縮性による可能性がある）．
+層の OR は $3.0\to1.5$ と年齢とともに小さい傾向があるが，(4)で均一性は棄却されず，効果修飾の証拠は弱い．共通 OR で要約するときも層別 OR を併記する．\\
+(6)（任意）$R_k=11.667,\,13.333,\,6.000$，$S_k=3.889,\,6.667,\,4.000$，$P_k=\frac{100}{180},\frac{100}{180},\frac{100}{150}$，$Q_k=\frac{80}{180},\frac{80}{180},\frac{50}{150}$ を代入すると
+$\widehat\V=0.0475$，$\SE=0.218$．$0.756\pm1.96\times0.218=(0.329,\,1.183)$ で，共通 OR の95\%CI は $(1.39,\,3.27)$．
+\end{kaitou}
+
 \begin{summarybox}
 \begin{itemize}
 \item 交絡因子：曝露と関連，結果の危険因子，中間変数でない．交絡は偏り，効果修飾は自然の性質．
 \item Simpson のパラドックス：併合と層別で関連の向きが逆転．原因は交絡．
 \item OR は非併合的：交絡がなくても粗 OR $\ne$ 層別 OR．RD・RR は併合的．
-\item 層別 Cochran 検定 $\{\sum(a_k-E_k)\}^2/\sum V_k$（\cref{sec:04-mh}）．効果の向きが揃うとき検出力が高い．
+\item 層別 Cochran 検定 $\{\sum(a_k-E_k)\}^2/\sum V_k$（\cref{sec:04-mh}）．効果の向きが揃うとき検出力が高い．条件付き尤度のスコア検定である．
+\item 共通 OR：MH $\sum a_kd_k/N_k\big/\sum b_kc_k/N_k$（推定方程式 $\E[a_kd_k-\psi b_kc_k]=0$，ゼロセル・疎な層に強い），Peto $\exp\{\sum(O-E)/\sum V\}$（OR が1に近いとき），逆分散（Woolf）．前提は OR の均一性．
 \item 均一性：Woolf の $Q=\sum w_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$，$w_k=1/(1/a_k+1/b_k+1/c_k+1/d_k)$．Breslow--Day 検定，交互作用の尤度比検定も同じ目的．有意でなくても均一の証明ではない．
 \item 粗と調整の差の原因：交絡，非併合性，効果修飾（後二者の区別の例は\cref{reidai:02-3}）．調整しても未測定交絡は残る．
 \end{itemize}
@@ -2882,6 +3141,7 @@ $Q=8.09\times(0.811-0.519)^2+20.69\times(0.405-0.519)^2=0.690+0.269=0.96<3.841$�
 \item 独立・複合対称・AR(1)・無構造の共分散構造のパラメータ数を数え，平均のパラメータと合わせて AIC で選択できる．
 \item 線形混合効果モデル $\bm Y=\bm X\bm\beta+\bm Z\bm\gamma+\bm\varepsilon$ の周辺分散 $\bm V=\bm Z\bm G\bm Z\transp+\bm R$ と一般化最小二乗推定量を導出できる．
 \item 変量切片が複合対称構造を生むことを示し，与えられた $\bm V$ から $\bm Z,\bm G$ を構成できる．被験者内相関を無視したときの誤りを説明できる．
+\item ベースライン値のあるランダム化試験で，最終値・変化量・ANCOVA の推定量の期待値と分散を導き，相関 $\rho$ に応じた優劣を説明できる．
 \end{itemize}
 \end{goalbox}
 
@@ -2890,7 +3150,8 @@ $Q=8.09\times(0.811-0.519)^2+20.69\times(0.405-0.519)^2=0.690+0.269=0.96<3.841$�
 \item \kakomon{2023}{4}：3時点の反復測定（3変量正規）．$\hat{\bm\mu}$ の分布，2つの共分散構造（行列の形は問題文で与えられる）の AIC，相関行列，変化量の平均と標準誤差，$Z$ 検定．
 \item \kakomon{2022}{3}：線形混合モデル．$\bm V=\bm Z\bm G\bm Z\transp+\bm R$，変量効果なしの場合の $\hat{\bm\beta}=(\bm X\transp\bm X)^{-1}\bm X\transp\bm Y$ と不偏性，数値計算，
       ブロック対角の複合対称構造を生む $\bm Z,\bm G$，被験者内相関を考慮する意義．
-\item \kakomon{2024}{2}（ベースライン調整の3推定量の比較）と \kakomon{2022}{5}（平均への回帰）は，必要な分布やモデルが問題文で与えられる誘導形式である（\cref{app:F}）．
+\item \kakomon{2024}{2}：ベースライン調整の3推定量（最終値・変化量・ANCOVA）の分散，期待値が等しくなる条件，相対分散のグラフ．2変量正規分布と回帰モデルは問題文で与えられる（\cref{sec:08-ancova}）．
+\item \kakomon{2022}{5}（共通）：平均への回帰．2変量正規の条件付き分布の公式が与えられる誘導形式である（\cref{app:F}）．
 \end{itemize}
 \end{exambox}
 
@@ -3002,6 +3263,88 @@ $\E[\hat{\bm\beta}]=\bm A\bm X\bm\beta=\bm\beta$，$\V[\hat{\bm\beta}]=\bm A\bm 
 \item \textbf{変量効果}：母集団から抽出されたとみなす水準（被験者，施設）の効果．個々の値ではなく分散 $\sigma_b^2$ に関心がある．
 \end{itemize}
 
+\section{ベースライン調整：最終値・変化量・ANCOVA}\label{sec:08-ancova}
+\Hinshutsu
+ランダム化比較試験で治療前値（ベースライン）$X$ と治療後値 $Y$ を測ったとき，治療効果をどの量で比較するかは過去問の典型的な論点である（\kakomon{2024}{2}）．
+同問では2変量正規分布と回帰モデルが問題文で与えられ，3つの推定量の分散を求めて比較した．
+
+\paragraph{データ構造とモデル}
+$T$群・$C$群各 $n$ 人．各人の $(X_i,Y_i)$ は群ごとに独立に
+\[
+\begin{pmatrix}X_i\\Y_i\end{pmatrix}\sim\Normal\left(\begin{pmatrix}\mu_g^X\\\mu_g^Y\end{pmatrix},\ \sigma^2\begin{pmatrix}1&\rho\\\rho&1\end{pmatrix}\right),\qquad g=T,C
+\]
+に従い，$\sigma^2$，$\rho$ は既知とする．群・時点ごとの標本平均を $\bar X_T,\bar X_C,\bar Y_T,\bar Y_C$ と書く．同じ群の $\bar X_g$ と $\bar Y_g$ の共分散は $\rho\sigma^2/n$，異なる群の平均は独立である．
+
+\begin{meidai}[3つの推定量の期待値と分散（\kakomon{2024}{2}）]\label[meidai]{prop:08-ancova}
+$\Delta_X=\mu_T^X-\mu_C^X$（ベースラインの群間差）とおく．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+推定量 & 式 & 期待値 & 分散\\
+\midrule
+最終値 & $\hat\delta_d=\bar Y_T-\bar Y_C$ & $\mu_T^Y-\mu_C^Y$ & $2\sigma^2/n$\\
+変化量 & $\hat\delta_c=(\bar Y_T-\bar X_T)-(\bar Y_C-\bar X_C)$ & $(\mu_T^Y-\mu_C^Y)-\Delta_X$ & $4\sigma^2(1-\rho)/n$\\
+ANCOVA & $\hat\delta_a=(\bar Y_T-\bar Y_C)-\rho(\bar X_T-\bar X_C)$ & $(\mu_T^Y-\mu_C^Y)-\rho\Delta_X$ & $2\sigma^2(1-\rho^2)/n$\\
+\bottomrule
+\end{tabular}
+\end{center}
+ANCOVA の推定量は，回帰モデル $Y_i=\alpha+\delta_az_i+\rho X_i+\varepsilon_i$（$z_i$ は $T$群で1，$C$群で0，傾き $\rho$ は既知）の最小二乗推定量である．
+\end{meidai}
+\begin{proof}
+\textbf{最終値}：$\V[\bar Y_g]=\sigma^2/n$，2群独立で $2\sigma^2/n$．\\
+\textbf{変化量}：$\V[\bar Y_g-\bar X_g]=(\sigma^2+\sigma^2-2\rho\sigma^2)/n=2\sigma^2(1-\rho)/n$．2群で $4\sigma^2(1-\rho)/n$．\\
+\textbf{ANCOVA}：傾き $\rho$ が既知なので，$U_i=Y_i-\rho X_i$ とおくとモデルは $U_i=\alpha+\delta_az_i+\varepsilon_i$ である．
+残差平方和 $\sum_i(U_i-\alpha-\delta_az_i)^2$ を $\alpha,\delta_a$ で微分して0とおくと，$\hat\alpha=\bar U_C$，$\hat\alpha+\hat\delta_a=\bar U_T$ なので
+$\hat\delta_a=\bar U_T-\bar U_C=(\bar Y_T-\bar Y_C)-\rho(\bar X_T-\bar X_C)$．係数は $(c_1,c_2,c_3,c_4)=(1,-1,-\rho,\rho)$．
+分散は $\V[\bar Y_g-\rho\bar X_g]=(\sigma^2+\rho^2\sigma^2-2\rho\cdot\rho\sigma^2)/n=\sigma^2(1-\rho^2)/n$ の2倍．\\
+期待値は線形性から直ちに得られる．
+\end{proof}
+\paragraph{比較}
+最終値を基準にした相対分散は
+\[
+\frac{\V[\hat\delta_c]}{\V[\hat\delta_d]}=2(1-\rho),\qquad \frac{\V[\hat\delta_a]}{\V[\hat\delta_d]}=1-\rho^2 .
+\]
+\begin{itemize}
+\item 変化量が最終値より精度が高いのは $\rho>1/2$ のときだけである．$\rho<1/2$ では差をとることでかえって誤差が増える．
+\item ANCOVA は $0\le\rho\le1$ のすべてで両者以下の分散をもつ（$1-\rho^2\le1$，$1-\rho^2\le2(1-\rho)\iff(1-\rho)^2\ge0$）．$\rho=1$ のときだけ変化量と一致する．
+\item $\rho$ の推定量としての意味：$\bar Y_g-b\bar X_g$ の分散 $\sigma^2(1+b^2-2b\rho)/n$ は $b=\rho$ で最小である．最終値は $b=0$，変化量は $b=1$ と係数を固定した特別な場合であり，ANCOVA は最適な係数を使っている．
+\item 同じ精度を得るのに必要な症例数は分散に比例するので，ANCOVA は最終値解析の $(1-\rho^2)$ 倍の症例数で済む（$\rho=0.6$ なら64\%）．
+\end{itemize}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=85mm,height=55mm,xmin=0,xmax=1,ymin=0,ymax=2.1,
+  xlabel={相関係数 $\rho$},ylabel={相対分散},xtick={0,0.25,0.5,0.75,1},ytick={0,0.5,1,1.5,2},
+  grid=major,grid style={gray!20},tick label style={font=\scriptsize},
+  legend style={font=\scriptsize,at={(0.03,0.03)},anchor=south west}]
+\addplot[thick,bkblue,domain=0:1] {1};
+\addplot[thick,bkred,dashed,domain=0:1] {2*(1-x)};
+\addplot[thick,bkgreen,domain=0:1,samples=50] {1-x^2};
+\legend{最終値,変化量,ANCOVA}
+\end{axis}
+\end{tikzpicture}
+\caption{最終値の分散を1としたときの相対分散（\kakomon{2024}{2}〔5〕）}\label{fig:08-ancova}
+\end{figure}
+
+\paragraph{期待値が等しくなる条件（\kakomon{2024}{2}〔4〕）}
+3つの期待値が等しいのは $\Delta_X=0$（$\rho\ne0$ のとき）すなわち $\mu_T^X=\mu_C^X$ のときである．
+ランダム化により治療前の母平均は群間で等しいので，この条件はランダム化比較試験では成り立つ．
+このとき3つの推定量はすべて同じ治療効果 $\mu_T^Y-\mu_C^Y$ の不偏推定量であり，違いは分散だけである．
+ランダム化試験でも，実現した $\bar X_T-\bar X_C$ は偶然0でない．ANCOVA は，その偶然の不均衡を $\rho$ の分だけ補正する（変化量は1の分だけ補正しすぎる）．
+
+\paragraph{前後差解析と ANCOVA の違い}
+\begin{itemize}
+\item 前後差（変化量）解析は「各人の $Y-X$」を比べ，ベースラインに係数1を課す．ANCOVA は $X$ を共変量として係数を推定（または既知の $\rho$ を使用）する．
+\item 平均への回帰：ベースラインが高い人ほど次の測定は平均の方へ下がる（\kakomon{2022}{5}，共通問題）．変化量はベースラインと負に相関するので，ベースラインに群間の偶然の差があると変化量の比較は偏った結論に見えやすい．ANCOVA はこの影響を取り除く．
+\item 非ランダム化研究でベースラインが群間で系統的に異なる（$\Delta_X\ne0$）と，変化量と ANCOVA は異なる量を推定し，どちらが正しいかはデータだけでは決まらない（Lord のパラドックス）．
+\end{itemize}
+
+\begin{supbox}[補足：傾きを推定する場合\quad\Hatten]
+実際には $\rho$（一般には回帰係数 $\beta$）は未知で，群内でプールした最小二乗推定値を使う．
+$\bar X_T-\bar X_C$ と傾きの推定誤差の分だけ分散が増え，ランダム化の下で平均すると $\frac{2\sigma^2(1-\rho^2)}{n}\cdot\frac{2n-3}{2n-4}$ になる
+（$\bar X_T-\bar X_C$ と群内平方和の独立性と $\E[\chi^2_1/\chi^2_{2n-2}]=1/(2n-4)$ から導かれる．$n=20$，$\rho=0.6$，$\sigma=10$ で10万回のシミュレーションにより確認した）．$n$ が大きければ補正は無視できる．
+\end{supbox}
+
 \section{仮定}\label{sec:08-assump}
 \begin{itemize}
 \item 個体間の独立性（個体内の相関は共分散構造でモデル化）．
@@ -3022,6 +3365,7 @@ $\E[\hat{\bm\beta}]=\bm A\bm X\bm\beta=\bm\beta$，$\V[\hat{\bm\beta}]=\bm A\bm 
 \item 共分散構造の選択 → 平均と共分散のパラメータ数を数えて AIC．
 \item 個体差を含めて平均構造を推定 → 線形混合効果モデル（変量切片なら複合対称）と GLS 推定．
 \item 被験者レベルの比較で全観測を独立とみなす解析 → 誤り（デザイン効果の分だけ分散を過小評価）．
+\item 治療前後の2時点のランダム化試験で治療効果を推定 → ベースラインを共変量とする ANCOVA（最終値・変化量より分散が小さい）．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:08-err}
@@ -3032,6 +3376,8 @@ $\E[\hat{\bm\beta}]=\bm A\bm X\bm\beta=\bm\beta$，$\V[\hat{\bm\beta}]=\bm A\bm 
 \item 無構造のパラメータ数を $T^2$ とする（正しくは $T(T+1)/2$）．AIC で平均のパラメータを数え忘れる．
 \item $\hat{\bm\mu}$ の共分散行列を $\bm\Sigma$ とする（正しくは $\bm\Sigma/N$）．
 \item 変量切片モデルの相関を時点差によって変わるとする（複合対称なので一定）．
+\item 変化量は常に最終値より精度が高いとする（$\rho>1/2$ のときだけ）．
+\item ANCOVA の分散を $2\sigma^2(1-\rho)/n$ とする（それは変化量の分散の半分であり誤り．正しくは $2\sigma^2(1-\rho^2)/n$）．
 \end{itemize}
 \end{warnbox}
 
@@ -3066,6 +3412,17 @@ $Y_{ij}=\mu+\delta z_i+b_i+\varepsilon_{ij}$（$j=1,\dots,m$，$b_i\sim\Normal(0
 \end{enumerate}
 \end{reidai}
 
+\begin{reidai}[ベースライン調整]\label{reidai:08-3}
+各群 $n=50$ 人のランダム化試験で，治療前値 $X$ と治療後値 $Y$ が\cref{sec:08-ancova}のモデルに従い，$\sigma=10$，$\rho=0.6$ とする．
+結果は $\bar X_T=52$，$\bar Y_T=45$，$\bar X_C=50$，$\bar Y_C=48$ であった．
+\begin{enumerate}[label=(\arabic*)]
+\item 最終値・変化量・ANCOVA（傾き $\rho$ 既知）による治療効果の推定値と分散を求めよ．
+\item ANCOVA の推定値で $H_0$：治療効果なし を有意水準5\%（両側）で検定せよ（$\sqrt{2.56}=1.6$）．
+\item 3つの推定値が異なる理由を説明せよ．
+\item 最終値解析で各群100人が必要な試験を，ANCOVA で同じ精度で行うには各群何人必要か．変化量解析ではどうか．
+\end{enumerate}
+\end{reidai}
+
 \section{解答}\label{sec:08-sol}
 \begin{kaitou}{reidai:08-1}
 (1) $8.3-10.2=-1.9$．$\widehat\V=(4.0+4.8-2\times2.0)/30=4.8/30=0.16$，$\SE=0.40$．$Z=-1.9/0.40=-4.75$，$|Z|>1.96$ で有意（共分散行列を推定値で置き換えているので，$Z$ は大標本で近似的に $\Normal(0,1)$）．\\
@@ -3082,12 +3439,23 @@ $\V[\hat\delta]=2(\sigma_b^2+\sigma^2/m)/n$．独立とみなすと $2(\sigma_b^
 (3) $\mathrm{ICC}=3/4$，$1+3\times0.75=3.25$．独立を仮定すると分散を約3分の1に過小評価する．
 \end{kaitou}
 
+\begin{kaitou}{reidai:08-3}
+(1) 最終値：$45-48=-3$，分散 $2\times100/50=4.0$．
+変化量：$(45-52)-(48-50)=-7+2=-5$，分散 $4\times100\times0.4/50=3.2$．
+ANCOVA：$(45-48)-0.6\times(52-50)=-3-1.2=-4.2$，分散 $2\times100\times(1-0.36)/50=2.56$．\\
+(2) $Z=-4.2/1.6=-2.625$，$|Z|>1.96$ で有意（$\sigma,\rho$ 既知なので $Z$ は $H_0$ の下で正確に $\Normal(0,1)$）．\\
+(3) ランダム化でも実現したベースラインは $T$群が2高い．最終値はこの偶然の差を補正せず（係数0），変化量は係数1で補正しすぎ，ANCOVA は相関 $\rho=0.6$ の分だけ補正する．
+3つとも期待値は同じ（ランダム化により $\Delta_X=0$）で，分散は ANCOVA が最小である．\\
+(4) 必要な症例数は分散に比例する．ANCOVA：$100\times(1-0.36)=64$ 人．変化量：$100\times2\times0.4=80$ 人．
+\end{kaitou}
+
 \begin{summarybox}
 \begin{itemize}
 \item $\hat{\bm\mu}\sim\Normal(\bm\mu,\bm\Sigma/N)$，変化量の分散 $(\sigma_{tt}+\sigma_{ss}-2\sigma_{st})/N$，相関 $\sigma_{st}/\sqrt{\sigma_{ss}\sigma_{tt}}$．
 \item 共分散構造のパラメータ数：独立 1，CS 2，AR(1) 2，UN $T(T+1)/2$．AIC は平均＋共分散のパラメータ数で計算．
 \item LMM：$\bm V=\bm Z\bm G\bm Z\transp+\bm R$，$\hat{\bm\beta}=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}\bm Y$，$\V[\hat{\bm\beta}]=(\bm X\transp\bm V^{-1}\bm X)^{-1}$．
 \item 変量切片 → 複合対称，ICC $=\sigma_b^2/(\sigma_b^2+\sigma^2)$．相関を無視するとデザイン効果 $1+(m-1)\mathrm{ICC}$ だけ分散を過小評価．
+\item ベースライン調整：相対分散は最終値1，変化量 $2(1-\rho)$，ANCOVA $1-\rho^2$．ランダム化なら期待値は同じで ANCOVA が最も精度が高い．
 \end{itemize}
 \end{summarybox}
 
@@ -3101,6 +3469,7 @@ $\V[\hat\delta]=2(\sigma_b^2+\sigma^2/m)/n$．独立とみなすと $2(\sigma_b^
 \item 打ち切りの種類と「独立な打ち切り」の仮定を説明できる．
 \item リスク集合を数え，Kaplan--Meier 推定値の表を作成し，生存曲線を描き，中央生存時間を読み取れる．
 \item ログランク検定の $O-E$ と分散を時点ごとの $2\times2$ 表から導出し，手計算できる．
+\item Nelson--Aalen 推定量を計算して KM との大小を示し，境界内平均生存時間（RMST）を定義・計算・解釈できる．
 \end{itemize}
 \end{goalbox}
 
@@ -3108,7 +3477,7 @@ $\V[\hat\delta]=2(\sigma_b^2+\sigma^2/m)/n$．独立とみなすと $2(\sigma_b^
 \begin{itemize}
 \item \kakomon{2016}{3}：2群各5例の KM 曲線，ログランク検定のスコア $u=\sum(d_t-n_{1t}/n_t)$ と分散 $v=\sum\frac{n_{1t}}{n_t}\frac{n_t-n_{1t}}{n_t}$ から $\chi^2=5.62$，$P=0.018$．
 \item \kakomon{2017}{1}〔1〕〜〔3〕：$\lambda=f/S$，$\Lambda=-\log S$，$\Prob(\Lambda(T)>t)=e^{-t}$ の証明．〔6〕：乱数生成．
-\item \kakomon{2019}{1}〔1〕：5例の KM 推定値の表と曲線．（〔2〕は推定量の式が与えられる誘導付きの問題：\cref{app:F}．）
+\item \kakomon{2019}{1}〔1〕：5例の KM 推定値の表と曲線．〔2〕Nelson--Aalen 型推定値が KM 以上であることの証明（式は与えられる：\cref{sec:09-na}），〔3〕〜〔5〕境界内平均生存時間（RMST）の定義・分散・指数モデルでの推定（\cref{sec:09-rmst}）．
 \item \kakomon{2021}{1}〔1〕〔2〕：$f=\lambda S$，8例の KM から $1-\hat S(t)$ のグラフ（競合リスクとの比較は\cref{sec:10-compete}）．
 \item \kakomon{2022}{1}〔2〕：$S_0(t)=\exp(-\int_0^t\lambda_0)$．
 \end{itemize}
@@ -3297,6 +3666,68 @@ $d_j=1$ なら $V_j=\frac{n_{1j}n_{0j}}{n_j^2}=\frac{n_{1j}}{n_j}\Bigl(1-\frac{n
 \item 両群の $O-E$ の和は0（$\sum_j(d_j-d_j)=0$）なので，どちらの群で計算しても $\chi^2$ は同じ．
 \end{itemize}
 
+\section{Nelson--Aalen 推定量}\label{sec:09-na}
+\kakomon{2019}{1}〔2〕では，推定量の式が与えられ，それが KM 推定値以上であることの証明が問われた．
+\begin{teigi}[Nelson--Aalen 推定量]\label{def:09-na}
+累積ハザードの推定量と，それによる生存関数の推定量を
+\begin{equation}
+\tilde H(t)=\sum_{j:\,t_{(j)}\le t}\frac{d_j}{n_j},\qquad \tilde S(t)=\exp\{-\tilde H(t)\}=\prod_{j:\,t_{(j)}\le t}\exp\Bigl(-\frac{d_j}{n_j}\Bigr)\label{eq:09-na}
+\end{equation}
+とする（記号は\cref{def:09-km}と同じ）．
+\end{teigi}
+\paragraph{考え方}
+時点 $t_{(j)}$ でリスク集合 $n_j$ 人のうち $d_j$ 人にイベントが起きたので，$d_j/n_j$ はその時点のハザードの増分（離散ハザード）の推定値である．
+累積ハザードはその和で推定し（$H(t)=\int_0^th$ の離散版），関係 $S=e^{-H}$（\cref{thm:09-relations}）で生存関数に変換したものが $\tilde S$ である．
+一方，KM は同じ離散ハザード $d_j/n_j$ から $S=\prod(1-\text{離散ハザード})$ という離散時間の関係で生存関数を作る．
+\begin{meidai}[$\tilde S\ge\hat S$（\kakomon{2019}{1}〔2〕）]\label[meidai]{prop:09-na}
+任意の $t$ で $\tilde S(t)\ge\hat S(t)$．
+\end{meidai}
+\begin{proof}
+すべての実数 $x$ で $e^{-x}\ge1-x$ である（$g(x)=e^{-x}-(1-x)$ は $g(0)=0$，$g'(x)=1-e^{-x}$ が $x<0$ で負，$x>0$ で正なので $x=0$ で最小）．
+$0\le d_j/n_j\le1$ なので各因子で $\exp(-d_j/n_j)\ge1-d_j/n_j\ge0$．非負の数の積なので，各因子の大小がそのまま積の大小になり $\tilde S(t)\ge\hat S(t)$．
+\end{proof}
+$d_j/n_j$ が小さい（リスク集合が大きい）ときは $e^{-x}\approx1-x$ で両者はほぼ一致し，差は右端（$n_j$ が小さい）で大きくなる．
+最後のイベントで $d_j=n_j$ なら KM は0になるが，$\tilde S$ は $e^{-1}$ 倍になるだけで0にならない．
+\paragraph{分散}
+$n_j$ を与えると $d_j$ はおよそ平均 $n_jh_j$ の二項（稀なら Poisson）分布に従うので，$\V[d_j/n_j]\approx d_j/n_j^2$ で推定し，時点間の和
+$\widehat\V[\tilde H(t)]=\sum_{t_{(j)}\le t}d_j/n_j^2$ を用いることが多い（デルタ法で $\V[\tilde S]\approx\tilde S^2\,\V[\tilde H]$）．
+
+\section{境界内平均生存時間（RMST）}\label{sec:09-rmst}
+\Hinshutsu
+最長の観察が打ち切りだと KM 曲線は0に到達せず，平均生存時間 $\E[T]=\int_0^\infty S(t)\dd t$ は推定できない．
+また中央生存時間は曲線が0.5まで下がらなければ推定できない．そこで，あらかじめ決めた時間 $\tau$ までの平均を用いる（\kakomon{2019}{1}〔3〕〜〔5〕）．
+\begin{teigi}[境界内平均生存時間]\label{def:09-rmst}
+$X(\tau)=\min(T,\tau)$ とし，$\mathrm{RMST}(\tau)=\E[X(\tau)]$ を境界内平均生存時間（restricted mean survival time）という．
+\end{teigi}
+\begin{meidai}[生存曲線下面積としての表現]\label[meidai]{prop:09-rmst}
+\begin{equation}
+\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,\dd t,\qquad \E[X(\tau)^2]=\int_0^\tau2t\,S(t)\,\dd t .\label{eq:09-rmst}
+\end{equation}
+指数分布 $S(t)=e^{-\lambda t}$ なら
+\begin{equation}
+\mathrm{RMST}(\tau)=\frac{1-e^{-\lambda\tau}}{\lambda},\qquad
+\V[X(\tau)]=\frac{2\{1-e^{-\lambda\tau}(1+\lambda\tau)\}}{\lambda^2}-\Bigl(\frac{1-e^{-\lambda\tau}}{\lambda}\Bigr)^2 .\label{eq:09-rmstexp}
+\end{equation}
+\end{meidai}
+\begin{proof}
+$X(\tau)=\int_0^\tau\ind\{T>t\}\dd t$（$T\ge\tau$ なら $\tau$，$T<\tau$ なら $T$）．期待値と積分を交換して（被積分関数は非負）$\E[X(\tau)]=\int_0^\tau\Prob(T>t)\dd t$．
+同様に $X(\tau)^2=\int_0^\tau2t\,\ind\{X(\tau)>t\}\dd t$ で，$0\le t<\tau$ では $\{X(\tau)>t\}=\{T>t\}$ なので第2式．
+指数分布では $\int_0^\tau e^{-\lambda t}\dd t=(1-e^{-\lambda\tau})/\lambda$，部分積分で
+$\int_0^\tau2te^{-\lambda t}\dd t=\bigl[-\frac{2t}{\lambda}e^{-\lambda t}\bigr]_0^\tau+\frac2\lambda\int_0^\tau e^{-\lambda t}\dd t=-\frac{2\tau}{\lambda}e^{-\lambda\tau}+\frac{2(1-e^{-\lambda\tau})}{\lambda^2}$
+$=\frac{2\{1-e^{-\lambda\tau}(1+\lambda\tau)\}}{\lambda^2}$．
+\end{proof}
+\paragraph{推定}
+\begin{itemize}
+\item ノンパラメトリック：KM 曲線の $[0,\tau]$ の下の面積（階段関数なので長方形の和）．$\tau$ は最長の観察時間以下に選ぶ．
+\item パラメトリック：指数モデルの MLE $\hat\lambda=d/W$（\cref{prop:10-expmle}）を\cref{eq:09-rmstexp}に代入する．
+      \kakomon{2019}{1}〔5〕では $\hat\lambda=3/83=0.0361$，$\tau=20$ で $\widehat{\mathrm{RMST}}=14.24$，$\widehat\V[X(\tau)]=48.0$（本書で検算）．
+\end{itemize}
+\paragraph{解釈}
+2群の RMST の差は「$\tau$ までの期間で，平均して何か月長く生存するか」であり，比例ハザードを仮定しない．
+HR が時間とともに変わる場合や，曲線が交差する場合にも定義でき，絶対的な時間の単位で示せる点が臨床的に解釈しやすい．
+ただし値は $\tau$ の選び方に依存するので，$\tau$ は事前に決める．
+$\V[X(\tau)]$ は個人の $X(\tau)$ のばらつきであって，推定量 $\widehat{\mathrm{RMST}}$ の分散ではない（$n$ 人の標本平均なら $\V[X(\tau)]/n$ が目安）．
+
 \section{仮定}\label{sec:09-assump}
 \begin{itemize}
 \item 独立（無情報）な打ち切り．打ち切りが予後と関連すると KM は偏る．
@@ -3329,6 +3760,8 @@ $d_j=1$ なら $V_j=\frac{n_{1j}n_{0j}}{n_j^2}=\frac{n_{1j}}{n_j}\Bigl(1-\frac{n
 \item ログランクの分散を $\sum E_{1j}$（ポアソン近似）で代用し，出題の指示（二項分散・超幾何分散）と異なる計算をする．
 \item 生存曲線が交差しているのに，ログランク検定の非有意を「差がない」根拠とする．
 \item ハザードを「確率」と説明する．
+\item 最長の観察が打ち切りなのに，KM 曲線の下の全面積を平均生存時間とする（RMST は $\tau$ までの面積）．
+\item RMST を KM の値の和（時点の幅を掛けない）で計算する．$\V[X(\tau)]$ を推定量の分散と取り違える．
 \end{itemize}
 \end{warnbox}
 
@@ -3364,6 +3797,16 @@ $H(t)$，$S(t)$，$f(t)$，中央生存時間を求めよ．また $\Unif(0,1)$ 
 \begin{enumerate}[label=(\arabic*)]
 \item 各イベント時点のリスク集合と群Aの期待イベント数，分散（\cref{eq:09-lrmoments}）を表にせよ．
 \item ログランク統計量を求め，有意水準5\%で検定せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[Nelson--Aalen 推定と RMST]\label{reidai:09-4}
+\cref{reidai:09-2}のデータ（$3,\ 5^+,\ 6,\ 6,\ 8^+,\ 10,\ 12^+,\ 15$ 週）を用いる．
+\begin{enumerate}[label=(\arabic*)]
+\item Nelson--Aalen 推定値 $\tilde H(t)$，$\tilde S(t)$ の表を作り，KM と比べよ．$\tilde H(10)$ の分散の推定値も求めよ
+（$e^{-0.125}=0.883$，$e^{-0.458}=0.632$，$e^{-0.792}=0.453$，$e^{-1.792}=0.167$）．
+\item KM 推定値から $\tau=12$ 週の RMST を求めよ．
+\item 指数モデルを当てはめて $\tau=12$ 週の RMST を求め，(2) と比べよ（$e^{-0.923}=0.397$）．
 \end{enumerate}
 \end{reidai}
 
@@ -3418,6 +3861,29 @@ Greenwood の公式はデルタ法による漸近的な近似分散であり厳�
 群Aは期待より多くのイベントを起こしているが，標本が小さく差があるとは言えない．
 \end{kaitou}
 
+\begin{kaitou}{reidai:09-4}
+(1)
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$t_{(j)}$ & $n_j$ & $d_j$ & $\tilde H$ & $\tilde S=e^{-\tilde H}$ & $\hat S$（KM）\\
+\midrule
+3 & 8 & 1 & $0.125$ & 0.883 & 0.875\\
+6 & 6 & 2 & $0.125+0.333=0.458$ & 0.632 & 0.583\\
+10 & 3 & 1 & $0.458+0.333=0.792$ & 0.453 & 0.389\\
+15 & 1 & 1 & $0.792+1=1.792$ & 0.167 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+すべての時点で $\tilde S\ge\hat S$（\cref{prop:09-na}）．差は右端ほど大きく，15週では KM が0になるのに対し $\tilde S=0.167$．
+$\widehat\V[\tilde H(10)]=\frac1{64}+\frac2{36}+\frac19=0.0156+0.0556+0.1111=0.182$．\\
+(2) KM は階段関数なので長方形の和：$3\times1+3\times0.875+4\times0.583+2\times0.389=3+2.625+2.333+0.778=8.74$ 週．
+12週までの期間で平均8.7週生存（イベントなし）である．\\
+(3) イベント数 $d=5$，総観察時間 $W=3+5+6+6+8+10+12+15=65$，$\hat\lambda=5/65=0.0769$．
+$\widehat{\mathrm{RMST}}(12)=(1-e^{-0.923})/0.0769=(1-0.397)/0.0769=7.84$ 週．
+KM による値（8.74）より小さい．このデータでは前半のイベントが少なく後半に集中しており，ハザード一定の指数モデルは前半の生存を過小評価している．
+\end{kaitou}
+
 \begin{summarybox}
 \begin{itemize}
 \item $h=f/S=-(\log S)'$，$H=-\log S$，$S=e^{-H}$，$f=hS$．$H(T)\sim\Ex(1)$ で乱数生成 $T=H^{-1}(-\log V)$．
@@ -3426,6 +3892,8 @@ Greenwood の公式はデルタ法による漸近的な近似分散であり厳�
 \item Greenwood（近似）：$\hat S^2\sum d_j/\{n_j(n_j-d_j)\}$．
 \item ログランク：$E_{1j}=d_jn_{1j}/n_j$，$V_j=d_jn_{1j}n_{0j}(n_j-d_j)/\{n_j^2(n_j-1)\}$（$d_j=1$ なら $n_{1j}n_{0j}/n_j^2$），$\chi^2=(O-E)^2/V$．
       時点間は条件付き平均0の和なので分散は足せる．比例ハザード型の局所対立仮説で効率的．
+\item Nelson--Aalen：$\tilde H=\sum d_j/n_j$，$\tilde S=e^{-\tilde H}\ge\hat S$（$e^{-x}\ge1-x$）．
+\item RMST：$\E[\min(T,\tau)]=\int_0^\tau S$．KM なら長方形の和，指数なら $(1-e^{-\lambda\tau})/\lambda$．比例ハザード不要で時間単位で解釈できる．
 \end{itemize}
 \end{summarybox}
 
@@ -3448,13 +3916,15 @@ Greenwood の公式はデルタ法による漸近的な近似分散であり厳�
 \item \kakomon{2017}{1}〔4〕〜〔6〕：Cox モデルの $\log(-\log S)$ 表現（モデル式は与えられる），極値分布，乱数生成．
 \item \kakomon{2018}{1}：打ち切りのある指数分布の尤度，$\hat\lambda=\sum\delta_i/\sum t_i$，$I(\lambda)=\delta/\lambda^2$，
       デルタ法による $\V[\log\hat\lambda_1-\log\hat\lambda_2]=1/d_1+1/d_2$，$Z$ 検定，必要イベント数．
-\item \kakomon{2019}{1}〔5〕：打ち切りのある指数モデルの $\hat\lambda=3/83$．（〔3〕〔4〕と〔5〕の後半は定義が与えられる誘導付きの量の計算：\cref{app:F}．）
+\item \kakomon{2019}{1}〔5〕：打ち切りのある指数モデルの $\hat\lambda=3/83$ と，それによる RMST（\cref{sec:09-rmst}）．
 \item \kakomon{2022}{1}：比例ハザード性，$S_0(t)$ の表現，$\hat\beta=0.06$（SE 0.18）の HR と CI の解釈．（〔3〕は誘導付き：\cref{app:F}．）
 \item \kakomon{2023}{2}：打ち切りなしの指数分布の尤度・Fisher情報量と症例数設計（\cref{ch:12}）．
 \item \kakomon{2021}{1}〔5〕：他因死を打ち切り扱いした $1-\mathrm{KM}$ と累積発生関数の推定値の違いの考察．
 \item \kakomon{2025}{3}〔5〕：原因別ハザードの比例ハザードモデルの $\beta$ で累積発生関数への効果を評価することの適否．
 \end{itemize}
-\kakomon{2021}{1}〔3〕〔4〕と\kakomon{2025}{3}〔1〕〜〔4〕は定義・推定式が問題文で与えられる誘導付きの問題なので，本書では解説しない（\cref{app:F}）．
+\kakomon{2021}{1}〔3〕〔4〕と\kakomon{2025}{3}〔1〕〜〔4〕は定義・推定式が問題文で与えられる誘導付きの問題である．
+定義と関係式は\cref{subsec:10-compete-def}，累積発生関数の推定（2021年〔4〕の式）は\cref{subsec:10-compete-aj}で扱う．
+\kakomon{2019}{1}〔3〕〜〔5〕の RMST は\cref{sec:09-rmst}．
 必要な定義は\cref{sec:10-compete}の冒頭にまとめる．
 \end{exambox}
 
@@ -3627,6 +4097,22 @@ $F_j(t)=\int_0^t\lambda_j(u)S(u)\,\dd u\le\int_0^t\lambda_j(u)e^{-\Lambda_j(u)}\
 $1-e^{-\Lambda_j(t)}$ は「他の原因が存在しない仮想的な世界での原因 $j$ の累積リスク」と解釈されることがあるが，それには原因ごとの潜在的なイベント時間が独立という，データからは検証できない仮定が要る．
 現実の世界で「$t$ までに原因 $j$ のイベントを経験する確率」は $F_j(t)$ である．
 
+\subsection{累積発生関数の推定（Aalen--Johansen 型）}\label{subsec:10-compete-aj}
+\Hinshutsu
+\cref{eq:10-cif}の $F_j(t)=\int_0^t\lambda_j(u)S(u)\dd u$ を，KM と同じ離散化で推定する（\kakomon{2021}{1}〔4〕では式が与えられた）．
+相異なるイベント時点（原因を問わない）を $t_{(1)}<t_{(2)}<\cdots$ とし，$n_i$ をリスク集合の大きさ，$d_{ji}$ を時点 $t_{(i)}$ の原因 $j$ のイベント数，$d_i=\sum_jd_{ji}$ とする．
+\begin{equation}
+\hat F_j(t)=\sum_{i:\,t_{(i)}\le t}\hat S(t_{(i)}^-)\,\frac{d_{ji}}{n_i},\qquad \hat S(t)=\prod_{i:\,t_{(i)}\le t}\Bigl(1-\frac{d_i}{n_i}\Bigr).\label{eq:10-aj}
+\end{equation}
+$\hat S(t_{(i)}^-)$ は時点 $t_{(i)}$ の直前の\textbf{全イベント}の KM（どのイベントもまだ起きていない確率），$d_{ji}/n_i$ は原因 $j$ の原因別ハザードの増分である．
+「直前まで何も起きず（$\hat S(t^-)$），その時点で原因 $j$ が起こる（$d_{ji}/n_i$）」を足し上げている．
+\begin{itemize}
+\item 打ち切りは KM と同じくリスク集合から外れるだけである．競合イベントも $\hat S$ を下げる（$d_i$ に含まれる）点が $1-\mathrm{KM}$ と異なる．
+\item 恒等式 $\hat S(t)+\sum_j\hat F_j(t)=1$ が成り立つ（各時点で $\hat S$ の減少分 $\hat S(t^-)d_i/n_i$ が各 $\hat F_j$ に $d_{ji}$ の比で配分される）．検算に使える．
+\item 競合イベントがなければ（$d_i=d_{ji}$）$\hat F_j=1-\hat S$ で KM に一致する．
+\end{itemize}
+数値例は\cref{reidai:10-5}．
+
 \subsection{原因別 Cox と Fine--Gray モデル}\label{subsec:10-compete-reg}
 \Hinshutsu
 \paragraph{原因別ハザードの Cox モデル}
@@ -3744,6 +4230,17 @@ $e^{-0.5}=0.6065$，$e^{-0.2}=0.8187$，$e^{-1}=0.3679$ を用いよ．
 \end{enumerate}
 \end{reidai}
 
+\begin{reidai}[累積発生関数の推定]\label{reidai:10-5}
+10例の観察時間（月）と転帰が次のとおりである（1：がん死，2：他因死，$+$：打ち切り）．
+\[
+2(1),\ 3(2),\ 4^+,\ 5(1),\ 6(2),\ 7(1),\ 8^+,\ 9(1),\ 10(2),\ 12^+
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item 全イベントの KM $\hat S$，がん死の累積発生関数 $\hat F_1$，他因死の $\hat F_2$ を\cref{eq:10-aj}で計算し，表にせよ．$\hat S+\hat F_1+\hat F_2=1$ を確かめよ．
+\item 他因死を打ち切りとみなした $1-\mathrm{KM}$ によるがん死の累積発生を計算し，(1) の $\hat F_1$ と比べよ．
+\end{enumerate}
+\end{reidai}
+
 \section{解答}\label{sec:10-sol}
 \begin{kaitou}{reidai:10-1}
 (1) リスク集合：$t=2$：全5例（$x=1,0,1,0,1$），$t=3$：4例（$0,1,0,1$），$t=5$：2例（$0,1$），$t=6$：1例（$1$）．
@@ -3779,6 +4276,30 @@ $I(0)=\sum\bar x_j(1-\bar x_j)=0.24+0.25+0.25+0=0.74$．スコア統計量 $0.36
 $F_1$ は $\lambda_2$ にも依存するので，原因別ハザード比だけでは $F_1$ への効果を評価できない．
 \end{kaitou}
 
+\begin{kaitou}{reidai:10-5}
+(1) 各イベント時点で，直前の $\hat S$ に $d_{ji}/n_i$ を掛けて $\hat F_j$ に加え，$\hat S$ に $(1-d_i/n_i)$ を掛ける．
+\begin{center}\small
+\begin{tabular}{@{}cccccccc@{}}
+\toprule
+$t_{(i)}$ & $n_i$ & $d_{1i}$ & $d_{2i}$ & $\hat S(t^-)$ & $\hat S(t)$ & $\hat F_1(t)$ & $\hat F_2(t)$\\
+\midrule
+2 & 10 & 1 & 0 & 1.000 & 0.900 & $0.100$ & 0\\
+3 & 9 & 0 & 1 & 0.900 & 0.800 & 0.100 & $0.100$\\
+5 & 7 & 1 & 0 & 0.800 & 0.686 & $0.100+0.800/7=0.214$ & 0.100\\
+6 & 6 & 0 & 1 & 0.686 & 0.571 & 0.214 & $0.100+0.686/6=0.214$\\
+7 & 5 & 1 & 0 & 0.571 & 0.457 & $0.214+0.571/5=0.329$ & 0.214\\
+9 & 3 & 1 & 0 & 0.457 & 0.305 & $0.329+0.457/3=0.481$ & 0.214\\
+10 & 2 & 0 & 1 & 0.305 & 0.152 & 0.481 & $0.214+0.305/2=0.367$\\
+\bottomrule
+\end{tabular}
+\end{center}
+（4か月と8か月の打ち切りでリスク集合が1ずつ減る．）各時点で $\hat S+\hat F_1+\hat F_2=1$（例：10か月で $0.152+0.481+0.367=1.000$）．\\
+(2) 他因死を打ち切りとすると，がん死の時点 2，5，7，9 のリスク集合は 10，7，5，3（他因死した人も以後は外れる）で，
+$\hat S_1^{\mathrm{KM}}(9)=\frac9{10}\cdot\frac67\cdot\frac45\cdot\frac23=0.411$，$1-\hat S_1^{\mathrm{KM}}=0.589$．
+(1) の $\hat F_1(9)=0.481$ より大きい．各がん死の時点の増分 $d_{1i}/n_i$ は同じだが，掛ける生存確率が $\hat S_1^{\mathrm{KM}}(t^-)\ge\hat S(t^-)$ と大きいためで，
+他因死した人もがん死のリスクを持ち続けるとみなすことによる過大推定である（\cref{prop:10-overestimate}）．
+\end{kaitou}
+
 \begin{summarybox}
 \begin{itemize}
 \item Cox：$h(t\mid\bm x)=h_0(t)e^{\bm\beta\transp\bm x}$，HR $=e^\beta$ は時間によらず一定．$S=S_0^{\exp(\bm\beta\transp\bm x)}$．
@@ -3787,6 +4308,7 @@ $F_1$ は $\lambda_2$ にも依存するので，原因別ハザード比だけ�
 \item 2群：$\V[\log\hat\lambda_1-\log\hat\lambda_2]\approx1/d_1+1/d_2$，必要イベント数 $r=2(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$（各群）．
 \item 競合リスク：$\lambda=\sum\lambda_j$，$S=\exp(-\sum\Lambda_j)$，$F_j(t)=\int_0^t\lambda_jS$，$\tilde\lambda_j=-\frac{\dd}{\dd t}\log(1-F_j)$．
 \item 競合を打ち切り扱いした $1-\mathrm{KM}$ は $1-e^{-\Lambda_j}\ge F_j$ を推定し過大．
+\item CIF の推定：$\hat F_j(t)=\sum_{t_{(i)}\le t}\hat S(t_{(i)}^-)d_{ji}/n_i$（$\hat S$ は全イベントの KM）．$\hat S+\sum_j\hat F_j=1$ で検算．
 \item 原因別 Cox の $\beta$ は原因別ハザードへの効果で CIF への効果ではない．CIF への効果は Fine--Gray（部分分布ハザード）の係数で解釈する（推定法は扱わない）．
 \end{itemize}
 \end{summarybox}
@@ -4571,13 +5093,14 @@ Holm：最大の $Z_3=3.95>2.394$ で棄却，次の $Z_2=2.37>z_{0.025/2}=2.241
 \item 完全ケース解析が偏らない条件・偏る条件を説明し，偏りの大きさを計算できる．
 \item 欠測の有無と群・共変量の関連を検定し，その結果から言えること・言えないことを述べられる．
 \item 観測されない度数を含む多項分布モデル（ABO 血液型）で，EM アルゴリズムの E ステップ・M ステップを導出し，反復法を構成できる．
+\item 多重補完の結果を Rubin のルール $T=\bar W+(1+1/m)B$ で統合し，その意味（全分散の公式）と MAR・適切な補完の前提を説明できる．
 \end{itemize}
 \end{goalbox}
 
 \begin{exambox}
 \begin{itemize}
 \item \kakomon{2024}{3}〔1〕：改善割合を比較する試験で，欠測（$T$群30人，$C$群10人）と群の独立性の $\chi^2$ 検定（12.5，有意）．
-      同問〔2〕〜〔5〕（多重補完の統合）は，統合の式が問題文で与えられる誘導付きの設問である（\cref{app:F}）．
+      同問〔2〕〜〔5〕（多重補完の統合）は，統合の式が問題文で与えられる誘導付きの設問である．Rubin のルールの意味と〔4〕〔5〕の導出は\cref{sec:16-mi}．
 \item 統計数理では\kakomonSM{2016}{5}（MCAR の検定：有意でなくても MCAR とは言えない），\kakomonSM{2022}{5}（対応のあるデータで片方が欠測したときの検定）．
 \item \kakomon{2019}{5}（共通）〔4〕：ABO 血液型の遺伝子頻度の推定．完全データの尤度の最大化（M ステップ）と観測されない度数の期待値（E ステップ）を誘導され，反復法を構成する．
 \end{itemize}
@@ -4648,7 +5171,7 @@ MCAR なら $\pi(x)$ が一定なので $\E[Y\mid R=1]=\E[Y]$ である．
 実際には $\pi(x)$ はモデル（ロジスティック回帰など）で推定するので，有限標本での不偏性は厳密には成り立たず，一致性はモデルが正しいことに依存する（数値例は\cref{reidai:16-2}）．
 
 \Youchui LOCF（最終観測値の引き継ぎ）は「脱落後の値が変わらない」という強い仮定であり，保守的とも限らない．
-なお，予測分布から欠測値を複数回補完して結果を統合する\textbf{多重補完}も MAR の下で用いられるが，統合の公式は過去問では問題文で与えられており，本書では扱わない（\cref{app:F}）．
+なお，予測分布から欠測値を複数回補完して結果を統合する\textbf{多重補完}も MAR の下で用いられる（\cref{sec:16-mi}）．
 MAR は検証できない仮定なので，実務では MNAR を想定した感度分析も行う（具体的な方法は本書では扱わない）．
 
 \begin{table}[htbp]
@@ -4726,10 +5249,71 @@ $\E[f_{AA}]=Np^2$，$\E[f_{AO}]=n_A-Np^2$（B型も同様に $Nq^2$，$n_B-Nq^2$
 \end{enumerate}
 \end{warnbox}
 
+\section{多重補完と Rubin のルール}\label{sec:16-mi}
+\Hinshutsu
+\kakomon{2024}{3}〔2〕〜〔5〕では，3つの補完データセットの結果を Rubin のルール（式は問題文で与えられる）で統合し，補完推定量の条件付き分散と補完間分散 $B$ の期待値を求めた．
+式は与えられても，$W$ と $B$ が何の分散を表すか，なぜ $(1+1/m)$ が付くかを理解していれば，〔4〕〔5〕の導出の方針が立つ．
+
+\paragraph{手順}
+\begin{enumerate}
+\item 観測データから欠測値の予測分布（MAR の下で，観測された変数を条件とした分布）を作り，そこから欠測値を独立に $m$ 回抽出して $m$ 個の完全データセットを作る．
+\item 各データセット $k=1,\dots,m$ で，欠測がなかった場合と同じ解析を行い，推定値 $\hat\theta_k$ とその分散の推定値 $\hat V_k$ を得る．
+\item 次の Rubin のルールで統合する．
+\end{enumerate}
+\begin{teigi}[Rubin のルール \cite{rubin1987}]\label{def:16-rubin}
+\begin{gather}
+\bar\theta=\frac1m\sum_{k=1}^m\hat\theta_k,\qquad \bar W=\frac1m\sum_{k=1}^m\hat V_k\ (\text{補完内分散}),\qquad B=\frac1{m-1}\sum_{k=1}^m(\hat\theta_k-\bar\theta)^2\ (\text{補完間分散}),\notag\\
+T=\bar W+\Bigl(1+\frac1m\Bigr)B .\label{eq:16-rubin}
+\end{gather}
+$\bar\theta$ の分散の推定値を $T$ とし，信頼区間は $\bar\theta\pm t_\nu(0.025)\sqrt T$，自由度 $\nu=(m-1)(1+1/r)^2$，$r=(1+1/m)B/\bar W$ とする．
+\end{teigi}
+（\kakomon{2024}{3} では補完数を $K$，$\bar W$ を $W$ と書いている．）
+
+\paragraph{$T$ の意味（導出の考え方）}
+目標は「観測データ $Y_{\mathrm{obs}}$ だけから $\theta$ を推定したときの不確かさ」である．完全データ $(Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ での推定量を $\hat\theta(Y_{\mathrm{mis}})$ と書くと，条件付き分散の公式（全分散の公式）より
+\[
+\V[\theta\mid Y_{\mathrm{obs}}]=\underbrace{\E\bigl[\V[\theta\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}}]\bigm|Y_{\mathrm{obs}}\bigr]}_{\text{欠測がなくても残る不確かさ}\ \approx\ \bar W}
++\underbrace{\V\bigl[\E[\theta\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}}]\bigm|Y_{\mathrm{obs}}\bigr]}_{\text{欠測値がわからないことによる不確かさ}\ \approx\ B}.
+\]
+第1項は各補完データでの分散 $\hat V_k$ の平均で，第2項は補完ごとの推定値のばらつき（$Y_{\mathrm{mis}}$ を予測分布から引くたびに $\hat\theta_k$ が変わる程度）で推定する．
+これは $m=\infty$ の場合の $\bar W+B$ である．
+有限の $m$ では $\bar\theta$ は「無限回補完したときの平均」の推定値にすぎず，$m$ 個の独立な $\hat\theta_k$ の平均なので余分な分散 $B/m$ をもつ．これを加えて $\bar W+B+B/m=\bar W+(1+1/m)B$ となる．
+\begin{itemize}
+\item $r=(1+1/m)B/\bar W$ は欠測による分散の相対的な増加，$\hat\lambda=(1+1/m)B/T$ はおおよその「欠測による情報の損失割合」である．
+\item 単一補完（$m=1$ で補完値を確定値として扱う）は $B$ を無視するので，分散を過小評価する（\cref{tab:16-methods}）．
+\end{itemize}
+
+\paragraph{MAR との関係と「適切な」補完}
+多重補完が妥当なのは，(i) 欠測が MAR で，(ii) 補完モデルが欠測の有無に関係する変数（群，ベースライン値など）を含み，(iii) 補完が\textbf{パラメータの不確かさも反映する}（予測分布のパラメータをまず事後分布などから引き，そのパラメータで欠測値を引く）ときである．
+MNAR なら補完モデル自体が偏り，Rubin のルールは偏りを補正しない．
+(iii) を欠くと $B$ が小さくなりすぎることを，\kakomon{2024}{3}〔4〕〔5〕の設定で確認する．
+\begin{meidai}[補完間分散の期待値（\kakomon{2024}{3}〔4〕〔5〕）]\label[meidai]{prop:16-EB}
+1群で観測 $N$ 人中 $y$ 人が改善（$\hat p=y/N$），欠測 $M$ 人とする．補完 $k$ で欠測者の改善数 $Y_k^m$ を引き，$\hat\theta_k=(y+Y_k^m)/(N+M)$ とする．
+\begin{enumerate}[label=(\arabic*)]
+\item $Y_k^m\sim\Bin(M,\hat p)$（パラメータを $\hat p$ に固定，2024年の設定）なら
+$\V[\hat\theta_k\mid y]=\dfrac{M\hat p(1-\hat p)}{(N+M)^2}$，$\E[B\mid y]=\V[\hat\theta_k\mid y]$．
+\item $p^*$ を近似的に平均 $\hat p$，分散 $\hat p(1-\hat p)/N$ の分布から引き，$Y_k^m\mid p^*\sim\Bin(M,p^*)$ とする（適切な補完）なら
+$\V[\hat\theta_k\mid y]\approx\dfrac{\hat p(1-\hat p)}{(N+M)^2}\Bigl(M+\dfrac{M^2}{N}\Bigr)$．
+\item $\bar W\approx\hat p(1-\hat p)/(N+M)$ とすると，(2) では $\bar W+B\approx\hat p(1-\hat p)/N$（観測データだけの分散）となるが，(1) ではそれより小さい．
+\end{enumerate}
+2群の差 $\hat\theta_k=\hat p_{T,k}-\hat p_{C,k}$ では，群間で補完が独立なので条件付き分散は2群の和になる．
+\end{meidai}
+\begin{proof}
+(1) $y$ を与えると $\hat\theta_k$ の変動は $Y_k^m$ だけによるので $\V[\hat\theta_k\mid y]=\V[Y_k^m]/(N+M)^2=M\hat p(1-\hat p)/(N+M)^2$．
+$\hat\theta_1,\dots,\hat\theta_m$ は $y$ を与えて i.i.d.\ なので，不偏分散 $B$ の条件付き期待値はこの分散に等しい．\\
+(2) 条件付き分散の公式で $\V[Y_k^m]=\E[Mp^*(1-p^*)]+\V[Mp^*]\approx M\hat p(1-\hat p)+M^2\hat p(1-\hat p)/N$（$\E[p^*(1-p^*)]\approx\hat p(1-\hat p)$ と近似）．\\
+(3) (2) より $\bar W+B\approx\frac{\hat p(1-\hat p)}{(N+M)^2}\Bigl\{(N+M)+M+\frac{M^2}N\Bigr\}=\frac{\hat p(1-\hat p)}{(N+M)^2}\cdot\frac{(N+M)^2}{N}=\frac{\hat p(1-\hat p)}{N}$．
+(1) では $M^2/N$ の項がないので小さい．
+\end{proof}
+したがって 2024年の補完方法（パラメータを固定した二項分布）は，多重補完の考え方を示す簡略版であり，実際には補完パラメータの不確かさも反映させる必要がある．
+\kakomon{2024}{3}〔2〕〔3〕の数値は，各補完データの分散 $\hat p_T(1-\hat p_T)/100+\hat p_C(1-\hat p_C)/100$ が $0.003732$，$0.003871$，$0.003718$，
+$\bar W=0.003774$，$B=0.0001$，$T=0.003774+\frac43\times0.0001=0.003907$ である（本書で検算）．
+
 \section{仮定}\label{sec:16-assump}
 \begin{itemize}
 \item 完全ケース解析：MCAR（またはそれに準じる条件）．
 \item 尤度法（EM を含む）・IPW：MAR（検証不能），モデルの正しさ（IPW では観測確率のモデル）．
+\item 多重補完：MAR，補完モデルの正しさ（解析に使う変数と欠測に関係する変数を含む），パラメータの不確かさを反映した補完．
 \item ABO の EM：ハーディ・ワインベルグ平衡（遺伝子型の確率が遺伝子頻度の積），個体の独立性．
 \end{itemize}
 
@@ -4743,7 +5327,7 @@ $\E[f_{AA}]=Np^2$，$\E[f_{AO}]=n_A-Np^2$（B型も同様に $Nq^2$，$n_B-Nq^2$
 \section{手法選択}\label{sec:16-choice}
 \begin{itemize}
 \item 欠測が MCAR とみなせる → 完全ケース解析（不偏だが精度は低下）．
-\item 欠測が観測された共変量・過去の値に依存（MAR）→ 尤度に基づく方法（混合モデル（\cref{ch:08}），EM）または IPW．
+\item 欠測が観測された共変量・過去の値に依存（MAR）→ 尤度に基づく方法（混合モデル（\cref{ch:08}），EM），IPW，または多重補完（Rubin のルールで統合）．
 \item 観測されない度数・潜在的なクラスを含む多項モデルで MLE を求める → EM アルゴリズム．
 \end{itemize}
 
@@ -4752,6 +5336,8 @@ $\E[f_{AA}]=Np^2$，$\E[f_{AO}]=n_A-Np^2$（B型も同様に $Nq^2$，$n_B-Nq^2$
 \begin{itemize}
 \item 欠測と群・共変量の関連が有意でないことを MCAR の証明とする．
 \item 単一補完したデータを完全データとして分析し，標準誤差を過小評価する．
+\item Rubin のルールで $B$ に $(1+1/m)$ を掛け忘れる．$B$ の除数を $m$ とする（正しくは $m-1$）．$\bar W$ と $B$ を取り違える．
+\item 補完した推定値を平均するだけで分散は1つの補完データの値を使う．
 \item MAR を「欠測がランダム（データと無関係）」と読み違える（それは MCAR）．
 \item EM の E ステップで，観測値を条件としない期待値（$Np^2$ など）を用いて，標準 EM の性質（尤度の単調性・MLE への収束）が成り立つとする．
 \end{itemize}
@@ -4763,6 +5349,7 @@ $\E[f_{AA}]=Np^2$，$\E[f_{AO}]=n_A-Np^2$（B型も同様に $Nq^2$，$n_B-Nq^2$
 \item E ステップの $f_{AA}\mid n_A\sim\Bin(n_A,p^2/(p^2+2pr))$ は，多項分布の一部のセルを併合したときの条件付き分布（多項分布の条件付き分布は多項分布）である．
 \item M ステップは多項分布の MLE（セルの相対度数）を遺伝子単位で数えたものである．
 \item \kakomonSM{2018}{3}（0切断二項分布の反復解法）は，観測されないゼロの個数を補う EM アルゴリズムの更新と一致する．
+\item Rubin のルールの $T=\bar W+(1+1/m)B$ は，条件付き分散の公式 $\V[X]=\E[\V[X\mid Y]]+\V[\E[X\mid Y]]$（同書 命題4.11）と，$m$ 個の平均の分散 $B/m$ の組み合わせである．
 \end{itemize}
 \end{linkbox}
 
@@ -4792,6 +5379,26 @@ $N=200$ 人の表現型が $n_O=60$，$n_A=80$，$n_B=40$，$n_{AB}=20$ であ�
 \begin{enumerate}[label=(\arabic*)]
 \item 標準的な EM の E ステップで $f_{AA},f_{AO},f_{BB},f_{BO}$ を求め，M ステップで $(r^{(1)},p^{(1)},q^{(1)})$ を求めよ．
 \item （任意）E ステップの代わりに\kakomon{2019}{5}の公式解答の形 $f_{AA}=Np^2$，$f_{AO}=n_A-Np^2$（B型も同様）を用いた場合の $(r^{(1)},p^{(1)},q^{(1)})$ を求め，(1) と比べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[多重補完の統合]\label{reidai:16-4}
+ある試験の主要評価項目（平均値の差）について，欠測値を $m=5$ 回補完し，各補完データで推定値 $\hat\theta_k$ と分散の推定値 $\hat V_k$ を得た．
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$k$ & 1 & 2 & 3 & 4 & 5\\
+\midrule
+$\hat\theta_k$ & 1.2 & 1.0 & 1.4 & 1.1 & 1.3\\
+$\hat V_k$ & 0.04 & 0.05 & 0.04 & 0.06 & 0.06\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=(\arabic*)]
+\item $\bar\theta$，$\bar W$，$B$，$T$ を求めよ．
+\item $r$，自由度 $\nu$，$\hat\lambda=(1+1/m)B/T$ を求め，$\theta$ の95\%信頼区間を作れ（$t_{28}(0.025)=2.048$，$\sqrt{0.08}=0.2828$）．
+\item 1番目の補完データだけを完全データとして解析した場合の95\%信頼区間（正規近似）と比べ，何が問題か述べよ．
+\item 別の試験で，1群について観測80人中40人が改善し，20人が欠測した．\cref{prop:16-EB}(1)の補完（$Y^m\sim\Bin(20,0.5)$）と(2)の適切な補完について，$\V[\hat\theta_k\mid y]$ と $\bar W+B$（$\bar W\approx\hat p(1-\hat p)/100$）を求め，観測データだけの分散 $\hat p(1-\hat p)/80$ と比べよ．
 \end{enumerate}
 \end{reidai}
 
@@ -4838,6 +5445,18 @@ $(1-p)^2=(n_O+n_B)/N$ を満たす（\cref{sec:16-em}の warnbox）．この数�
 $p$ が $0.2929$ と $0.2923$ でわずかに異なるように，\textbf{標準 EM と公式解答型の反復は一般に同じ値に収束しない}．
 \end{supbox}
 
+\begin{kaitou}{reidai:16-4}
+(1) $\bar\theta=6.0/5=1.2$．$\bar W=0.25/5=0.05$．偏差 $0,-0.2,0.2,-0.1,0.1$ の平方和 $0.10$ より $B=0.10/4=0.025$．
+$T=0.05+1.2\times0.025=0.08$．\\
+(2) $r=0.03/0.05=0.6$，$\nu=4\times(1+1/0.6)^2=4\times(8/3)^2=28.4$，$\hat\lambda=0.03/0.08=0.375$（分散の約4割が欠測による）．
+95\%CI は $1.2\pm2.048\times0.2828=1.2\pm0.579=(0.62,\,1.78)$（自由度28の値を用いた）．\\
+(3) $1.2\pm1.96\times\sqrt{0.04}=1.2\pm0.39=(0.81,\,1.59)$．補完値を確定値として扱うので補完間の変動 $B$ が無視され，区間が狭すぎる（被覆確率が名目の95\%を下回る）．\\
+(4) $\hat p=0.5$，$N=80$，$M=20$，$N+M=100$．
+(1) の補完：$\V[\hat\theta_k\mid y]=20\times0.25/100^2=0.0005$，$\bar W+B\approx0.0025+0.0005=0.0030$．
+(2) の補完：$0.25\times(20+400/80)/100^2=0.25\times25/10000=0.000625$，$\bar W+B\approx0.0025+0.000625=0.003125$．
+観測データだけの分散は $0.25/80=0.003125$ で，(2) と一致し，(1) は約4\%小さい．
+\end{kaitou}
+
 \begin{summarybox}
 \begin{itemize}
 \item MCAR：データと無関係．MAR：観測値のみに依存．MNAR：欠測値自体に依存．MAR と MNAR はデータで区別できない．
@@ -4846,6 +5465,7 @@ $p$ が $0.2929$ と $0.2923$ でわずかに異なるように，\textbf{標準
 \item EM：E ステップ＝観測データを条件とした完全データ対数尤度の期待値，M ステップ＝その最大化．標準 EM では観測データの尤度は減少しない．
 \item ABO：E ステップ $\E[f_{AA}\mid n_A]=n_Ap^2/(p^2+2pr)$，M ステップ $\hat p=(2f_{AA}+f_{AO}+f_{AB})/(2N)$ など（遺伝子の数え上げ）．
 \item \kakomon{2019}{5} の公式解答の $\E[f_{AA}]=Np^2$ は観測値を条件としない期待値で，標準 EM とは別の反復になる．
+\item 多重補完：$T=\bar W+(1+1/m)B$（補完内＋補完間＋有限 $m$ の補正）．MAR と適切な補完（パラメータの不確かさも反映）が前提．単一補完は $B$ を無視して分散を過小評価．
 \end{itemize}
 \end{summarybox}
 
@@ -4859,6 +5479,7 @@ $p$ が $0.2929$ と $0.2923$ でわずかに異なるように，\textbf{標準
 \item 事後平均が「MLE と事前平均の重み付き平均」（縮小）になることを説明できる．
 \item 一様事前分布の下で，$Y$ の周辺分布が離散一様分布になることを示し，事後確率 $\Prob(\pi\ge\pi_0\mid y)$ による判定ができる．
 \item 人時間を考慮したポアソンモデルで，率の最尤推定量 $\hat\lambda=Y/T$ を求められる．
+\item Gamma--Poisson モデルの事後分布と事後予測分布（負の二項分布）を導出し，ガンマ混合による過分散を説明できる．
 \end{itemize}
 \end{goalbox}
 
@@ -4867,7 +5488,7 @@ $p$ が $0.2929$ と $0.2923$ でわずかに異なるように，\textbf{標準
 \item \kakomon{2022}{4}：有効例数 $Y\sim\Bin(n,\pi)$，一様事前分布．尤度と MLE，事後分布 $\Be(y+1,n-y+1)$，事後モード $=y/n$，
       事後平均 $(y+1)/(n+2)$ と MLE・事前平均の関係，$Y$ の周辺分布（離散一様），$\Prob(\pi\ge1/2\mid y)\ge0.8$ となる最小の $y$（$n=5$ で $y=4$）．
 \item \kakomon{2025}{2}〔1〕：人口の異なる2市の死亡数（ポアソン）から共通の死亡率の MLE（1.8）．
-      同問〔2〕〜〔5〕（率の差の検定，ガンマ事前分布と事後予測分布）は，分散の推定量や事前密度が問題文で与えられる誘導付きの設問である（\cref{app:F}）．
+      同問〔2〕〜〔5〕（率の差の検定，ガンマ事前分布と事後予測分布）は，分散の推定量や事前密度が問題文で与えられる誘導付きの設問である．導出は\cref{sec:17-gammapois}．
 \item 統計数理では\kakomonSM{2021}{3}（ポアソン平均の十分性・MLE・スコア型区間），\kakomonSM{2024}{3}（Beta 事前分布の事後平均と同じ形の推定量）．
 \end{itemize}
 \end{exambox}
@@ -4959,6 +5580,66 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \]
 事後平均は精度（分散の逆数）で重み付けた $\bar x$ と事前平均 $\xi$ の平均であり，Beta--Binomial と同じく縮小の形をしている．
 
+\section{Gamma--Poisson モデルと負の二項分布}\label{sec:17-gammapois}
+\Hinshutsu
+件数データ（死亡数，感染件数，有害事象数）の率 $\theta$ に事前分布を置くときの共役モデルである．
+\kakomon{2025}{2}〔3〕〜〔5〕では事前密度が問題文で与えられ，事後分布・事後予測分布・その期待値が問われた．
+同じ構造は「ポアソン分布の平均がガンマ分布に従って個体ごとにばらつく」混合モデルとして，過分散のある件数データの解析（負の二項回帰）にも現れる．
+
+\begin{warnbox}[ガンマ分布のパラメータ化に注意]
+本書の $\Ga(\alpha,\beta)$ は形状 $\alpha$・\textbf{率} $\beta$ で，密度 $\frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha-1}e^{-\beta\theta}$，平均 $\alpha/\beta$，分散 $\alpha/\beta^2$ である（\kakomon{2025}{2} の問題文と同じ）．
+『現代数理統計学の基礎』などで使われる形状・\textbf{尺度} $s$ の表記では密度 $\frac{1}{\Gamma(\alpha)s^\alpha}\theta^{\alpha-1}e^{-\theta/s}$，平均 $\alpha s$ で，$s=1/\beta$ である．
+試験では問題文の密度の式を必ず確認し，$e^{-\beta\theta}$ か $e^{-\theta/\beta}$ かで判断する．
+\end{warnbox}
+
+\paragraph{データ構造}
+人時間（または人口）$T$ の集団で件数 $Y$ を観測し，$Y\mid\theta\sim\Po(T\theta)$ とする（\cref{sec:17-poisson}）．
+将来，人時間 $T'$ の集団で件数 $\tilde Y$ を観測し，$\theta$ を与えると $\tilde Y\mid\theta\sim\Po(T'\theta)$ で $Y$ と独立とする．
+\begin{teiri}[Gamma--Poisson]\label[teiri]{thm:17-gammapois}
+事前分布 $\theta\sim\Ga(\alpha,\beta)$（形状・率）の下で
+\begin{enumerate}[label=(\arabic*)]
+\item 事後分布：$\theta\mid y\sim\Ga(\alpha+y,\ \beta+T)$．事後平均は
+\begin{equation}
+\E[\theta\mid y]=\frac{\alpha+y}{\beta+T}=\frac{T}{\beta+T}\cdot\frac yT+\frac{\beta}{\beta+T}\cdot\frac\alpha\beta .\label{eq:17-gpmean}
+\end{equation}
+\item 事後予測分布：$a=\alpha+y$，$b=\beta+T$，$p=b/(b+T')$ として
+\begin{equation}
+\Prob(\tilde Y=k\mid y)=\frac{\Gamma(a+k)}{\Gamma(a)\,k!}\,p^{a}(1-p)^{k},\qquad k=0,1,2,\dots\label{eq:17-nb}
+\end{equation}
+すなわち負の二項分布 $\NB(a,p)$（失敗回数の形）であり，$\E[\tilde Y\mid y]=T'a/b$，$\V[\tilde Y\mid y]=T'a/b+T'^2a/b^2$．
+\end{enumerate}
+\end{teiri}
+\begin{proof}
+(1) 事後密度は尤度と事前密度の積に比例する：
+$p(\theta\mid y)\propto e^{-T\theta}(T\theta)^y\cdot\theta^{\alpha-1}e^{-\beta\theta}\propto\theta^{\alpha+y-1}e^{-(\beta+T)\theta}$．
+これは $\Ga(\alpha+y,\beta+T)$ の密度の核である．平均は形状/率．\cref{eq:17-gpmean}の右辺を通分すると左辺に一致する．\\
+(2) $\theta$ を積分消去する：
+\begin{align*}
+\Prob(\tilde Y=k\mid y)&=\int_0^\infty\frac{e^{-T'\theta}(T'\theta)^k}{k!}\cdot\frac{b^a}{\Gamma(a)}\theta^{a-1}e^{-b\theta}\,\dd\theta
+=\frac{T'^kb^a}{k!\,\Gamma(a)}\int_0^\infty\theta^{a+k-1}e^{-(b+T')\theta}\dd\theta\\
+&=\frac{T'^kb^a}{k!\,\Gamma(a)}\cdot\frac{\Gamma(a+k)}{(b+T')^{a+k}} .
+\end{align*}
+最後はガンマ関数の定義（$\int_0^\infty\theta^{c-1}e^{-r\theta}\dd\theta=\Gamma(c)/r^c$）による．$b^a/(b+T')^a=p^a$，$T'^k/(b+T')^k=(1-p)^k$ より\cref{eq:17-nb}．\\
+期待値・分散は繰り返し期待値・条件付き分散の公式から：$\E[\tilde Y\mid y]=\E[T'\theta\mid y]=T'a/b$，
+$\V[\tilde Y\mid y]=\E[\V[\tilde Y\mid\theta]\mid y]+\V[\E[\tilde Y\mid\theta]\mid y]=\E[T'\theta\mid y]+\V[T'\theta\mid y]=T'a/b+T'^2a/b^2$．
+（$\NB(a,p)$ の平均 $a(1-p)/p$，分散 $a(1-p)/p^2$ に $p=b/(b+T')$ を代入しても同じ．）
+\end{proof}
+\paragraph{解釈}
+\begin{itemize}
+\item 事後平均は MLE $y/T$ と事前平均 $\alpha/\beta$ の重み付き平均で，重みは「観察人時間 $T$」と「事前の仮想的な人時間 $\beta$」の比である（Beta--Binomial の\cref{eq:17-betabin}と同じ構造）．$T\to\infty$ で事前の影響は消える．
+\item 事後予測分布の分散 $T'a/b+T'^2a/b^2$ は，同じ平均のポアソン分布の分散 $T'a/b$ より大きい．第2項は $\theta$ の不確かさによる上乗せである．
+      MLE を代入した $\Po(T'\hat\theta)$ で予測すると，この不確かさを無視して予測区間が狭くなる．
+\item \textbf{過分散}：事前予測分布（$y$ を観測する前）も同じ計算で $Y\sim\NB(\alpha,\beta/(\beta+T))$，平均 $\mu=T\alpha/\beta$，分散 $\mu+\mu^2/\alpha$ となる．
+      「個体（地域）ごとに率 $\theta_i$ がガンマ分布に従ってばらつき，件数はその率のポアソン分布」という混合モデルは，分散が平均を上回る件数データを表す．
+      $\alpha\to\infty$（率のばらつきが0）でポアソン分布に戻る．
+\end{itemize}
+\paragraph{\kakomon{2025}{2} の数値}
+共通の $\theta$（1万人あたり）で $Y=4+14=18$，$T=2+8=10$（万人），事前 $\Ga(1,1)$ とすると，事後 $\Ga(19,11)$，事後平均 $19/11=1.727$．
+$C$ 市（$T'=5$）の死亡数の事後予測分布は $\NB(19,\,11/16)$ で，期待値 $5\times19/11=8.64$．
+MLE に基づく予測 $5\times1.8=9$ より小さいのは，事後平均 $1.727$ が MLE $1.8$ を事前平均 $1$ の方へ縮小しているためである（\cref{eq:17-gpmean}で $\frac{10}{11}\times1.8+\frac{1}{11}\times1=1.727$）．
+同問〔2〕の率の差の検定は，$\hat\theta_A=2$，$\hat\theta_B=1.75$，分散の推定値 $4/2^2+14/8^2=1.219$ から $Z=0.25/\sqrt{1.219}=0.23$ で有意でない
+（問題文の指示どおり各市の分散を別々に推定している．帰無仮説の下での共通率 $1.8$ で分散を推定すると $1.8/2+1.8/8=1.125$ で $Z=0.24$ となり，結論は同じ）．
+
 \section{頻度論との違い}\label{sec:17-vs}
 \begin{itemize}
 \item 頻度論ではパラメータは定数で，確率は手順の繰り返しに関するもの．Bayes ではパラメータの不確かさを確率分布で表し，「$\Prob(\pi\ge0.5\mid\text{データ})$」を直接述べられる．
@@ -4986,6 +5667,7 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \item 小標本の2値アウトカムで既存情報（または一様事前）を使いたい → Beta--Binomial の事後分布と事後確率による判定．
 \item 将来の患者の有効数の予測 → 事後予測分布（ベータ二項）．
 \item 観察期間・人口が異なる件数データの率 → ポアソンモデルの MLE $\hat\lambda=Y/T$．
+\item 率に事前情報を入れる・将来の件数を予測する → Gamma--Poisson の事後分布と事後予測分布（負の二項）．
 \end{itemize}
 
 \section{よくある誤り}\label{sec:17-err}
@@ -4996,6 +5678,8 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \item 事前予測分布（周辺分布）と事後予測分布を混同する．
 \item 事後予測を，事後平均を代入した二項分布 $\Bin(\tilde n,\E[\pi\mid y])$ とする（$\pi$ の不確かさを無視）．
 \item 人時間を無視して件数どうしを比べる．
+\item ガンマ分布の率と尺度を取り違える（事後分布を $\Ga(\alpha+y,\beta+T)$ とすべきところを尺度のまま $\beta+T$ と足す）．
+\item 事後予測分布をポアソン分布 $\Po(T'\E[\theta\mid y])$ とする（$\theta$ の不確かさを無視．正しくは負の二項）．
 \end{itemize}
 \end{warnbox}
 
@@ -5006,6 +5690,7 @@ $\bar X\mid\mu\sim\Normal(\mu,\sigma^2/n)$（$\sigma^2$ 既知），$\mu\sim\Nor
 \item 二項の累積確率とベータ分布の関係（同書第3章演習問19）が\cref{prop:17-betatail}である．
 \item \kakomonSM{2024}{3} の MSE 一定の推定量 $(S_n+\sqrt n/2)/(n+\sqrt n)$ は $\Be(\sqrt n/2,\sqrt n/2)$ 事前分布の事後平均と同じ形である．
 \item \kakomonSM{2021}{3} のポアソン平均の区間 $\frac1n(t+2\mp2\sqrt{t+1})$ は，正規近似 $(t-n\lambda)^2\le4n\lambda$ を解いたスコア型区間である．
+\item ポアソン分布のガンマ混合が負の二項分布になることは，ガンマ関数の積分 $\int_0^\infty\theta^{c-1}e^{-r\theta}\dd\theta=\Gamma(c)/r^c$ と，条件付き分散の公式 $\V[Y]=\E[\V[Y\mid\theta]]+\V[\E[Y\mid\theta]]$ の典型的な応用である（同書 第4章）．
 \end{itemize}
 \end{linkbox}
 
@@ -5028,6 +5713,17 @@ $\Bin(10,0.5)$ の累積確率 $\Prob(W\le y)$ は $y=5,6,7,8$ でそれぞれ $
 \end{enumerate}
 \end{reidai}
 
+\begin{reidai}[Gamma--Poisson と事後予測]\label{reidai:17-3}
+ある病棟の院内感染の率 $\theta$（1000患者日あたり）に，過去の情報から事前分布 $\Ga(2,4)$（形状2・率4，密度 $\propto\theta e^{-4\theta}$）を置く．
+今年は16（千患者日）で10件の感染があった．件数は $\theta$ を与えて $\Po(16\theta)$ に従うとする．
+\begin{enumerate}[label=(\arabic*)]
+\item 事前平均，MLE，事後分布と事後平均を求め，事後平均を MLE と事前平均の重み付き平均で表せ．
+\item 来月（5千患者日）の感染件数 $\tilde Y$ の事後予測分布を求め，その期待値と分散を求めよ．同じ期待値のポアソン分布の分散と比べよ．
+\item $\Prob(\tilde Y=0\mid y)$ と $\Prob(\tilde Y=1\mid y)$ を求めよ（$0.8^{12}=0.0687$）．
+\item 事前分布の「4」を尺度と取り違えて密度 $\propto\theta e^{-\theta/4}$ とすると，事後平均はいくらになるか．
+\end{enumerate}
+\end{reidai}
+
 \section{解答}\label{sec:17-sol}
 \begin{kaitou}{reidai:17-1}
 (1) 事前平均 $2/10=0.2$．事後 $\Be(2+7,\,8+13)=\Be(9,21)$，平均 $9/30=0.30$，モード $8/28=0.286$．\\
@@ -5043,6 +5739,18 @@ $\Prob(\tilde Y=1\mid y)=2\E[\pi(1-\pi)\mid y]=2\cdot\frac{9\cdot21}{30\cdot31}=
 (2) $\Prob(Y\ge7\mid\pi=0.5)=0.0898$．この Bayes 判定の「第1種の過誤確率」は約9\%である．
 \end{kaitou}
 
+\begin{kaitou}{reidai:17-3}
+(1) 事前平均 $2/4=0.5$，MLE $10/16=0.625$．事後 $\Ga(2+10,\,4+16)=\Ga(12,20)$，事後平均 $12/20=0.60$．
+$0.60=\frac{16}{20}\times0.625+\frac{4}{20}\times0.5=0.50+0.10$（データ16千患者日，事前の仮想的な観察4千患者日）．\\
+(2) \cref{thm:17-gammapois}で $a=12$，$b=20$，$T'=5$，$p=20/25=0.8$．$\tilde Y\mid y\sim\NB(12,0.8)$：
+$\Prob(\tilde Y=k\mid y)=\frac{\Gamma(12+k)}{\Gamma(12)k!}0.8^{12}0.2^k$．
+期待値 $5\times12/20=3$，分散 $3+25\times12/400=3+0.75=3.75$．平均3のポアソン分布の分散3より大きく，差の0.75は $\theta$ の不確かさによる．\\
+(3) $\Prob(\tilde Y=0)=0.8^{12}=0.0687$，$\Prob(\tilde Y=1)=12\times0.8^{12}\times0.2=0.165$．
+（$0.8^{12}$ は $0.8^2=0.64$，$0.64^2=0.4096$，$0.4096^2=0.1678$，$0.1678\times0.4096=0.0687$ と四則演算で求まる．）\\
+(4) 尺度4は率 $1/4$ にあたり，事前 $\Ga(2,0.25)$（事前平均8）．事後 $\Ga(12,\,16.25)$，事後平均 $12/16.25=0.738$．
+正しい $0.60$ と大きく異なる．事前平均が $0.5$ から $8$ に変わり，事前の重みも小さくなるためである．
+\end{kaitou}
+
 \begin{summarybox}
 \begin{itemize}
 \item 事後 $\propto$ 尤度 $\times$ 事前．事前予測分布 $p(y)=\int p(y\mid\theta)p(\theta)\dd\theta$，事後予測分布 $p(\tilde y\mid y)=\int p(\tilde y\mid\theta)p(\theta\mid y)\dd\theta$．
@@ -5051,6 +5759,373 @@ $\Prob(\tilde Y=1\mid y)=2\E[\pi(1-\pi)\mid y]=2\cdot\frac{9\cdot21}{30\cdot31}=
 \item 事後確率による判定：$\Prob(\pi>p\mid y)=\Prob(\Bin(n+1,p)\le y)$．
 \item 正規--正規：事後平均は精度で重み付けた平均．
 \item ポアソン率：$Y\sim\Po(\lambda T)$ で $\hat\lambda=Y/T$，$\V[\log\hat\lambda]\approx1/Y$．
+\item Gamma--Poisson：$\Ga(\alpha,\beta)$（形状・率）事前で事後 $\Ga(\alpha+y,\beta+T)$，事後予測は $\NB(a,\,b/(b+T'))$，分散 $T'a/b+T'^2a/b^2$．ガンマ混合ポアソン＝負の二項＝過分散．
+\end{itemize}
+\end{summarybox}
+
+% ===== ch18.tex =====
+\chapter{メタアナリシス}\label{ch:18}
+
+\begin{goalbox}
+\begin{itemize}
+\item 複数の研究の効果推定値 $Y_k$ と分散 $\sigma_k^2$ から，固定効果モデルと変量効果モデルを式で書き，推定対象の違いを説明できる．
+\item 逆分散重み付き推定量 $\hat\theta=\sum w_kY_k/\sum w_k$ を最尤法で導出し，期待値・分散 $1/\sum w_k$ を求め，それが線形不偏推定量の中で分散最小であることを証明できる．
+\item Cochran の $Q$ を分解して $\E[Q]$ を導き，DerSimonian--Laird 推定量 $\hat\tau^2$ と $I^2$ を求められる．
+\item 変量効果モデルでの $\hat\mu$ と信頼区間を計算し，固定効果の結果と比べて解釈できる．
+\item 2×2 表の研究を統合するときの逆分散法・Mantel--Haenszel 法・Peto 法の関係を説明できる．
+\end{itemize}
+\end{goalbox}
+
+\begin{exambox}
+\begin{itemize}
+\item \kakomon{2021}{4}：脂質異常症治療薬の4試験の対数リスク比．変量効果モデル $Y_k=\mu+\delta_k+\varepsilon_k$ の周辺分布，対数尤度，$\hat\mu$ の導出，
+      $\hat\tau^2=0.013$ での $\hat\mu$ の数値，$\tau^2=0.014$ を既知とした $\V[\hat\mu]$ と95\%信頼区間．
+\item \kakomon{2023}{3}：高脂血症治療薬の筋肉関連有害事象の4試験の対数オッズ比．固定効果の対数尤度と MLE，その期待値・分散，
+      $Q$ の分解と $\E[Q]$，$\tau^2$ のモーメント推定量，$\sigma_k^2=\sigma^2$ の下での $\tau^2/(\tau^2+\sigma^2)$ の推定量（$Q=7.15$ で $0.58$）．
+\item 関連：\kakomon{2017}{4}〔2〕〜〔4〕の「層ごとの対数オッズ比を分散の逆数で重み付けて平均する」操作は，層を研究とみなせば固定効果メタアナリシスと同じ計算である（\cref{sec:18-mh}）．
+\end{itemize}
+2回とも，推定量や $Q$ の分解は問題文で与えられ，受験者は「確率モデル→尤度→最大化」「期待値・分散の計算」「数値代入」を行う形であった．
+誘導があっても，逆分散重みの意味と $\E[Q]$ の計算を知っていれば短時間で正確に解ける．
+\end{exambox}
+
+\flowline{研究ごとの\\推定値 $Y_k$ と\\分散 $\sigma_k^2$}{共通効果 $\theta$\\平均効果 $\mu$}{逆分散重み\\DL 法}{正規近似\\$\sigma_k^2$ 既知\\研究の独立}{$\hat\theta$，$Q$，\\$\hat\tau^2$，$I^2$}{異質性と\\一般化可能性}
+
+\section{問題設定とデータ構造}\label{sec:18-setting}
+$K$ 個の研究 $k=1,\dots,K$ から，効果の推定値 $Y_k$ とその分散 $\sigma_k^2$ が得られる．
+$Y_k$ は対数リスク比，対数オッズ比，対数ハザード比，平均値の差などであり，比の指標は\textbf{対数スケールで統合}し，結果を指数変換して示す
+（対数をとると推定量の分布が正規分布に近く，分散が\cref{eq:04-varlogOR}などのデルタ法で得られるため）．
+2×2 表で報告される研究なら，研究 $k$ の表（$a_k,b_k,c_k,d_k$）から
+\[
+Y_k=\log\frac{a_kd_k}{b_kc_k},\qquad \sigma_k^2=\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k}
+\]
+とする（\kakomon{2023}{3} の表1の $Y_k$ はこの式による．$\sigma_k^2$ は約 $0.09$〜$0.12$）．
+
+$\sigma_k^2$ は各研究の標本サイズから十分精度よく推定されているとして\textbf{既知の定数とみなす}．これが本章の全ての式の前提であり，
+研究が小さいとこの近似は粗くなる．重みを $w_k=1/\sigma_k^2$（精度）と書く．
+
+\section{固定効果モデルと逆分散重み付き推定量}\label{sec:18-fixed}
+\Hissu\Hinshutsu
+\begin{teigi}[固定効果（共通効果）モデル]\label{def:18-fe}
+$Y_1,\dots,Y_K$ は独立で $Y_k\sim\Normal(\theta,\sigma_k^2)$．すべての研究が共通の真の効果 $\theta$ をもち，研究間の違いは研究内の誤差だけによる．
+\end{teigi}
+
+\begin{meidai}[逆分散重み付き推定量（\kakomon{2023}{3}〔1〕〔2〕）]\label[meidai]{prop:18-fe}
+固定効果モデルの下で $\theta$ の最尤推定量とその期待値・分散は
+\begin{equation}
+\hat\theta=\frac{\sum_kw_kY_k}{\sum_kw_k},\qquad \E[\hat\theta]=\theta,\qquad \V[\hat\theta]=\frac{1}{\sum_kw_k},\qquad w_k=\frac1{\sigma_k^2}.\label{eq:18-fe}
+\end{equation}
+さらに $\hat\theta\sim\Normal(\theta,1/\sum_kw_k)$ なので，$\theta$ の95\%信頼区間は $\hat\theta\pm1.96/\sqrt{\sum_kw_k}$ である．
+\end{meidai}
+\begin{proof}
+\textbf{確率モデル}：$Y_k\sim\Normal(\theta,\sigma_k^2)$，独立，$\sigma_k^2$ 既知．
+\textbf{確率密度関数}：$f(y_k;\theta)=(2\pi\sigma_k^2)^{-1/2}\exp\{-(y_k-\theta)^2/(2\sigma_k^2)\}$．
+\textbf{尤度関数}：独立性より $L(\theta)=\prod_kf(y_k;\theta)$．
+\textbf{対数尤度}：
+\[
+l(\theta)=-\frac12\sum_{k=1}^K\Bigl\{\log(2\pi\sigma_k^2)+w_k(y_k-\theta)^2\Bigr\}.
+\]
+\textbf{スコア}：$l'(\theta)=\sum_kw_k(y_k-\theta)=0$ を解いて $\hat\theta=\sum w_ky_k/\sum w_k$．
+$l''(\theta)=-\sum_kw_k<0$ なので最大である．
+\textbf{期待値}：$\E[\hat\theta]=\sum w_k\theta/\sum w_k=\theta$．
+\textbf{分散}：独立性より $\V[\hat\theta]=\sum_kw_k^2\sigma_k^2/(\sum_kw_k)^2=\sum_kw_k/(\sum_kw_k)^2=1/\sum_kw_k$
+（$w_k^2\sigma_k^2=w_k$ を使った）．
+$\hat\theta$ は独立な正規変数の線形結合なので正規分布に従う．
+\end{proof}
+
+\paragraph{なぜ分散の逆数で重み付けるのか}
+最尤法を持ち出さなくても，逆分散重みは「分散を最小にする重み」として導ける．この性質は正規性を必要としない．
+\begin{teiri}[逆分散重みの最適性]\label[teiri]{thm:18-blue}
+$Y_1,\dots,Y_K$ が独立で $\E[Y_k]=\theta$，$\V[Y_k]=\sigma_k^2$（既知）とする．$\theta$ の線形不偏推定量 $\tilde\theta=\sum_kc_kY_k$ の中で分散が最小のものは $c_k=w_k/\sum_jw_j$ のとき，すなわち $\hat\theta$ であり，最小分散は $1/\sum_kw_k$ である．
+\end{teiri}
+\begin{proof}
+不偏性 $\E[\tilde\theta]=\theta\sum_kc_k=\theta$（すべての $\theta$ で）より $\sum_kc_k=1$．分散は $\V[\tilde\theta]=\sum_kc_k^2\sigma_k^2$．
+Cauchy--Schwarz の不等式を $c_k\sigma_k$ と $1/\sigma_k$ に適用すると
+\[
+1=\Bigl(\sum_kc_k\Bigr)^2=\Bigl(\sum_k c_k\sigma_k\cdot\frac1{\sigma_k}\Bigr)^2\le\Bigl(\sum_kc_k^2\sigma_k^2\Bigr)\Bigl(\sum_k\frac1{\sigma_k^2}\Bigr)
+=\V[\tilde\theta]\sum_kw_k .
+\]
+よって $\V[\tilde\theta]\ge1/\sum_kw_k$．等号は $c_k\sigma_k\propto1/\sigma_k$，すなわち $c_k\propto w_k$ のときに限り成り立ち，$\sum c_k=1$ から $c_k=w_k/\sum_jw_j$．
+（ラグランジュ乗数法で $\sum c_k^2\sigma_k^2-2\lambda(\sum c_k-1)$ を最小化しても $c_k=\lambda/\sigma_k^2$ を得る．）
+\end{proof}
+精度の高い（大きな）研究ほど重みが大きい．単純平均 $\bar Y=\sum Y_k/K$ も不偏だが，分散 $\sum\sigma_k^2/K^2$ は $1/\sum w_k$ 以上で，研究の大きさが不揃いなほど損失が大きい（\cref{reidai:18-2}）．
+
+\Youchui 定理の前提は「$\sigma_k^2$ が既知」「$Y_k$ が不偏で独立」である．実際には $\sigma_k^2$ は推定値なので，$1/\sum w_k$ は推定量の分散の近似である．
+また，異質性がある（$\theta_k$ が研究ごとに異なる）とき，$\hat\theta$ が推定しているのは「各研究の真の効果の，精度による重み付き平均 $\sum w_k\theta_k/\sum w_k$」であり，$\V[\hat\theta]=1/\sum w_k$ は研究間の変動を含まない．
+
+\section{異質性：Cochran の \texorpdfstring{$Q$}{Q} と \texorpdfstring{$I^2$}{I²}}\label{sec:18-q}
+\Hissu
+\begin{teigi}[Cochran の $Q$]\label{def:18-q}
+$Q=\sum_{k=1}^Kw_k(Y_k-\hat\theta)^2$，$\hat\theta$ は固定効果推定量（\cref{eq:18-fe}）．
+\end{teigi}
+$\theta_1=\dots=\theta_K$（均一性）の下で $Q\sim\chi^2_{K-1}$ であり（\cref{thm:07-woolf}の証明と同じ平方和の分解．層別 OR の Woolf の均一性検定は $Q$ の一例），$Q>\chi^2_{K-1}(\alpha)$ なら均一性を棄却する．
+\begin{teiri}[$Q$ の分解と期待値（\kakomon{2023}{3}〔3〕）]\label[teiri]{thm:18-EQ}
+任意の $\theta$ について
+\begin{equation}
+Q=\sum_kw_k(Y_k-\theta)^2-\Bigl(\sum_kw_k\Bigr)(\hat\theta-\theta)^2 .\label{eq:18-qdecomp}
+\end{equation}
+$Y_k$ が独立で $\E[Y_k]=\theta$（変量効果モデルでは $\theta$ を $\mu$ と読む）なら，$\V[Y_k]$ が何であっても
+\begin{equation}
+\E[Q]=\sum_kw_k\V[Y_k]-\frac{\sum_kw_k^2\V[Y_k]}{\sum_kw_k}.\label{eq:18-EQ}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$Y_k-\theta=(Y_k-\hat\theta)+(\hat\theta-\theta)$ を2乗して $w_k$ を掛けて足すと
+\[
+\sum_kw_k(Y_k-\theta)^2=Q+2(\hat\theta-\theta)\sum_kw_k(Y_k-\hat\theta)+(\hat\theta-\theta)^2\sum_kw_k .
+\]
+$\hat\theta$ の定義から $\sum_kw_k(Y_k-\hat\theta)=\sum w_kY_k-\hat\theta\sum w_k=0$ なので中央の項は消え，\cref{eq:18-qdecomp}を得る．
+期待値をとる．$\E[Y_k]=\theta$ より $\E[(Y_k-\theta)^2]=\V[Y_k]$．また $\E[\hat\theta]=\theta$ で，独立性から
+$\E[(\hat\theta-\theta)^2]=\V[\hat\theta]=\sum_kw_k^2\V[Y_k]/(\sum_kw_k)^2$．したがって
+$\E[Q]=\sum_kw_k\V[Y_k]-(\sum_kw_k)\cdot\sum_kw_k^2\V[Y_k]/(\sum_kw_k)^2$ で，\cref{eq:18-EQ}になる．
+\end{proof}
+固定効果モデルなら $\V[Y_k]=\sigma_k^2=1/w_k$ を代入して $\E[Q]=K-\sum w_k/\sum w_k=K-1$（$\chi^2_{K-1}$ の期待値と一致）．
+$Q$ が $K-1$ より大きいほど，研究内誤差だけでは説明できないばらつきがあることを示す．
+
+\paragraph{$I^2$}
+$Q$ は研究数や研究の大きさに依存するので，異質性の程度を比で表すのが $I^2$ である．
+\begin{equation}
+I^2=\max\Bigl\{0,\ \frac{Q-(K-1)}{Q}\Bigr\}.\label{eq:18-i2}
+\end{equation}
+「観測された推定値のばらつきのうち，研究内の誤差ではなく研究間の真の差による部分の割合」と解釈される \cite{higgins2002,higgins2003}．
+この解釈が厳密に分散比として導けるのは，すべての研究の分散が等しい場合である（\kakomon{2023}{3}〔5〕，次節の\cref{eq:18-i2eq}）．
+目安として25\%，50\%，75\% がそれぞれ低・中・高の異質性とされる \cite{higgins2003}．
+
+\section{変量効果モデルと DerSimonian--Laird 推定量}\label{sec:18-random}
+\Hissu\Hinshutsu
+\begin{teigi}[変量効果モデル]\label{def:18-re}
+$Y_k=\theta_k+\varepsilon_k$，$\theta_k=\mu+\delta_k$，$\varepsilon_k\sim\Normal(0,\sigma_k^2)$，$\delta_k\sim\Normal(0,\tau^2)$，すべて独立．
+$\theta_k$ は研究 $k$ の真の効果，$\mu$ は真の効果の分布の平均（平均効果），$\tau^2$ は研究間分散である．$\tau^2=0$ なら固定効果モデルに帰着する．
+\end{teigi}
+\begin{meidai}[周辺分布・尤度・$\tau^2$ を与えたときの MLE（\kakomon{2021}{4}〔1〕〜〔3〕）]\label[meidai]{prop:18-re}
+(1) $Y_k\sim\Normal(\mu,\sigma_k^2+\tau^2)$，$k=1,\dots,K$ は独立．\\
+(2) 対数尤度は
+\[
+\log L(\mu,\tau^2)=-\frac12\sum_{k=1}^K\Bigl\{\log2\pi+\log(\sigma_k^2+\tau^2)+\frac{(y_k-\mu)^2}{\sigma_k^2+\tau^2}\Bigr\}.
+\]
+(3) $\tau^2$ を与えたときの $\mu$ の MLE と分散は，$w_k^*=1/(\sigma_k^2+\tau^2)$ として
+\begin{equation}
+\hat\mu=\frac{\sum_kw_k^*Y_k}{\sum_kw_k^*},\qquad \V[\hat\mu]=\frac{1}{\sum_kw_k^*}.\label{eq:18-re}
+\end{equation}
+\end{meidai}
+\begin{proof}
+(1) $Y_k=\mu+\delta_k+\varepsilon_k$ は独立な正規変数の和なので正規分布（再生性）に従い，$\E[Y_k]=\mu$，$\V[Y_k]=\tau^2+\sigma_k^2$．
+研究ごとに $(\delta_k,\varepsilon_k)$ が独立なので $Y_k$ も独立．\\
+(2) $Y_k$ の密度 $\{2\pi(\sigma_k^2+\tau^2)\}^{-1/2}\exp\{-(y_k-\mu)^2/(2(\sigma_k^2+\tau^2))\}$ の積の対数．\\
+(3) $\partial\log L/\partial\mu=\sum_kw_k^*(y_k-\mu)=0$．$\partial^2\log L/\partial\mu^2=-\sum w_k^*<0$．
+分散は\cref{prop:18-fe}と同じ計算で，$\sigma_k^2$ を $\sigma_k^2+\tau^2$ に置き換えたもの．
+\end{proof}
+$\hat\mu$ も\cref{thm:18-blue}の意味で最適な重み（$\V[Y_k]$ の逆数）を使っている．
+実際には $\tau^2$ を推定値 $\hat\tau^2$ で置き換える．$\tau^2$ の推定の不確かさは $1/\sum w_k^*$ に含まれないので，研究数が少ないと信頼区間は狭すぎる傾向がある．
+
+\subsection{DerSimonian--Laird 推定量}\label{subsec:18-dl}
+$\tau^2$ の MLE は $\partial\log L/\partial\tau^2=0$ を数値的に解く必要があるが，$Q$ の期待値を使うと閉じた形のモーメント推定量が得られる．
+\begin{teiri}[DerSimonian--Laird 推定量（\kakomon{2023}{3}〔4〕，\cite{dl1986}）]\label[teiri]{thm:18-dl}
+変量効果モデルで $\V[Y_k]=\tau^2+1/w_k$（$w_k=1/\sigma_k^2$ は固定効果の重み）を\cref{eq:18-EQ}に代入すると
+\[
+\E[Q]=(K-1)+\tau^2\Bigl(\sum_kw_k-\frac{\sum_kw_k^2}{\sum_kw_k}\Bigr).
+\]
+$\E[Q]=Q$ とおいて $\tau^2$ について解き，負なら0に切り詰めて
+\begin{equation}
+\hat\tau^2_{\mathrm{DL}}=\max\left\{0,\ \frac{Q-(K-1)}{\sum_kw_k-\sum_kw_k^2/\sum_kw_k}\right\}.\label{eq:18-dl}
+\end{equation}
+\end{teiri}
+\begin{proof}
+$\sum_kw_k(\tau^2+1/w_k)=\tau^2\sum_kw_k+K$，$\sum_kw_k^2(\tau^2+1/w_k)/\sum_kw_k=\tau^2\sum_kw_k^2/\sum_kw_k+1$ を\cref{eq:18-EQ}に代入する．
+分母 $\sum w_k-\sum w_k^2/\sum w_k$ は，$\sum_kw_k^2\le(\sum_kw_k)^2$ より非負で，$K\ge2$ なら正である．
+\end{proof}
+\paragraph{等分散の場合と $I^2$（\kakomon{2023}{3}〔5〕）}
+全研究で $\sigma_k^2=\sigma^2$（$w_k=w=1/\sigma^2$）なら $\sum w-\sum w^2/\sum w=Kw-w=w(K-1)$ で $\hat\tau^2=\sigma^2\{Q-(K-1)\}/(K-1)$．
+よって $\hat\tau^2+\sigma^2=\sigma^2Q/(K-1)$ となり，比をとると $\sigma^2$ が消えて
+\begin{equation}
+\widehat{\Bigl(\frac{\tau^2}{\tau^2+\sigma^2}\Bigr)}=\frac{\hat\tau^2}{\hat\tau^2+\sigma^2}=\frac{Q-(K-1)}{Q}=I^2 .\label{eq:18-i2eq}
+\end{equation}
+$Q=7.15$，$K=4$ なら $(7.15-3)/7.15=0.58$．研究内分散が異なる一般の場合，$I^2$ は $\sigma^2$ を「典型的な」研究内分散に置き換えた近似的な意味をもつ．
+
+\paragraph{DL 推定量と ML 推定量}
+DL 推定量は反復不要で広く使われるが，ML や REML の推定値とは一般に異なる．
+\kakomon{2021}{4} のデータでは，問題文の $\hat\tau^2_{\mathrm{ML}}=0.013$ に対し $Q=6.36$，$\hat\tau^2_{\mathrm{DL}}\approx0.032$ である（本書で数値計算により確認）．
+どの推定量を使うかは問題文の指示に従う．
+
+\section{信頼区間・予測区間と結果の解釈}\label{sec:18-interp}
+\Hinshutsu
+\begin{itemize}
+\item 固定効果：推定対象は「全研究に共通の効果 $\theta$」（異質性があれば精度による重み付き平均）．95\%CI は $\hat\theta\pm1.96/\sqrt{\sum w_k}$．
+\item 変量効果：推定対象は「研究間で変動する真の効果の分布の平均 $\mu$」．95\%CI は $\hat\mu\pm1.96/\sqrt{\sum w_k^*}$．研究間変動を反映して固定効果より広く，$\hat\tau^2=0$ なら一致する．
+\item 変量効果の重み $1/(\sigma_k^2+\tau^2)$ は，$\tau^2$ が大きいほど研究間で均等に近づき，小さな研究の相対的な重みが大きくなる．小さな研究ほど効果が大きい（出版バイアスなど）ときは，変量効果の推定値の方がその影響を強く受ける．
+\item 比の指標は対数スケールで区間を作り，両端を指数変換する（区間は点推定値に関して非対称になる）．
+\end{itemize}
+\paragraph{\kakomon{2021}{4} の数値}
+$\tau^2=0.014$（既知）とすると $w_k^*=1/(\sigma_k^2+0.014)$ で $\hat\mu\approx0.007$，$\sqrt{\V[\hat\mu]}\approx0.105$，95\%CI $[-0.198,\,0.212]$（対数リスク比；$\hat\tau^2=0.013$ では $\hat\mu\approx0.008$）．
+区間が0を含み，高用量と標準用量で心血管以外の死亡リスクに差があるとは言えない．RR に戻すと $[e^{-0.198},e^{0.212}]=[0.82,\,1.24]$．
+
+\begin{supbox}[補足：予測区間（出典：\cite{higgins2009}）\quad\Hatten]
+新しい研究（あるいは新しい臨床現場）での真の効果 $\theta_{\mathrm{new}}=\mu+\delta_{\mathrm{new}}$ の範囲を示すには，
+$\V[\theta_{\mathrm{new}}-\hat\mu]=\tau^2+\V[\hat\mu]$ に基づく予測区間 $\hat\mu\pm t_{K-2}(0.025)\sqrt{\hat\tau^2+\V[\hat\mu]}$ が提案されている．
+$\mu$ の信頼区間が0を含まなくても，予測区間が0を含むことはよくある．過去問では問われていない．
+\end{supbox}
+
+\paragraph{フォレストプロット}
+各研究の点推定値と95\%CI を横棒で，重みを四角形の大きさで示し，最下段に統合推定値をひし形で示す図をフォレストプロットという（\cref{fig:18-forest}）．
+横軸は比の指標の対数目盛で，縦線が「効果なし」（$\log\OR=0$）を表す．
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=40mm,y=6mm]
+\draw[gray] (0,0.3)--(0,-6.6);
+\foreach \x/\l in {-1/-1.0,-0.5/-0.5,0/0,0.5/0.5}{\draw (\x,-6.6)--(\x,-6.75) node[below,font=\scriptsize]{\l};}
+\node[font=\scriptsize] at (-0.25,-7.6) {対数オッズ比};
+\foreach \y/\m/\s/\w/\name in {-1/-0.40/0.2000/1.2/研究1,-2/-0.05/0.1414/1.7/研究2,-3/-0.60/0.3000/0.8/研究3,-4/0.15/0.1732/1.4/研究4}{
+  \draw[thick] ({\m-1.96*\s},\y)--({\m+1.96*\s},\y);
+  \fill[bkblue] ({\m-0.02*\w},{\y-0.133*\w})rectangle({\m+0.02*\w},{\y+0.133*\w});
+  \node[anchor=east,font=\scriptsize] at (-1.25,\y) {\name};}
+\fill[bkorange] (-0.298,-5)--(-0.1186,-4.7)--(0.0607,-5)--(-0.1186,-5.3)--cycle;
+\node[anchor=east,font=\scriptsize] at (-1.25,-5) {固定効果};
+\fill[bkred!70] (-0.4614,-6)--(-0.1684,-5.7)--(0.1247,-6)--(-0.1684,-6.3)--cycle;
+\node[anchor=east,font=\scriptsize] at (-1.25,-6) {変量効果（DL）};
+\end{tikzpicture}
+\caption{\cref{reidai:18-1}のフォレストプロット}\label{fig:18-forest}
+\end{figure}
+
+\section{Mantel--Haenszel 法・Peto 法との関係}\label{sec:18-mh}
+\Hinshutsu
+2×2 表で報告される研究（あるいは1つの研究内の層）を統合する固定効果の方法は，逆分散法だけではない．
+層別解析の\cref{sec:07-commonor}で扱う3つの推定量は，研究を層とみなせばそのままメタアナリシスの推定量になる．
+\begin{center}\small
+\begin{tabular}{@{}L{25mm}L{52mm}L{63mm}@{}}
+\toprule
+方法 & 統合する量と重み & 特徴\\
+\midrule
+逆分散法（Woolf） & $\log\widehat\OR_k$ を $w_k=1/(\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k})$ で平均 & 本章の一般論そのもの．ゼロセルがあると使えない．各研究が大きいことが前提\\
+Mantel--Haenszel & $\widehat\OR_k$ を $b_kc_k/N_k$ で平均（\cref{eq:07-mhor}） & ゼロセルに強い．研究（層）が小さく数が多い場合も一致推定量\\
+Peto & $\sum(O_k-E_k)/\sum V_k$（$\log\OR$ の1段階推定） & OR が1に近く群の大きさが釣り合うときに良い近似．\kakomon{2017}{4} の推定量\\
+\bottomrule
+\end{tabular}
+\end{center}
+\paragraph{Peto 法は逆分散法の一種}
+研究 $k$ の Peto 型推定値 $\hat\beta_k=(O_k-E_k)/V_k$ の分散は近似的に $1/V_k$ である（\cref{sec:07-commonor}）．
+これを\cref{eq:18-fe}に当てはめると重みは $V_k$ で
+\[
+\hat\beta=\frac{\sum_kV_k\cdot(O_k-E_k)/V_k}{\sum_kV_k}=\frac{\sum_k(O_k-E_k)}{\sum_kV_k},\qquad \V[\hat\beta]=\frac1{\sum_kV_k}
+\]
+となる．\kakomon{2017}{4}〔3〕の「対数オッズ比の重み付き平均」とその分散 $1/\sum V_k$ は，まさにこの固定効果メタアナリシスの計算である．
+\paragraph{MH 法の重み}
+MH 推定量は OR の尺度での重み付き平均で，重み $b_kc_k/N_k$ は「$\OR_k=1$ のとき $\widehat\OR_k$ の分散の逆数」と期待値の意味で一致する（\cref{sec:07-commonor}）．
+したがって OR が1に近いとき MH 法と逆分散法の結果は近く，各研究が大きければどちらも同じ $\OR$ の一致推定量である．
+差が出るのは，ゼロセルや小さな研究を含む場合と，OR が1から遠い場合である（\cref{reidai:18-3}）．
+
+\section{仮定と適用上の注意}\label{sec:18-assump}
+\begin{itemize}
+\item 各研究の推定値の正規近似と，$\sigma_k^2$ を既知とみなせること（小さな研究，イベントの稀な研究では不正確）．
+\item 研究の独立性（同じ患者が複数の研究に含まれない）．
+\item 効果の指標が研究間で同じ意味をもつこと（同じ尺度，同じ比較）．
+\item 変量効果モデル：真の効果が正規分布に従い，研究の大きさと無関係であること．研究数が少ないと $\tau^2$ の推定が不安定．
+\item 選択された研究が偏っていないこと（出版バイアス）．
+\end{itemize}
+\begin{supbox}[補足：出版バイアス]
+有意な結果の研究ほど出版されやすいと，統合推定値は効果を過大評価する．
+横軸に効果，縦軸に精度（$1/\SE$）をとったファネルプロットの非対称性で検討する．
+\end{supbox}
+\Youchui $Q$ 検定は研究数が少ないと検出力が低い．有意でなくても異質性がないとは言えないので，$I^2$ と $\hat\tau^2$ で程度を示す．
+異質性が大きいときは統合値だけでなく，その原因（対象集団，用量，追跡期間）を部分集団解析やメタ回帰で探索する．
+
+\section{手法選択}\label{sec:18-choice}
+\Youchui $Q$ 検定の結果や $I^2$ の大きさだけで固定効果か変量効果かを機械的に選ばず，まず推定対象を決める（\cref{sec:18-interp}）．そのうえで，以下を目安とする．
+\begin{itemize}
+\item 研究が同一のプロトコルで行われ異質性が小さい → 固定効果（逆分散法，MH 法，Peto 法）．
+\item 異なる集団・条件の研究を統合し平均的効果を知りたい → 変量効果（DL，ML，REML）．
+\item 2 値データでイベントが稀，ゼロセルがある → MH 法や Peto 法（逆分散法はゼロセルで計算できない）．
+\end{itemize}
+
+\section{よくある誤り}\label{sec:18-err}
+\begin{warnbox}
+\begin{itemize}
+\item 比の指標を元のスケールで平均する（対数スケールで統合する）．
+\item 重みに分散そのもの $\sigma_k^2$ を使う．標準誤差の逆数 $1/\sigma_k$ を使う（正しくは $1/\sigma_k^2$）．
+\item 変量効果の重みに $1/\sigma_k^2$ を使う（正しくは $1/(\sigma_k^2+\tau^2)$）．
+\item $\V[\hat\theta]=1/\sum w_k$ を「$\sum\V[Y_k]/K^2$」と混同する（後者は単純平均の分散）．
+\item $Q$ の自由度を $K$ とする（正しくは $K-1$）．$\hat\tau^2<0$ をそのまま使う．
+\item $\E[Q]$ の計算で $\E[(\hat\theta-\theta)^2]$ を $\sum w_k\V[Y_k]/(\sum w_k)^2$ とする（正しくは $w_k^2$）．
+\item $Q$ 検定が非有意なら固定効果でよいと機械的に判断する．
+\end{itemize}
+\end{warnbox}
+
+\section{数理統計との接続}\label{sec:18-link}
+\begin{linkbox}
+\begin{itemize}
+\item 逆分散重み付き平均が線形不偏推定量の中で最良であること（\cref{thm:18-blue}）は『現代数理統計学の基礎』第6章演習（問9）で扱われ，Gauss--Markov の定理（一般化最小二乗）の最も簡単な場合である．
+\item 変量効果モデルは正規--正規の階層モデル（同書 4.2.4項，6.4.1項の経験ベイズ，\cref{sec:17-normal}）であり，各研究の $\theta_k$ の事後平均は $Y_k$ を $\hat\mu$ の方へ縮小した値になる．
+\item $\E[Q]$ の計算は平方和の分解 $\sum(X_i-\mu)^2=\sum(X_i-\bar X)^2+n(\bar X-\mu)^2$ の重み付き版で，不偏分散の除数 $n-1$ の導出と同じ構造である．
+\item DL 推定量はモーメント法（同書 6.1節）であり，ML 推定量と一般に一致しない．
+\end{itemize}
+\end{linkbox}
+
+\section{例題}\label{sec:18-ex}
+\begin{reidai}[固定効果と変量効果]\label{reidai:18-1}
+4研究の対数オッズ比 $Y_k$ と分散 $\sigma_k^2$ が $(-0.40,0.04)$，$(-0.05,0.02)$，$(-0.60,0.09)$，$(0.15,0.03)$ である．
+\begin{enumerate}[label=(\arabic*)]
+\item 固定効果推定値とその95\%CI を求め，OR の尺度に直せ（$e^{-0.298}=0.742$，$e^{0.061}=1.063$）．
+\item $Q$ を求め，均一性を検定せよ（$\chi^2_3(0.05)=7.815$）．$I^2$ を求めよ．
+\item DL 法で $\hat\tau^2$ を求めよ．
+\item 変量効果推定値とその95\%CI を求め，(1)と比べて解釈せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[逆分散重みの効率と等分散の場合]\label{reidai:18-2}
+\begin{enumerate}[label=(\arabic*)]
+\item 3研究の推定値 $Y_k$ が独立で同じ $\theta$ を推定し，分散が $0.01$，$0.04$，$0.04$ である．単純平均 $\bar Y$ と逆分散重み付き平均 $\hat\theta$ の分散をそれぞれ求め，比 $\V[\hat\theta]/\V[\bar Y]$ を求めよ．
+\item (1)で重みを $c_k\propto1/\sigma_k$（標準誤差の逆数）とした推定量の分散を求め，$\hat\theta$ と比べよ．
+\item $K=5$ 研究がすべて同じ分散 $\sigma^2=0.05$ をもち，$Q=12.0$ であった．$\hat\tau^2_{\mathrm{DL}}$ と $I^2$ を求め，$I^2=\hat\tau^2/(\hat\tau^2+\sigma^2)$ を確かめよ（$\chi^2_4(0.05)=9.488$）．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[2×2 表の研究の統合]\label{reidai:18-3}
+2つの試験の結果（治療群・対照群のイベント数／人数）が，試験1：$10/100$，$20/100$，試験2：$15/200$，$25/200$ である．
+\begin{enumerate}[label=(\arabic*)]
+\item 各試験の OR，$\log\OR$ とその分散（Woolf）を求めよ（$\log0.444=-0.811$，$\log0.568=-0.566$）．
+\item 逆分散法による共通 OR を求めよ（$e^{-0.665}=0.514$）．
+\item MH 推定量による共通 OR を求め，(2)と比べよ．
+\item 試験3：$0/20$，$2/20$ を追加する．逆分散法と MH 法のそれぞれで何が起こるか述べ，MH 推定値を求めよ．
+\end{enumerate}
+\end{reidai}
+
+\section{解答}\label{sec:18-sol}
+\begin{kaitou}{reidai:18-1}
+(1) $w=(25,\,50,\,11.11,\,33.33)$，$\sum w=119.44$，$\sum wY=-10-2.5-6.667+5=-14.17$．
+$\hat\theta=-14.17/119.44=-0.119$，$\SE=1/\sqrt{119.44}=0.0915$，95\%CI $-0.119\pm1.96\times0.0915=(-0.298,\,0.061)$．OR で $0.89$，95\%CI $(0.74,\,1.06)$．\\
+(2) $Q=\sum w_k(Y_k+0.119)^2=1.980+0.235+2.575+2.405=7.19<7.815$．均一性は棄却されない．$I^2=(7.19-3)/7.19=0.58$．\\
+(3) $\sum w^2=625+2500+123.5+1111.1=4359.6$，$\sum w-\sum w^2/\sum w=119.44-36.50=82.95$．$\hat\tau^2=(7.19-3)/82.95=0.0506$．\\
+(4) $w^*=1/(\sigma_k^2+0.0506)=(11.04,\,14.17,\,7.11,\,12.41)$，$\sum w^*=44.74$，$\sum w^*Y=-7.53$．
+$\hat\mu=-0.168$，$\SE=1/\sqrt{44.74}=0.150$，95\%CI $(-0.461,\,0.125)$．\\
+変量効果では小さい研究（研究3）の相対的な重みが $11.11/119.44=9\%$ から $7.11/44.74=16\%$ に増え，点推定が負の側に移った．区間は研究間変動を反映して広くなった．
+$Q$ 検定は有意でないが $I^2=58\%$ で中程度の異質性があり，研究数が4と少ないため検定の検出力が低いことに注意する（\cref{fig:18-forest}）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:18-2}
+(1) $\V[\bar Y]=(0.01+0.04+0.04)/9=0.010$．$w=(100,25,25)$，$\V[\hat\theta]=1/150=0.00667$．比は $0.667$：単純平均は逆分散重みより分散が1.5倍大きい．\\
+(2) $c\propto(10,5,5)$ で $c=(0.5,0.25,0.25)$．分散 $0.25\times0.01+0.0625\times0.04\times2=0.0025+0.005=0.0075>0.00667$．
+\cref{thm:18-blue}より最小は $c_k\propto1/\sigma_k^2$ に限られる．\\
+(3) $Q=12.0>9.488$ で均一性は棄却される．$\hat\tau^2=\sigma^2\{Q-(K-1)\}/(K-1)=0.05\times8/4=0.10$．
+$I^2=(12-4)/12=0.667$，$\hat\tau^2/(\hat\tau^2+\sigma^2)=0.10/0.15=0.667$ で一致する（\cref{eq:18-i2eq}）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:18-3}
+(1) 試験1：$a=10,b=90,c=20,d=80$，$\OR=800/1800=0.444$，$\log\OR=-0.811$，$v=\frac1{10}+\frac1{90}+\frac1{20}+\frac1{80}=0.1736$．
+試験2：$a=15,b=185,c=25,d=175$，$\OR=2625/4625=0.568$，$\log\OR=-0.566$，$v=\frac1{15}+\frac1{185}+\frac1{25}+\frac1{175}=0.1178$．\\
+(2) $w=(5.76,\,8.49)$，$\hat\theta=(5.76\times(-0.811)+8.49\times(-0.566))/14.25=-9.48/14.25=-0.665$，$\OR=0.514$．\\
+(3) $\sum a_kd_k/N_k=800/200+2625/400=4+6.5625=10.5625$，$\sum b_kc_k/N_k=1800/200+4625/400=9+11.5625=20.5625$．
+$\widehat\OR_{\mathrm{MH}}=10.5625/20.5625=0.514$．OR が1に比較的近く，各試験のセルが十分大きいので両者はほぼ一致する．\\
+(4) 試験3は $a=0,b=20,c=2,d=18$．$\log\OR_3=\log0=-\infty$，$v_3=\infty$ で逆分散法は（0.5を足すなどの補正なしには）計算できない．
+MH 法は $a_3d_3/N_3=0$，$b_3c_3/N_3=40/40=1$ を加えるだけでよく，$\widehat\OR_{\mathrm{MH}}=10.5625/21.5625=0.490$．
+ゼロセルの研究も分母に情報を与え，推定値をわずかに小さくした．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 固定効果：$Y_k\sim\Normal(\theta,\sigma_k^2)$．MLE $\hat\theta=\sum w_kY_k/\sum w_k$，$\V=1/\sum w_k$，$w_k=1/\sigma_k^2$．線形不偏推定量の中で分散最小（Cauchy--Schwarz）．
+\item $Q=\sum w_k(Y_k-\hat\theta)^2\sim\chi^2_{K-1}$（均一性の下）．$\E[Q]=\sum w\V[Y]-\sum w^2\V[Y]/\sum w$．
+\item 変量効果：$Y_k\sim\Normal(\mu,\sigma_k^2+\tau^2)$，$\hat\mu=\sum w_k^*Y_k/\sum w_k^*$，$w_k^*=1/(\sigma_k^2+\tau^2)$，$\V=1/\sum w_k^*$．
+\item DL：$\hat\tau^2=\max\{0,(Q-K+1)/(\sum w-\sum w^2/\sum w)\}$．$I^2=(Q-K+1)/Q$（等分散なら $\hat\tau^2/(\hat\tau^2+\sigma^2)$）．
+\item 固定効果は共通効果，変量効果は効果の分布の平均．変量効果の CI は広く，小研究の重みが相対的に大きい．
+\item 2×2 表の統合：逆分散（Woolf），MH（ゼロセル・小さな層に強い），Peto（$\sum(O-E)/\sum V$，OR が1に近いとき）．
 \end{itemize}
 \end{summarybox}
 
@@ -5145,7 +6220,7 @@ $\Prob(\tilde Y=1\mid y)=2\E[\pi(1-\pi)\mid y]=2\cdot\frac{9\cdot21}{30\cdot31}=
 \chapter{必須公式集}\label[appendix]{app:B}
 % ============================================================
 各公式の右欄は「いつ使うか」である．記号は本文の定義に従う．
-誘導付きでしか出題されていない概念の公式は載せていない（\cref{app:F}）．
+誘導付きの出題にとどまる概念の公式は載せていない（\cref{app:F}）．第2版で本文に移した概念（メタアナリシス，MH，ANCOVA，RMST，多重補完など）の公式は加えた．
 
 \begin{center}\small
 \renewcommand{\arraystretch}{1.5}
@@ -5174,6 +6249,8 @@ McNemar & $\frac{(n_{12}-n_{21})^2}{n_{12}+n_{21}}\approx\chi^2_1$，$\V[\hat\de
 超幾何 & $\E[a]=\frac{n_1m_1}{N}$，$\V[a]=\frac{n_1n_0m_1m_0}{N^2(N-1)}$ & CMH 検定，ログランク\\
 CMH & $\chi^2_{\mathrm{CMH}}=\frac{\{\sum_k(a_k-\E[a_k])\}^2}{\sum_k\V[a_k]}\approx\chi^2_1$ & 層別表で関連なしの検定\\
 Woolf & $Q=\sum_kw_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$，$w_k=1/v_k$ & 層間の OR の均一性\\
+MH & $\widehat\OR_{\mathrm{MH}}=\frac{\sum a_kd_k/N_k}{\sum b_kc_k/N_k}$，$\widehat\RR_{\mathrm{MH}}=\frac{\sum a_kn_{0k}/N_k}{\sum c_kn_{1k}/N_k}$ & 層共通の OR・RR（ゼロセル・疎な層に強い）\\
+Peto & $\log\widehat\OR=\frac{\sum(a_k-E_k)}{\sum V_k}$，$\V\approx\frac1{\sum V_k}$ & OR が1に近いときの共通 OR\\
 \multicolumn{3}{@{}l}{\textbf{診断}}\\
 感度・特異度 & $\Prob(+\mid D)$，$\Prob(-\mid\bar D)$ & 検査性能（有病率に依存しない）\\
 PPV・NPV & $\frac{Se\,p}{Se\,p+(1-Sp)(1-p)}$，$\frac{Sp(1-p)}{Sp(1-p)+(1-Se)p}$ & 有病率 $p$ の集団での的中率\\
@@ -5184,6 +6261,7 @@ AUC & $\Prob(X_1>X_0)$，経験 $\frac{1}{n_1n_0}\sum\sum I(x_{1i}>x_{0j})$，2�
 LRT & $2(\ell_1-\ell_0)\approx\chi^2_{\text{パラメータ数の差}}$ & 入れ子モデルの比較\\
 AIC & $-2\ell(\hat{\bm\theta})+2k$ & モデル・共分散構造の選択\\
 混合モデル & $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，$\hat{\bm\beta}=(\bm X\transp\bm V^{-1}\bm X)^{-1}\bm X\transp\bm V^{-1}\bm Y$ & 反復測定\\
+ベースライン調整 & 分散 $\frac{2\sigma^2}n$（最終値），$\frac{4\sigma^2(1-\rho)}n$（変化量），$\frac{2\sigma^2(1-\rho^2)}n$（ANCOVA） & 前後測定のある RCT\\
 \multicolumn{3}{@{}l}{\textbf{順位検定}}\\
 符号 & $T\sim\Bin(n,\frac12)$，$\E=\frac n2$，$\V=\frac n4$ & 対応あり・分布の仮定なし\\
 符号付き順位 & $\E[W^+]=\frac{n(n+1)}4$，$\V=\frac{n(n+1)(2n+1)}{24}$ & 対応あり・対称分布\\
@@ -5197,6 +6275,13 @@ Greenwood & $\widehat\V[\hat S]\approx\hat S^2\sum\frac{d_j}{n_j(n_j-d_j)}$（�
 Cox & $h_0(t)e^{\bm\beta\transp\bm x}$，$L=\prod_j\frac{e^{\bm\beta\transp\bm x_{(j)}}}{\sum_{R_j}e^{\bm\beta\transp\bm x_l}}$，$S=S_0^{\exp(\bm\beta\transp\bm x)}$ & HR の推定・調整\\
 指数モデル & $L=\lambda^de^{-\lambda W}$，$\hat\lambda=\frac dW$，$I=\frac d{\lambda^2}$，$\V[\log\hat\lambda]\approx\frac1d$ & ハザード一定・率\\
 競合リスク & $S=\exp\{-\sum_j\Lambda_j\}$，$F_j=\int_0^t\lambda_jS$，$F_j(t)\le1-e^{-\Lambda_j(t)}$ & $1-$KM の過大推定\\
+CIF の推定 & $\hat F_j(t)=\sum_{t_{(i)}\le t}\hat S(t_{(i)}^-)\frac{d_{ji}}{n_i}$，$\hat S+\sum_j\hat F_j=1$ & 競合リスク下の累積発生\\
+Nelson--Aalen & $\tilde H=\sum\frac{d_j}{n_j}$，$\tilde S=e^{-\tilde H}\ge\hat S$ & 累積ハザード\\
+RMST & $\int_0^\tau S(t)\dd t$，指数なら $\frac{1-e^{-\lambda\tau}}\lambda$ & 曲線が0に届かない・PH 不成立\\
+\multicolumn{3}{@{}l}{\textbf{メタアナリシス}}\\
+固定効果 & $\hat\theta=\frac{\sum w_kY_k}{\sum w_k}$，$\V=\frac1{\sum w_k}$，$w_k=\frac1{\sigma_k^2}$ & 共通効果の統合\\
+異質性 & $Q=\sum w_k(Y_k-\hat\theta)^2\approx\chi^2_{K-1}$，$I^2=\frac{Q-(K-1)}Q$ & 研究間のばらつき\\
+変量効果 & $\hat\tau^2_{\mathrm{DL}}=\frac{Q-(K-1)}{\sum w-\sum w^2/\sum w}$，$w_k^*=\frac1{\sigma_k^2+\tau^2}$，$\V[\hat\mu]=\frac1{\sum w_k^*}$ & 効果の分布の平均\\
 \multicolumn{3}{@{}l}{\textbf{設計・臨床試験}}\\
 検出力 & $\mu=z_\alpha+z_\beta$，検出力 $\Phi(\mu-z_\alpha)$ & すべての症例数計算の基本\\
 平均の差 & $n=\frac{2\sigma^2(z_{\alpha/2}+z_\beta)^2}{\Delta^2}$（各群） & 連続アウトカム\\
@@ -5211,6 +6296,8 @@ $\alpha$ 消費 & $\Corr[Z(t_1),Z(t_2)]=\sqrt{t_1/t_2}$，増分 $\alpha(t_k)-\a
 EM（ABO） & E：$\E[f_{AA}\mid n_A]=n_A\frac{p}{p+2r}$，M：遺伝子の数え上げ & 不完全データの MLE\\
 ポアソン & $\hat\lambda=\frac YT$，$\V[\log\hat\lambda]\approx\frac1Y$ & 人時間つき件数\\
 Beta--Binomial & $\Be(a+y,b+n-y)$，事後平均 $\frac{a+y}{a+b+n}$ & 割合の Bayes 推測\\
+Gamma--Poisson & $\Ga(\alpha+y,\beta+T)$（形状・率），予測 $\NB\bigl(\alpha+y,\frac{\beta+T}{\beta+T+T'}\bigr)$ & 率の Bayes 推測・件数の予測\\
+Rubin & $T=\bar W+(1+\frac1m)B$ & 多重補完の統合\\
 \end{longtable}
 \end{center}
 
@@ -5313,68 +6400,110 @@ FWER & familywise error rate & 少なくとも1つの真の帰無仮説を棄却
 % ============================================================
 \chapter{過去問対応表}\label[appendix]{app:D}
 % ============================================================
-必要能力の略号：定＝定義，計＝計算，導＝導出，検＝検定，モ＝モデル化，選＝手法選択，解＝解釈．
-問5は4分野共通問題（「共」）で，医薬に関連する部分がある場合のみ対応章を示す．
-「F」は設問の一部（または全部）が誘導付きの概念で，\cref{app:F}に一覧したことを表す．
+本文の章の順に，その章の内容で解ける過去問を並べた（章の中は年・問の順）．
+複数の章にまたがる問は，それぞれの章に重複して載せている．
+問5は4分野共通問題（「共」）である．
+「付録F」は設問の一部（または全部）が誘導付きの概念で，\cref{app:F}に一覧したもの，
+「付録G」は共通問題の付録（\cref{app:G}）で補った知識で解ける問を表す．
 
 \begin{center}\scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{@{}ccL{36mm}L{58mm}L{16mm}c@{}}
+\begin{longtable}{@{}cccL{36mm}L{78mm}@{}}
 \toprule
-年 & 問 & 主テーマ & 副テーマ & 必要能力 & 章\\
+章 & 年 & 問 & 主テーマ & 副テーマ\\
 \midrule
 \endfirsthead
 \toprule
-年 & 問 & 主テーマ & 副テーマ & 必要能力 & 章\\
+章 & 年 & 問 & 主テーマ & 副テーマ\\
 \midrule
 \endhead
 \bottomrule
 \endfoot
-2016 & 1 & 対応のある連続データ & 対応のある $t$，符号検定（正確な P 値），符号付き順位（正規近似），外れ値の影響 & 検 計 導 解 & \ref{ch:03}\\
-2016 & 2 & 4群の比率 & 一様性 $\chi^2_3$，$P=0.077$ の解釈，Cochran--Armitage & 検 導 解 選 & \ref{ch:04}\\
-2016 & 3 & 生存時間解析 & KM 曲線，ログランク（$\chi^2=5.62$），Cox 部分尤度 & 計 導 & \ref{ch:09},\ref{ch:10}\\
-2016 & 4 & 対数正規と BE & 対数正規の性質（F），クロスオーバーの90\%CI による BE 判定 & 導 計 解 & \ref{ch:13},F\\
-2016 & 5共 & 2標本 $t$ 検定 & 群ごとの CI と検定，CI の重なり（約29\%） & 計 検 解 & \ref{ch:01}\\
-2017 & 1 & ハザードの理論 & $\lambda=f/S$，$\Lambda=-\log S$，$\Lambda(T)\sim\Ex(1)$，Cox の2重対数表現，乱数生成 & 導 モ & \ref{ch:09},\ref{ch:10}\\
-2017 & 2 & 群逐次デザイン & $\alpha$ 消費関数，情報時間，$\Cov[Z(0.4),Z(1)]=\sqrt{0.4}$，限界値 & 計 導 & \ref{ch:14}\\
-2017 & 3 & 第II相二段階 & 二段階デザインの $\alpha,\beta$，PET，期待症例数（F） & 導 計 & F\\
-2017 & 4 & 層別症例対照 & 曝露 OR，超幾何の平均分散，1段階推定と共通 OR（F），均一性の確認 & 計 導 解 & \ref{ch:04},\ref{ch:07},F\\
-2017 & 5共 & 割付法 & 単純無作為化と偏りを抑える割付，CI 幅から $n$ & 計 導 & \ref{ch:02},\ref{ch:12}\\
-2018 & 1 & 指数生存モデル & 打ち切り尤度，MLE，Fisher 情報，デルタ法，必要イベント数 & 導 計 & \ref{ch:10},\ref{ch:12}\\
-2018 & 2 & マッチドペア2 値 & 多項分布，$\V[\hat\delta]$，CI，制約付き MLE，LRT & 導 検 & \ref{ch:04}\\
-2018 & 3 & ROC 解析 & 感度・偽陽性率，経験 ROC，Youden，AUC＝Mann--Whitney & 計 導 解 & \ref{ch:05}\\
-2018 & 4 & ロジスティック回帰 & 対数尤度，調整 OR，AIC，Bernoulli の KL，リスクスコアの解釈 & 導 解 & \ref{ch:06},\ref{ch:05}\\
-2018 & 5共 & 正規混合 & 平均・分散，二峰性の条件 & 導 & ---\\
-2019 & 1 & KM・指数モデル & KM 表，打ち切りのある指数分布の MLE；Nelson--Aalen 型推定・RMST（F） & 計 導 & \ref{ch:09},\ref{ch:10},F\\
-2019 & 2 & 交絡と標準化 & 粗 RD，直接標準化・傾向スコア（F） & 計 導 解 & F\\
-2019 & 3 & 対応のある診断比較 & 感度・PPV，McNemar 型，8セル多項＋デルタ法 & 計 検 導 & \ref{ch:05},\ref{ch:04}\\
-2019 & 4 & 小標本2群比較 & Student $t$ の仮定，順位和の正確な分布，離散性による問題 & 検 計 解 & \ref{ch:03}\\
-2019 & 5共 & 適合度と EM & 適合度 $\chi^2$，自由度の根拠，ABO 血液型の EM & 検 導 & \ref{ch:16}\\
-2021 & 1 & 競合リスク & $f=\lambda S$，$1-$KM，CIF の導出と推定（F），過大推定の考察 & 導 計 解 & \ref{ch:09},\ref{ch:10},F\\
-2021 & 2 & 同等性と BE & 片側 $t$ 検定・IUT（F），90\%CI による BE 判定 & 導 検 解 & \ref{ch:13},F\\
-2021 & 3 & 2×2表と層別 & OR と CI，積二項尤度，スコア型 $X$，層別 Cochran 検定，Simpson & 計 導 検 解 & \ref{ch:04},\ref{ch:07}\\
-2021 & 4 & 変量効果メタ & 周辺分布，対数尤度，$\hat\mu$，$\V[\hat\mu]$，CI（F） & 導 計 & F\\
-2021 & 5共 & 診断の正規モデル & 感度・特異度，PPV・NPV，閾値，有病率の影響 & 計 解 & \ref{ch:05}\\
-2022 & 1 & Cox 比例ハザード & 比例性，$S_0^{\exp(\beta x)}$，2重対数プロット（F），HR の CI と解釈 & 導 計 解 & \ref{ch:10},F\\
-2022 & 2 & マッチと非可縮性 & 粗 RR・OR，MH 推定量（F），条件付き OR，非可縮性，間接比較 & 計 解 & \ref{ch:04},\ref{ch:07},F\\
-2022 & 3 & 線形混合モデル & $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，OLS/GLS，複合対称，被験者内相関 & 導 計 モ & \ref{ch:08}\\
-2022 & 4 & Beta--Binomial & 事後分布・モード・平均，周辺分布，事後確率による判定 & 導 計 解 & \ref{ch:17}\\
-2022 & 5共 & 平均への回帰 & 2変量正規の条件付き分布（F） & 導 計 解 & F\\
-2023 & 1 & ロジスティック回帰 & 対数オッズ，集計データの尤度，MLE，LRT，PPV・NPV & 計 導 検 & \ref{ch:06},\ref{ch:05}\\
-2023 & 2 & 単群指数試験の症例数 & MLE，Fisher 情報，Wald 型 $Z$ による症例数（F） & 導 計 & \ref{ch:10},F\\
-2023 & 3 & メタアナリシス & 固定効果 MLE，$Q$ の分解と期待値，DL，$I^2$（F） & 導 計 & F\\
-2023 & 4 & 反復測定 & $\hat{\bm\mu}$ の分布，共分散構造の AIC，相関行列，変化量の検定 & 計 モ 検 & \ref{ch:08}\\
-2023 & 5共 & 条件付き確率と二項検定 & Monty Hall，正確な P 値と正規近似 & 計 & ---\\
-2024 & 1 & 診断・ROC・McNemar & 感度等の表，台形 AUC，対応のある2 値の分散と McNemar & 計 導 検 & \ref{ch:05},\ref{ch:04}\\
-2024 & 2 & ベースライン調整 & 最終値・変化量・ANCOVA の分散（F） & 導 計 解 & F\\
-2024 & 3 & 欠測と多重補完 & 欠測と群の $\chi^2$；Rubin のルール・$\E[B]$（F） & 計 導 & \ref{ch:16},F\\
-2024 & 4 & 多重性と用量反応 & FWER（F），Bonferroni，分散分析で保護した検定，多対1の相関（F），対比 & 計 導 選 & \ref{ch:14},F\\
-2024 & 5共 & 重回帰の抑制 & 正規方程式，決定係数 & 導 & ---\\
-2025 & 1 & 順位和検定の検出力 & 位置ずれ，$\E[R_X]$，$\Prob(X>Y)$，検出力の式 & 導 計 & \ref{ch:03}\\
-2025 & 2 & ポアソン率と Bayes & 共通率 MLE；率の差の検定・Gamma--Poisson（F） & 導 計 解 & \ref{ch:17},F\\
-2025 & 3 & 競合リスクの理論 & 原因別ハザードの関係式（F），原因別 Cox の解釈 & 導 解 & \ref{ch:10},F\\
-2025 & 4 & 多重性 & 独立 $p$ 値の FWER・Šidák 型・Simes・相関の影響（F），Bonferroni & 計 導 & \ref{ch:14},F\\
-2025 & 5共 & ランダム化回答法 & 誤分類の補正，MLE，$p$ の選択 & 導 解 & ---\\
+\ref{ch:01} & 2016 & 5共 & 2標本 $t$ 検定 & 群ごとの CI と検定，CI の重なり（約29\%）\\
+\midrule
+\ref{ch:02} & 2017 & 5共 & 割付法 & 単純無作為化と偏りを抑える割付，CI 幅から $n$\\
+\midrule
+\ref{ch:03} & 2016 & 1 & 対応のある連続データ & 対応のある $t$，符号検定（正確な P 値），符号付き順位（正規近似），外れ値の影響\\
+\ref{ch:03} & 2019 & 4 & 小標本2群比較 & Student $t$ の仮定，順位和の正確な分布，離散性による問題\\
+\ref{ch:03} & 2025 & 1 & 順位和検定の検出力 & 位置ずれ，$\E[R_X]$，$\Prob(X>Y)$，検出力の式\\
+\midrule
+\ref{ch:04} & 2016 & 2 & 4群の比率 & 一様性 $\chi^2_3$，$P=0.077$ の解釈，Cochran--Armitage\\
+\ref{ch:04} & 2017 & 4 & 層別症例対照 & 曝露 OR，超幾何の平均分散，Peto 型1段階推定と共通 OR，均一性の確認\\
+\ref{ch:04} & 2018 & 2 & マッチドペア2 値 & 多項分布，$\V[\hat\delta]$，CI，制約付き MLE，LRT\\
+\ref{ch:04} & 2019 & 3 & 対応のある診断比較 & 感度・PPV，McNemar 型，8セル多項＋デルタ法\\
+\ref{ch:04} & 2021 & 3 & 2×2表と層別 & OR と CI，積二項尤度，スコア型 $X$，層別 Cochran 検定，Simpson\\
+\ref{ch:04} & 2022 & 2 & マッチと非可縮性 & 粗 RR・OR，MH 推定量，条件付き OR，非可縮性，間接比較\\
+\ref{ch:04} & 2024 & 1 & 診断・ROC・McNemar & 感度等の表，台形 AUC，対応のある2 値の分散と McNemar\\
+\midrule
+\ref{ch:05} & 2018 & 3 & ROC 解析 & 感度・偽陽性率，経験 ROC，Youden，AUC＝Mann--Whitney\\
+\ref{ch:05} & 2018 & 4 & ロジスティック回帰 & 対数尤度，調整 OR，AIC，Bernoulli の KL，リスクスコアの解釈\\
+\ref{ch:05} & 2019 & 3 & 対応のある診断比較 & 感度・PPV，McNemar 型，8セル多項＋デルタ法\\
+\ref{ch:05} & 2021 & 5共 & 診断の正規モデル & 感度・特異度，PPV・NPV，閾値，有病率の影響\\
+\ref{ch:05} & 2023 & 1 & ロジスティック回帰 & 対数オッズ，集計データの尤度，MLE，LRT，PPV・NPV\\
+\ref{ch:05} & 2023 & 5共 & 条件付き確率と二項検定 & Monty Hall，正確な P 値と正規近似\\
+\ref{ch:05} & 2024 & 1 & 診断・ROC・McNemar & 感度等の表，台形 AUC，対応のある2 値の分散と McNemar\\
+\midrule
+\ref{ch:06} & 2018 & 4 & ロジスティック回帰 & 対数尤度，調整 OR，AIC，Bernoulli の KL，リスクスコアの解釈\\
+\ref{ch:06} & 2023 & 1 & ロジスティック回帰 & 対数オッズ，集計データの尤度，MLE，LRT，PPV・NPV\\
+\midrule
+\ref{ch:07} & 2017 & 4 & 層別症例対照 & 曝露 OR，超幾何の平均分散，Peto 型1段階推定と共通 OR，均一性の確認\\
+\ref{ch:07} & 2021 & 3 & 2×2表と層別 & OR と CI，積二項尤度，スコア型 $X$，層別 Cochran 検定，Simpson\\
+\ref{ch:07} & 2022 & 2 & マッチと非可縮性 & 粗 RR・OR，MH 推定量，条件付き OR，非可縮性，間接比較\\
+\midrule
+\ref{ch:08} & 2022 & 3 & 線形混合モデル & $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，OLS/GLS，複合対称，被験者内相関\\
+\ref{ch:08} & 2023 & 4 & 反復測定 & $\hat{\bm\mu}$ の分布，共分散構造の AIC，相関行列，変化量の検定\\
+\ref{ch:08} & 2024 & 2 & ベースライン調整 & 最終値・変化量・ANCOVA の分散\\
+\midrule
+\ref{ch:09} & 2016 & 3 & 生存時間解析 & KM 曲線，ログランク（$\chi^2=5.62$），Cox 部分尤度\\
+\ref{ch:09} & 2017 & 1 & ハザードの理論 & $\lambda=f/S$，$\Lambda=-\log S$，$\Lambda(T)\sim\Ex(1)$，Cox の2重対数表現，乱数生成\\
+\ref{ch:09} & 2019 & 1 & KM・指数モデル & KM 表，打ち切りのある指数分布の MLE，Nelson--Aalen 型推定・RMST\\
+\ref{ch:09} & 2021 & 1 & 競合リスク & $f=\lambda S$，$1-$KM，CIF の導出（F）と推定，過大推定の考察\\
+\midrule
+\ref{ch:10} & 2016 & 3 & 生存時間解析 & KM 曲線，ログランク（$\chi^2=5.62$），Cox 部分尤度\\
+\ref{ch:10} & 2017 & 1 & ハザードの理論 & $\lambda=f/S$，$\Lambda=-\log S$，$\Lambda(T)\sim\Ex(1)$，Cox の2重対数表現，乱数生成\\
+\ref{ch:10} & 2018 & 1 & 指数生存モデル & 打ち切り尤度，MLE，Fisher 情報，デルタ法，必要イベント数\\
+\ref{ch:10} & 2019 & 1 & KM・指数モデル & KM 表，打ち切りのある指数分布の MLE，Nelson--Aalen 型推定・RMST\\
+\ref{ch:10} & 2021 & 1 & 競合リスク & $f=\lambda S$，$1-$KM，CIF の導出（F）と推定，過大推定の考察\\
+\ref{ch:10} & 2022 & 1 & Cox 比例ハザード & 比例性，$S_0^{\exp(\beta x)}$，2重対数プロット（F），HR の CI と解釈\\
+\ref{ch:10} & 2023 & 2 & 単群指数試験の症例数 & MLE，Fisher 情報，Wald 型 $Z$ による症例数（F）\\
+\ref{ch:10} & 2025 & 3 & 競合リスクの理論 & 原因別ハザードの関係式（F），原因別 Cox の解釈\\
+\midrule
+\ref{ch:12} & 2017 & 5共 & 割付法 & 単純無作為化と偏りを抑える割付，CI 幅から $n$\\
+\ref{ch:12} & 2018 & 1 & 指数生存モデル & 打ち切り尤度，MLE，Fisher 情報，デルタ法，必要イベント数\\
+\midrule
+\ref{ch:13} & 2016 & 4 & 対数正規と BE & 対数正規の性質（F），クロスオーバーの90\%CI による BE 判定\\
+\ref{ch:13} & 2021 & 2 & 同等性と BE & 片側 $t$ 検定・IUT（F），90\%CI による BE 判定\\
+\midrule
+\ref{ch:14} & 2017 & 2 & 群逐次デザイン & $\alpha$ 消費関数，情報時間，$\Cov[Z(0.4),Z(1)]=\sqrt{0.4}$，限界値\\
+\ref{ch:14} & 2024 & 4 & 多重性と用量反応 & FWER（F），Bonferroni，分散分析で保護した検定，多対1の相関（F），対比\\
+\ref{ch:14} & 2025 & 4 & 多重性 & 独立 $p$ 値の FWER・Šidák 型・Simes・相関の影響（F），Bonferroni\\
+\midrule
+\ref{ch:16} & 2019 & 5共 & 適合度と EM & 適合度 $\chi^2$，自由度の根拠，ABO 血液型の EM\\
+\ref{ch:16} & 2024 & 3 & 欠測と多重補完 & 欠測と群の $\chi^2$，Rubin のルール・$\E[B]$\\
+\midrule
+\ref{ch:17} & 2022 & 4 & Beta--Binomial & 事後分布・モード・平均，周辺分布，事後確率による判定\\
+\ref{ch:17} & 2025 & 2 & ポアソン率と Bayes & 共通率 MLE，率の差の検定，Gamma--Poisson\\
+\midrule
+\ref{ch:18} & 2021 & 4 & 変量効果メタ & 周辺分布，対数尤度，$\hat\mu$，$\V[\hat\mu]$，CI\\
+\ref{ch:18} & 2023 & 3 & メタアナリシス & 固定効果 MLE，$Q$ の分解と期待値，DL，$I^2$\\
+\midrule
+付録F & 2016 & 4 & 対数正規と BE & 対数正規の性質（F），クロスオーバーの90\%CI による BE 判定\\
+付録F & 2017 & 3 & 第II相二段階 & 二段階デザインの $\alpha,\beta$，PET，期待症例数（F）\\
+付録F & 2019 & 2 & 交絡と標準化 & 粗 RD，直接標準化・傾向スコア（F）\\
+付録F & 2021 & 1 & 競合リスク & $f=\lambda S$，$1-$KM，CIF の導出（F）と推定，過大推定の考察\\
+付録F & 2021 & 2 & 同等性と BE & 片側 $t$ 検定・IUT（F），90\%CI による BE 判定\\
+付録F & 2022 & 1 & Cox 比例ハザード & 比例性，$S_0^{\exp(\beta x)}$，2重対数プロット（F），HR の CI と解釈\\
+付録F & 2022 & 5共 & 平均への回帰 & 2変量正規の条件付き分布（F）\\
+付録F & 2023 & 2 & 単群指数試験の症例数 & MLE，Fisher 情報，Wald 型 $Z$ による症例数（F）\\
+付録F & 2024 & 4 & 多重性と用量反応 & FWER（F），Bonferroni，分散分析で保護した検定，多対1の相関（F），対比\\
+付録F & 2025 & 3 & 競合リスクの理論 & 原因別ハザードの関係式（F），原因別 Cox の解釈\\
+付録F & 2025 & 4 & 多重性 & 独立 $p$ 値の FWER・Šidák 型・Simes・相関の影響（F），Bonferroni\\
+\midrule
+付録G & 2018 & 5共 & 正規混合 & 平均・分散，二峰性の条件\\
+付録G & 2022 & 5共 & 平均への回帰 & 2変量正規の条件付き分布（F）\\
+付録G & 2023 & 5共 & 条件付き確率と二項検定 & Monty Hall，正確な P 値と正規近似\\
+付録G & 2024 & 5共 & 重回帰の抑制 & 正規方程式，決定係数\\
+付録G & 2025 & 5共 & ランダム化回答法 & 誤分類の補正，MLE，$p$ の選択\\
 \end{longtable}
 \end{center}
 
@@ -5422,12 +6551,15 @@ FWER & familywise error rate & 少なくとも1つの真の帰無仮説を棄却
 \chk 交絡と効果修飾を区別し，Simpson のパラドックスを例示できる．
 \chk OR の非可縮性と交絡の違いを説明できる．
 \chk Woolf の均一性検定を計算し，Breslow--Day 検定の目的を説明できる．
+\chk 条件付き超幾何分布から CMH 検定（スコア検定）と Peto 型推定量（1段階の Newton 法）を導ける．
+\chk MH 共通 OR を推定方程式 $\E[a_kd_k-\psi b_kc_k]=0$ から説明し，複数の層から計算して粗 OR との差を交絡・非可縮性・効果修飾で解釈できる．
 \end{itemize}
 \section*{\cref{ch:08}　縦断・混合モデル}
 \begin{itemize}
 \chk 反復測定の平均ベクトルの分布から変化量の SE を求められる．
 \chk $\bm V=\bm Z\bm G\bm Z\transp+\bm R$，GLS 推定量，変量切片が複合対称を生むことを示せる．
 \chk 共分散構造のパラメータ数を数え，AIC を計算できる．
+\chk 最終値・変化量・ANCOVA の分散 $2\sigma^2/n$，$4\sigma^2(1-\rho)/n$，$2\sigma^2(1-\rho^2)/n$ を導き，優劣を $\rho$ で説明できる．
 \end{itemize}
 \section*{\cref{ch:09,ch:10}　生存時間}
 \begin{itemize}
@@ -5437,6 +6569,8 @@ FWER & familywise error rate & 少なくとも1つの真の帰無仮説を棄却
 \chk Cox の部分尤度を書き下し，$S=S_0^{\exp(\beta x)}$ を示せる．
 \chk 打ち切りのある指数分布の尤度・MLE・Fisher 情報を導き，デルタ法で HR の検定を作れる．
 \chk 原因別ハザード・累積発生関数を定義し，$1-$KM が CIF を過大推定することを示せる．
+\chk 競合リスクのデータから $\hat F_j$ の表を作り，$\hat S+\sum\hat F_j=1$ で検算できる．
+\chk Nelson--Aalen 推定値を計算し $\tilde S\ge\hat S$ を示せる．RMST を KM の面積・指数モデルで計算し解釈できる．
 \chk 原因別 Cox と Fine--Gray の係数の解釈の違いを説明できる．
 \end{itemize}
 \section*{\cref{ch:12,ch:13,ch:14}　臨床試験デザイン}
@@ -5456,15 +6590,49 @@ FWER & familywise error rate & 少なくとも1つの真の帰無仮説を棄却
 \chk ポアソン率の MLE と $\V[\log\hat\lambda]\approx1/Y$ を導ける．
 \chk Beta--Binomial の事後分布・周辺分布・事後予測分布を導ける．
 \chk $\Prob(\pi>p\mid y)=\Prob(\Bin(n+1,p)\le y)$ を用いて事後確率による判定ができる．
+\chk Gamma--Poisson の事後分布と事後予測分布（負の二項）を導け，ガンマ分布の率と尺度を区別できる．
+\chk Rubin のルールで多重補完を統合し，$(1+1/m)$ の意味と MAR・適切な補完の前提を説明できる．
+\end{itemize}
+\section*{\cref{ch:18}　メタアナリシス}
+\begin{itemize}
+\chk 固定効果モデルの尤度から逆分散重み付き推定量と分散 $1/\sum w_k$ を導き，Cauchy--Schwarz で分散最小を示せる．
+\chk $Q$ の分解から $\E[Q]$ を導き，DL 推定量と $I^2$（等分散なら $\tau^2/(\tau^2+\sigma^2)$ の推定量）を求められる．
+\chk 変量効果の $\hat\mu$ と CI を計算し，固定効果との推定対象の違いを説明できる．
+\end{itemize}
+\section*{\cref{app:G}　試験本番}
+\begin{itemize}
+\chk 全5問の〔1〕〔2〕と最終小問を読み，5分以内に3問を選ぶ手順を決めている．
+\chk 90分3問の時間を測った演習を行い，1問30分を超えたときの切り上げ方を決めている．
 \end{itemize}
 
 % ============================================================
 \chapter{誘導付きで出題された概念}\label[appendix]{app:F}
 % ============================================================
-本書では扱わない概念の一覧である．次の概念は，過去問では定義・式・手順が問題文で与えられており，その概念を初めて見る受験者でも誘導に従えば解ける形でしか出題されていない．
-そのため本文では扱わない．
-いずれも，問題文の式を正しく読み，期待値・分散・尤度の計算を自力で進める力があれば対応できる．
+次の概念は，過去問では定義・式・手順が問題文で与えられ，誘導に従えば解ける形で出題された．
+問題文の式を正しく読み，期待値・分散・尤度の計算を自力で進める力があれば対応できる．
 過去問演習では「何が与えられ，何を自分で計算するか」を確認するとよい．
+
+\paragraph{第2版で本文に移した概念}
+初版ではこの付録に一覧していたが，出題頻度・汎用性・近年の出題を考慮し，第2版では導出・例題とともに本文で扱う．
+\begin{center}\small
+\begin{tabular}{@{}L{62mm}L{40mm}L{38mm}@{}}
+\toprule
+概念 & 出題 & 本文\\
+\midrule
+固定効果・変量効果メタアナリシス，$Q$，DL，$I^2$ & \kakomon{2021}{4}，\kakomon{2023}{3} & \cref{ch:18}\\
+Peto 型1段階推定，逆分散重みの共通 OR & \kakomon{2017}{4}〔2〕〜〔4〕 & \cref{subsec:07-peto}\\
+Mantel--Haenszel の RR・OR 推定量 & \kakomon{2022}{2}〔3〕 & \cref{subsec:07-mhest}\\
+最終値・変化量・ANCOVA の比較 & \kakomon{2024}{2} & \cref{sec:08-ancova}\\
+Nelson--Aalen 型推定 & \kakomon{2019}{1}〔2〕 & \cref{sec:09-na}\\
+境界内平均生存時間（RMST） & \kakomon{2019}{1}〔3〕〜〔5〕 & \cref{sec:09-rmst}\\
+Aalen--Johansen 型の累積発生関数の推定量 & \kakomon{2021}{1}〔4〕 & \cref{subsec:10-compete-aj}\\
+多重補完の Rubin のルール，$\E[B]$ & \kakomon{2024}{3}〔2〕〜〔5〕 & \cref{sec:16-mi}\\
+Gamma--Poisson の事後分布・事後予測分布，率の差の検定 & \kakomon{2025}{2}〔2〕〜〔5〕 & \cref{sec:17-gammapois}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{誘導付きの出題にとどまる概念}
 
 \begin{center}\small
 \renewcommand{\arraystretch}{1.15}
@@ -5483,20 +6651,14 @@ FWER & familywise error rate & 少なくとも1つの真の帰無仮説を棄却
 対数正規分布の性質（中央値・密度・平均・分散・CV） & \kakomon{2016}{4}〔1〕〜〔4〕 & 密度の式（「示せ」形式），正規分布の積率母関数\\
 TOST・IUT（2つの片側検定） & \kakomon{2021}{2}〔1〕 & 2つの片側仮説，$H_0=H_{01}\cup H_{02}$，「両方棄却で棄却」という手順\\
 \multicolumn{3}{@{}l}{\textbf{分割表・交絡}}\\
-Peto 型の1段階 log OR，逆分散重み付き共通 OR & \kakomon{2017}{4}〔2〕〜〔4〕 & 超幾何分布の平均・分散，$(O-E)/V$ の形，重み $V$，漸近正規性\\
-Mantel--Haenszel の RR・OR 推定量 & \kakomon{2022}{2}〔3〕 & 両推定量の式\\
 直接標準化 & \kakomon{2019}{2}〔2〕 & 重み $w_k$ と標準化リスク $R_{xw}$ の定義\\
 傾向スコアとバランス特性 & \kakomon{2019}{2}〔3〕〜〔5〕 & 傾向スコアの定義と性質（文章で提示）\\
 \multicolumn{3}{@{}l}{\textbf{縦断データ}}\\
-最終値・変化量・ANCOVA の比較 & \kakomon{2024}{2} & 2変量正規分布（$\sigma^2$，$\rho$ 既知）と回帰モデル\\
-平均への回帰 & \kakomon{2022}{5}（共通） & 2変量正規の条件付き分布の公式\\
+平均への回帰 & \kakomon{2022}{5}（共通） & 2変量正規の条件付き分布の公式（要点は\cref{subsec:G-rtm}）\\
 Toeplitz 型の共分散構造 & \kakomon{2023}{4}〔2〕 & 共分散行列の形（表で提示）．AIC の式とパラメータ数は前提\\
 \multicolumn{3}{@{}l}{\textbf{生存時間}}\\
-Nelson--Aalen 型推定 & \kakomon{2019}{1}〔2〕 & $\tilde S(t)=\prod\exp(-d_k/n_k)$ の式\\
-境界内平均生存時間（RMST） & \kakomon{2019}{1}〔3〕〜〔5〕 & $X(\tau)=\min(T,\tau)$ の期待値としての定義，指数分布の仮定\\
 2重対数プロット & \kakomon{2022}{1}〔3〕 & 軸の定義と「比例ハザードなら平行」という主張\\
-原因別ハザード・累積発生関数の関係式 & \kakomon{2021}{1}〔3〕，\kakomon{2025}{3}〔1〕〜〔4〕 & $\lambda_j$，$F_j$，$f_j$ の定義と Weibull 型の原因別ハザードの式（本書は解釈に必要な最小限の定義だけを\cref{sec:10-compete}で扱う）\\
-Aalen--Johansen 型の累積発生関数の推定量 & \kakomon{2021}{1}〔4〕 & 推定式 $\hat F_j(t)=\sum d_{ji}/n_{ji}\cdot\hat S(t_{ji}^-)$\\
+原因別ハザード・累積発生関数の関係式 & \kakomon{2021}{1}〔3〕，\kakomon{2025}{3}〔1〕〜〔4〕 & $\lambda_j$，$F_j$，$f_j$ の定義と Weibull 型の原因別ハザードの式（定義と CIF の推定は\cref{sec:10-compete}）\\
 単群指数試験の症例数（Wald 型 $Z$） & \kakomon{2023}{2}〔4〕〔5〕 & $Z$ の式，$\hat\lambda$ の漸近正規性，情報量を $\lambda_1$ で評価する指示\\
 \multicolumn{3}{@{}l}{\textbf{臨床試験デザイン・多重性}}\\
 Simon の二段階デザイン & \kakomon{2017}{3} & 手順 $(n_1,r_1,n_2,r)$，記号 $b(x;\pi,n)$，二項確率の表\\
@@ -5504,16 +6666,230 @@ Simon の二段階デザイン & \kakomon{2017}{3} & 手順 $(n_1,r_1,n_2,r)$，
 Dunnett 型の相関，対比どうしの相関 & \kakomon{2024}{4}〔4〕〔6〕 & 各検定統計量 $Z_j$ と対比統計量の式\\
 Simes 法 & \kakomon{2025}{4}〔1〕 & 棄却規則 $p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$\\
 相関のある検定の FWER & \kakomon{2025}{4}〔2〕 & 2変量正規，$\phi(\rho)$ の定義，証明なしで使ってよい不等式\\
-\multicolumn{3}{@{}l}{\textbf{メタアナリシス}}\\
-固定効果（逆分散重み），Cochran の $Q$，DerSimonian--Laird，$I^2$ & \kakomon{2023}{3} & 各推定量と $Q$ の定義，$Q$ の分解，「$\E[Q]=Q$ とおく」指示\\
-変量効果モデル & \kakomon{2021}{4} & モデル，$\hat\tau^2$，信頼区間の式\\
-\multicolumn{3}{@{}l}{\textbf{欠測・ポアソン・ベイズ}}\\
-多重補完の Rubin のルール & \kakomon{2024}{3}〔3〕 & $\bar\theta$，$W$，$B$ の定義と $\hat\V[\bar\theta]=W+(1+1/K)B$\\
-補完推定量の条件付き分散，$\E[B]$ & \kakomon{2024}{3}〔4〕〔5〕 & 補完の分布（二項分布）の設定\\
-ポアソン率の差の $Z$ 検定 & \kakomon{2025}{2}〔2〕 & 正規近似の指定と分散の推定量 $Y/T^2$\\
-Gamma--Poisson の事後分布・事後予測分布 & \kakomon{2025}{2}〔3〕〜〔5〕 & ガンマ事前分布の密度（形状・率），パラメータの値，ポアソン性・独立性\\
 \end{longtable}
 \end{center}
+
+% ===== 91_appendix_g.tex =====
+% ============================================================
+\chapter{共通問題（問5）の対策と試験本番の戦略}\label[appendix]{app:G}
+% ============================================================
+統計応用（医薬生物学）は大問5問から3問を選ぶ90分の記述式試験で，問5は人文科学・社会科学・理工学・医薬生物学の4分野に共通の問題である
+（本書で確認した2016〜2025年の9回すべてでこの構成．問題冊子の注記による）．
+本付録では，(1) 9回分の問5を年度別に整理し，(2) 必要な数理統計の知識と本書の対応を確認し，(3) 不足する知識を最小限補い，
+(4) 問題の選び方・途中点・時間配分を実践的にまとめる．
+
+\begin{warnbox}[この付録の読み方]
+\begin{itemize}
+\item 「問5は常に易しい」「問5は必ず選ぶべき」とは言えない．次の\cref{sec:G-cases}で見るように，問5を選んで成功した事例と失敗した事例の両方がある．
+\item 難易度は年度と受験者の習熟度に依存するので，本付録では一律の難易度評価を付けない．代わりに「式変形の段数」「数値計算の量」「誘導の有無」「前の小問への依存」という\textbf{観察できる特徴}で記述する．
+\item 過去9回の出題実績は，次の試験で何が出るかの確率ではない．問5は9回で同じテーマが繰り返されていない．
+\end{itemize}
+\end{warnbox}
+
+\section{年度別の整理}\label{sec:G-years}
+各年の問5を本書の分析で整理した（問題文は転載しない）．「本書の対応」は本書の章・付録で直接扱う内容があるかを示す．
+\begin{center}\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}cL{30mm}L{30mm}L{48mm}L{22mm}@{}}
+\toprule
+年 & テーマ & 分野 & 必要な数理統計の知識・導出技術 & 本書の対応\\
+\midrule
+\endfirsthead
+\toprule
+年 & テーマ & 分野 & 必要な数理統計の知識・導出技術 & 本書の対応\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+2016 & 2標本 $t$ 検定と信頼区間の重なり & 推測（区間・検定） & $t$ 分布の CI，プールした分散，2標本 $t$，$t$ 分位点の大小と不等式の整理 & \cref{ch:01,ch:03}\\
+2017 & 割付法と群サイズの分布，CI 幅から $n$ & 確率モデル，症例数 & 二項分布，経路の確率の列挙，分布の対称性，既知分散の CI 幅，二項の正規近似と $\sqrt n$ の2次方程式 & \cref{ch:02,ch:12}（逐次割付の確率計算はなし）\\
+2018 & 正規2成分の混合と二峰性 & 確率分布 & 混合分布の平均・分散（全分散の公式），正規密度の2回微分，極値の条件 & \cref{subsec:G-mixture}\\
+2019 & 適合度 $\chi^2$ 検定，ABO 血液型の EM & 分割表，最尤法 & 適合度 $\chi^2$ と自由度の根拠（多項→多変量正規），ラグランジュ乗数法，E ステップ & \cref{ch:16}，\cref{subsec:G-gof}\\
+2021 & 診断検査の正規モデル & 確率（Bayes の定理） & 正規分布の標準化，全確率の公式，PPV・NPV と有病率 & \cref{ch:05}\\
+2022 & 平均への回帰 & 2変量正規・回帰 & 差の分散，2変量正規の条件付き分布（与えられる），真値＋誤差モデル & \cref{sec:08-ancova,sec:17-normal}，\cref{subsec:G-rtm}\\
+2023 & モンティ・ホール問題と二項検定 & 確率，検定 & Bayes の定理，正確な二項検定の棄却域と検出力 & \cref{ch:05}，\cref{subsec:G-exact}\\
+2024 & 重回帰の抑制効果 & 回帰・線形モデル & 標準化変数の正規方程式（2×2 の逆行列），決定係数 & \cref{subsec:G-reg}\\
+2025 & ランダム化回答法 & 標本調査，最尤法 & 全確率の公式，再パラメータ化した MLE，パラメータ空間の境界での MLE & \cref{subsec:G-rr}\\
+\end{longtable}
+\end{center}
+2025年の解答は公式略解に導出を補ったもので，略解 PDF との照合は本書では行っていない．
+
+\paragraph{横断的な観察}
+\begin{itemize}
+\item 分野は「確率（条件付き確率・Bayes の定理）」「確率モデル・分布」「推測（区間・検定・検出力・症例数）」が中心で，1年の中で2〜3分野を組み合わせる形が多い．
+      9回の範囲では，時系列，ノンパラメトリック検定，主成分分析などの多変量解析手法は出ていない．
+\item 題材（教授法，試験得点，血圧，採用試験，年収調査，ゲームなど）は分野固有の専門知識を要しない．必要な公式（条件付き分布など）は問題文で与えられることが多い．
+\item デルタ法，積率母関数，尤度比検定，十分統計量は9回の問5には出ていない（医薬の問1〜4や統計数理では頻出）．
+\end{itemize}
+
+\section{必要な数理統計のスキルと本書の対応}\label{sec:G-skills}
+9回のうちそのスキルを使う小問があった年の数（本書の分析）は，多い順に
+正規・$t$・$\chi^2$ の標準化と数表の読み取り（6），解釈の記述（6），期待値・分散・共分散の計算（5），条件付き確率・Bayes の定理（5），
+区間・検定・検出力・症例数の構成（4），二項・多項分布（4），最尤推定（2），2×2 の行列計算（2），微分による関数形状の解析（1）である．
+9回中5回（2016，2017，2019，2021，2022）は初版の章で主要部分に対応できた．
+残る4回（2018 混合分布，2023 正確な二項検定の検出力，2024 重回帰，2025 ランダム化回答法）と，2019年の適合度検定の根拠，2022年の平均への回帰の解釈を，次節で最小限補う．
+
+\section{本文にない知識の最小限の補強}\label{sec:G-gaps}
+いずれも統計数理の標準的な内容であり，ここでは問5で使う形に絞って要点と導出の筋を示す．
+
+\subsection{適合度 \texorpdfstring{$\chi^2$}{χ²} 検定と自由度}\label{subsec:G-gof}
+$K$ カテゴリの度数 $(O_1,\dots,O_K)\sim$ 多項分布 $(n;p_1,\dots,p_K)$ で，$H_0:p_i=p_{i0}$ を
+\[
+X^2=\sum_{i=1}^K\frac{(O_i-np_{i0})^2}{np_{i0}}\ \approx\ \chi^2_{K-1}\quad(H_0\text{ の下，}n\text{ が大きいとき})
+\]
+で検定する．\textbf{根拠}：$Z_i=(O_i-np_{i0})/\sqrt{np_{i0}}$ とすると，多項分布の共分散 $\Cov(O_i,O_j)=n p_i(\delta_{ij}-p_j)$ より
+$\bm Z$ の共分散行列は $\bm I-\sqrt{\bm p}\sqrt{\bm p}\transp$（$\sqrt{\bm p}=(\sqrt{p_{10}},\dots,\sqrt{p_{K0}})\transp$）である．これは階数 $K-1$ の射影行列なので，
+中心極限定理で $\bm Z$ が多変量正規に近づくと $X^2=\|\bm Z\|^2$ は $K-1$ 個の独立な標準正規の2乗和に近づく．
+\textbf{自由度}：$\sum O_i=n$ という1つの制約で1減り，$p_{i0}$ を $q$ 個のパラメータの推定値で置き換えるとさらに $q$ 減って $K-1-q$ になる．
+度数をすべて $k$ 倍すると $X^2$ も $k$ 倍になる（同じ割合でも標本が大きいほど有意になりやすい）．
+
+\subsection{重回帰（2説明変数）と抑制効果}\label{subsec:G-reg}
+すべての変数を標準化すると，$y$ を $x_1,x_2$ に回帰した係数 $\bm b$ は正規方程式 $\bm R_{xx}\bm b=\bm r_{xy}$ の解で
+\[
+b_1=\frac{r_{y1}-r_{12}r_{y2}}{1-r_{12}^2},\qquad b_2=\frac{r_{y2}-r_{12}r_{y1}}{1-r_{12}^2},\qquad R^2=\V[\hat y]=b_1r_{y1}+b_2r_{y2}
+\]
+（$r_{y1}=\Corr(y,x_1)$ など．$\bm R_{xx}=\begin{pmatrix}1&r_{12}\\r_{12}&1\end{pmatrix}$ の逆行列は $\frac1{1-r_{12}^2}\begin{pmatrix}1&-r_{12}\\-r_{12}&1\end{pmatrix}$）．
+$R^2$ は $\V[\hat y]=\bm b\transp\bm R_{xx}\bm b=\bm b\transp\bm r_{xy}$ と，$\Cov(y,\hat y)=\bm b\transp\bm r_{xy}$ から得られる．
+\textbf{抑制効果}：$y$ とほぼ無相関な $x_2$ でも，$x_1$ と相関していれば $b_2\ne0$ となり，$x_1$ の係数を $r_{y1}$ より大きくして $R^2$ を $r_{y1}^2$ より大きくする（$x_2$ が $x_1$ の中の $y$ と無関係な成分を取り除く）．
+例：$r_{y1}=0.5$，$r_{y2}=0.1$，$r_{12}=0.6$ なら $b_1=0.44/0.64=0.6875$，$b_2=-0.20/0.64=-0.3125$，$R^2=0.34375-0.03125=0.3125>0.25=r_{y1}^2$．
+
+\subsection{混合分布の平均・分散}\label{subsec:G-mixture}
+確率 $\pi_k$ で成分 $k$（平均 $\mu_k$，分散 $\sigma_k^2$）から生じる $X$ は，成分を表す確率変数 $C$ で条件付けると
+\[
+\E[X]=\sum_k\pi_k\mu_k,\qquad \V[X]=\E[\V[X\mid C]]+\V[\E[X\mid C]]=\sum_k\pi_k\sigma_k^2+\sum_k\pi_k(\mu_k-\E[X])^2
+\]
+（群内分散の平均＋群平均の分散）．2群の要約統計量から全体の平均・SD を求める計算もこの分解による．
+混合率 $1/2$，等分散 $\sigma^2$ の正規混合の密度が二峰になるのは $|\mu_1-\mu_2|>2\sigma$ のときである（中点 $\xi=(\mu_1+\mu_2)/2$ で $f'(\xi)=0$ となり，$f''(\xi)>0$ なら $\xi$ は極小）．
+
+\subsection{誤分類・ランダム化回答と境界での最尤推定}\label{subsec:G-rr}
+真の割合 $\pi$ の属性を，誤回答率（偽陰性 $h_1$，偽陽性 $h_2$）のある方法で調べると，「はい」の確率は全確率の公式で $q=(1-h_1)\pi+h_2(1-\pi)$ である（診断検査の感度 $1-h_1$，偽陽性率 $h_2$ と同じ構造：\cref{ch:05}）．
+はいの数 $m\sim\Bin(n,q)$ なので，$q$ の MLE は $m/n$ で，$q$ と $\pi$ が1対1（$1-h_1-h_2\ne0$）なら MLE の不変性から
+$\hat\pi=(m/n-h_2)/(1-h_1-h_2)$．
+\textbf{境界}：$\pi\in[0,1]$ に対応する $q$ の範囲は $[h_2,1-h_1]$（$1-h_1>h_2$ のとき）なので，$m/n$ がこの外にあれば尤度は範囲の端で最大になり，$\hat\pi=0$ または $1$ とする．
+ランダム化回答法（確率 $p$ で「属性あり？」，$1-p$ で「属性なし？」と尋ねる）では $q=p\pi+(1-p)(1-\pi)$，$\hat\pi=\{m/n-(1-p)\}/(2p-1)$，
+$\V[\hat\pi]=q(1-q)/\{n(2p-1)^2\}$ で，$p$ が $1/2$ に近いほどプライバシーは守られるが分散は大きい．
+
+\subsection{離散分布の正確な棄却域と検出力}\label{subsec:G-exact}
+離散分布では，有意水準 $\alpha$ を超えない最大の棄却域を選ぶので，実際の第1種の過誤確率は $\alpha$ より小さくなりうる．
+例：$X\sim\Bin(10,p)$，$H_0:p=1/2$ を $H_1:p>1/2$ に対して $\alpha=0.05$ で検定する．
+$\Prob_0(X\ge9)=11/1024=0.011$，$\Prob_0(X\ge8)=56/1024=0.055>0.05$ なので棄却域は $X\ge9$．
+$p=0.8$ での検出力は $\Prob(X\ge9)=10\times0.8^9\times0.2+0.8^{10}=0.268+0.107=0.376$．
+正規近似（連続修正の有無）で棄却域を決めると，正確な計算と境界が変わることがあるので，問題文の指示に従う．
+
+\subsection{平均への回帰}\label{subsec:G-rtm}
+$(X,Y)$ が平均 $\mu$，分散 $\sigma^2$，相関 $\rho$ の2変量正規なら $\E[Y\mid X=x]=\mu+\rho(x-\mu)$．
+$x$ が平均より高い人を選ぶと，治療しなくても次の測定値は平均 $(1-\rho)(x-\mu)$ だけ下がる．
+真値＋測定誤差のモデル $X=\theta+\varepsilon_1$，$Y=\theta+\varepsilon_2$（$\theta\sim\Normal(\mu,\tau^2)$，$\varepsilon_j\sim\Normal(0,\psi^2)$，独立）では $\rho=\tau^2/(\tau^2+\psi^2)$ で，
+測定誤差が大きいほど回帰は強い．$\theta\mid X$ の分布は正規--正規モデルの事後分布（\cref{sec:17-normal}）と同じ計算である．
+対照群をおけば平均への回帰は両群に同じく働くので，群間比較（\cref{sec:08-ancova}）で取り除ける．
+
+\section{「着手しやすい問題」と「計算量が多い問題」の観察的特徴}\label{sec:G-features}
+9回の問5を，観察できる特徴で比べた．ここで「着手しやすい」は難易度ではなく，最初の数分で解答の見通しが立つかどうかを指す．
+\begin{center}\small
+\begin{tabular}{@{}L{25mm}L{55mm}L{58mm}@{}}
+\toprule
+観点 & 着手しやすい側に見られた特徴 & 計算量が多い側に見られた特徴\\
+\midrule
+式変形の段数 & 1〜3段（代入，標準化，2×2 の逆行列） & 5段以上（正規密度の2回微分，共分散行列の固有分解，経路の全列挙）\\
+数値計算 & 数表1〜2回＋四則演算 & 平方根を含む2次方程式，分数の積和，累乗\\
+誘導 & 公式・係数が問題文にある & 誘導がない，または式変形の一部だけ\\
+小問の独立性 & 後半が前半の結果を使わない & 後半が前半の式を直接使う\\
+落とし穴 & 少ない & 丸めで答えが変わる，場合分け（境界解，符号），厳密性（極値の個数）\\
+記述 & 1〜2文で書ける & 「詳細に述べよ」と長い説明を求める\\
+\bottomrule
+\end{tabular}
+\end{center}
+どの年も\textbf{最初の小問は定義の確認か公式への代入}（2018年はヒント付きの短い証明）であり，末尾は記述・一般化で終わる年が多い．
+したがって問5は，3問目として選び，前半の小問だけで途中点を確保するという使い方も考えられる（解答する3問の選び方と答案の書き方は，当日の問題冊子の指示に従うこと）．
+
+\section{他者の経験（事実と意見の区別）}\label{sec:G-cases}
+本書の改訂にあたり，2026年10月24日〜11月1日に収集された合格体験記・SNS 投稿・GitHub 上の資料の調査記録（\cite{web:others}）を参照した．
+医薬生物学に関する記事は少なく（調査記録では全体で10本前後），以下は個人の申告であって検証されたものではない．
+\begin{center}\small
+\begin{tabular}{@{}L{32mm}L{40mm}L{66mm}@{}}
+\toprule
+事例（年・分野） & 問5の扱い & 結果・本人の評価（区別）\\
+\midrule
+2019年・応用（分野不明） & 選択 & 【申告】基礎的な問5を完答し，他の大問は小問1を拾って優秀成績賞\\
+2023年・医薬 & 「必ず選ぶ」と決めていた & 【申告】モンティ・ホール問題で想定が外れ苦戦（合否の記載なし）\\
+2025年・医薬 & 選択せず（2・3・4） & 【申告】自己採点5割で不合格．【意見】「2問をじっくり解いて問5〔1〕だけ足せば十分だった」\\
+2025年・医薬（2名） & 1名は選択（2・3・5），1名は選択せず（1・2・3） & 【申告】結果の記載なし\\
+年・分野不明（合格者） & 避ける戦略 & 【意見】過去問をジャンル別に分類し，得意な形式で選ぶ\\
+解説ブログ（2014〜2021年の分析） & --- & 【意見】「共通問題は医薬の応用問題より解きやすいものが多い」（根拠は1件のみ）\\
+\bottomrule
+\end{tabular}
+\end{center}
+\paragraph{医薬生物学全体について他者が述べていること}
+\begin{itemize}
+\item 【申告】2025年の医薬では，問2でポアソン分布のガンマ混合（負の二項分布）が出たこと（本書\cref{sec:17-gammapois}），順位和検定が出たことが記録されている．公式問題で確認した内容（\cref{app:D}）と一致する．
+\item 【意見】2025年について「数理統計の力が直接問われた」「数理統計がきちんとできないと解けなくなってきている」という声が複数ある．2024年に医薬で優秀成績賞を得た受験者も「まず統計数理の対策を」と書いている．
+\item 【意見】「迷う場面が3回以上あると時間切れになる」「解けない小問に早く見切りをつければ得点が伸びた」（他分野・数理の受験者）．
+\item 【申告】対策した分野（分割表・ノンパラ・生存）が「どれも出なかった」年（2023年）の記録がある．なお2023年の医薬問2は打ち切りのない指数分布の最尤推定と症例数設計であり（\cref{app:D}），「生存時間が数理寄りの形で出た」という別の受験者の記録と矛盾しない．
+\item 【宣伝・予想】有料教材や講座の目次（MH・SMR，RMST，Fine--Gray，MMRM・LOCF など）や出題予想は，出題実績ではないので本書の改訂の根拠にはしていない．
+\end{itemize}
+
+\section{試験本番の手順（本書の提案）}\label{sec:G-plan}
+以下は過去問の構造と上の事例から本書が提案する手順であり，唯一の正解ではない．過去問演習で自分に合う形に調整する．
+
+\subsection{最初の数分：3問の選び方}
+\begin{enumerate}
+\item \textbf{全5問の〔1〕〔2〕と最終小問だけを読む}（1問1分程度）．問題文の表・式の量にひるまず，「何を求めるか」だけを拾う．
+\item 各問について次の4点を書き込む（問題用紙の余白に記号で）．
+  \begin{itemize}
+  \item[(a)] 既知のテーマか（本書のどの章か）．医薬固有の問1〜4は，準備した分野が出たかどうかで判断できる．
+  \item[(b)] 誘導に乗れるか：与えられた式を見て「尤度を書く」「期待値・分散を計算する」「代入する」のどれかに落とせるか．
+  \item[(c)] 計算量：\cref{sec:G-features}の右列の特徴（長い式変形，2次方程式，全列挙，場合分け）があるか．電卓での数値計算が長い表（多数の層・時点）があるか．
+  \item[(d)] 小問の独立性：前半で詰まっても後半を拾えるか．
+  \end{itemize}
+\item (a)〜(d) で見通しの立つ2問を確定し，3問目は残りから「(b) と (d) が良いもの」を選ぶ．問5もこの基準で他の問と同列に比べる．
+\item 選択に5分以上かけない．迷ったら，途中点を取りやすい（小問が独立で，前半が定義・代入の）問を選ぶ．
+\end{enumerate}
+
+\subsection{医薬固有問題（問1〜4）と問5の比較}
+\begin{center}\small
+\begin{tabular}{@{}L{32mm}L{53mm}L{53mm}@{}}
+\toprule
+観点 & 問1〜4（医薬固有） & 問5（共通）\\
+\midrule
+前提知識 & 医薬固有の手法（生存時間，分割表，診断，メタアナリシス，多重性など）．誘導が付く設問も多い & 確率・推測の基礎で最後まで解ける年が多い\\
+予測しやすさ & 分野が比較的絞られる（生存時間はほぼ毎回，分割表は形を変えて繰り返す） & 9回で同じテーマなし\\
+解釈の小問 & 交絡・非可縮性・競合リスクなど医薬の文脈の知識が要る & 数式をほぼ使わない記述が多い\\
+判断材料 & テーマ名と表の形で数秒で分かる & 〔1〕〔2〕を読めば後半の計算量を見積もれる\\
+\bottomrule
+\end{tabular}
+\end{center}
+\textbf{判断基準の例}：準備した医薬の分野が2問以上出ていれば，それを優先し，3問目を問5を含む残りから選ぶ．
+準備した分野が1問しかなければ，問5の〔1〕〔2〕を読み，(b)(c)(d) が良ければ問5を2問目の候補にする．
+どちらの場合も「問5だから選ぶ／捨てる」と事前に決めつけない．
+
+\subsection{途中点の確保}
+\begin{itemize}
+\item \textbf{定義・モデルを最初に書く}：確率モデル（どの変数がどの分布に従うか），推定対象，帰無仮説を式で書く．これだけで点になる設問が多い．
+\item \textbf{導出は「方針→式→結果」の順}：最後まで計算できなくても，尤度・スコア・分散の式を立てた段階を答案に残す．
+\item \textbf{前の小問の結果が出なくても先へ進む}：「〔2〕の結果を $\hat\theta$ とおくと」と記号で進めれば，後の小問の考え方は採点されうる．
+\item \textbf{数値は途中の値も書く}：重み，期待値，分散などの中間値を表にして書くと，計算ミスがあっても方針の正しさが伝わる．
+\item \textbf{解釈の小問は必ず書く}：医薬では「推定対象の違い」「仮定」「臨床的な意味」を1〜3文で書く設問がほぼ毎回あり，計算が苦手でも得点源になる．
+\end{itemize}
+
+\subsection{90分の時間配分}
+\begin{center}\small
+\begin{tabular}{@{}lL{110mm}@{}}
+\toprule
+時間 & 内容\\
+\midrule
+0〜5分 & 全問の〔1〕〔2〕・最終小問を読み，3問を決める\\
+5〜35分 & 1問目（最も見通しの立つ問）．25分経過で残りの小問の見通しを確認\\
+35〜65分 & 2問目\\
+65〜85分 & 3問目（解ける小問から．時間が足りなければ定義・モデル・方針を書く）\\
+85〜90分 & 見直し：記号の定義，自由度，片側・両側，単位，対数スケールで統合した結果の指数変換\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item 1問に30分を超えそうになったら，その時点で残りの小問は方針だけ書いて次へ進む（他者の申告では，1問に時間をかけすぎたこと・迷う場面が重なったことが失敗の原因として繰り返し挙げられている）．
+\item 3問とも完答を目指すより，2問を確実に仕上げ3問目で途中点を拾う方が安定する，という振り返りもある（【意見】）．自分の演習結果で判断する．
+\item 過去問演習は本番と同じ90分・3問で行い，選択にかかった時間も記録する．
+\end{itemize}
 
 % ===== 99_bib.tex =====
 \backmatter
@@ -5559,6 +6935,18 @@ Gamma--Poisson の事後分布・事後予測分布 & \kakomon{2025}{2}〔3〕�
 \bibitem{agresti2013} Agresti, A. \textit{Categorical Data Analysis}, 3rd ed. Wiley, 2013.
 \bibitem{fitzmaurice2011} Fitzmaurice, G.~M., Laird, N.~M. and Ware, J.~H. \textit{Applied Longitudinal Analysis}, 2nd ed. Wiley, 2011.
 \bibitem{rothman2008} Rothman, K.~J., Greenland, S. and Lash, T.~L. \textit{Modern Epidemiology}, 3rd ed. Lippincott Williams \& Wilkins, 2008.
+
+\item[] \textbf{■ 第2版で追加した手法の原典（書誌情報のみ．本書の式は本文で独立に導出し，数値計算・シミュレーションで確認した）}
+\bibitem{dl1986} DerSimonian, R. and Laird, N. Meta-analysis in clinical trials. \textit{Controlled Clinical Trials}, 7, 177--188, 1986.
+\bibitem{higgins2002} Higgins, J.~P.~T. and Thompson, S.~G. Quantifying heterogeneity in a meta-analysis. \textit{Statistics in Medicine}, 21, 1539--1558, 2002.
+\bibitem{higgins2003} Higgins, J.~P.~T., Thompson, S.~G., Deeks, J.~J. and Altman, D.~G. Measuring inconsistency in meta-analyses. \textit{BMJ}, 327, 557--560, 2003.
+\bibitem{higgins2009} Higgins, J.~P.~T., Thompson, S.~G. and Spiegelhalter, D.~J. A re-evaluation of random-effects meta-analysis. \textit{JRSS A}, 172, 137--159, 2009.
+\bibitem{rbg1986} Robins, J., Breslow, N. and Greenland, S. Estimators of the Mantel--Haenszel variance consistent in both sparse data and large-strata limiting models. \textit{Biometrics}, 42, 311--323, 1986.
+\bibitem{rubin1987} Rubin, D.~B. \textit{Multiple Imputation for Nonresponse in Surveys}. Wiley, 1987.
+
+\item[] \textbf{■ 他者の分析資料（第2版で参照．個人の申告・意見を含む）}
+\bibitem{web:others} 本書の作成者による調査記録「他者分析」（2026年10月24日〜11月1日）．統計検定1級の合格体験記・過去問解説ブログ，X（旧 Twitter）の投稿，GitHub 上の学習リポジトリを収集・要約したもの（ブログ約30本，X 投稿，GitHub リポジトリの日次記録）．
+      付録Gでは，記録に含まれる受験者の申告（選択した大問，自己採点，合否）と意見を区別して引用し，出題予想・販売教材の宣伝は改訂の根拠にしていない．個々の記事の URL は調査記録に記載されている．
 \end{thebibliography}
 
 \end{document}

@@ -1,7 +1,7 @@
 """参照の種類と PDF 上の表記を検査する．"""
 import pathlib, re, collections, fitz
 W = pathlib.Path(__file__).parent
-aux = (W.parent / "build_v2" / "医療統計学参考書_第2版.aux").read_text(encoding="utf-8", errors="replace")
+aux = (W.parent / "build_v2" / "医療統計学参考書.aux").read_text(encoding="utf-8", errors="replace")
 want = {"prop": "meidai", "thm": "teiri", "def": "teigi", "reidai": "reidai", "app": "appendix"}
 bad = collections.Counter(); ok = collections.Counter()
 for lab, typ in re.findall(r"\\newlabel\{([a-z]+:[^@}]*)@cref\}\{\{\[([a-z]+)\]", aux):
@@ -9,9 +9,9 @@ for lab, typ in re.findall(r"\\newlabel\{([a-z]+:[^@}]*)@cref\}\{\{\[([a-z]+)\]"
     if pre in want:
         (ok if typ == want[pre] else bad)[(pre, typ)] += 1
 print("ok:", dict(ok)); print("BAD:", dict(bad))
-toc = (W.parent / "build_v2" / "医療統計学参考書_第2版.toc").read_text(encoding="utf-8", errors="replace")
+toc = (W.parent / "build_v2" / "医療統計学参考書.toc").read_text(encoding="utf-8", errors="replace")
 print("toc 参考文献:", toc.count("参考文献"))
-d = fitz.open(W.parent / "build_v2" / "医療統計学参考書_第2版.pdf")
+d = fitz.open(W.parent / "build_v2" / "医療統計学参考書.pdf")
 txt = "\n".join(p.get_text() for p in d)
 for pat in [r"第\s*[A-G]\s*章", r"付録\s*[A-G]"]:
     print(pat, len(re.findall(pat, txt)))

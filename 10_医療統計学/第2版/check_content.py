@@ -160,7 +160,7 @@ for name in ORDER:
             report("hatten", "90_appendix.tex", 0, f"{name} の発展 '{t}' が付録Aに出ている")
 
 # ---------- 5. PDF に LaTeX コマンド名が漏れていないか（ビルド後のみ） ----------
-pdf = PARTS.parent / "build" / "医療統計学参考書.pdf"
+pdf = PARTS.parent.parent / "build_v2" / "医療統計学参考書.pdf"
 if pdf.exists():
     import fitz
     LEAK = re.compile(r"(?<![A-Za-z])(mbox|cref|textbf|frac|mathbf|kakomon|Hissu|Hinshutsu|Youchui|Hatten"
