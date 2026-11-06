@@ -1,0 +1,53 @@
+\backmatter
+\chapter*{直前確認：公式一覧}
+\addcontentsline{toc}{chapter}{直前確認：公式一覧}
+\markboth{直前確認：公式一覧}{直前確認：公式一覧}
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{@{}cL{40mm}L{108mm}@{}}
+\toprule
+章 & テーマ & 式・要点\\
+\midrule
+\endfirsthead
+\toprule
+章 & テーマ & 式・要点\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1 & ハザード & $h=f/S=-(\log S)'$，$H=-\log S$，$S=e^{-H}$，$f=hS$．指数：中央値 $\log2/\lambda$\\
+ & 打ち切り尤度 & $\prod f^{\delta}S^{1-\delta}=\prod h^{\delta}S$（イベントは密度，打ち切りは生存関数）\\
+ & 指数モデル & $\hat\lambda=d/W$，$I=d/\lambda^2$，$\V[\log\hat\lambda]\approx1/d$，$Z=\log(\hat\lambda_1/\hat\lambda_2)/\sqrt{1/d_1+1/d_2}$\\
+ & 必要イベント数 & 各群 $r=2(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$\\
+\midrule
+2 & ログランク & $E_{1j}=d_jn_{1j}/n_j$，$V_j=d_jn_{1j}n_{0j}(n_j-d_j)/\{n_j^2(n_j-1)\}$（$d_j=1$ で $n_{1j}n_{0j}/n_j^2$），$\chi^2=(O_1-E_1)^2/V$，自由度1\\
+\midrule
+3 & Cox & $h_0(t)e^{\beta x}$，HR $=e^\beta$ 一定，$S=S_0^{e^{\beta x}}$，$\log(-\log S)=\log H_0+\beta x$\\
+ & 部分尤度 & $\prod_je^{\beta x_{(j)}}/\sum_{R_j}e^{\beta x_l}$．2群：$e^{\beta x_{(j)}}/\{n_{0j}+n_{1j}e^\beta\}$．$\beta=0$ のスコア検定＝ログランク\\
+ & 理論 & $H(T)\sim\Ex(1)$，$\log H(T)$ は極値分布 $1-e^{-e^x}$，乱数 $T=H_0^{-1}(-e^{-\beta x}\log V)$\\
+\midrule
+4 & KM & $\prod(1-d_j/n_j)$，同時点はイベント先，中央値は $\hat S\le0.5$ の最小 $t$\\
+ & Greenwood・NA & $\hat S^2\sum d_j/\{n_j(n_j-d_j)\}$．$\tilde S=e^{-\sum d_j/n_j}\ge\hat S$（$e^{-x}\ge1-x$）\\
+\midrule
+5 & 競合リスク & $\lambda_j=f_j/S$，$\lambda=\sum\lambda_j$，$F_j=\int_0^t\lambda_jS$，$F_j(\infty)=\Prob(J=j)$\\
+ & CIF 推定 & $\hat F_j=\sum\hat S(t^-)d_{ji}/n_i$（$\hat S$ は全イベントの KM），$\hat S+\sum\hat F_j=1$．$1-\mathrm{KM}$ は過大\\
+ & 原因別 Cox & $\beta$ は原因別ハザードへの効果．CIF への効果ではない（Fine--Gray）\\
+\midrule
+6 & McNemar & $W=(n_{12}-n_{21})^2/(n_{12}+n_{21})\sim\chi^2_1$，$=z^2$，$n_{12}\mid s\sim\Bin(s,1/2)$\\
+ & 差の分散 & $\V[\hat\delta]=\{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2\}/n$．LRT は不一致セルだけ，自由度1．条件付き OR $n_{12}/n_{21}$\\
+\midrule
+7 & CMH・Cochran & $E_k=n_{1k}m_{1k}/N_k$，$V_k=n_{1k}n_{0k}m_{1k}m_{0k}/\{N_k^2(N_k-1)\}$（Cochran は $/N_k^3$），$\{\sum(a_k-E_k)\}^2/\sum V_k$\\
+ & 共通 OR & Peto：$\sum(O-E)/\sum V$，分散 $1/\sum V$．MH：$\sum(a_kd_k/N_k)/\sum(b_kc_k/N_k)$．Woolf：$\V[\log\OR]=\sum1/\text{セル}$\\
+ & 解釈 & Simpson・交絡（層変数が曝露とも結果とも関連）．OR は非可縮．均一性は Woolf・Breslow--Day\\
+\midrule
+8 & FWER & 独立：$1-(1-\alpha_0)^m$．Bonferroni $\alpha/m$．Šidák $1-(1-\alpha)^{1/m}$．Holm $\alpha/(m-k+1)$\\
+ & 相関 & $\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)\le2\alpha-\alpha^2$．多対1：$\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$\\
+\midrule
+9 & $\alpha$ 消費 & $\Cov[B(s),B(t)]=\min(s,t)$，$\Corr[Z(s),Z(t)]=\sqrt{s/t}$，消費 $\alpha(t_k)-\alpha(t_{k-1})$\\
+ & 限界値 & $c_1=z_{\alpha(t_1)}$，$\Prob(Z(t_1)\le c_1,Z(t_2)>c_2)=\alpha(t_2)-\alpha(t_1)$\\
+\midrule
+10 & 同等性 & TOST：両方の片側検定を棄却で同等 $\iff$ 90\%CI $\subset(-\Delta,\Delta)$．BE は $\Delta=\log1.25=0.2231$\\
+ & 対数正規 & 中央値 $e^\mu$，平均 $e^{\mu+\sigma^2/2}$，CV $=\sqrt{e^{\sigma^2}-1}$\\
+\end{longtable}
+\end{center}

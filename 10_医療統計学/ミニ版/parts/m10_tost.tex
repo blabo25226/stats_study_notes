@@ -1,0 +1,148 @@
+\chapter{生物学的同等性・TOST}\label{ch:m10}
+
+\begin{priobox}{C}
+\kakomon{2016}{4}〔5〕は同等域 $(0.8,1.25)$ を与えて「信頼係数90\%の信頼区間を求め，生物学的同等性が成立するか検討せよ」と問う．
+「90\%CI が同等域に含まれれば同等」という判定規則と，クロスオーバー試験を対応のある差の $t$ 区間で扱うことは前提である．
+\kakomon{2021}{2}は2つの片側検定（TOST）と，その組合せの第1種の過誤確率が $\alpha$ 以下であることの証明を誘導付きで問う．本編の第13章．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m10-gaiyo}
+後発医薬品などで「標準製剤と効き方が同じ」ことを示すには，「差がない」ことを帰無仮説にするのではなく，「差が許容範囲を超える」ことを帰無仮説にして棄却する．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item 対数変換：AUC などを $X$ として $Y=\log X\sim\Normal(\mu,\sigma^2)$（$X$ は対数正規）．$X$ の中央値は $e^\mu$，平均は $e^{\mu+\sigma^2/2}$，変動係数は $\sqrt{e^{\sigma^2}-1}$．
+\item 中央値（幾何平均）の比：$e^{\mu_T-\mu_R}$．対数スケールの差 $\theta=\mu_T-\mu_R$ を推定する．
+\item TOST：$H_{01}:\theta\le-\Delta$ と $H_{02}:\theta\ge\Delta$ をそれぞれ片側水準 $\alpha$ の $t$ 検定で検定し，\textbf{両方とも棄却}されたら同等．
+      \[T_1=\frac{\bar d+\Delta}{s/\sqrt n}>t_{n-1}(\alpha),\qquad T_2=\frac{\bar d-\Delta}{s/\sqrt n}<-t_{n-1}(\alpha).\]
+\item 同値な信頼区間の規則：$\theta$ の $100(1-2\alpha)\%$ CI $\bar d\pm t_{n-1}(\alpha)\,s/\sqrt n$ が $(-\Delta,\Delta)$ に含まれれば同等．$\alpha=0.05$ なら\textbf{90\%CI}．
+\item 生物学的同等性：$\Delta=\log1.25=0.2231$（$=-\log0.8$），すなわち比の90\%CI が $(0.80,\,1.25)$ に含まれれば同等．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m10-shosai}
+\subsection{対数正規分布の性質（\kakomon{2016}{4}〔1〕〜〔4〕）}
+\begin{itemize}
+\item \textbf{中央値}：$\log$ は単調増加なので $\Prob(X\le e^\mu)=\Prob(Y\le\mu)=1/2$，中央値は $e^\mu$．
+\item \textbf{密度}：$\Prob(X\le x)=\Prob(Y\le\log x)$ を $x$ で微分して $f(x)=\dfrac{1}{x\sqrt{2\pi}\sigma}\exp\Bigl[-\dfrac{(\log x-\mu)^2}{2\sigma^2}\Bigr]$（$x>0$）．
+\item \textbf{平均・分散}：$Y$ の積率母関数 $M_Y(s)=e^{\mu s+\sigma^2s^2/2}$ で $\E[X]=M_Y(1)=e^{\mu+\sigma^2/2}$，$\E[X^2]=M_Y(2)=e^{2\mu+2\sigma^2}$，
+      $\V[X]=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$．
+\item \textbf{変動係数}：$\mathrm{CV}=\sqrt{\V[X]}/\E[X]=\sqrt{e^{\sigma^2}-1}$ は $\mu$ によらない．$\sigma^2=\log(1+\mathrm{CV}^2)$．
+\end{itemize}
+
+\subsection{TOST と第1種の過誤（\kakomon{2021}{2}〔1〕）}
+$Y_1,\dots,Y_n\iid\Normal(\mu,\sigma^2)$，$\sigma^2$ 未知．
+\begin{itemize}
+\item 仮説1（$H_{01}:\mu\le-\Delta$ vs $\mu>-\Delta$）：$T_1=\sqrt n(\bar Y+\Delta)/s$，棄却域 $T_1>t_{n-1}(\alpha)$．
+      $\mu=-\Delta$ で $T_1\sim t_{n-1}$ なので棄却確率はちょうど $\alpha$，$\mu<-\Delta$ ならそれより小さい．
+\item 仮説2（$H_{02}:\mu\ge\Delta$ vs $\mu<\Delta$）：$T_2=\sqrt n(\bar Y-\Delta)/s$，棄却域 $T_2<-t_{n-1}(\alpha)$．
+\end{itemize}
+同等性の帰無仮説は $H_0=H_{01}\cup H_{02}$（どちらかが正しい），対立仮説は $H_A=H_{A1}\cap H_{A2}$（$-\Delta<\mu<\Delta$）．
+$H_0$ を棄却するのは両方を棄却したときなので，$H_0$ が正しく，たとえば $H_{01}$ が正しいなら
+\[
+\Prob(\text{両方棄却})\le\Prob(T_1\text{ が棄却域}\mid H_{01})\le\alpha .
+\]
+$H_{02}$ が正しい場合も同様で，第1種の過誤確率は最大で $\alpha$（Intersection--Union 検定）．
+各片側検定を $\alpha/2$ にする必要はない（多重性の補正は不要）．
+
+\subsection{信頼区間との同値性}
+$T_1>t_{n-1}(\alpha)\iff\bar Y-t_{n-1}(\alpha)s/\sqrt n>-\Delta$（区間の下限が $-\Delta$ より大），
+$T_2<-t_{n-1}(\alpha)\iff\bar Y+t_{n-1}(\alpha)s/\sqrt n<\Delta$（上限が $\Delta$ より小）．
+よって「両方棄却」は「$100(1-2\alpha)\%$ CI $\subset(-\Delta,\Delta)$」と同値．$\alpha=0.05$ なら90\%CI を使う．
+
+\subsection{2剤2期クロスオーバー試験}
+各被験者が両製剤を（時期を変えて）受けるので，被験者ごとの対数値の差 $d_i=\log X_i^T-\log X_i^R$ をとると被験者効果が消える．
+時期効果・持ち越し効果がなければ $d_i\iid\Normal(\mu_T-\mu_R,\sigma_d^2)$ で，対応のある差の $t$ 区間 $\bar d\pm t_{n-1}(0.05)s_d/\sqrt n$ を作り，指数変換して比の90\%CI とする．
+試験でもこの扱いだった．
+\paragraph{非劣性}
+「劣らない」ことだけを示すなら片側：$\theta$ の95\%CI の下限 $>-\Delta$（片側2.5\%）．下限が0も上回れば優越性も主張できる．
+
+\begin{warnbox}
+\begin{itemize}
+\item 優越性検定の非有意を「同等」とみなす．
+\item 同等性の判定に95\%CI を使う（片側5\%の TOST に対応するのは90\%CI）．
+\item 対数変換を忘れる，または対数スケールの CI を指数変換し忘れる．差の向き（$T-R$ か $R-T$ か）を問題文で確認する．
+\item 境界付近で丸めた比で判定を誤る（対数スケールの端点を $\pm0.2231$ と比べると確実）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m10-shutsudai}
+\begin{shutsudai}{\kakomon{2016}{4}：対数正規分布と BE 判定}
+〔1〕中央値 $e^\mu$．〔2〕密度．〔3〕平均・分散（積率母関数は与えられる）．〔4〕CV $=1$ から $\sigma^2=\log2$．
+〔5〕10人のクロスオーバー，$Y_i=\log X_i^A-\log X_i^B$ の $\bar Y=0.1$，$s=0.5$，$t_9(0.05)=1.833$ から $0.1\pm0.29=(-0.19,0.39)$，
+比（A/B）の90\%CI $(0.83,\,1.48)$ は上限が1.25を超え，同等とは言えない．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2021}{2}：TOST と BE}
+〔1-1〕$t$ 区間．〔1-2〕2つの片側検定の統計量と棄却域．〔1-3〕$H_{01}\cup H_{02}$ の検定の第1種の過誤 $\le\alpha$．
+〔2-1〕$\log$（中央値の比）$=\mu_T-\mu_S$．〔2-2〕20人，差の平均 $-0.1$，SD $0.26$，$t_{19}(0.05)=1.729$ から90\%CI $[-0.201,\,0.001]\subset(-0.223,\,0.223)$ で同等．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m10-reidai}
+\begin{reidai}[\kakomon{2021}{2}型：TOST による同等性の判定]\label{reidai:m10-1}
+\begin{enumerate}[label=〔\arabic*〕]
+\item $Y_1,\dots,Y_n$ を $\Normal(\mu,\sigma^2)$ からの標本，$\bar Y$，$s^2$ を標本平均・不偏分散とし，$\Delta>0$ とする．
+      $H_{01}:\mu\le-\Delta$ と $H_{02}:\mu\ge\Delta$ をそれぞれ有意水準 $\alpha$ の片側検定で検定するときの検定統計量と棄却域を示せ．
+\item $H_0:H_{01}\cup H_{02}$ を，「$H_{01}$ と $H_{02}$ がともに棄却されたときに棄却する」検定の第1種の過誤確率が $\alpha$ 以下であることを示せ．
+\item 試験製剤 T と標準製剤 S の2剤2期クロスオーバー試験を16人で行い，AUC の対数の差 $\log X_i^T-\log X_i^S$ の平均が $0.08$，不偏分散が $0.20^2$ であった．
+      $\Delta=\log1.25$，各片側検定の有意水準を5\%として，生物学的同等性を判定せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2016}{4}型：対数正規分布と90\%信頼区間]\label{reidai:m10-2}
+AUC $X$ は対数正規分布に従う（$\log X\sim\Normal(\mu,\sigma^2)$）とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $X$ の中央値と，変動係数 $\mathrm{CV}=\sqrt{\V[X]}/\E[X]$ を $\mu,\sigma^2$ で表せ．$\log X$ の積率母関数 $\E[e^{s\log X}]=e^{\mu s+\sigma^2s^2/2}$ を用いてよい．
+\item 過去の試験から AUC の CV が0.5と見込まれるとき，$\sigma^2$ の見積もりを求めよ．
+\item 12人の2剤2期クロスオーバー試験で，既存薬 A と後発品 B の AUC の対数の差 $Y_i=\log X_i^A-\log X_i^B$ の標本平均が $-0.12$，標本標準偏差が $0.30$ であった．
+      AUC の中央値の比（A/B）の90\%信頼区間を求め，同等域 $(0.8,\,1.25)$ で同等性を判定せよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m10-kaisetsu}
+\begin{kaitou}{reidai:m10-1}
+〔1〕仮説1：$T_1=\dfrac{\sqrt n(\bar Y+\Delta)}{s}$，棄却域 $T_1>t_{n-1}(\alpha)$．
+$\mu=-\Delta$ のとき $T_1\sim t_{n-1}$ で棄却確率は $\alpha$，$\mu<-\Delta$ では $T_1$ の分布が左にずれて棄却確率は $\alpha$ より小さいので，水準 $\alpha$ の検定．\\
+仮説2：$T_2=\dfrac{\sqrt n(\bar Y-\Delta)}{s}$，棄却域 $T_2<-t_{n-1}(\alpha)$．同様に水準 $\alpha$．
+
+〔2〕$R_1,R_2$ をそれぞれの棄却域とする．$H_0=H_{01}\cup H_{02}$ が正しければ，$H_{01}$ と $H_{02}$ の少なくとも一方が正しい．
+$H_{01}$ が正しいとすると
+\[
+\Prob(T_1\in R_1\text{ かつ }T_2\in R_2)\le\Prob(T_1\in R_1)\le\alpha
+\]
+（2つの事象の積の確率は一方の確率以下）．$H_{02}$ が正しい場合も $\Prob(T_2\in R_2)\le\alpha$ で抑えられる．よって第1種の過誤確率は $\alpha$ 以下．
+
+〔3〕$n=16$，$\bar d=0.08$，$s=0.20$，$s/\sqrt n=0.20/4=0.05$．付表より $\Delta=\log1.25=0.2231$，$t_{15}(0.05)=1.753$．
+\[
+T_1=\frac{0.08+0.2231}{0.05}=6.06>1.753,\qquad T_2=\frac{0.08-0.2231}{0.05}=-2.86<-1.753
+\]
+で，両方の帰無仮説を棄却する．よって生物学的に同等と判定する．\\
+同じことを90\%CI で見ると，$0.08\pm1.753\times0.05=0.08\pm0.0877=(-0.0077,\,0.1677)$ は $(-0.2231,\,0.2231)$ に含まれる．
+付表より比（T/S）の90\%CI は $(e^{-0.0077},e^{0.1677})=(0.992,\,1.183)\subset(0.80,\,1.25)$．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m10-2}
+〔1〕$\Prob(X\le e^\mu)=\Prob(\log X\le\mu)=1/2$ より中央値は $e^\mu$．
+$\E[X]=\E[e^{\log X}]=e^{\mu+\sigma^2/2}$（積率母関数で $s=1$），$\E[X^2]=\E[e^{2\log X}]=e^{2\mu+2\sigma^2}$（$s=2$）．
+$\V[X]=e^{2\mu+2\sigma^2}-e^{2\mu+\sigma^2}=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$ なので
+$\mathrm{CV}=\dfrac{e^{\mu+\sigma^2/2}\sqrt{e^{\sigma^2}-1}}{e^{\mu+\sigma^2/2}}=\sqrt{e^{\sigma^2}-1}$．
+
+〔2〕$\sqrt{e^{\sigma^2}-1}=0.5$ より $e^{\sigma^2}=1.25$，付表より $\sigma^2=\log1.25=0.2231$．
+
+〔3〕$s/\sqrt{12}=0.30/3.464=0.0866$，$t$ 分布表より $t_{11}(0.05)=1.796$ で，$1.796\times0.0866=0.1555$．
+$\mu_A-\mu_B$ の90\%CI は $-0.12\pm0.1555=(-0.276,\,0.036)$．
+中央値の比は $e^{\mu_A-\mu_B}$ なので，付表より比の90\%CI は $(e^{-0.276},e^{0.036})=(0.759,\,1.037)$．\\
+下限 $0.759$ が $0.8$ を下回る（対数スケールでも $-0.276<-0.2231$）ので，同等域に含まれず，生物学的同等性は成り立つとは言えない．
+点推定 $e^{-0.12}$ は1に近いが，ばらつきが大きく人数が少ないために区間が広く，同等を示せなかった．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 対数正規：中央値 $e^\mu$，平均 $e^{\mu+\sigma^2/2}$，CV $=\sqrt{e^{\sigma^2}-1}$．比の推定は対数の差を指数変換．
+\item TOST：$H_{01}:\theta\le-\Delta$，$H_{02}:\theta\ge\Delta$ を各片側 $\alpha$ で検定し両方棄却で同等．第1種の過誤 $\le\alpha$（IUT）．
+\item $\iff$ $100(1-2\alpha)\%$ CI $\subset(-\Delta,\Delta)$．BE は90\%CI が $(0.80,1.25)$ に含まれるか（$\Delta=\log1.25=0.2231$）．
+\end{itemize}
+\end{summarybox}

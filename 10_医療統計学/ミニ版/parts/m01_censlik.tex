@@ -1,0 +1,236 @@
+\part*{優先度A：知識がないと解けない}
+\addcontentsline{toc}{part}{優先度A：知識がないと解けない}
+
+\chapter{打ち切りを含む尤度}\label{ch:m01}
+
+\begin{priobox}{A}
+\kakomon{2018}{1}〔2〕は「打ち切りのある尤度関数を示せ」とだけ問い，尤度の組み立て方 $\prod f^{\delta}S^{1-\delta}$ は与えられない．
+\kakomon{2019}{1}〔5〕も尤度なしに「$\lambda$ の最尤推定値を求めよ」と問う．
+この形を知らなければ最初の1行が書けず，後続の MLE・Fisher 情報量・デルタ法・必要イベント数もすべて落とす．
+本章はハザードの基本関係式もまとめる（第2〜5章で使う）．本編の第9章9.2節，第10章10.2節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m01-gaiyo}
+被験者 $i$ のイベントまでの時間を $T_i$，打ち切り時間を $C_i$ とすると，観測されるのは
+\[
+Y_i=\min(T_i,C_i),\qquad \delta_i=\ind(T_i\le C_i)\quad(1\text{：イベント},\ 0\text{：打ち切り})
+\]
+である．打ち切り例 $(Y_i,\delta_i=0)$ は「$T_i>Y_i$」という情報しか持たない．
+これを尤度に正しく入れるのが本章の内容である．
+
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item ハザードの関係：$h(t)=\dfrac{f(t)}{S(t)}=-\dfrac{\dd}{\dd t}\log S(t)$，\quad $H(t)=\int_0^th(u)\dd u=-\log S(t)$，\quad $S=e^{-H}$，\quad $f=hS$．
+\item 打ち切りを含む尤度：
+\[
+L(\theta)=\prod_{i=1}^nf(t_i;\theta)^{\delta_i}S(t_i;\theta)^{1-\delta_i}=\prod_{i=1}^nh(t_i;\theta)^{\delta_i}S(t_i;\theta).
+\]
+\item 指数モデル $h(t)=\lambda$：イベント数 $d=\sum\delta_i$，総観察時間 $W=\sum t_i$（打ち切り例の時間も含める）として
+\[
+\log L=d\log\lambda-\lambda W,\qquad \hat\lambda=\frac dW,\qquad I(\lambda)=\frac{d}{\lambda^2},\qquad \V[\log\hat\lambda]\approx\frac1d .
+\]
+\item 2群：$Z=\dfrac{\log\hat\lambda_1-\log\hat\lambda_2}{\sqrt{1/d_1+1/d_2}}$，\quad 必要イベント数（各群）$r=\dfrac{2(z_{\alpha/2}+z_\beta)^2}{(\log\lambda_1-\log\lambda_2)^2}$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m01-shosai}
+\subsection{ハザードの関係式}\label{subsec:m01-hazard}
+\begin{teigi}[ハザード関数]\label{def:m01-hazard}
+$T\ge0$ を密度 $f$，分布関数 $F$ の連続な確率変数とし，$S(t)=\Prob(T>t)=1-F(t)$ とする．
+\[
+h(t)=\lim_{\Delta\to0}\frac{\Prob(t\le T<t+\Delta\mid T\ge t)}{\Delta},\qquad H(t)=\int_0^th(u)\,\dd u .
+\]
+\end{teigi}
+\begin{teiri}[基本関係式]\label[teiri]{thm:m01-rel}
+$h=f/S$，$H=-\log S$，$S=e^{-H}$，$f=hS$．
+\end{teiri}
+\begin{proof}
+$\{t\le T<t+\Delta\}\subset\{T\ge t\}$ なので条件付き確率は $\Prob(t\le T<t+\Delta)/S(t)$ で（$T$ は連続なので $\Prob(T\ge t)=S(t)$），
+$\Delta$ で割って $\Delta\to0$ とすると $h(t)=f(t)/S(t)$．
+$f=F'=-S'$ より $h=-S'/S=-(\log S)'$．$S(0)=1$ なので $\int_0^th=-\log S(t)+\log S(0)=-\log S(t)$．
+\end{proof}
+ハザードは「$t$ まで生存した人が次の瞬間にイベントを起こす率」で，確率ではない（1を超えうる．単位は時間$^{-1}$）．
+指数分布 $S(t)=e^{-\lambda t}$ ならハザードは一定値 $\lambda$，中央生存時間は $S(t)=1/2$ を解いて $\log2/\lambda$，平均は $1/\lambda$．
+
+\subsection{打ち切りを含む尤度の導出}\label{subsec:m01-lik}
+打ち切り時間 $C$ が $T$ と独立で，密度 $g$，生存関数 $G(t)=\Prob(C>t)$ をもち，$g,G$ は $T$ の母数 $\theta$ を含まないとする（\emphx{独立で無情報な打ち切り}）．
+観測 $(Y,\delta)$ の分布は
+\begin{align*}
+\Prob(t\le Y<t+\dd t,\ \delta=1)&=\Prob(t\le T<t+\dd t,\ C\ge T)\approx f(t)G(t)\,\dd t,\\
+\Prob(t\le Y<t+\dd t,\ \delta=0)&=\Prob(t\le C<t+\dd t,\ T>C)\approx g(t)S(t)\,\dd t
+\end{align*}
+（独立性により同時確率が積になる）．したがって $n$ 人の尤度は
+\[
+\prod_i\{f(t_i)G(t_i)\}^{\delta_i}\{g(t_i)S(t_i)\}^{1-\delta_i}
+=\underbrace{\prod_if(t_i)^{\delta_i}S(t_i)^{1-\delta_i}}_{\theta\text{ を含む}}\ \times\ \underbrace{\prod_iG(t_i)^{\delta_i}g(t_i)^{1-\delta_i}}_{\theta\text{ を含まない}}
+\]
+で，$\theta$ について最大化するときは第2の因子を無視してよい．これが概要の式である．
+\begin{itemize}
+\item イベント例は「$t_i$ で起きた」ので密度 $f(t_i)$，打ち切り例は「$t_i$ より後に起きる」ので生存関数 $S(t_i)$ を寄与する．
+\item $f=hS$ を代入すると $f^{\delta}S^{1-\delta}=h^{\delta}S$．全員が $S(t_i)$ を寄与し，イベント例だけが $h(t_i)$ を追加で掛ける形になる．
+\end{itemize}
+
+\subsection{指数モデルの最尤推定}\label{subsec:m01-exp}
+\begin{meidai}[指数モデルの MLE と Fisher 情報量]\label[meidai]{prop:m01-exp}
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{確率モデル}：$T_1,\dots,T_n\iid\Ex(\lambda)$（$\lambda>0$ 未知），打ち切りは独立で無情報．観測は $(t_i,\delta_i)$．
+\item \textbf{確率関数}：$f(t;\lambda)=\lambda e^{-\lambda t}$，$S(t;\lambda)=e^{-\lambda t}$（$t\ge0$）．
+\item \textbf{尤度}：$L(\lambda)=\prod_i(\lambda e^{-\lambda t_i})^{\delta_i}(e^{-\lambda t_i})^{1-\delta_i}=\prod_i\lambda^{\delta_i}e^{-\lambda t_i}=\lambda^de^{-\lambda W}$．
+\item \textbf{対数尤度とスコア}：$\ell(\lambda)=d\log\lambda-\lambda W$，\quad $\ell'(\lambda)=\dfrac d\lambda-W$．
+\item \textbf{最大化}：$\ell'=0$ より $\lambda=d/W$．$\ell''(\lambda)=-d/\lambda^2<0$（$d\ge1$）なので $\ell$ は狭義凹で，これが最大点．
+\item \textbf{推定量}：$\hat\lambda=\sum_i\delta_i\big/\sum_iY_i$．観測情報量は $-\ell''(\lambda)=d/\lambda^2$．
+\end{enumerate}
+\end{meidai}
+\begin{itemize}
+\item $\hat\lambda$ は「イベント数/人時間」，すなわち発生率そのものである．打ち切りがなければ $d=n$，$\hat\lambda=1/\bar T$，$I_n(\lambda)=n/\lambda^2$（\kakomon{2023}{2}）．
+\item \Youchui $d$ は確率変数なので，期待情報量は $\E[d]/\lambda^2$ で，$\E[d]$ は打ち切り分布に依存する．
+      過去問（\kakomon{2018}{1}〔3〕）の解答は $I(\lambda)=\delta/\lambda^2$（$\delta=\sum\delta_i$）と書いており，観測値で答えてよい．
+\item 尤度 $\lambda^de^{-\lambda W}$ は，平均 $\lambda W$ のポアソン分布で $d$ を観測したときの尤度と $\lambda$ について同じ形である．
+\end{itemize}
+
+\subsection{デルタ法と2群比較}\label{subsec:m01-delta}
+$\hat\lambda$ の漸近分散は $1/I(\lambda)=\lambda^2/d$．$g(\lambda)=\log\lambda$ にデルタ法を使うと $g'(\lambda)=1/\lambda$ なので
+\[
+\V[\log\hat\lambda]\approx\Bigl(\frac1\lambda\Bigr)^2\cdot\frac{\lambda^2}{d}=\frac1d .
+\]
+独立な2群では分散を足して $\V[\log\hat\lambda_1-\log\hat\lambda_2]\approx1/d_1+1/d_2$．
+$H_0:\lambda_1=\lambda_2$ の検定統計量は
+\[
+Z=\frac{\log\hat\lambda_1-\log\hat\lambda_2}{\sqrt{1/d_1+1/d_2}}\ \text{（$H_0$ の下で漸近的に $\Normal(0,1)$）},
+\]
+ハザード比 $\lambda_1/\lambda_2$ の95\%信頼区間は $\exp\{\log(\hat\lambda_1/\hat\lambda_2)\pm1.96\sqrt{1/d_1+1/d_2}\}$．
+\textbf{対数をとった後の分散がイベント数だけで決まる}ことが要点である．生存時間試験の精度は症例数ではなくイベント数で決まる．
+
+\subsection{必要イベント数}\label{subsec:m01-events}
+各群のイベント数を $r$ とし，$\mu=\log\lambda_1-\log\lambda_2$ とおく．対立仮説の下で $Z$ はおよそ $\Normal\bigl(\mu/\sqrt{2/r},\,1\bigr)$ に従う．
+両側有意水準 $\alpha$ の検出力は，反対側の棄却域の確率（ほぼ0）を無視すると
+\[
+\Prob\Bigl(|Z|>z_{\alpha/2}\Bigr)\approx\Phi\Bigl(\frac{|\mu|}{\sqrt{2/r}}-z_{\alpha/2}\Bigr).
+\]
+これが $1-\beta$ になる条件は $\dfrac{|\mu|}{\sqrt{2/r}}-z_{\alpha/2}=z_\beta$（$\Phi(z_\beta)=1-\beta$）で，$r$ について解くと概要の式を得る．
+
+\begin{warnbox}
+\begin{itemize}
+\item 打ち切り例の寄与を $f(t_i)$ とする，または打ち切り例を除いて尤度を作る（正しくは $S(t_i)$）．
+\item 総観察時間 $W$ に打ち切り例の観察時間を入れ忘れる（\kakomon{2019}{1} では $W=10+13+18+19+23=83$）．
+\item $\V[\log\hat\lambda]$ を $1/n$（症例数）とする（正しくは $1/d$，イベント数）．
+\item 必要イベント数 $r$ を両群合計と取り違える（式の $r$ は各群）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m01-shutsudai}
+\begin{shutsudai}{\kakomon{2018}{1}：指数生存モデル（打ち切りあり）}
+\begin{itemize}
+\item 〔1〕打ち切りなしの尤度 → $\prod\lambda e^{-\lambda t_i}$．
+\item 〔2〕ランダムな右側打ち切りがある尤度 → $\prod f^{\delta_i}S^{1-\delta_i}=\prod\lambda^{\delta_i}e^{-\lambda t_i}$．\textbf{形が与えられないので知識が必要．}
+\item 〔3〕MLE と Fisher 情報量 → $\hat\lambda=\delta/\sum t_i$，$I(\lambda)=\delta/\lambda^2$．
+\item 〔4〕デルタ法で $\V[\log\hat\lambda_1-\log\hat\lambda_2]=1/d_1+1/d_2$ と $Z$ 統計量（漸近分散 $1/I$ は与えられる）．
+\item 〔5〕必要イベント数の式を示す（結果の式は与えられ，導出を問う）．
+\end{itemize}
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2019}{1}〔5〕：KM と同じデータで指数モデルの MLE}
+5例（イベント3，打ち切り2）から $\hat\lambda=3/83=0.036$．尤度は与えられない．
+この $\hat\lambda$ を境界内平均生存時間（RMST）の式に代入する設問が続く（RMST は本編第9章9.7節）．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2023}{2}：単群の指数試験（打ち切りなし）}
+尤度・Fisher 情報量 $n/\lambda^2$・Wald 型 $Z$ による症例数．こちらは誘導付き．打ち切りがないので本章の特別な場合．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m01-reidai}
+\begin{reidai}[\kakomon{2018}{1}型：指数モデルの尤度から必要イベント数まで]\label{reidai:m01-1}
+生存時間 $T$ はハザード $\lambda$ の指数分布に従い，$n$ 人の観測を $(t_i,\delta_i)$（$\delta_i=1$：イベント，$0$：打ち切り）とする．打ち切りは独立で無情報とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 打ち切りがない場合の尤度関数を示せ．
+\item 打ち切りがある場合の尤度関数を，打ち切り例がどのような情報を与えるかに触れて示せ．
+\item $\lambda$ の最尤推定量と，観測された Fisher 情報量を求めよ．イベント数を $d=\sum_i\delta_i$ とする．
+\item 2群（群1・群2，ハザード $\lambda_1,\lambda_2$，イベント数 $d_1,d_2$）について，$\hat\lambda_k$ の漸近分散が $1/I(\lambda_k)$ であることを用いて，
+      デルタ法で $\log\hat\lambda_1-\log\hat\lambda_2$ の漸近分散を求め，$H_0:\lambda_1=\lambda_2$ の $Z$ 統計量を示せ．
+\item 1対1割付で各群のイベント数を $r$ とする．両側有意水準5\%，検出力80\%でハザード比 $\lambda_1/\lambda_2=0.7$ を検出するのに必要な $r$ を求めよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[数値計算：MLE・信頼区間・2群の比較]\label{reidai:m01-2}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 6人の観察時間（月，$+$ は打ち切り）が $3,\ 6^+,\ 8,\ 12,\ 15^+,\ 16$ であった．指数モデルを仮定し，
+      $\hat\lambda$，中央生存時間の推定値，$\lambda$ の95\%信頼区間（$\log\hat\lambda$ の正規近似による）を求めよ．
+\item ある試験で，群1は総観察時間600人月でイベント30件，群2は500人月で45件であった．
+      ハザード比 $\lambda_1/\lambda_2$ の推定値，$Z$ 検定（両側5\%），ハザード比の95\%信頼区間を求めよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m01-kaisetsu}
+\begin{kaitou}{reidai:m01-1}
+〔1〕各人の寄与は密度 $f(t_i)=\lambda e^{-\lambda t_i}$ なので
+$L(\lambda)=\prod_{i=1}^n\lambda e^{-\lambda t_i}=\lambda^n\exp\bigl(-\lambda\sum_it_i\bigr)$．
+
+〔2〕イベント例（$\delta_i=1$）は「時点 $t_i$ でイベントが起きた」ので密度 $f(t_i)$ を，
+打ち切り例（$\delta_i=0$）は「$t_i$ まではイベントが起きていない（$T_i>t_i$）」ことだけがわかるので生存関数 $S(t_i)=e^{-\lambda t_i}$ を寄与する．
+独立で無情報な打ち切りの下では打ち切り時間の分布の部分は $\lambda$ を含まないので除いてよく，
+\[
+L(\lambda)=\prod_{i=1}^n f(t_i)^{\delta_i}S(t_i)^{1-\delta_i}=\prod_{i=1}^n(\lambda e^{-\lambda t_i})^{\delta_i}(e^{-\lambda t_i})^{1-\delta_i}=\prod_{i=1}^n\lambda^{\delta_i}e^{-\lambda t_i}=\lambda^{d}\exp\Bigl(-\lambda\sum_it_i\Bigr).
+\]
+
+〔3〕$W=\sum_it_i$ とおく．対数尤度とスコアは
+\[
+\ell(\lambda)=d\log\lambda-\lambda W,\qquad \ell'(\lambda)=\frac d\lambda-W .
+\]
+$\ell'(\lambda)=0$ を解いて $\lambda=d/W$．$\ell''(\lambda)=-d/\lambda^2<0$ なので最大点である．よって
+\[
+\hat\lambda=\frac{\sum_i\delta_i}{\sum_it_i},\qquad I(\lambda)=-\ell''(\lambda)=\frac{d}{\lambda^2}.
+\]
+
+〔4〕$\V[\hat\lambda_k]\approx1/I(\lambda_k)=\lambda_k^2/d_k$．$g(x)=\log x$，$g'(x)=1/x$ のデルタ法で
+$\V[\log\hat\lambda_k]\approx(1/\lambda_k)^2\cdot\lambda_k^2/d_k=1/d_k$．2群は独立なので
+\[
+\V[\log\hat\lambda_1-\log\hat\lambda_2]\approx\frac1{d_1}+\frac1{d_2},\qquad
+Z=\frac{\log\hat\lambda_1-\log\hat\lambda_2}{\sqrt{1/d_1+1/d_2}}
+\]
+で，$H_0$ の下で $Z$ は漸近的に $\Normal(0,1)$ に従う．
+
+〔5〕$d_1=d_2=r$ なら分母は $\sqrt{2/r}$．$\mu=\log\lambda_1-\log\lambda_2$ とすると，対立仮説の下で $Z\approx\Normal(\mu/\sqrt{2/r},1)$ で，
+検出力 $\approx\Phi\bigl(|\mu|/\sqrt{2/r}-z_{0.025}\bigr)=0.80$ より $|\mu|/\sqrt{2/r}=z_{0.025}+z_{0.20}$．
+正規分布表より $z_{0.025}=1.96$，$z_{0.20}=0.84$，対数表より $\log0.7=-0.3567$ なので，$r$ について解くと
+\[
+r=\frac{2(z_{0.025}+z_{0.20})^2}{\mu^2}=\frac{2\times(1.96+0.84)^2}{(-0.3567)^2}=\frac{2\times7.84}{0.12723}=\frac{15.68}{0.12723}=123.2 .
+\]
+切り上げて各群124イベント（両群で248イベント）．症例数ではなくイベント数であることに注意する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m01-2}
+〔1〕イベントは $3,8,12,16$ の4件で $d=4$．総観察時間は打ち切り例も含めて $W=3+6+8+12+15+16=60$ か月．
+\[
+\hat\lambda=\frac{4}{60}=\frac1{15}=0.0667\ /\text{月},\qquad
+\text{中央生存時間}=\frac{\log2}{\hat\lambda}=15\times0.6931=10.4\ \text{か月}
+\]
+（付表より $\log2=0.6931$）．
+$\SE(\log\hat\lambda)=1/\sqrt d=1/2=0.5$ なので $\log\lambda$ の95\%CI は $\log\hat\lambda\pm1.96\times0.5=\log\hat\lambda\pm0.98$．
+付表より $e^{-0.98}=0.3753$，$e^{0.98}=2.6645$ で，指数変換して
+\[
+\bigl(\hat\lambda e^{-0.98},\ \hat\lambda e^{0.98}\bigr)=(0.0667\times0.3753,\ 0.0667\times2.6645)=(0.0250,\ 0.178)\ /\text{月}.
+\]
+区間は $\hat\lambda$ に関して非対称で，イベントが4件しかないので幅が広い．
+
+〔2〕$\hat\lambda_1=30/600=0.05$，$\hat\lambda_2=45/500=0.09$（/人月）．$\widehat{\HR}=0.05/0.09=5/9=0.556$．
+\begin{align*}
+\log\widehat{\HR}&=\log5-\log9=1.6094-2.1972=-0.5878\quad\text{（付表より）},\\
+\SE&=\sqrt{\frac1{30}+\frac1{45}}=\sqrt{0.03333+0.02222}=\sqrt{0.05556}=0.2357 .
+\end{align*}
+$Z=-0.5878/0.2357=-2.49$．$|Z|>z_{0.025}=1.96$ なので有意水準5\%で $H_0:\lambda_1=\lambda_2$ を棄却する
+（正規分布表より $\Prob(Z>2.49)=0.0064$，両側 $P\approx0.013$）．\\
+95\%CI：$-0.5878\pm1.96\times0.2357=-0.5878\pm0.4620=(-1.050,\,-0.126)$ → 付表より $(e^{-1.050},e^{-0.126})=(0.350,\,0.882)$．\\
+解釈：群1のハザードは群2の約0.56倍で，区間は1を含まない．群1のほうがイベントの発生率が低い．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $h=f/S$，$H=-\log S$，$S=e^{-H}$，$f=hS$．
+\item 打ち切り尤度 $\prod f^{\delta}S^{1-\delta}=\prod h^{\delta}S$．イベントは密度，打ち切りは生存関数．独立で無情報な打ち切りが前提．
+\item 指数：$\hat\lambda=d/W$（$W$ は打ち切り例も含む総観察時間），$I=d/\lambda^2$，$\V[\log\hat\lambda]\approx1/d$．
+\item 2群：$\V[\log\widehat{\HR}]\approx1/d_1+1/d_2$，必要イベント数（各群）$2(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$．
+\end{itemize}
+\end{summarybox}

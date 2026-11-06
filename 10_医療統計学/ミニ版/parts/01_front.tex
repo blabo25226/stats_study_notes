@@ -1,0 +1,144 @@
+\begin{document}
+
+% ------------------------------------------------------------
+% 表紙
+% ------------------------------------------------------------
+\begin{titlepage}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[bkblue] (current page.north west) rectangle ([yshift=-92mm]current page.north east);
+  \fill[bkorange] ([yshift=-92mm]current page.north west) rectangle ([yshift=-95mm]current page.north east);
+\end{tikzpicture}
+\vspace*{8mm}
+\begin{center}
+{\color{white}\large 統計検定1級　統計応用（医薬生物学）対策\par}
+\vspace{10mm}
+{\color{white}\fontsize{30}{40}\selectfont\bfseries 医療統計学参考書\par}
+\vspace{4mm}
+{\color{white}\fontsize{20}{28}\selectfont\bfseries ミニ版\par}
+\vspace{4mm}
+{\color{white}\large 知識がないと解けない10テーマだけを，過去問の類題で\par}
+\end{center}
+\vspace{36mm}
+\begin{center}\small
+\begin{tabular}{@{}lL{110mm}@{}}
+\toprule
+優先度 & テーマ\\
+\midrule
+\textbf{A} & 打ち切りを含む尤度，ログランク検定，Cox 部分尤度\\
+\textbf{B} & Kaplan--Meier 推定，競合リスク・CIF，McNemar 検定，層別 Cochran・CMH 検定\\
+\textbf{C} & FWER・Bonferroni，$\alpha$ 消費関数，生物学的同等性・TOST\\
+\bottomrule
+\end{tabular}
+\end{center}
+\vfill
+\begin{center}
+{\small 学習用電子参考書　ミニ版（2026年11月）　本編：医療統計学参考書 第2版}
+\end{center}
+\end{titlepage}
+
+\frontmatter
+\pagenumbering{roman}
+
+% ------------------------------------------------------------
+\chapter*{はじめに}
+\addcontentsline{toc}{chapter}{はじめに}
+\markboth{はじめに}{はじめに}
+
+本書は，本編『医療統計学参考書 第2版』（188ページ）から，試験直前に読み返すべきテーマを10個に絞ったミニ版である．
+テーマの選び方は「問題文の誘導だけで解けるか」で，過去問9回分（2016--2019，2021--2025年）の問題文を読んで次の3段階に分けた．
+
+\begin{center}\small
+\begin{tabular}{@{}cL{50mm}L{80mm}@{}}
+\toprule
+優先度 & 意味 & テーマ\\
+\midrule
+\textbf{A} & 知識がないと解けない & 打ち切りを含む尤度（第1章），ログランク検定（第2章），Cox 部分尤度（第3章）\\
+\textbf{B} & 問題文を読めば解けるが，知識がないと時間がかかる・詰まりやすい & Kaplan--Meier 推定（第4章），競合リスク・CIF（第5章），McNemar 検定（第6章），層別 Cochran・CMH 検定（第7章）\\
+\textbf{C} & 保険（出たときに落とさないため） & FWER・Bonferroni（第8章），$\alpha$ 消費関数（第9章），生物学的同等性・TOST（第10章）\\
+\bottomrule
+\end{tabular}
+\end{center}
+ここに挙げなかったテーマ（メタアナリシス，多重補完，ロジスティック回帰，ROC など）は，過去問では定義・式が問題文で与えられることが多く，誘導に従えば解けると判断して除いた．
+必要になったら本編を参照すること．
+
+\paragraph{章の順序}
+優先度の順（A→B→C）に並べた．ただし A の中は，後の章で前の章の結果を使うように
+「打ち切りを含む尤度 → ログランク検定 → Cox 部分尤度」の順にした（Cox 部分尤度の $\beta=0$ でのスコア検定がログランク検定になる）．
+B の中も，Kaplan--Meier（第4章）を競合リスク（第5章）の前に置いた．
+
+\paragraph{各章の構成}
+各章は次の5節からなる．
+\begin{center}\small
+\begin{tabular}{@{}lL{115mm}@{}}
+\toprule
+節 & 内容\\
+\midrule
+概要 & そのテーマで何をするか，覚える式（ボックス）\\
+詳細 & 式の導出，仮定，取り違えやすい点\\
+出題例 & 過去問のどの年・問・設問で，何が問われ，どう答えるか（問題文は転載しない）\\
+例題 & 過去問と同じ構成で，数値と文面を入れ替えた類題\\
+例題の詳しい解説 & 途中式を省略しない解答\\
+\bottomrule
+\end{tabular}
+\end{center}
+例題は過去問の設問の流れをなぞっているので，例題を解けば対応する過去問の解き方を確認できる．
+数値はすべて変えてあり，答えは過去問とは異なる．例題の数値は Python で検算した（\texttt{ミニ版/verify/check\_mini.py}）．
+
+\paragraph{本編との関係}
+各章の内容は本編の該当章（概要の冒頭に記した）を圧縮し，出題例と例題を新しく作ったものである．
+本編の導出のうち，試験に直接必要なものだけを残した．
+
+% ------------------------------------------------------------
+\section*{記法と数値計算}
+\addcontentsline{toc}{section}{記法と数値計算}
+\begin{itemize}
+\item $z_\alpha$ は標準正規分布の上側 $100\alpha\%$ 点（$\Prob(Z>z_\alpha)=\alpha$）．$t_\nu(\alpha)$，$\chi^2_\nu(\alpha)$ も上側点．
+\item $\beta$ は第2種の過誤確率，検出力は $1-\beta$．
+\item 不偏分散 $s^2=\frac1{n-1}\sum(x_i-\bar x)^2$，$s$ はその正の平方根．
+\item 指数分布 $\Ex(\lambda)$ は率（ハザード）$\lambda$ による表記で，密度 $\lambda e^{-\lambda t}$，平均 $1/\lambda$．
+\item $\Normal(\mu,\sigma^2)$ の第2引数は分散．$\log$ は自然対数．
+\item 統計検定1級では関数電卓が使えないが，指数関数・対数と正規・$\chi^2$・$t$・$F$ 分布の表は配られる．
+      そこで例題の問題文にはこれらの値を載せず，試験と同じく付表を引いて解く形にした．
+      解説では四則演算・平方根と付表だけで計算を示し，付表を引いた箇所は「付表より $e^{-0.98}=0.3753$」のように値を明記した．
+\end{itemize}
+
+\begin{warnbox}[打ち切り指示変数の向きは年度で逆]
+\kakomon{2016}{3}，\kakomon{2019}{1} は「1：打ち切り，0：イベント」，\kakomon{2018}{1}，\kakomon{2021}{1} は「0：打ち切り，1：イベント」．
+生存時間の表を読む前に必ず確認する．本書は $\delta_i=1$ をイベント，$\delta_i=0$ を打ち切りとする．
+\end{warnbox}
+
+% ------------------------------------------------------------
+\section*{出題マップ}
+\addcontentsline{toc}{section}{出題マップ}
+過去問で各テーマが問われた年・問（〔 〕は設問番号）．「誘導」は式や手順が問題文で与えられた設問．
+\begin{center}\small
+\begin{tabular}{@{}clL{100mm}@{}}
+\toprule
+章 & テーマ & 出題\\
+\midrule
+1 & 打ち切りを含む尤度 & 2018問1（指数モデルの尤度・MLE・Fisher 情報量・デルタ法・必要イベント数），2019問1〔5〕（$\hat\lambda=3/83$），2023問2（打ち切りなし，誘導）\\
+2 & ログランク検定 & 2016問3〔2〕（$\chi^2=5.62$），2017問2（群逐次デザインの検定統計量として）\\
+3 & Cox 部分尤度 & 2016問3〔3〕（部分尤度の書き下し），2017問1〔4〕〜〔6〕（2重対数表現・極値分布・乱数生成），2022問1（比例ハザード性・$S_0$・HR の CI）\\
+4 & Kaplan--Meier & 2016問3〔1〕，2019問1〔1〕〔2〕（KM 表・Nelson--Aalen との大小），2021問1〔2〕（$1-\hat S$ のグラフ）\\
+5 & 競合リスク・CIF & 2021問1〔3〕〜〔5〕（CIF の表現・推定・$1-\mathrm{KM}$ との比較），2025問3（原因別ハザード・Weibull・原因別 Cox の解釈）\\
+6 & McNemar 検定 & 2018問2（多項分布・差の CI・LRT），2019問3〔2〕（$\Bin(23,0.5)$），2024問1〔2〕〔3〕（$W$ の導出と検定）\\
+7 & 層別 Cochran・CMH & 2017問4（Peto 型の共通 OR），2021問3（Cochran 検定と Simpson），2022問2（マッチドペアの MH 推定量）\\
+8 & FWER・Bonferroni & 2024問4〔1〕〜〔4〕，2025問4（独立・相関ありの FWER，Simes）\\
+9 & $\alpha$ 消費関数 & 2017問2（$\alpha(t)=0.05t^2$，$z_1$，$\Cov[Z(0.4),Z(1)]$，$z_2$ の決め方，解析の追加）\\
+10 & 生物学的同等性・TOST & 2016問4（対数正規・BE の90\%CI），2021問2（TOST・IUT・BE 判定）\\
+\bottomrule
+\end{tabular}
+\end{center}
+生存時間解析（第1〜5章）は9回中8回（2016，2017，2018，2019，2021，2022，2023，2025）出題されている．
+問1に置かれることが多い．
+
+% ------------------------------------------------------------
+\chapter*{目次}
+\markboth{目次}{目次}
+\begin{multicols}{2}\footnotesize\sloppy
+\makeatletter\@starttoc{toc}\makeatother
+\end{multicols}
+
+% \mainmatter は見開き調整で白紙を1ページ入れるため，改ページだけ行う
+\clearpage\makeatletter\@mainmattertrue\makeatother
+\pagenumbering{arabic}

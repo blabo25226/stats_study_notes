@@ -22,3 +22,4 @@ __pycache__/
 
 # LaTeX のビルド出力
 10_医療統計学/build_v2/
+10_医療統計学/build_mini/

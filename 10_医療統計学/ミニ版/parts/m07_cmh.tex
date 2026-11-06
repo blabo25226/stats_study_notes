@@ -1,0 +1,314 @@
+\chapter{層別 Cochran・CMH 検定}\label{ch:m07}
+
+\begin{priobox}{B}
+3回出題（\kakomon{2017}{4}，\kakomon{2021}{3}，\kakomon{2022}{2}）．統計量や推定式は問題文で与えられるか誘導されるが，
+「超幾何分布の期待値・分散」「層ごとの $O-E$ を足してから2乗する」「Peto 型推定が OR が1に近いときの近似である理由」
+「粗 OR と層別 OR の食い違いを交絡・非可縮性で説明する」「均一性の確認方法（Breslow--Day など）」は知識がないと書けない．
+本編の第4章4.7節，第7章7.2〜7.3節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m07-gaiyo}
+交絡因子などで $K$ 個の層に分けた $2\times2$ 表を考える．層 $k$ の表を次のように書く（行和 $n_{1k},n_{0k}$，列和 $m_{1k},m_{0k}$，総数 $N_k$）．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+層 $k$ & イベントあり & イベントなし & 計\\
+\midrule
+曝露あり（新治療） & $a_k$ & $b_k$ & $n_{1k}$\\
+曝露なし（既存治療） & $c_k$ & $d_k$ & $n_{0k}$\\
+\midrule
+計 & $m_{1k}$ & $m_{0k}$ & $N_k$\\
+\bottomrule
+\end{tabular}
+\end{center}
+帰無仮説は $H_0:\psi_1=\dots=\psi_K=1$（どの層でもオッズ比 $\psi_k$ が1）．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item 周辺度数を固定したときの $H_0$ の下の超幾何分布：
+      $E_k=\E[a_k]=\dfrac{n_{1k}m_{1k}}{N_k}$，\quad $V_k=\V[a_k]=\dfrac{n_{1k}n_{0k}m_{1k}m_{0k}}{N_k^2(N_k-1)}$．
+\item CMH 検定：$\chi^2_{\mathrm{CMH}}=\dfrac{\{\sum_k(a_k-E_k)\}^2}{\sum_kV_k}\approx\chi^2_1$．
+\item 層別 Cochran 検定（積二項版．\kakomon{2021}{3}）：分散を $\hat V_k=\dfrac{n_{1k}n_{0k}m_{1k}m_{0k}}{N_k^3}$ にしたもの．$a_k-E_k=\dfrac{n_{0k}a_k-n_{1k}c_k}{N_k}$．
+\item Peto 型の共通対数 OR（\kakomon{2017}{4}）：$\hat\beta=\dfrac{\sum_k(a_k-E_k)}{\sum_kV_k}$，$\V[\hat\beta]\approx\dfrac1{\sum_kV_k}$（OR が1に近いときの近似）．
+\item MH 推定量：$\widehat\OR_{\mathrm{MH}}=\dfrac{\sum_ka_kd_k/N_k}{\sum_kb_kc_k/N_k}$，\quad $\widehat\RR_{\mathrm{MH}}=\dfrac{\sum_ka_kn_{0k}/N_k}{\sum_kc_kn_{1k}/N_k}$．
+      マッチドペアでは $\widehat\OR_{\mathrm{MH}}=$ 不一致ペアの比．
+\item 1つの表の OR の CI：$\V[\log\widehat\OR]\approx\frac1a+\frac1b+\frac1c+\frac1d$（Woolf）．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m07-shosai}
+\subsection{積二項モデルからの Cochran 検定（\kakomon{2021}{3}〔2〕〔3〕）}
+1つの表で $a\sim\Bin(n_1,\pi_1)$，$c\sim\Bin(n_0,\pi_0)$ が独立とする．
+\begin{enumerate}
+\item 積二項尤度 $L(\pi_1,\pi_0)=\binom{n_1}{a}\pi_1^a(1-\pi_1)^{b}\binom{n_0}{c}\pi_0^c(1-\pi_0)^{d}$．
+\item $H_0:\pi_1=\pi_0=\pi$ の下で $\ell(\pi)=(a+c)\log\pi+(b+d)\log(1-\pi)+\text{const}$，
+      $\ell'(\pi)=\frac{a+c}{\pi}-\frac{b+d}{1-\pi}=0$ より $\hat\pi=m_1/N$（$\ell''<0$ で最大）．
+\item $\hat E[a]=n_1\hat\pi=n_1m_1/N$，\quad $a-\hat E[a]=\dfrac{Na-n_1(a+c)}{N}=\dfrac{n_0a-n_1c}{N}$．
+\item $\V[a-\hat E[a]]=\dfrac{n_0^2\V[a]+n_1^2\V[c]}{N^2}=\dfrac{n_0^2n_1+n_1^2n_0}{N^2}\pi(1-\pi)=\dfrac{n_1n_0}{N}\pi(1-\pi)$，
+      $\pi$ に $\hat\pi$ を代入して $\hat V=\dfrac{n_1n_0m_1m_0}{N^3}$．
+\item $X=(a-\hat E[a])^2/\hat V$ は $H_0$ の下で漸近的に $\chi^2_1$（Pearson の $\chi^2$ と一致する）．
+\end{enumerate}
+層ごとの $Y_k=a_k-\hat E[a_k]$ は $H_0$ の下で漸近的に $\Normal(0,\hat V_k)$，層は独立なので $Y=\sum Y_k\sim\Normal(0,\sum\hat V_k)$（正規分布の再生性）．
+よって $X_C=(\sum Y_k)^2/\sum\hat V_k\approx\chi^2_1$ が層別 Cochran 検定．
+条件付き（超幾何）版の CMH 検定とは分散が $N_k/(N_k-1)$ 倍違うだけで，層が大きければほぼ同じ．各層が小さい（ペアなど）ときは CMH を用いる．
+
+\subsection{何を検出するか・交絡の調整}
+各層の $O-E$ を\textbf{足してから2乗する}ので，効果の向きが層間で揃っているときに検出力が高い．向きが逆の層があると打ち消し合う．
+層を併合せずに検定するので，層の変数による交絡を除いた検定になる．
+\paragraph{Simpson のパラドックス（\kakomon{2021}{3}〔4〕）}
+層ごとの関連と併合した表の関連の向きが逆転することがある．
+層変数が治療の割付と関連し（層ごとに新治療の割合が違う），かつ結果とも関連する（層ごとに有効率が違う）とき，その変数は交絡因子で，併合した表は偏る．
+調整した（層別の）解析で解釈する．
+
+\subsection{Peto 型推定量（\kakomon{2017}{4}）}
+共通 OR $\psi=e^\beta$ の下で，周辺度数を与えた $a_k$ の条件付き分布は非心超幾何分布
+\[
+\Prob(a_k=a\mid\text{周辺})\propto\binom{n_{1k}}{a}\binom{n_{0k}}{m_{1k}-a}\psi^{a}
+\]
+で，層ごとのベースラインリスク（局外母数）を含まない．その積（条件付き尤度）の対数を $\beta$ で微分すると
+$U(\beta)=\sum_k(a_k-\E_\beta[a_k])$，$I(\beta)=\sum_k\V_\beta[a_k]$．$\beta=0$ では超幾何分布の $E_k,V_k$ になり
+\begin{itemize}
+\item $U(0)^2/I(0)$ は CMH 検定（条件付き尤度のスコア検定）．
+\item $\beta=0$ から Newton 法で1回だけ更新した $\hat\beta=U(0)/I(0)=\sum(a_k-E_k)/\sum V_k$ が Peto 型推定量．
+      層ごとの $(a_k-E_k)/V_k$ を重み $V_k$ で平均しても同じ式になる（2017年〔3〕の「対数オッズ比の分散の逆数 $=V_k$ を重みにした加重平均」）．
+\end{itemize}
+1回の更新で止めるので，真の OR が1から離れると近似が悪くなる（2017年〔2〕の「真のオッズ比が1に近いときには」の意味）．
+
+\subsection{Mantel--Haenszel 推定量と非可縮性（\kakomon{2022}{2}）}
+積二項モデルで $a_k$ と $d_k$ は独立なので $\E[a_kd_k]/\E[b_kc_k]=\psi_k$．共通 OR の下で $\E[a_kd_k-\psi b_kc_k]=0$ が正確に成り立ち，
+これを $1/N_k$ で重み付けて足した推定方程式を解いたものが $\widehat\OR_{\mathrm{MH}}$ である．
+ゼロセルのある層や，層が多数で各層が小さい場合（マッチドペア）にも使える．
+\paragraph{マッチドペア}
+ペアを層とすると $N_k=2$，$n_{1k}=n_{0k}=1$．$a_kd_k=1$ は「曝露ありだけイベント」のペア，$b_kc_k=1$ は「曝露なしだけイベント」のペアなので，
+$\widehat\OR_{\mathrm{MH}}=$（曝露ありだけイベントのペア数）/（曝露なしだけイベントのペア数）で，McNemar の条件付き OR（第6章）と一致する．
+$\widehat\RR_{\mathrm{MH}}=\sum a_k/\sum c_k$ は粗 RR と一致する．
+\paragraph{粗推定値との違いの切り分け}
+\begin{itemize}
+\item \textbf{交絡}：層変数が曝露と関連し，かつ結果の危険因子．マッチングでは各層に曝露あり・なしが1人ずつで層変数の分布が両群で同じなので，交絡はない．
+\item \textbf{非可縮性}：交絡がなくても，周辺（集団全体の）OR と層ごとの（条件付き）OR は一般に異なる．RR・RD は層間で共通なら集団全体の値に一致する（可縮）が，OR は一致しない．
+\end{itemize}
+2022年の「粗 RR $=$ MH RR，粗 OR $\ne$ MH OR」は非可縮性によるもので，交絡ではない．
+
+\subsection{オッズ比の均一性の確認（\kakomon{2017}{4}〔5〕）}
+共通 OR で要約する前に $H_0:\psi_1=\dots=\psi_K$ を確認する．
+\begin{itemize}
+\item \textbf{Woolf の検定}：$\hat\theta_k=\log\widehat\OR_k$，$w_k=1/(\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k})$，$\hat\theta_w=\sum w_k\hat\theta_k/\sum w_k$ として
+      $Q=\sum w_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$（対数 OR は近似的に正規分布なので，正規母平均の均一性の検定）．
+\item \textbf{Breslow--Day 検定}（自由度 $K-1$．ゼロセルでも計算できる）．
+\item ロジスティック回帰で曝露×層の交互作用項の尤度比検定．各層の OR と CI を並べて図示する．
+\end{itemize}
+層数が少なく各層が小さいと検出力が低いので，有意でないことは均一性の証明にならない．
+
+\begin{warnbox}
+\begin{itemize}
+\item 層ごとに $\chi^2$ を計算して足す（$O-E$ を足してから2乗するのが正しい．層ごとの $\chi^2$ の和は向きを区別しない）．
+\item 2017年のように「発症あり・なし」を列，「曝露」を行と列で取り違える．$E_k$ は（$a_k$ の行和）×（$a_k$ の列和）/$N_k$．
+\item 粗 OR と MH OR の差をすべて交絡のせいにする（非可縮性もある）．
+\item Peto 型の値を，OR が1から遠いデータでも正確な推定値とみなす．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m07-shutsudai}
+\begin{shutsudai}{\kakomon{2017}{4}：年齢層別の症例対照研究（アルコールと癌）}
+〔1〕層ごとの曝露 OR $7.71,\ 6.03,\ 3.61$．
+〔2〕超幾何の $E,V$ は与えられ，$(y_{11k}-E_k)/V_k$ による層ごとの推定 $31.92,\ 6.87,\ 3.87$（層1は実際の OR 7.71 から大きくずれる）．
+〔3〕重み $V_k$ の加重平均 $\sum(O-E)/\sum V=(96-48.18)/26.17=1.827$，$\hat\psi=e^{1.827}=6.22$，分散 $1/26.17$．
+〔4〕95\%CI $(4.24,\,9.12)$，1を含まないので関連あり．
+〔5〕均一性の確認：対数 OR の正規近似による均一性の検定，Breslow--Day 検定．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2021}{3}：観察研究の2群比較と性別による層別}
+〔1〕粗 OR $0.9$，CI $(0.55,\,1.47)$（対数 OR の分散の式は与えられる）．
+〔2〕積二項尤度，$\hat\pi$，$\hat E[n_{11}]$，$\hat V[n_{11}-\hat E[n_{11}]]$ を導き，$X=0.175$ で有意でない．
+〔3〕$Y_k$ の漸近分布と Cochran 検定統計量の導出．
+〔4〕性別で層別すると $X_C=8.94$ で有意．層別 OR $4.09,\ 2.06$ と粗 OR $0.9$ が逆向き（Simpson のパラドックス）．性別は交絡因子と考えられ，層別の結果で解釈する．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2022}{2}：シートベルトのマッチドペアデータ}
+〔1〕死亡リスク：運転者 0.0007，同乗者 0.0021．〔2〕粗 RR $2.78$，粗 OR $2.79$．
+〔3〕MH の式は与えられ，$\widehat\RR_{\mathrm{MH}}=3074/1104=2.78$，$\widehat\OR_{\mathrm{MH}}=2632/662=3.98$（不一致ペアの比）．
+〔4〕マッチングにより交絡はない．OR の違いは推定対象（周辺 OR と条件付き OR）の違い（非可縮性）．
+〔5〕両者ともベルトなしのデータで座席の効果 RR $\approx1.01$ を求め，$2.78/1.01\approx2.75$ でベルトの効果を間接的に推測する．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m07-reidai}
+\begin{reidai}[\kakomon{2021}{3}型：粗解析と層別 Cochran 検定]\label{reidai:m07-1}
+新治療と既存治療の有効率を比べる観察研究の結果を示す．$n_{11}\sim\Bin(n_{1+},\pi_1)$，$n_{21}\sim\Bin(n_{2+},\pi_2)$ は独立とする．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & 有効 & 無効 & 計\\
+\midrule
+新治療 & 60 & 70 & 130\\
+既存治療 & 66 & 64 & 130\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item オッズ比の推定値と，対数オッズ比の正規近似による95\%信頼区間を求めよ．
+\item $H_0:\pi_1=\pi_2=\pi$ の下での $\pi$ の MLE $\hat\pi$ を積二項尤度から導き，$\hat E[n_{11}]$ と $\hat V[n_{11}-\hat E[n_{11}]]$ を示せ．
+      さらに $X=(n_{11}-\hat E[n_{11}])^2/\hat V[n_{11}-\hat E[n_{11}]]$ で有意水準5\%の検定を行え．
+\item 性別で層別すると次の結果であった．層別 Cochran 検定を有意水準5\%で行い，〔2〕と比べて考察せよ．
+\begin{center}\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & \multicolumn{3}{c}{男性} & \multicolumn{3}{c}{女性}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+ & 有効 & 無効 & 計 & 有効 & 無効 & 計\\
+\midrule
+新治療 & 24 & 6 & 30 & 36 & 64 & 100\\
+既存治療 & 60 & 40 & 100 & 6 & 24 & 30\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2017}{4}型：Peto 型の共通オッズ比]\label{reidai:m07-2}
+ある曝露と疾患の症例対照研究を年齢で3層に分けた結果を示す（$\psi_k$ は曝露オッズ比）．
+\begin{center}\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{症例} & \multicolumn{2}{c}{対照}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+層 $k$ & 曝露あり $y_{11k}$ & 曝露なし $y_{12k}$ & 曝露あり $y_{21k}$ & 曝露なし $y_{22k}$\\
+\midrule
+1 & 6 & 4 & 30 & 160\\
+2 & 40 & 50 & 60 & 250\\
+3 & 20 & 30 & 15 & 85\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 各層の曝露オッズ比を求めよ．
+\item 周辺度数を固定したときの $y_{11k}$ の超幾何分布の期待値 $E_k$ と分散 $V_k$ を求め，各層の対数 OR を $(y_{11k}-E_k)/V_k$ で推定し，OR に戻せ．
+\item 重み $V_k$ による加重平均で共通 OR を推定し，その対数の分散を求めよ．
+\item 共通 OR の95\%信頼区間を求め，解釈せよ．
+\item 〔2〕の層1の値が〔1〕と大きく異なる理由と，〔3〕の前提を確認する方法を述べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2022}{2}型：マッチドペアの MH 推定量]\label{reidai:m07-3}
+同じ車に乗っていた「ベルトを着用した運転者」と「着用していない同乗者」を1組とした100万組の事故後の生死を示す．
+\begin{center}\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & 同乗者 死亡 & 同乗者 生存\\
+\midrule
+運転者 死亡 & 300 & 500\\
+運転者 生存 & 1{,}800 & 997{,}400\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 運転者と同乗者の死亡リスクを求めよ．
+\item マッチングを無視した，同乗者の運転者に対する死亡リスク比と死亡オッズ比を求めよ（小数第3位を四捨五入）．
+\item 各組を層として，$\widehat\RR_{\mathrm{MH}}$ と $\widehat\OR_{\mathrm{MH}}$ を求めよ．
+\item 〔2〕と〔3〕の異同を，交絡の有無と推定するパラメータの違いの観点から説明せよ．
+\item 両者ともベルトを着用していない組では，同乗者だけ死亡8{,}200組，運転者だけ死亡8{,}000組，両者死亡4{,}000組であった．ベルトの効果について何が推測できるか．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m07-kaisetsu}
+\begin{kaitou}{reidai:m07-1}
+〔1〕$\widehat\OR=\dfrac{60\times64}{70\times66}=\dfrac{3840}{4620}=\dfrac{64}{77}=0.831$．
+\[
+\widehat\V[\log\widehat\OR]=\frac1{60}+\frac1{70}+\frac1{66}+\frac1{64}=0.01667+0.01429+0.01515+0.01563=0.06173,\quad \SE=0.2485 .
+\]
+付表より $\log\widehat\OR=\log0.831=-0.1849$，$1.96\times0.2485=0.487$ で対数の CI は $(-0.672,\,0.302)$，
+付表より $e^{-0.672}=0.511$，$e^{0.302}=1.353$ なので OR の95\%CI は $(0.511,\,1.353)$．1を含む．
+
+〔2〕積二項尤度は $L(\pi_1,\pi_2)=\binom{130}{n_{11}}\pi_1^{n_{11}}(1-\pi_1)^{n_{12}}\binom{130}{n_{21}}\pi_2^{n_{21}}(1-\pi_2)^{n_{22}}$．
+$H_0$ の下で二項係数を除いた対数尤度は $\ell(\pi)=(n_{11}+n_{21})\log\pi+(n_{12}+n_{22})\log(1-\pi)$，
+$\ell'(\pi)=\frac{n_{11}+n_{21}}{\pi}-\frac{n_{12}+n_{22}}{1-\pi}=0$ より $\hat\pi=\frac{n_{11}+n_{21}}{N}$（$\ell''<0$ で最大）．数値は $\hat\pi=126/260$．
+\[
+\hat E[n_{11}]=\frac{n_{1+}(n_{11}+n_{21})}{N},\qquad
+\hat V[n_{11}-\hat E[n_{11}]]=\frac{n_{1+}n_{2+}(n_{11}+n_{21})(n_{12}+n_{22})}{N^3}
+\]
+（導出は\cref{sec:m07-shosai}の手順3・4）．数値は
+$n_{11}-\hat E=\dfrac{130\times60-130\times66}{260}=\dfrac{-780}{260}=-3$，
+$\hat V=\dfrac{130\times130\times126\times134}{260^3}=\dfrac{285{,}339{,}600}{17{,}576{,}000}=16.23$．
+$X=9/16.23=0.55<3.841$ で有意でない．
+
+〔3〕層ごとに $Y_k=\dfrac{n_{2+k}n_{11k}-n_{1+k}n_{21k}}{N_k}$，$\hat V_k=\dfrac{n_{1+k}n_{2+k}m_{1k}m_{0k}}{N_k^3}$．
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+層 & $N_k$ & $Y_k$ & $\hat V_k$ & OR\\
+\midrule
+男性 & 130 & $\frac{100\times24-30\times60}{130}=\frac{600}{130}=4.615$ & $\frac{30\times100\times84\times46}{130^3}=\frac{11{,}592{,}000}{2{,}197{,}000}=5.276$ & $\frac{24\times40}{6\times60}=2.67$\\
+女性 & 130 & $\frac{30\times36-100\times6}{130}=\frac{480}{130}=3.692$ & $\frac{100\times30\times42\times88}{130^3}=\frac{11{,}088{,}000}{2{,}197{,}000}=5.047$ & $\frac{36\times24}{64\times6}=2.25$\\
+\midrule
+計 & & $8.308$ & $10.323$ & \\
+\bottomrule
+\end{tabular}
+\end{center}
+$X_C=8.308^2/10.323=69.02/10.323=6.69>3.841$ で有意．\\
+考察：粗解析では OR $0.83$（新治療がやや悪い方向）で有意でないが，性別で層別すると両層とも OR $>1$（新治療が良い）で，層別 Cochran 検定は有意である（Simpson のパラドックス）．
+新治療を受けたのは女性が多く（130人中100人），女性は男性より有効率が低い（女性 $42/130$，男性 $84/130$）．
+性別が治療の選択とも有効率とも関連する交絡因子なので，粗解析は新治療に不利に偏っている．性別で調整した層別解析で解釈するのが適切である．
+（超幾何分散を使う CMH 検定でも $6.63$ でほぼ同じ．）
+\end{kaitou}
+
+\begin{kaitou}{reidai:m07-2}
+〔1〕$\psi_k=\dfrac{y_{11k}y_{22k}}{y_{12k}y_{21k}}$：層1 $\frac{6\times160}{4\times30}=8.00$，層2 $\frac{40\times250}{50\times60}=3.33$，層3 $\frac{20\times85}{30\times15}=3.78$．
+
+〔2〕$E_k=\dfrac{(y_{11k}+y_{12k})(y_{11k}+y_{21k})}{N_k}$（症例数×曝露者数/総数），$V_k=\dfrac{(\text{症例数})(\text{対照数})(\text{曝露者数})(\text{非曝露者数})}{N_k^2(N_k-1)}$．
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+層 & $N_k$ & $E_k$ & $V_k$ & $(y_{11k}-E_k)/V_k$ & OR\\
+\midrule
+1 & 200 & $\frac{10\times36}{200}=1.800$ & $\frac{10\times190\times36\times164}{200^2\times199}=1.409$ & $\frac{4.200}{1.409}=2.980$ & $19.69$\\
+2 & 400 & $\frac{90\times100}{400}=22.50$ & $\frac{90\times310\times100\times300}{400^2\times399}=13.111$ & $\frac{17.50}{13.111}=1.335$ & $3.80$\\
+3 & 150 & $\frac{50\times35}{150}=11.667$ & $\frac{50\times100\times35\times115}{150^2\times149}=6.003$ & $\frac{8.333}{6.003}=1.388$ & $4.01$\\
+\bottomrule
+\end{tabular}
+\end{center}
+（OR の列は付表より $e^{2.980}=19.69$，$e^{1.335}=3.80$，$e^{1.388}=4.01$．）
+
+〔3〕重み $V_k$ の加重平均は
+\[
+\hat\beta=\frac{\sum_kV_k\cdot\frac{y_{11k}-E_k}{V_k}}{\sum_kV_k}=\frac{\sum_k(y_{11k}-E_k)}{\sum_kV_k}=\frac{4.200+17.50+8.333}{1.409+13.111+6.003}=\frac{30.033}{20.523}=1.463,
+\]
+付表より $\hat\psi=e^{1.463}=4.32$．$\V[y_{11k}]=V_k$ で層は独立なので $\V[\hat\beta]=\sum_kV_k/(\sum_kV_k)^2=1/\sum_kV_k=1/20.523=0.0487$．
+
+〔4〕$\SE=\sqrt{0.0487}=0.2207$，$1.463\pm1.96\times0.2207=1.463\pm0.433=(1.031,\,1.896)$，付表より $e^{1.031}=2.80$，$e^{1.896}=6.66$ で，OR の95\%CI は $(2.80,\,6.66)$．
+1を含まないので，年齢を調整しても曝露と疾患に関連がある．
+
+〔5〕Peto 型の $(y_{11k}-E_k)/V_k$ は，条件付き尤度のスコアを $\beta=0$ から Newton 法で1回だけ更新した値で，真の OR が1に近いときの近似である．
+層1は OR が8と1から遠く，しかも症例が10人と少ないので近似が悪く，$19.7$ と大きく出た．統合値 $4.32$ も，MH 推定値 $3.71$（本書で計算）より大きい．
+〔3〕は層間で OR が等しいことを前提にしているので，Woolf の均一性検定（層ごとの対数 OR の正規近似による均一性の $\chi^2_{K-1}$ 検定）や Breslow--Day 検定，各層の OR と CI の図示で確認する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m07-3}
+〔1〕$N=1{,}000{,}000$ 組．運転者の死亡 $300+500=800$，同乗者の死亡 $300+1800=2100$．
+リスクは運転者 $800/10^6=0.0008$（0.08\%），同乗者 $2100/10^6=0.0021$（0.21\%）．
+
+〔2〕$\RR_c=\dfrac{2100/10^6}{800/10^6}=2.625\approx2.63$，\quad
+$\OR_c=\dfrac{2100\times(10^6-800)}{800\times(10^6-2100)}=\dfrac{2{,}098{,}320{,}000}{798{,}320{,}000}=2.628\approx2.63$．
+
+〔3〕各組で $n_k=m_k=1$，$N_k=2$ なので，$\widehat\RR_{\mathrm{MH}}=\dfrac{\sum A_k/2}{\sum B_k/2}=\dfrac{2100}{800}=2.625\approx2.63$（$A_k$：同乗者死亡，$B_k$：運転者死亡）．
+$\widehat\OR_{\mathrm{MH}}=\dfrac{\sum A_kD_k/2}{\sum B_kC_k/2}$ で，$A_kD_k=1$ は「同乗者だけ死亡」の組，$B_kC_k=1$ は「運転者だけ死亡」の組なので
+$\widehat\OR_{\mathrm{MH}}=1800/500=3.60$．
+
+〔4〕$\RR_c=\widehat\RR_{\mathrm{MH}}$，$\OR_c\ne\widehat\OR_{\mathrm{MH}}$．
+交絡：各組（事故）に運転者と同乗者が1人ずつで，事故の状況の分布は両群でまったく同じなので，どの推定量にも事故状況による交絡はない．OR の違いを交絡とみなすことはできない．
+パラメータ：粗推定値は集団全体の（周辺）指標，MH 推定量は層（事故）ごとの指標を共通とみなした値である．
+リスク比は層間で共通なら集団全体のリスク比に一致する（可縮）ので推定値も一致するが，オッズ比は層間で共通でも一般に集団全体のオッズ比と一致しない（非可縮）ので，推定値が異なる．
+
+〔5〕〔1〕〜〔3〕の比較 (A)「運転者ベルトあり vs 同乗者ベルトなし」には座席の違いとベルトの違いが混ざっている．
+両者ベルトなしの比較 (B) では，同乗者の運転者に対するリスク比は $\dfrac{4000+8200}{4000+8000}=\dfrac{12200}{12000}=1.017$ で，座席の違いによる差はほとんどない．
+(A) の RR $2.625$ を (B) の $1.017$ で割ると $2.625/1.017=2.58$ で，運転者がベルトを着用しないと死亡リスクが約2.6倍になると推測される．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 超幾何：$E_k=n_{1k}m_{1k}/N_k$，$V_k=n_{1k}n_{0k}m_{1k}m_{0k}/\{N_k^2(N_k-1)\}$．Cochran（積二項）は分母 $N_k^3$．
+\item 層ごとの $O-E$ を足してから2乗：$\{\sum(a_k-E_k)\}^2/\sum V_k\sim\chi^2_1$．交絡を除いた検定．向きが揃っていると強い．
+\item Peto：$\sum(O-E)/\sum V$，分散 $1/\sum V$．OR が1に近いときの近似．MH：$\sum(ad/N)/\sum(bc/N)$，ペアなら不一致の比．
+\item 粗と調整の差＝交絡＋非可縮性（OR）．均一性は Woolf・Breslow--Day で確認．
+\end{itemize}
+\end{summarybox}

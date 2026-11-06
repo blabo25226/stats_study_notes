@@ -1,0 +1,191 @@
+\part*{優先度C：保険}
+\addcontentsline{toc}{part}{優先度C：保険}
+
+\chapter{FWER・Bonferroni 法}\label{ch:m08}
+
+\begin{priobox}{C}
+\kakomon{2024}{4}，\kakomon{2025}{4} と2年続けて出題．FWER の定義・Simes 法の棄却規則などは問題文で与えられるが，
+「Bonferroni 法で」とだけ書かれた設問（各検定を $\alpha/m$），独立な検定の FWER $1-(1-\alpha)^m$，
+分散分析で保護した対比較が FWER を制御する条件（閉検定の考え方）は知っておくと確実に取れる．本編の第14章14.3〜14.5節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m08-gaiyo}
+1つの試験で複数の帰無仮説 $H_1,\dots,H_m$ を検定すると，「どれか1つでも誤って棄却する」確率が名目の $\alpha$ を超える．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item FWER（familywise error rate）$=\Prob(\text{少なくとも1つの真の帰無仮説を棄却})$．
+      真偽のどの組合せでも $\le\alpha$ なら\textbf{強い制御}，すべての帰無仮説が真のときだけなら\textbf{弱い制御}．真の帰無仮説がなければ FWER $=0$．
+\item 独立な $m$ 個の検定を各 $\alpha_0$ で行うと（全帰無仮説が真のとき）FWER $=1-(1-\alpha_0)^m$．
+\item Bonferroni 法：各検定を $\alpha/m$ で行う．依存関係によらず FWER $\le\alpha$（強い制御）．
+\item Šidák 型：独立なら各 $1-(1-\alpha)^{1/m}$ で FWER $=\alpha$ ちょうど（$m=2$ なら $1-\sqrt{1-\alpha}$）．
+\item Holm 法：$p_{(1)}\le\dots\le p_{(m)}$ を順に $p_{(k)}\le\alpha/(m-k+1)$ と比べ，成り立つ限り棄却．Bonferroni より強力で強い制御．
+\item 正の相関があると FWER は独立の場合以下：$\mathrm{FWER}(\rho)=2\alpha-\Prob(Z_1>z_\alpha,Z_2>z_\alpha)\le2\alpha-\alpha^2$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m08-shosai}
+\subsection{独立な検定の FWER}
+全帰無仮説が真で検定が独立なら，どれも棄却しない確率は $(1-\alpha_0)^m$ なので FWER $=1-(1-\alpha_0)^m$．
+$m=3$，$\alpha_0=0.05$ で $0.143$ と，名目の約3倍になる．
+$p$ 値で書けば，$H_k$ が真なら $p_k\sim\Unif(0,1)$ で $\Prob(p_k\le\alpha_0)=\alpha_0$（連続な検定統計量の場合）．
+
+\subsection{Bonferroni 法の証明}
+真の帰無仮説の集合を $I_0$（$|I_0|=m_0\le m$），$A_i$ を「$H_i$ を棄却」とすると，Boole の不等式 $\Prob(\cup A_i)\le\sum\Prob(A_i)$ より
+\[
+\mathrm{FWER}=\Prob\Bigl(\bigcup_{i\in I_0}A_i\Bigr)\le\sum_{i\in I_0}\frac\alpha m=\frac{m_0}{m}\alpha\le\alpha .
+\]
+独立性を使っていないので，依存関係によらず成り立つ．独立なら FWER は $1-(1-\alpha/m)^m$ で $\alpha$ よりわずかに小さい（保守的）．
+
+\subsection{Holm 法}
+真の帰無仮説のうち $p$ 値が最小のものが $k$ 番目に来たとすると，それより前は偽の帰無仮説だけなので $k-1\le m-m_0$，すなわち $m-k+1\ge m_0$．
+真の帰無仮説を1つでも棄却するにはこの $H_{(k)}$ を棄却する必要があり，それには $p_{(k)}\le\alpha/(m-k+1)\le\alpha/m_0$．
+よって FWER $\le\Prob(\text{ある }i\in I_0\text{ で }p_i\le\alpha/m_0)\le\alpha$．
+
+\subsection{大域帰無仮説の検定：Bonferroni と Simes（\kakomon{2025}{4}〔1-4〕）}
+$m=2$ で $H_1\cap H_2$（両方真）を棄却する規則を比べる．
+\begin{itemize}
+\item Bonferroni：$p_{(1)}\le\alpha/2$ なら棄却．
+\item Simes：$p_{(1)}\le\alpha/2$ \textbf{または} $p_{(2)}\le\alpha$ なら棄却．
+\end{itemize}
+両者の差は「$\alpha/2<p_1\le\alpha$ かつ $\alpha/2<p_2\le\alpha$」の正方形で，Simes のほうが棄却域が広い．
+独立なら Bonferroni の棄却域の確率は $1-(1-\alpha/2)^2=\alpha-\alpha^2/4$，正方形の確率は $(\alpha/2)^2$ で，Simes の第1種の過誤確率はちょうど $\alpha$．
+
+\subsection{相関がある場合（\kakomon{2025}{4}〔2〕）}
+$(Z_1,Z_2)$ が平均0・分散1・相関 $\rho\ge0$ の2変量正規で，各検定を $Z_k>z_\alpha$ で棄却するとき，和事象の確率の公式から
+\[
+\mathrm{FWER}(\rho)=\Prob(Z_1>z_\alpha)+\Prob(Z_2>z_\alpha)-\phi(\rho)=2\alpha-\phi(\rho),\qquad\phi(\rho)=\Prob(Z_1>z_\alpha,Z_2>z_\alpha).
+\]
+$\rho=0$ なら独立で $\phi(0)=\alpha^2$．$\rho\ge0$ で $\phi(\rho)\ge\alpha^2$（正の相関で同時に大きくなりやすい．試験では証明なしで使ってよいとされた）なので
+$\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$．独立を仮定した FWER は正の相関があるときの上界である．
+\paragraph{多対1比較の相関（\kakomon{2024}{4}〔4〕）}
+共通の対照群0と各群 $j$ の比較 $Z_j=(\bar Y_j-\bar Y_0)/\sqrt{\sigma^2(1/n_j+1/n_0)}$ は $\bar Y_0$ を共有するので相関する．
+全帰無仮説の下で $\Cov(\bar Y_j-\bar Y_0,\bar Y_k-\bar Y_0)=\V[\bar Y_0]=\sigma^2/n_0$（$j\ne k$，群は独立）なので
+\[
+\Corr(Z_j,Z_k)=\frac{\sigma^2/n_0}{\sigma^2\sqrt{(1/n_j+1/n_0)(1/n_k+1/n_0)}}=\sqrt{\frac{n_jn_k}{(n_j+n_0)(n_k+n_0)}} .
+\]
+全群同数なら $1/2$．この正の相関を利用して Bonferroni より緩い棄却限界を使うのが Dunnett 法である．
+
+\subsection{分散分析で保護した対比較（\kakomon{2024}{4}〔3〕）}
+「一元配置分散分析で $H_0:\mu_0=\dots=\mu_3$ が棄却されたら，各 $H_{0j}:\mu_0=\mu_j$ を水準 $\alpha$ の $z$ 検定で検定する」手順を考える．
+\begin{itemize}
+\item 全帰無仮説が真なら，誤って何かを棄却するには分散分析で棄却される必要があるので FWER $\le\alpha$（弱い制御）．
+\item 真の帰無仮説が\textbf{ちょうど1つ}なら，それを誤って棄却する確率は単独の水準 $\alpha$ の検定以下．
+\item 真の帰無仮説がない（すべて偽）なら FWER $=0$．
+\item しかし真の帰無仮説が2つ以上あり，かつ分散分析が（偽の仮説のために）ほぼ確実に棄却される状況では，残った真の帰無仮説を水準 $\alpha$ で2回以上検定することになり，FWER は $\alpha$ を超えうる．
+\end{itemize}
+したがって FWER が群の人数によらず $\alpha$ 以下になるのは「$\mu_0=\mu_1=\mu_2=\mu_3$」または「$H_{01},H_{02},H_{03}$ のうち真が1つ以下」のとき．
+閉検定手順（すべての交わりの仮説を水準 $\alpha$ で棄却できたときだけ個別の仮説を棄却する）に従えば強い制御になる．
+
+\begin{warnbox}
+\begin{itemize}
+\item Bonferroni の「強い制御」に独立性が必要だと考える（不要．Boole の不等式だけ）．
+\item 独立な検定の FWER を $m\alpha$ とする（それは Bonferroni の上界．正確には $1-(1-\alpha)^m$）．
+\item 分散分析でゲートすれば常に FWER が制御されると考える（強い制御にはならない）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m08-shutsudai}
+\begin{shutsudai}{\kakomon{2024}{4}：プラセボと3用量の比較}
+〔1〕独立な3検定を各2.5\%：FWER $=1-0.975^3=0.073$．〔2〕Bonferroni：各 $\alpha/3$．
+〔3〕分散分析をゲートにした $z$ 検定で FWER が $\alpha$ 以下になる条件：全平均が等しい，または対比較の帰無仮説のうち1つだけが真（すべて偽なら FWER $=0$）．
+〔4〕多対1比較の相関 $\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$．
+〔5〕〔6〕用量反応の線形対比 $(-3,-1,1,3)/\sqrt{20}$ と，対比 $(-3,1,1,1)$ との相関 $3/\sqrt{15}=0.775$（本編第14章14.6節）．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2025}{4}：2つの主要評価項目}
+〔1-1〕独立で各5\%：$1-0.95^2=0.0975$．〔1-2〕Bonferroni（各2.5\%）：$1-0.975^2=0.049$．
+〔1-3〕FWER $=0.05$ の制約 $(1-\alpha_1)(1-\alpha_2)=0.95$（等しくすれば $1-\sqrt{0.95}=0.0253$，Šidák）．
+〔1-4〕Simes と Bonferroni の棄却域の差（正方形）．〔2〕$\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)\le\mathrm{FWER}(0)$．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m08-reidai}
+\begin{reidai}[\kakomon{2025}{4}型：独立な $p$ 値と Simes 法]\label{reidai:m08-1}
+すべての帰無仮説が真であり，各検定の $p$ 値は互いに独立に $\Unif(0,1)$ に従うとする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 3つの主要評価項目をそれぞれ有意水準5\%で検定するときの FWER を求めよ．
+\item Bonferroni 法で FWER を5\%以下に制御するとき，各検定の有意水準と，そのときの FWER を求めよ．
+\item 評価項目が2つのとき，FWER をちょうど5\%にする有意水準 $\alpha_1,\alpha_2$ の制約式を求め，$\alpha_1=\alpha_2$ のときの値を求めよ．
+\item 評価項目が2つで $p_1=0.030$，$p_2=0.045$ であった．$\alpha=0.05$ として，$H_1\cap H_2$ を Bonferroni 法と Simes 法（$p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$ なら棄却）で検定せよ．
+      また，2つの方法の棄却域が異なる領域を $(p_1,p_2)$ 平面で示せ．
+\item 2つの検定統計量 $(Z_1,Z_2)$ が相関 $\rho\ge0$ の2変量正規分布に従い，各検定を $Z_k>z_\alpha$ で棄却するとき，$\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$ を示せ．
+      $\Prob(Z_1>z_\alpha,Z_2>z_\alpha)\ge\alpha^2$ は証明なしに用いてよい．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2024}{4}型：多対1比較]\label{reidai:m08-2}
+プラセボ（群0）と4用量（群1〜4）の比較で，$H_{0j}:\mu_0=\mu_j$（$j=1,\dots,4$）を検定する．結果変数は正規分布で分散 $\sigma^2$ は既知とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 4つの検定を各有意水準2.5\%で行い，検定統計量が独立と仮定したときの FWER を求めよ．
+\item Bonferroni 法で FWER を $\alpha$ 以下にするときの各検定の有意水準を求めよ．
+\item 4つの $p$ 値が $0.004,\ 0.009,\ 0.015,\ 0.030$ であった．$\alpha=0.05$ として Bonferroni 法と Holm 法で棄却される仮説を答えよ．
+\item 群0が40人，群1〜4が各20人のとき，全帰無仮説の下での $Z_j$ と $Z_k$（$j\ne k$）の相関係数を求めよ．
+      この相関は〔1〕の独立の仮定とどう関係するか．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m08-kaisetsu}
+\begin{kaitou}{reidai:m08-1}
+〔1〕3つとも棄却しない確率は $0.95^3=0.857375$ なので FWER $=1-0.857375=0.143$．
+
+〔2〕各検定を $0.05/3=0.0167$ で行う．FWER $=1-(1-0.05/3)^3=1-(59/60)^3=1-0.9508=0.049$．5\%以下に制御されている．
+
+〔3〕FWER $=1-(1-\alpha_1)(1-\alpha_2)$ なので，制約式は $(1-\alpha_1)(1-\alpha_2)=0.95$．
+$\alpha_1=\alpha_2=\alpha'$ なら $(1-\alpha')^2=0.95$，$\alpha'=1-\sqrt{0.95}=1-0.9747=0.0253$（Šidák 型）．Bonferroni の $0.025$ よりわずかに大きい．
+
+〔4〕$p_{(1)}=0.030$，$p_{(2)}=0.045$．
+Bonferroni：$p_{(1)}=0.030>\alpha/2=0.025$ なので $H_1\cap H_2$ を棄却しない．
+Simes：$p_{(1)}>0.025$ だが $p_{(2)}=0.045\le0.05$ なので棄却する．\\
+棄却域の差は，Simes では棄却し Bonferroni では棄却しない領域
+\[
+\{p_{(1)}>\alpha/2,\ p_{(2)}\le\alpha\}=\{0.025<p_1\le0.05\ \text{かつ}\ 0.025<p_2\le0.05\}
+\]
+の正方形である（この例の $(0.030,0.045)$ はちょうどここに入る）．独立ならこの正方形の確率は $0.025^2=0.000625$ で，Bonferroni の棄却域の確率 $1-0.975^2=0.049375$ と足すとちょうど $0.05$．
+
+〔5〕和事象の確率の公式より
+$\mathrm{FWER}(\rho)=\Prob(Z_1>z_\alpha)+\Prob(Z_2>z_\alpha)-\Prob(Z_1>z_\alpha,Z_2>z_\alpha)=2\alpha-\phi(\rho)$．
+$\rho=0$ のとき2変量正規で無相関なので独立で，$\phi(0)=\alpha^2$，$\mathrm{FWER}(0)=2\alpha-\alpha^2$．
+$\mathrm{FWER}(0)-\mathrm{FWER}(\rho)=\phi(\rho)-\alpha^2\ge0$（与えられた不等式）なので $\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$．
+正の相関があるとき，独立を仮定して計算した FWER は真の FWER を上回る（安全側）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m08-2}
+〔1〕FWER $=1-0.975^4=1-0.950625^2=1-0.9037=0.096$．
+
+〔2〕各検定を $\alpha/4$ で行う．
+
+〔3〕Bonferroni：基準 $0.05/4=0.0125$．$0.004$ と $0.009$ だけが下回るので $H_{01},H_{02}$（$p=0.004,0.009$ の仮説）を棄却．\\
+Holm：小さい順に基準 $\alpha/4,\ \alpha/3,\ \alpha/2,\ \alpha/1$ と比べる．
+\begin{center}\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+順位 $k$ & $p_{(k)}$ & 基準 $\alpha/(m-k+1)$ & 判定\\
+\midrule
+1 & 0.004 & $0.05/4=0.0125$ & 棄却\\
+2 & 0.009 & $0.05/3=0.0167$ & 棄却\\
+3 & 0.015 & $0.05/2=0.025$ & 棄却\\
+4 & 0.030 & $0.05/1=0.05$ & 棄却\\
+\bottomrule
+\end{tabular}
+\end{center}
+Holm ではすべて棄却される．Bonferroni で棄却される仮説は Holm でも必ず棄却され，Holm のほうが強力である（どちらも FWER を強く制御する）．
+
+〔4〕$n_0=40$，$n_j=n_k=20$ を代入して
+\[
+\Corr(Z_j,Z_k)=\sqrt{\frac{20\times20}{(20+40)(20+40)}}=\frac{20}{60}=\frac13 .
+\]
+（全群同数なら $1/2$．対照群を大きくすると相関は小さくなる．）
+共通の対照群 $\bar Y_0$ を使うため検定統計量は正に相関し，独立ではない．〔1〕の独立を仮定した FWER $0.096$ は，正の相関がある実際の FWER の上界になる．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 独立 $m$ 検定：FWER $=1-(1-\alpha_0)^m$．Bonferroni：各 $\alpha/m$（Boole の不等式，依存関係によらない強い制御）．
+\item Šidák：$1-(1-\alpha)^{1/m}$．Holm：$p_{(k)}\le\alpha/(m-k+1)$ を順に．Simes：$p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$（$m=2$）．
+\item 正の相関で FWER は減る：$2\alpha-\phi(\rho)\le2\alpha-\alpha^2$．多対1の相関 $\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$．
+\item 分散分析ゲートは弱い制御．真の帰無仮説が1つ以下なら FWER $\le\alpha$．
+\end{itemize}
+\end{summarybox}

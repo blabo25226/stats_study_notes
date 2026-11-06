@@ -1,0 +1,231 @@
+\chapter{競合リスク・累積発生関数（CIF）}\label{ch:m05}
+
+\begin{priobox}{B}
+\kakomon{2021}{1}〔3〕〔4〕，\kakomon{2025}{3}〔1〕〜〔4〕では原因別ハザード・累積発生関数の定義や推定式が問題文で与えられる．
+しかし「$f_j=\lambda_jS$」「$\lambda=\sum\lambda_j$」の導き方，推定表の埋め方，そして
+\textbf{$1-\mathrm{KM}$ が過大推定になる理由}（2021年〔5〕）と\textbf{原因別 Cox の $\beta$ を CIF への効果と読めない理由}（2025年〔5〕）は知らないと書きにくい．本編の第10章10.3節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m05-gaiyo}
+がん死を評価項目とする研究で他因死が起こると，その人のがん死は以後決して観察されない．このように，あるイベントが起きると別のイベントが起こりえなくなるとき，それらを\emphx{競合リスク}という．
+打ち切りは「イベントはいずれ起こるが観察できなかった」，競合イベントは「そのイベントは二度と起こらない」で，別物である．
+
+最初のイベントまでの時間を $T$，その種類を $J\in\{1,\dots,m\}$，$S(t)=\Prob(T>t)$（どのイベントもまだ起きていない確率）とする．
+\begin{pointbox}[覚える式]
+\begin{align*}
+&\text{原因別ハザード} & \lambda_j(t)&=\lim_{\Delta\to0}\frac{\Prob(t\le T<t+\Delta,\ J=j\mid T\ge t)}{\Delta}=\frac{f_j(t)}{S(t)},\\
+&\text{全ハザード} & \lambda(t)&=\sum_j\lambda_j(t),\qquad S(t)=\exp\Bigl\{-\sum_j\Lambda_j(t)\Bigr\},\\
+&\text{累積発生関数（CIF）} & F_j(t)&=\Prob(T\le t,\ J=j)=\int_0^t\lambda_j(u)S(u)\,\dd u .
+\end{align*}
+推定（Aalen--Johansen 型）：$\hat S$ を\textbf{全イベント}の KM として
+\[
+\hat F_j(t)=\sum_{i:\,t_{(i)}\le t}\hat S(t_{(i)}^-)\,\frac{d_{ji}}{n_i},\qquad \hat S(t)+\sum_j\hat F_j(t)=1 .
+\]
+競合イベントを打ち切りとみなした $1-\mathrm{KM}$ は $1-e^{-\Lambda_j(t)}\ \ge F_j(t)$ を推定し，\textbf{過大推定}になる．
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m05-shosai}
+\subsection{基本の関係}
+部分密度を $f_j(t)=\lim_{\Delta\to0}\Prob(t\le T<t+\Delta,J=j)/\Delta$ とする．
+\begin{itemize}
+\item \textbf{$\lambda_j=f_j/S$}：条件付き確率の定義から $\Prob(t\le T<t+\Delta,J=j\mid T\ge t)=\Prob(t\le T<t+\Delta,J=j)/S(t)$（$T$ は連続）．$\Delta$ で割って極限をとる．
+\item \textbf{$\lambda=\sum\lambda_j$}：同時には起こらないので $\{t\le T<t+\Delta\}$ は排反な $\{t\le T<t+\Delta,J=j\}$（$j=1,\dots,m$）の和．条件付き確率を足して極限をとる．
+\item \textbf{$S=\exp(-\sum\Lambda_j)$}：$S=\exp(-\int_0^t\lambda)$（第1章）に $\lambda=\sum\lambda_j$ を代入．
+\item \textbf{$F_j=\int_0^t\lambda_jS$}：$f_j=\lambda_jS$ を積分．「$u$ まで何も起きず（確率 $S(u)$），そこで原因 $j$ が起こる（率 $\lambda_j(u)$）」を足し上げたもの．
+      $F_j$ は $S$ を通じて\textbf{他の原因のハザードにも依存する}．
+\item $\sum_jF_j(t)=1-S(t)$，$F_j(\infty)=\Prob(J=j)<1$（他の原因の確率が正なら）．$F_j$ は分布関数ではない（1に達しない）．
+\end{itemize}
+\paragraph{$1-F_j(t)>S_j(t)$（\kakomon{2025}{3}〔2〕）}
+$S_j(t)=\Prob(T>t,J=j)$ とすると，$\{J=j\}$ は排反な $\{T\le t,J=j\}$ と $\{T>t,J=j\}$ の和なので $\Prob(J=j)=F_j(t)+S_j(t)$．
+$m\ge2$ で全原因の確率が正なら $\Prob(J=j)<1$ なので $S_j(t)=\Prob(J=j)-F_j(t)<1-F_j(t)$．
+
+\subsection{累積発生関数の推定}
+$F_j(t)=\int_0^t\lambda_j(u)S(u)\dd u$ を KM と同じく離散化する．原因を問わないイベント時点を $t_{(1)}<t_{(2)}<\cdots$，
+$n_i$ をリスク集合の大きさ（どのイベントも起こさず観察中の人数），$d_{ji}$ を時点 $t_{(i)}$ の原因 $j$ のイベント数，$d_i=\sum_jd_{ji}$ とする．
+\begin{enumerate}
+\item 全イベントの KM：$\hat S(t)=\prod_{t_{(i)}\le t}(1-d_i/n_i)$．\textbf{競合イベントも $\hat S$ を下げる}．
+\item 各時点で，直前の $\hat S(t_{(i)}^-)$ に $d_{ji}/n_i$（原因別ハザードの増分）を掛けて $\hat F_j$ に足す．
+\item 打ち切りは KM と同じくリスク集合から外れるだけ．
+\item 検算：$\hat S$ の減少分 $\hat S(t^-)d_i/n_i$ が $\hat F_j$ に $d_{ji}$ の比で配分されるので，常に $\hat S+\sum_j\hat F_j=1$．
+\end{enumerate}
+
+\subsection{\texorpdfstring{$1-\mathrm{KM}$}{1−KM} の過大推定}
+競合イベントを打ち切りとみなした原因 $j$ の KM $\hat S_j^{\mathrm{KM}}$ は，各時点の因子 $1-d_{ji}/n_i$ が原因別ハザードの増分なので，$\exp\{-\Lambda_j(t)\}$ を推定する．
+\begin{meidai}[$1-\mathrm{KM}$ の推定対象は CIF 以上]\label[meidai]{prop:m05-over}
+$F_j(t)\le1-e^{-\Lambda_j(t)}$．
+\end{meidai}
+\begin{proof}
+$S(u)=e^{-\Lambda_j(u)}\exp\{-\sum_{k\ne j}\Lambda_k(u)\}\le e^{-\Lambda_j(u)}$ なので
+$F_j(t)=\int_0^t\lambda_j(u)S(u)\dd u\le\int_0^t\lambda_j(u)e^{-\Lambda_j(u)}\dd u=\bigl[-e^{-\Lambda_j(u)}\bigr]_0^t=1-e^{-\Lambda_j(t)}$．
+\end{proof}
+\paragraph{解釈}
+打ち切り扱いは「他因死した人も，リスク集合に残った人と同じ率で将来原因 $j$ のイベントを起こす」とみなすことにあたる．
+実際には他因死した人は原因 $j$ のイベントを二度と起こさないので，原因 $j$ のイベントを起こさない確率を過小に，累積発生を過大に推定する．
+推定値で見ると，各原因 $j$ のイベント時点の増分 $d_{ji}/n_i$ は同じだが，掛ける生存確率が $\hat S_j^{\mathrm{KM}}(t^-)\ge\hat S(t^-)$ と大きい．
+
+\subsection{原因別 Cox と Fine--Gray}
+原因別ハザードに比例ハザード $\lambda_1(t\mid x)=\lambda_1^*(t)e^{\beta x}$ を仮定すると，他の原因を打ち切りとみなした通常の Cox 回帰で $\beta$ を推定できる．
+しかし $e^\beta$ は「まだどのイベントも起きていない人における原因1の発生率の比」であり，$F_1$ への効果ではない．
+\[
+F_1(t\mid x)=\int_0^t\lambda_1(u\mid x)\exp\{-\Lambda_1(u\mid x)-\Lambda_2(u\mid x)\}\dd u
+\]
+は $\lambda_2(\cdot\mid x)$ にも依存する．
+\begin{itemize}
+\item $x$ が $\lambda_2$ を大きくすれば，$\beta$ の値にかかわらず $F_1$ は小さくなりうる（他の原因で先に脱落する人が増える）．
+\item $x$ が $\lambda_2$ に影響しなくても，$F_1$ は $\beta$ の非線形な関数で，$e^\beta$ は $F_1$ の比にはならない．
+\end{itemize}
+$F_1$ への効果を直接表すには，部分分布ハザード $\tilde\lambda_1(t)=-\frac{\dd}{\dd t}\log\{1-F_1(t)\}$ に比例ハザードを仮定する \textbf{Fine--Gray モデル}を用いる．
+$\tilde\lambda_1(t\mid x)=\tilde\lambda_{10}(t)e^{\gamma x}$ なら $1-F_1(t\mid x)=\{1-F_{10}(t)\}^{\exp(\gamma x)}$ で，$\gamma>0$ なら累積発生が増えると直接読める（推定法は扱わない）．
+病因の研究には原因別ハザード，予後の予測（$t$ までに原因 $j$ を経験する確率）には CIF と Fine--Gray が対応する．
+
+\begin{warnbox}
+\begin{itemize}
+\item 競合イベントを打ち切りとして $1-\mathrm{KM}$ で累積発生を報告する．
+\item CIF の推定で，$\hat S$ を原因 $j$ だけの KM にする（正しくは全イベントの KM）．$\hat S(t^-)$ ではなく $\hat S(t)$ を掛ける．
+\item 原因別ハザード比を「累積発生の比」と解釈する．$F_j(t)\to1$ と考える（極限は $\Prob(J=j)$）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m05-shutsudai}
+\begin{shutsudai}{\kakomon{2021}{1}〔3〕〜〔5〕：CIF の表現・推定・$1-\mathrm{KM}$ との比較}
+8例のうち打ち切りだった2例（4年，6年）が実は他因死（イベント2）だった．
+〔3〕$f_j(t)=\lambda_j(t)S_2(t)$ を示して $F_j(t)=\int_0^t\lambda_j(u)S_2(u)\dd u$．
+〔4〕推定式は与えられ，表の空欄を埋める：8年のリスク集合（あ）6，10年（い）5，$\hat F_1(10)$（う）$=0.75\times1/5=0.15$，$\hat F_1(18)$（え）$0.75$，$\hat F_2(4)$（お）$0.125$，$\hat F_2(18)$（か）$0.25$．
+〔5〕〔2〕の $1-\hat S_1$（18年で1）と $\hat F_1$（18年で0.75）を重ねて描き，前者が過大推定であることを説明する．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2025}{3}：競合リスクの理論}
+〔1〕$\lambda_j=f_j/S$．〔2〕$1-F_j(t)>S_j(t)$．〔3〕$\lambda=\sum\lambda_j$．
+〔4〕Weibull 型の原因別ハザード $\lambda_k(t)=\alpha_k\gamma_k(\gamma_kt)^{\alpha_k-1}$ から $S(t)=\exp\{-(\gamma_1t)^{\alpha_1}-(\gamma_2t)^{\alpha_2}\}$．
+〔5〕原因別ハザードの比例ハザードモデルの $\beta$ で $F_1$ への効果を評価するのは適切でない（上の理由）．Fine--Gray モデルに触れるとよい．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m05-reidai}
+\begin{reidai}[\kakomon{2021}{1}型：$1-\mathrm{KM}$ と CIF の推定]\label{reidai:m05-1}
+8人を追跡した結果を示す（0：打ち切り，1：がん死，2：他因死）．
+\begin{center}\small
+\begin{tabular}{@{}ccccccccc@{}}
+\toprule
+被験者 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\
+\midrule
+観察時間（年） & 9 & 3 & 14 & 5 & 16 & 10 & 7 & 12\\
+転帰 & 1 & 2 & 0 & 1 & 1 & 2 & 0 & 1\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 他因死も打ち切りとみなし，がん死だけをイベントとして KM 推定値 $\hat S_1(t)$ を求め，$1-\hat S_1(t)$ を各がん死の時点で求めよ．
+\item がん死の累積発生関数 $F_1(t)=\Prob(T\le t,J=1)$ を，原因別ハザード $\lambda_1$ と，いずれのイベントも起きていない確率 $S(t)$ で表せ．
+\item 全イベントの KM $\hat S(t)$ と，$\hat F_j(t)=\sum_{t_{(i)}\le t}\hat S(t_{(i)}^-)d_{ji}/n_i$（$j=1,2$）の表を作れ．$\hat S+\hat F_1+\hat F_2=1$ を確かめよ．
+\item 〔1〕と〔3〕の $1-\hat S_1$ と $\hat F_1$ を比べ，違いの理由を述べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2025}{3}型：原因別ハザードの理論と数値]\label{reidai:m05-2}
+原因1・2の2種類の競合イベントを考え，記号は概要のとおりとする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $\lambda(t)=\lambda_1(t)+\lambda_2(t)$ を示せ．
+\item $\lambda_1(t)=2\gamma_1^2t$，$\lambda_2(t)=\gamma_2$（$\gamma_1,\gamma_2>0$）のとき，$S(t)$ を求めよ．
+\item 原因別ハザードが一定で $\lambda_1=0.03$，$\lambda_2=0.07$（/年）のとき，$F_1(10)$ と，原因2を打ち切りとみなした $1-\mathrm{KM}$ が推定する量 $1-e^{-\Lambda_1(10)}$ を求めよ．
+\item 共変量 $x=1$ の集団では $\lambda_1=0.03$ のまま $\lambda_2=0.17$ であった（原因1の原因別ハザード比は1）．この集団の $F_1(10)$ を求め，
+      原因別ハザードの比例ハザードモデルの係数で $F_1$ への効果を評価することの是非を述べよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m05-kaisetsu}
+\begin{kaitou}{reidai:m05-1}
+昇順に並べると $3(2),\ 5(1),\ 7(0),\ 9(1),\ 10(2),\ 12(1),\ 14(0),\ 16(1)$．
+
+〔1〕他因死（3年，10年）も打ち切りとすると，がん死の時点は5，9，12，16年．リスク集合はその時点以上の観察時間の人数．
+\begin{center}\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+時点 & $n$ & $d_1$ & $\hat S_1$ & $1-\hat S_1$\\
+\midrule
+5 & 7 & 1 & $6/7=0.8571$ & $0.1429$\\
+9 & 5 & 1 & $0.8571\times4/5=0.6857$ & $0.3143$\\
+12 & 3 & 1 & $0.6857\times2/3=0.4571$ & $0.5429$\\
+16 & 1 & 1 & $0$ & $1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+〔2〕$f_1(t)=\lim\Prob(t\le T<t+\Delta,J=1)/\Delta=\lim\{\Prob(t\le T<t+\Delta,J=1\mid T\ge t)/\Delta\}\,\Prob(T\ge t)=\lambda_1(t)S(t)$ なので
+\[
+F_1(t)=\int_0^tf_1(u)\dd u=\int_0^t\lambda_1(u)S(u)\,\dd u .
+\]
+
+〔3〕原因を問わないイベント時点は3，5，9，10，12，16年（7年と14年は打ち切りなので行を作らないが，リスク集合を減らす）．
+\begin{center}\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}cccccccc@{}}
+\toprule
+時点 & $n_i$ & $d_{1i}$ & $d_{2i}$ & $\hat S(t^-)$ & $\hat S(t)$ & $\hat F_1(t)$ & $\hat F_2(t)$\\
+\midrule
+3 & 8 & 0 & 1 & 1.000 & $1\times7/8=0.875$ & 0 & $1\times1/8=0.125$\\
+5 & 7 & 1 & 0 & 0.875 & $0.875\times6/7=0.750$ & $0.875\times1/7=0.125$ & 0.125\\
+9 & 5 & 1 & 0 & 0.750 & $0.750\times4/5=0.600$ & $0.125+0.750/5=0.275$ & 0.125\\
+10 & 4 & 0 & 1 & 0.600 & $0.600\times3/4=0.450$ & 0.275 & $0.125+0.600/4=0.275$\\
+12 & 3 & 1 & 0 & 0.450 & $0.450\times2/3=0.300$ & $0.275+0.450/3=0.425$ & 0.275\\
+16 & 1 & 1 & 0 & 0.300 & 0 & $0.425+0.300/1=0.725$ & 0.275\\
+\bottomrule
+\end{tabular}
+\end{center}
+（9年のリスク集合は7年の打ち切りで5人，12年は10年の他因死で3人，16年は14年の打ち切りで1人．）
+各時点で $\hat S+\hat F_1+\hat F_2=1$（例：12年 $0.300+0.425+0.275=1.000$，16年 $0+0.725+0.275=1$）．
+
+〔4〕
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+時点（年） & 5 & 9 & 12 & 16\\
+\midrule
+$1-\hat S_1$（他因死を打ち切り） & 0.143 & 0.314 & 0.543 & 1.000\\
+$\hat F_1$（CIF） & 0.125 & 0.275 & 0.425 & 0.725\\
+\bottomrule
+\end{tabular}
+\end{center}
+すべての時点で $1-\hat S_1>\hat F_1$ であり，差は時間とともに広がる．
+$1-\hat S_1$ は他因死した2人を「その後もがん死する可能性がある」とみなしているが，実際には他因死した人はがん死しない．
+そのため，がん死を起こさない確率を過小に（$\hat S_1(t^-)\ge\hat S(t^-)$），がん死の累積発生を過大に推定している．
+16年で $1-\hat S_1=1$ は「全員がいずれがん死する」ことを意味し，2人が他因死している事実と矛盾する．
+競合リスクがあるときの「$t$ までにがん死する確率」は $\hat F_1$ で推定する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m05-2}
+〔1〕同時には起こらないので，事象 $\{t\le T<t+\Delta\}$ は排反な $\{t\le T<t+\Delta,J=1\}$ と $\{t\le T<t+\Delta,J=2\}$ の和．よって
+$\Prob(t\le T<t+\Delta\mid T\ge t)=\sum_{j=1}^2\Prob(t\le T<t+\Delta,J=j\mid T\ge t)$．
+両辺を $\Delta$ で割り $\Delta\to0$ とすると，左辺は $\lambda(t)$，右辺は $\lambda_1(t)+\lambda_2(t)$．
+
+〔2〕$\Lambda_1(t)=\int_0^t2\gamma_1^2u\,\dd u=\gamma_1^2t^2=(\gamma_1t)^2$，$\Lambda_2(t)=\gamma_2t$．〔1〕と $S=\exp(-\int_0^t\lambda)$ より
+$S(t)=\exp\{-(\gamma_1t)^2-\gamma_2t\}$．
+（形状2の Weibull と指数の原因別ハザードの組合せ．）
+
+〔3〕全ハザードは $0.10$ で $S(u)=e^{-0.1u}$．以下，指数関数の値は付表より $e^{-1}=0.3679$，$e^{-0.3}=0.7408$，$e^{-2}=0.1353$．
+\[
+F_1(10)=\int_0^{10}0.03\,e^{-0.1u}\dd u=\frac{0.03}{0.10}\bigl(1-e^{-1}\bigr)=0.3\times(1-0.3679)=0.3\times0.6321=0.190 .
+\]
+$\Lambda_1(10)=0.3$ なので $1-e^{-0.3}=1-0.7408=0.259$．$1-\mathrm{KM}$ の推定対象は $F_1(10)$ を3割以上上回る（\cref{prop:m05-over}）．
+$F_1(\infty)=0.03/0.10=0.3$ で，原因1を経験するのは最終的に3割の人である．
+
+〔4〕全ハザードは $0.03+0.17=0.20$ で
+\[
+F_1(10)=\frac{0.03}{0.20}\bigl(1-e^{-2}\bigr)=0.15\times(1-0.1353)=0.15\times0.8647=0.130 .
+\]
+原因1の原因別ハザード比は1（$\beta=0$）なのに，$F_1(10)$ は $0.190\to0.130$ と小さくなる．
+$x=1$ の集団では原因2のハザードが大きく，原因1を起こす前に原因2で脱落する人が増えるためである．
+$F_1$ は $\lambda_2$ にも依存するので，原因別ハザードの比例ハザードモデルの $\beta$ だけで $F_1$ への効果を評価するのは適切でない．
+$\beta$ は「まだどのイベントも起きていない人での原因1の発生率」への効果として解釈し，$F_1$ への効果は Fine--Gray モデル（部分分布ハザード）の係数や CIF そのもので評価する．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $\lambda_j=f_j/S$，$\lambda=\sum\lambda_j$，$S=\exp(-\sum\Lambda_j)$，$F_j=\int_0^t\lambda_jS$．$F_j(\infty)=\Prob(J=j)<1$．
+\item 推定：$\hat F_j(t)=\sum\hat S(t^-)d_{ji}/n_i$（$\hat S$ は全イベントの KM）．$\hat S+\sum\hat F_j=1$ で検算．
+\item 競合を打ち切りとした $1-\mathrm{KM}$ は $1-e^{-\Lambda_j}\ge F_j$ を推定し過大．
+\item 原因別 Cox の $\beta$ は原因別ハザードへの効果．CIF への効果ではない（Fine--Gray）．
+\end{itemize}
+\end{summarybox}

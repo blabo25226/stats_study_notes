@@ -1,0 +1,2473 @@
+% ===== 00_preamble.tex =====
+% !TEX program = lualatex
+% ============================================================
+%  統計検定1級 統計応用（医薬生物学）対策 医療統計学参考書 ミニ版
+%  単一ファイル版（LuaLaTeX + LuaTeX-ja でコンパイル）
+%    lualatex 医療統計学参考書.tex   （目次・相互参照のため2〜3回）
+% ============================================================
+\documentclass[a4paper,11pt,openany]{ltjsbook}
+\usepackage[haranoaji,deluxe]{luatexja-preset}
+\usepackage[top=24mm,bottom=24mm,left=22mm,right=22mm,headsep=8mm]{geometry}
+
+% ---------- 数式 ----------
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\allowdisplaybreaks[2]
+
+% ---------- 表・リスト・図 ----------
+\usepackage{booktabs,longtable,array,multirow,tabularx,makecell}
+\usepackage{enumitem}
+\usepackage{multicol}
+% 第2版：2段組の目次で「第10章」が章題に重ならないよう章番号の幅を広げる（ltjsbook の \l@chapter の幅だけ変更）
+\makeatletter
+\renewcommand*{\l@chapter}[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \addvspace{1.0em \@plus\jsc@mpt}
+    \begingroup
+      \parindent\z@
+      \rightskip\@tocrmarg
+      \parfillskip-\rightskip
+      \leavevmode\headfont
+      \setlength\@lnumwidth{\jsc@tocl@width}\advance\@lnumwidth 4.2\zw
+      \advance\leftskip\@lnumwidth \hskip-\leftskip
+      #1\nobreak\hfil\nobreak\hbox to\@pnumwidth{\hss#2}\par
+      \penalty\@highpenalty
+    \endgroup
+  \fi}
+\makeatother
+\setlist{itemsep=0.2\baselineskip,topsep=0.4\baselineskip}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usepackage{caption}
+\captionsetup{font=small,labelsep=quad}
+\usepackage[most]{tcolorbox}
+
+% ---------- 色 ----------
+\definecolor{bkblue}{HTML}{1F4E79}
+\definecolor{bkgreen}{HTML}{2E6B30}
+\definecolor{bkred}{HTML}{A12A2A}
+\definecolor{bkorange}{HTML}{B35C00}
+\definecolor{bkgray}{HTML}{555555}
+\definecolor{bkpurple}{HTML}{5B3A8C}
+
+% ---------- ハイパーリンク・相互参照 ----------
+\usepackage[unicode,bookmarksnumbered=true,colorlinks=true,
+  linkcolor=bkblue,citecolor=bkgreen,urlcolor=bkpurple,
+  pdftitle={統計検定1級 統計応用（医薬生物学）対策 医療統計学参考書 ミニ版},
+  pdfsubject={医療統計学},pdfkeywords={統計検定1級,医薬生物学,医療統計}]{hyperref}
+\usepackage{bookmark}
+
+% ---------- 定理型環境 ----------
+% cleveref は \newtheorem より前に読み込む（共有カウンタの環境も正しい名前で参照される）
+\usepackage[nameinlink]{cleveref}
+\newtheorem{teigi}{定義}[chapter]
+\newtheorem{teiri}[teigi]{定理}
+\newtheorem{meidai}[teigi]{命題}
+\newtheorem{reidai}{例題}[chapter]
+\tcolorboxenvironment{teigi}{enhanced,breakable,colback=bkblue!4,colframe=bkblue!70,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt}
+\tcolorboxenvironment{teiri}{enhanced,breakable,colback=bkgreen!4,colframe=bkgreen!70,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt}
+\tcolorboxenvironment{meidai}{enhanced,breakable,colback=bkgreen!4,colframe=bkgreen!70,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt}
+\tcolorboxenvironment{reidai}{enhanced,breakable,colback=white,colframe=bkorange!80,
+  boxrule=0.5pt,left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt,borderline west={2pt}{0pt}{bkorange}}
+
+\crefname{teigi}{定義}{定義}
+\crefname{teiri}{定理}{定理}
+\crefname{meidai}{命題}{命題}
+\crefname{reidai}{例題}{例題}
+\crefname{table}{表}{表}
+\crefname{figure}{図}{図}
+\crefformat{equation}{#2式(#1)#3}
+\crefrangeformat{equation}{#3式(#1)#4〜#5(#2)#6}
+\crefmultiformat{equation}{#2式(#1)#3}{，#2(#1)#3}{，#2(#1)#3}{，#2(#1)#3}
+\crefformat{chapter}{#2第#1章#3}
+\crefformat{appendix}{#2付録#1#3}
+\crefformat{section}{#2#1節#3}
+\crefformat{subsection}{#2#1項#3}
+\crefformat{teigi}{#2定義#1#3}
+\crefformat{teiri}{#2定理#1#3}
+\crefformat{meidai}{#2命題#1#3}
+\crefformat{reidai}{#2例題#1#3}
+\crefformat{table}{#2表#1#3}
+\crefformat{figure}{#2図#1#3}
+\crefname{chapter}{章}{章}
+\crefname{section}{節}{節}
+\crefname{subsection}{項}{項}
+\crefname{appendix}{付録}{付録}
+% 項の書式は文書開始時に再設定しないと「項 2.3.4」の語順になる
+\AtBeginDocument{\crefformat{subsection}{#2#1項#3}}
+\crefname{equation}{式}{式}
+\newcommand{\crefpairconjunction}{，}
+\newcommand{\crefmiddleconjunction}{，}
+\newcommand{\creflastconjunction}{，}
+\newcommand{\crefpairgroupconjunction}{，}
+\newcommand{\crefmiddlegroupconjunction}{，}
+\newcommand{\creflastgroupconjunction}{，}
+\crefmultiformat{chapter}{#2第#1章#3}{，#2第#1章#3}{，#2第#1章#3}{，#2第#1章#3}
+\crefrangeformat{chapter}{#3第#1章#4〜#5第#2章#6}
+\crefmultiformat{section}{#2#1節#3}{，#2#1節#3}{，#2#1節#3}{，#2#1節#3}
+\crefmultiformat{table}{#2表#1#3}{，#2表#1#3}{，#2表#1#3}{，#2表#1#3}
+\crefmultiformat{figure}{#2図#1#3}{，#2図#1#3}{，#2図#1#3}{，#2図#1#3}
+\crefmultiformat{teiri}{#2定理#1#3}{，#2定理#1#3}{，#2定理#1#3}{，#2定理#1#3}
+\crefmultiformat{reidai}{#2例題#1#3}{，#2例題#1#3}{，#2例題#1#3}{，#2例題#1#3}
+
+% 定理環境の見出しの後に改行を入れない・本文は立体
+\makeatletter
+\def\th@plain{\normalfont}
+\makeatother
+
+% ---------- 証明環境 ----------
+\newenvironment{proof}[1][証明]{\par\smallskip\noindent{\sffamily\bfseries #1}\quad\ignorespaces}{\nobreak\hfill$\square$\par\medskip}
+
+% ---------- 解答環境 ----------
+% \begin{kaitou}{reidai:label} ... \end{kaitou}
+\newenvironment{kaitou}[1]{%
+  \par\medskip\noindent
+  \begin{tcolorbox}[enhanced,breakable,colback=bkgray!3,colframe=bkgray!60,boxrule=0.4pt,
+    left=4pt,right=4pt,top=2pt,bottom=2pt,arc=1pt,
+    title={\cref{#1}の解答},fonttitle=\bfseries\small,coltitle=white,colbacktitle=bkgray!80]}%
+  {\end{tcolorbox}\par}
+
+% ---------- 本書独自のボックス ----------
+\newtcolorbox{goalbox}{enhanced,breakable,colback=bkblue!3,colframe=bkblue,boxrule=0.6pt,arc=1pt,
+  title={この章でできるようになること},fonttitle=\bfseries,colbacktitle=bkblue,coltitle=white,
+  left=4pt,right=4pt}
+\newtcolorbox{exambox}{enhanced,breakable,colback=bkorange!3,colframe=bkorange,boxrule=0.6pt,arc=1pt,
+  title={過去問での出題},fonttitle=\bfseries,colbacktitle=bkorange,coltitle=white,
+  left=4pt,right=4pt}
+\newtcolorbox{pointbox}[1][要点]{enhanced,breakable,colback=bkgreen!3,colframe=bkgreen!80,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkgreen!80,coltitle=white,left=4pt,right=4pt}
+\newtcolorbox{warnbox}[1][よくある誤り]{enhanced,breakable,colback=bkred!3,colframe=bkred!80,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkred!80,coltitle=white,left=4pt,right=4pt}
+\newtcolorbox{linkbox}[1][数理統計との接続]{enhanced,breakable,colback=bkpurple!3,colframe=bkpurple!70,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkpurple!70,coltitle=white,left=4pt,right=4pt}
+% 補足・発展（過去問に直接ない内容。出典を併記する）
+\newtcolorbox{supbox}[1][補足]{enhanced,breakable,colback=white,colframe=bkgray!70,boxrule=0.4pt,arc=1pt,
+  borderline west={2pt}{0pt}{bkgray!70},title={#1},fonttitle=\bfseries\small,
+  colbacktitle=white,coltitle=bkgray,left=4pt,right=4pt,attach title to upper={\quad}}
+\newtcolorbox{summarybox}{enhanced,breakable,colback=bkblue!2,colframe=bkblue!60,boxrule=0.5pt,arc=1pt,
+  title={章末まとめ},fonttitle=\bfseries,colbacktitle=bkblue!60,coltitle=white,left=4pt,right=4pt}
+% 流れ図 データ構造→推定対象→手法→仮定→計算→解釈
+\newcommand{\flowline}[6]{%
+  \begin{center}\small
+  \begin{tikzpicture}[node distance=3mm,
+    box/.style={draw=bkblue,rounded corners=1pt,fill=bkblue!5,inner sep=2pt,align=center,
+      text width=21mm,minimum height=11mm,font=\scriptsize}]
+  \node[box](a){\textbf{データ構造}\\#1};
+  \node[box,right=of a](b){\textbf{推定対象}\\#2};
+  \node[box,right=of b](c){\textbf{手法}\\#3};
+  \node[box,right=of c](d){\textbf{仮定}\\#4};
+  \node[box,right=of d](e){\textbf{計算}\\#5};
+  \node[box,right=of e](f){\textbf{解釈}\\#6};
+  \foreach \x/\y in {a/b,b/c,c/d,d/e,e/f}\draw[-{Stealth[length=2mm]},bkblue](\x)--(\y);
+  \end{tikzpicture}\end{center}}
+
+% ---------- 重要度ラベル ----------
+\newcommand{\tagbox}[2]{\tcbox[on line,boxsep=0.5pt,left=2pt,right=2pt,top=0.5pt,bottom=0.5pt,
+  colframe=#1,colback=#1!10,boxrule=0.4pt,arc=1pt]{\scriptsize\bfseries\textcolor{#1}{#2}}}
+\newcommand{\Hissu}{\tagbox{bkred}{必須}}
+\newcommand{\Hinshutsu}{\tagbox{bkorange}{頻出}}
+\newcommand{\Youchui}{\tagbox{bkpurple}{要注意}}
+\newcommand{\Hatten}{\tagbox{bkgray}{発展}}
+% 過去問参照 \kakomon{2022}{2}
+\newcommand{\kakomon}[2]{\mbox{#1年 医薬 問#2}}
+\newcommand{\kakomonSM}[2]{\mbox{#1年 数理 問#2}}
+
+% ---------- 数式マクロ ----------
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\V}{\mathrm{V}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Corr}{\mathrm{Corr}}
+\newcommand{\Prob}{\mathrm{P}}
+\newcommand{\SE}{\mathrm{SE}}
+\newcommand{\SD}{\mathrm{SD}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\RR}{\mathrm{RR}}
+\newcommand{\RD}{\mathrm{RD}}
+\newcommand{\OR}{\mathrm{OR}}
+\newcommand{\HR}{\mathrm{HR}}
+\newcommand{\logit}{\operatorname{logit}}
+\newcommand{\indep}{\mathop{\perp\!\!\!\perp}}
+\newcommand{\iid}{\overset{\text{i.i.d.}}{\sim}}
+\newcommand{\Normal}{\mathrm{N}}
+\newcommand{\Bin}{\mathrm{Bin}}
+\newcommand{\Po}{\mathrm{Po}}
+\newcommand{\Ga}{\mathrm{Ga}}
+\newcommand{\Be}{\mathrm{Be}}
+\newcommand{\Ex}{\mathrm{Exp}}
+\newcommand{\NB}{\mathrm{NB}}
+\newcommand{\Unif}{\mathrm{U}}
+\newcommand{\chisq}{\chi^2}
+\newcommand{\transp}{^{\top}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\hatS}{\widehat{S}}
+
+% ---------- その他 ----------
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\emphx}[1]{\textbf{\textcolor{bkblue}{#1}}}
+
+% ---------- ミニ版で追加 ----------
+% 優先度の表示 \Prio{A}
+\newcommand{\Prio}[1]{\tagbox{bkred}{優先度 #1}}
+% 章の冒頭：優先度と，この章で扱う過去問
+\newtcolorbox{priobox}[1]{enhanced,breakable,colback=bkred!3,colframe=bkred!80,boxrule=0.6pt,arc=1pt,
+  title={優先度 #1},fonttitle=\bfseries,colbacktitle=bkred!80,coltitle=white,left=4pt,right=4pt}
+% 出題例1件分
+\newtcolorbox{shutsudai}[1]{enhanced,breakable,colback=bkorange!3,colframe=bkorange!80,boxrule=0.5pt,arc=1pt,
+  title={#1},fonttitle=\bfseries\small,colbacktitle=bkorange!80,coltitle=white,left=4pt,right=4pt}
+
+% ===== 01_front.tex =====
+\begin{document}
+
+% ------------------------------------------------------------
+% 表紙
+% ------------------------------------------------------------
+\begin{titlepage}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[bkblue] (current page.north west) rectangle ([yshift=-92mm]current page.north east);
+  \fill[bkorange] ([yshift=-92mm]current page.north west) rectangle ([yshift=-95mm]current page.north east);
+\end{tikzpicture}
+\vspace*{8mm}
+\begin{center}
+{\color{white}\large 統計検定1級　統計応用（医薬生物学）対策\par}
+\vspace{10mm}
+{\color{white}\fontsize{30}{40}\selectfont\bfseries 医療統計学参考書\par}
+\vspace{4mm}
+{\color{white}\fontsize{20}{28}\selectfont\bfseries ミニ版\par}
+\vspace{4mm}
+{\color{white}\large 知識がないと解けない10テーマだけを，過去問の類題で\par}
+\end{center}
+\vspace{36mm}
+\begin{center}\small
+\begin{tabular}{@{}lL{110mm}@{}}
+\toprule
+優先度 & テーマ\\
+\midrule
+\textbf{A} & 打ち切りを含む尤度，ログランク検定，Cox 部分尤度\\
+\textbf{B} & Kaplan--Meier 推定，競合リスク・CIF，McNemar 検定，層別 Cochran・CMH 検定\\
+\textbf{C} & FWER・Bonferroni，$\alpha$ 消費関数，生物学的同等性・TOST\\
+\bottomrule
+\end{tabular}
+\end{center}
+\vfill
+\begin{center}
+{\small 学習用電子参考書　ミニ版（2026年11月）　本編：医療統計学参考書 第2版}
+\end{center}
+\end{titlepage}
+
+\frontmatter
+\pagenumbering{roman}
+
+% ------------------------------------------------------------
+\chapter*{はじめに}
+\addcontentsline{toc}{chapter}{はじめに}
+\markboth{はじめに}{はじめに}
+
+本書は，本編『医療統計学参考書 第2版』（188ページ）から，試験直前に読み返すべきテーマを10個に絞ったミニ版である．
+テーマの選び方は「問題文の誘導だけで解けるか」で，過去問9回分（2016--2019，2021--2025年）の問題文を読んで次の3段階に分けた．
+
+\begin{center}\small
+\begin{tabular}{@{}cL{50mm}L{80mm}@{}}
+\toprule
+優先度 & 意味 & テーマ\\
+\midrule
+\textbf{A} & 知識がないと解けない & 打ち切りを含む尤度（第1章），ログランク検定（第2章），Cox 部分尤度（第3章）\\
+\textbf{B} & 問題文を読めば解けるが，知識がないと時間がかかる・詰まりやすい & Kaplan--Meier 推定（第4章），競合リスク・CIF（第5章），McNemar 検定（第6章），層別 Cochran・CMH 検定（第7章）\\
+\textbf{C} & 保険（出たときに落とさないため） & FWER・Bonferroni（第8章），$\alpha$ 消費関数（第9章），生物学的同等性・TOST（第10章）\\
+\bottomrule
+\end{tabular}
+\end{center}
+ここに挙げなかったテーマ（メタアナリシス，多重補完，ロジスティック回帰，ROC など）は，過去問では定義・式が問題文で与えられることが多く，誘導に従えば解けると判断して除いた．
+必要になったら本編を参照すること．
+
+\paragraph{章の順序}
+優先度の順（A→B→C）に並べた．ただし A の中は，後の章で前の章の結果を使うように
+「打ち切りを含む尤度 → ログランク検定 → Cox 部分尤度」の順にした（Cox 部分尤度の $\beta=0$ でのスコア検定がログランク検定になる）．
+B の中も，Kaplan--Meier（第4章）を競合リスク（第5章）の前に置いた．
+
+\paragraph{各章の構成}
+各章は次の5節からなる．
+\begin{center}\small
+\begin{tabular}{@{}lL{115mm}@{}}
+\toprule
+節 & 内容\\
+\midrule
+概要 & そのテーマで何をするか，覚える式（ボックス）\\
+詳細 & 式の導出，仮定，取り違えやすい点\\
+出題例 & 過去問のどの年・問・設問で，何が問われ，どう答えるか（問題文は転載しない）\\
+例題 & 過去問と同じ構成で，数値と文面を入れ替えた類題\\
+例題の詳しい解説 & 途中式を省略しない解答\\
+\bottomrule
+\end{tabular}
+\end{center}
+例題は過去問の設問の流れをなぞっているので，例題を解けば対応する過去問の解き方を確認できる．
+数値はすべて変えてあり，答えは過去問とは異なる．例題の数値は Python で検算した（\texttt{ミニ版/verify/check\_mini.py}）．
+
+\paragraph{本編との関係}
+各章の内容は本編の該当章（概要の冒頭に記した）を圧縮し，出題例と例題を新しく作ったものである．
+本編の導出のうち，試験に直接必要なものだけを残した．
+
+% ------------------------------------------------------------
+\section*{記法と数値計算}
+\addcontentsline{toc}{section}{記法と数値計算}
+\begin{itemize}
+\item $z_\alpha$ は標準正規分布の上側 $100\alpha\%$ 点（$\Prob(Z>z_\alpha)=\alpha$）．$t_\nu(\alpha)$，$\chi^2_\nu(\alpha)$ も上側点．
+\item $\beta$ は第2種の過誤確率，検出力は $1-\beta$．
+\item 不偏分散 $s^2=\frac1{n-1}\sum(x_i-\bar x)^2$，$s$ はその正の平方根．
+\item 指数分布 $\Ex(\lambda)$ は率（ハザード）$\lambda$ による表記で，密度 $\lambda e^{-\lambda t}$，平均 $1/\lambda$．
+\item $\Normal(\mu,\sigma^2)$ の第2引数は分散．$\log$ は自然対数．
+\item 統計検定1級では関数電卓が使えないが，指数関数・対数と正規・$\chi^2$・$t$・$F$ 分布の表は配られる．
+      そこで例題の問題文にはこれらの値を載せず，試験と同じく付表を引いて解く形にした．
+      解説では四則演算・平方根と付表だけで計算を示し，付表を引いた箇所は「付表より $e^{-0.98}=0.3753$」のように値を明記した．
+\end{itemize}
+
+\begin{warnbox}[打ち切り指示変数の向きは年度で逆]
+\kakomon{2016}{3}，\kakomon{2019}{1} は「1：打ち切り，0：イベント」，\kakomon{2018}{1}，\kakomon{2021}{1} は「0：打ち切り，1：イベント」．
+生存時間の表を読む前に必ず確認する．本書は $\delta_i=1$ をイベント，$\delta_i=0$ を打ち切りとする．
+\end{warnbox}
+
+% ------------------------------------------------------------
+\section*{出題マップ}
+\addcontentsline{toc}{section}{出題マップ}
+過去問で各テーマが問われた年・問（〔 〕は設問番号）．「誘導」は式や手順が問題文で与えられた設問．
+\begin{center}\small
+\begin{tabular}{@{}clL{100mm}@{}}
+\toprule
+章 & テーマ & 出題\\
+\midrule
+1 & 打ち切りを含む尤度 & 2018問1（指数モデルの尤度・MLE・Fisher 情報量・デルタ法・必要イベント数），2019問1〔5〕（$\hat\lambda=3/83$），2023問2（打ち切りなし，誘導）\\
+2 & ログランク検定 & 2016問3〔2〕（$\chi^2=5.62$），2017問2（群逐次デザインの検定統計量として）\\
+3 & Cox 部分尤度 & 2016問3〔3〕（部分尤度の書き下し），2017問1〔4〕〜〔6〕（2重対数表現・極値分布・乱数生成），2022問1（比例ハザード性・$S_0$・HR の CI）\\
+4 & Kaplan--Meier & 2016問3〔1〕，2019問1〔1〕〔2〕（KM 表・Nelson--Aalen との大小），2021問1〔2〕（$1-\hat S$ のグラフ）\\
+5 & 競合リスク・CIF & 2021問1〔3〕〜〔5〕（CIF の表現・推定・$1-\mathrm{KM}$ との比較），2025問3（原因別ハザード・Weibull・原因別 Cox の解釈）\\
+6 & McNemar 検定 & 2018問2（多項分布・差の CI・LRT），2019問3〔2〕（$\Bin(23,0.5)$），2024問1〔2〕〔3〕（$W$ の導出と検定）\\
+7 & 層別 Cochran・CMH & 2017問4（Peto 型の共通 OR），2021問3（Cochran 検定と Simpson），2022問2（マッチドペアの MH 推定量）\\
+8 & FWER・Bonferroni & 2024問4〔1〕〜〔4〕，2025問4（独立・相関ありの FWER，Simes）\\
+9 & $\alpha$ 消費関数 & 2017問2（$\alpha(t)=0.05t^2$，$z_1$，$\Cov[Z(0.4),Z(1)]$，$z_2$ の決め方，解析の追加）\\
+10 & 生物学的同等性・TOST & 2016問4（対数正規・BE の90\%CI），2021問2（TOST・IUT・BE 判定）\\
+\bottomrule
+\end{tabular}
+\end{center}
+生存時間解析（第1〜5章）は9回中8回（2016，2017，2018，2019，2021，2022，2023，2025）出題されている．
+問1に置かれることが多い．
+
+% ------------------------------------------------------------
+\chapter*{目次}
+\markboth{目次}{目次}
+\begin{multicols}{2}\footnotesize\sloppy
+\makeatletter\@starttoc{toc}\makeatother
+\end{multicols}
+
+% \mainmatter は見開き調整で白紙を1ページ入れるため，改ページだけ行う
+\clearpage\makeatletter\@mainmattertrue\makeatother
+\pagenumbering{arabic}
+
+% ===== m01_censlik.tex =====
+\part*{優先度A：知識がないと解けない}
+\addcontentsline{toc}{part}{優先度A：知識がないと解けない}
+
+\chapter{打ち切りを含む尤度}\label{ch:m01}
+
+\begin{priobox}{A}
+\kakomon{2018}{1}〔2〕は「打ち切りのある尤度関数を示せ」とだけ問い，尤度の組み立て方 $\prod f^{\delta}S^{1-\delta}$ は与えられない．
+\kakomon{2019}{1}〔5〕も尤度なしに「$\lambda$ の最尤推定値を求めよ」と問う．
+この形を知らなければ最初の1行が書けず，後続の MLE・Fisher 情報量・デルタ法・必要イベント数もすべて落とす．
+本章はハザードの基本関係式もまとめる（第2〜5章で使う）．本編の第9章9.2節，第10章10.2節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m01-gaiyo}
+被験者 $i$ のイベントまでの時間を $T_i$，打ち切り時間を $C_i$ とすると，観測されるのは
+\[
+Y_i=\min(T_i,C_i),\qquad \delta_i=\ind(T_i\le C_i)\quad(1\text{：イベント},\ 0\text{：打ち切り})
+\]
+である．打ち切り例 $(Y_i,\delta_i=0)$ は「$T_i>Y_i$」という情報しか持たない．
+これを尤度に正しく入れるのが本章の内容である．
+
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item ハザードの関係：$h(t)=\dfrac{f(t)}{S(t)}=-\dfrac{\dd}{\dd t}\log S(t)$，\quad $H(t)=\int_0^th(u)\dd u=-\log S(t)$，\quad $S=e^{-H}$，\quad $f=hS$．
+\item 打ち切りを含む尤度：
+\[
+L(\theta)=\prod_{i=1}^nf(t_i;\theta)^{\delta_i}S(t_i;\theta)^{1-\delta_i}=\prod_{i=1}^nh(t_i;\theta)^{\delta_i}S(t_i;\theta).
+\]
+\item 指数モデル $h(t)=\lambda$：イベント数 $d=\sum\delta_i$，総観察時間 $W=\sum t_i$（打ち切り例の時間も含める）として
+\[
+\log L=d\log\lambda-\lambda W,\qquad \hat\lambda=\frac dW,\qquad I(\lambda)=\frac{d}{\lambda^2},\qquad \V[\log\hat\lambda]\approx\frac1d .
+\]
+\item 2群：$Z=\dfrac{\log\hat\lambda_1-\log\hat\lambda_2}{\sqrt{1/d_1+1/d_2}}$，\quad 必要イベント数（各群）$r=\dfrac{2(z_{\alpha/2}+z_\beta)^2}{(\log\lambda_1-\log\lambda_2)^2}$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m01-shosai}
+\subsection{ハザードの関係式}\label{subsec:m01-hazard}
+\begin{teigi}[ハザード関数]\label{def:m01-hazard}
+$T\ge0$ を密度 $f$，分布関数 $F$ の連続な確率変数とし，$S(t)=\Prob(T>t)=1-F(t)$ とする．
+\[
+h(t)=\lim_{\Delta\to0}\frac{\Prob(t\le T<t+\Delta\mid T\ge t)}{\Delta},\qquad H(t)=\int_0^th(u)\,\dd u .
+\]
+\end{teigi}
+\begin{teiri}[基本関係式]\label[teiri]{thm:m01-rel}
+$h=f/S$，$H=-\log S$，$S=e^{-H}$，$f=hS$．
+\end{teiri}
+\begin{proof}
+$\{t\le T<t+\Delta\}\subset\{T\ge t\}$ なので条件付き確率は $\Prob(t\le T<t+\Delta)/S(t)$ で（$T$ は連続なので $\Prob(T\ge t)=S(t)$），
+$\Delta$ で割って $\Delta\to0$ とすると $h(t)=f(t)/S(t)$．
+$f=F'=-S'$ より $h=-S'/S=-(\log S)'$．$S(0)=1$ なので $\int_0^th=-\log S(t)+\log S(0)=-\log S(t)$．
+\end{proof}
+ハザードは「$t$ まで生存した人が次の瞬間にイベントを起こす率」で，確率ではない（1を超えうる．単位は時間$^{-1}$）．
+指数分布 $S(t)=e^{-\lambda t}$ ならハザードは一定値 $\lambda$，中央生存時間は $S(t)=1/2$ を解いて $\log2/\lambda$，平均は $1/\lambda$．
+
+\subsection{打ち切りを含む尤度の導出}\label{subsec:m01-lik}
+打ち切り時間 $C$ が $T$ と独立で，密度 $g$，生存関数 $G(t)=\Prob(C>t)$ をもち，$g,G$ は $T$ の母数 $\theta$ を含まないとする（\emphx{独立で無情報な打ち切り}）．
+観測 $(Y,\delta)$ の分布は
+\begin{align*}
+\Prob(t\le Y<t+\dd t,\ \delta=1)&=\Prob(t\le T<t+\dd t,\ C\ge T)\approx f(t)G(t)\,\dd t,\\
+\Prob(t\le Y<t+\dd t,\ \delta=0)&=\Prob(t\le C<t+\dd t,\ T>C)\approx g(t)S(t)\,\dd t
+\end{align*}
+（独立性により同時確率が積になる）．したがって $n$ 人の尤度は
+\[
+\prod_i\{f(t_i)G(t_i)\}^{\delta_i}\{g(t_i)S(t_i)\}^{1-\delta_i}
+=\underbrace{\prod_if(t_i)^{\delta_i}S(t_i)^{1-\delta_i}}_{\theta\text{ を含む}}\ \times\ \underbrace{\prod_iG(t_i)^{\delta_i}g(t_i)^{1-\delta_i}}_{\theta\text{ を含まない}}
+\]
+で，$\theta$ について最大化するときは第2の因子を無視してよい．これが概要の式である．
+\begin{itemize}
+\item イベント例は「$t_i$ で起きた」ので密度 $f(t_i)$，打ち切り例は「$t_i$ より後に起きる」ので生存関数 $S(t_i)$ を寄与する．
+\item $f=hS$ を代入すると $f^{\delta}S^{1-\delta}=h^{\delta}S$．全員が $S(t_i)$ を寄与し，イベント例だけが $h(t_i)$ を追加で掛ける形になる．
+\end{itemize}
+
+\subsection{指数モデルの最尤推定}\label{subsec:m01-exp}
+\begin{meidai}[指数モデルの MLE と Fisher 情報量]\label[meidai]{prop:m01-exp}
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{確率モデル}：$T_1,\dots,T_n\iid\Ex(\lambda)$（$\lambda>0$ 未知），打ち切りは独立で無情報．観測は $(t_i,\delta_i)$．
+\item \textbf{確率関数}：$f(t;\lambda)=\lambda e^{-\lambda t}$，$S(t;\lambda)=e^{-\lambda t}$（$t\ge0$）．
+\item \textbf{尤度}：$L(\lambda)=\prod_i(\lambda e^{-\lambda t_i})^{\delta_i}(e^{-\lambda t_i})^{1-\delta_i}=\prod_i\lambda^{\delta_i}e^{-\lambda t_i}=\lambda^de^{-\lambda W}$．
+\item \textbf{対数尤度とスコア}：$\ell(\lambda)=d\log\lambda-\lambda W$，\quad $\ell'(\lambda)=\dfrac d\lambda-W$．
+\item \textbf{最大化}：$\ell'=0$ より $\lambda=d/W$．$\ell''(\lambda)=-d/\lambda^2<0$（$d\ge1$）なので $\ell$ は狭義凹で，これが最大点．
+\item \textbf{推定量}：$\hat\lambda=\sum_i\delta_i\big/\sum_iY_i$．観測情報量は $-\ell''(\lambda)=d/\lambda^2$．
+\end{enumerate}
+\end{meidai}
+\begin{itemize}
+\item $\hat\lambda$ は「イベント数/人時間」，すなわち発生率そのものである．打ち切りがなければ $d=n$，$\hat\lambda=1/\bar T$，$I_n(\lambda)=n/\lambda^2$（\kakomon{2023}{2}）．
+\item \Youchui $d$ は確率変数なので，期待情報量は $\E[d]/\lambda^2$ で，$\E[d]$ は打ち切り分布に依存する．
+      過去問（\kakomon{2018}{1}〔3〕）の解答は $I(\lambda)=\delta/\lambda^2$（$\delta=\sum\delta_i$）と書いており，観測値で答えてよい．
+\item 尤度 $\lambda^de^{-\lambda W}$ は，平均 $\lambda W$ のポアソン分布で $d$ を観測したときの尤度と $\lambda$ について同じ形である．
+\end{itemize}
+
+\subsection{デルタ法と2群比較}\label{subsec:m01-delta}
+$\hat\lambda$ の漸近分散は $1/I(\lambda)=\lambda^2/d$．$g(\lambda)=\log\lambda$ にデルタ法を使うと $g'(\lambda)=1/\lambda$ なので
+\[
+\V[\log\hat\lambda]\approx\Bigl(\frac1\lambda\Bigr)^2\cdot\frac{\lambda^2}{d}=\frac1d .
+\]
+独立な2群では分散を足して $\V[\log\hat\lambda_1-\log\hat\lambda_2]\approx1/d_1+1/d_2$．
+$H_0:\lambda_1=\lambda_2$ の検定統計量は
+\[
+Z=\frac{\log\hat\lambda_1-\log\hat\lambda_2}{\sqrt{1/d_1+1/d_2}}\ \text{（$H_0$ の下で漸近的に $\Normal(0,1)$）},
+\]
+ハザード比 $\lambda_1/\lambda_2$ の95\%信頼区間は $\exp\{\log(\hat\lambda_1/\hat\lambda_2)\pm1.96\sqrt{1/d_1+1/d_2}\}$．
+\textbf{対数をとった後の分散がイベント数だけで決まる}ことが要点である．生存時間試験の精度は症例数ではなくイベント数で決まる．
+
+\subsection{必要イベント数}\label{subsec:m01-events}
+各群のイベント数を $r$ とし，$\mu=\log\lambda_1-\log\lambda_2$ とおく．対立仮説の下で $Z$ はおよそ $\Normal\bigl(\mu/\sqrt{2/r},\,1\bigr)$ に従う．
+両側有意水準 $\alpha$ の検出力は，反対側の棄却域の確率（ほぼ0）を無視すると
+\[
+\Prob\Bigl(|Z|>z_{\alpha/2}\Bigr)\approx\Phi\Bigl(\frac{|\mu|}{\sqrt{2/r}}-z_{\alpha/2}\Bigr).
+\]
+これが $1-\beta$ になる条件は $\dfrac{|\mu|}{\sqrt{2/r}}-z_{\alpha/2}=z_\beta$（$\Phi(z_\beta)=1-\beta$）で，$r$ について解くと概要の式を得る．
+
+\begin{warnbox}
+\begin{itemize}
+\item 打ち切り例の寄与を $f(t_i)$ とする，または打ち切り例を除いて尤度を作る（正しくは $S(t_i)$）．
+\item 総観察時間 $W$ に打ち切り例の観察時間を入れ忘れる（\kakomon{2019}{1} では $W=10+13+18+19+23=83$）．
+\item $\V[\log\hat\lambda]$ を $1/n$（症例数）とする（正しくは $1/d$，イベント数）．
+\item 必要イベント数 $r$ を両群合計と取り違える（式の $r$ は各群）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m01-shutsudai}
+\begin{shutsudai}{\kakomon{2018}{1}：指数生存モデル（打ち切りあり）}
+\begin{itemize}
+\item 〔1〕打ち切りなしの尤度 → $\prod\lambda e^{-\lambda t_i}$．
+\item 〔2〕ランダムな右側打ち切りがある尤度 → $\prod f^{\delta_i}S^{1-\delta_i}=\prod\lambda^{\delta_i}e^{-\lambda t_i}$．\textbf{形が与えられないので知識が必要．}
+\item 〔3〕MLE と Fisher 情報量 → $\hat\lambda=\delta/\sum t_i$，$I(\lambda)=\delta/\lambda^2$．
+\item 〔4〕デルタ法で $\V[\log\hat\lambda_1-\log\hat\lambda_2]=1/d_1+1/d_2$ と $Z$ 統計量（漸近分散 $1/I$ は与えられる）．
+\item 〔5〕必要イベント数の式を示す（結果の式は与えられ，導出を問う）．
+\end{itemize}
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2019}{1}〔5〕：KM と同じデータで指数モデルの MLE}
+5例（イベント3，打ち切り2）から $\hat\lambda=3/83=0.036$．尤度は与えられない．
+この $\hat\lambda$ を境界内平均生存時間（RMST）の式に代入する設問が続く（RMST は本編第9章9.7節）．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2023}{2}：単群の指数試験（打ち切りなし）}
+尤度・Fisher 情報量 $n/\lambda^2$・Wald 型 $Z$ による症例数．こちらは誘導付き．打ち切りがないので本章の特別な場合．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m01-reidai}
+\begin{reidai}[\kakomon{2018}{1}型：指数モデルの尤度から必要イベント数まで]\label{reidai:m01-1}
+生存時間 $T$ はハザード $\lambda$ の指数分布に従い，$n$ 人の観測を $(t_i,\delta_i)$（$\delta_i=1$：イベント，$0$：打ち切り）とする．打ち切りは独立で無情報とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 打ち切りがない場合の尤度関数を示せ．
+\item 打ち切りがある場合の尤度関数を，打ち切り例がどのような情報を与えるかに触れて示せ．
+\item $\lambda$ の最尤推定量と，観測された Fisher 情報量を求めよ．イベント数を $d=\sum_i\delta_i$ とする．
+\item 2群（群1・群2，ハザード $\lambda_1,\lambda_2$，イベント数 $d_1,d_2$）について，$\hat\lambda_k$ の漸近分散が $1/I(\lambda_k)$ であることを用いて，
+      デルタ法で $\log\hat\lambda_1-\log\hat\lambda_2$ の漸近分散を求め，$H_0:\lambda_1=\lambda_2$ の $Z$ 統計量を示せ．
+\item 1対1割付で各群のイベント数を $r$ とする．両側有意水準5\%，検出力80\%でハザード比 $\lambda_1/\lambda_2=0.7$ を検出するのに必要な $r$ を求めよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[数値計算：MLE・信頼区間・2群の比較]\label{reidai:m01-2}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 6人の観察時間（月，$+$ は打ち切り）が $3,\ 6^+,\ 8,\ 12,\ 15^+,\ 16$ であった．指数モデルを仮定し，
+      $\hat\lambda$，中央生存時間の推定値，$\lambda$ の95\%信頼区間（$\log\hat\lambda$ の正規近似による）を求めよ．
+\item ある試験で，群1は総観察時間600人月でイベント30件，群2は500人月で45件であった．
+      ハザード比 $\lambda_1/\lambda_2$ の推定値，$Z$ 検定（両側5\%），ハザード比の95\%信頼区間を求めよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m01-kaisetsu}
+\begin{kaitou}{reidai:m01-1}
+〔1〕各人の寄与は密度 $f(t_i)=\lambda e^{-\lambda t_i}$ なので
+$L(\lambda)=\prod_{i=1}^n\lambda e^{-\lambda t_i}=\lambda^n\exp\bigl(-\lambda\sum_it_i\bigr)$．
+
+〔2〕イベント例（$\delta_i=1$）は「時点 $t_i$ でイベントが起きた」ので密度 $f(t_i)$ を，
+打ち切り例（$\delta_i=0$）は「$t_i$ まではイベントが起きていない（$T_i>t_i$）」ことだけがわかるので生存関数 $S(t_i)=e^{-\lambda t_i}$ を寄与する．
+独立で無情報な打ち切りの下では打ち切り時間の分布の部分は $\lambda$ を含まないので除いてよく，
+\[
+L(\lambda)=\prod_{i=1}^n f(t_i)^{\delta_i}S(t_i)^{1-\delta_i}=\prod_{i=1}^n(\lambda e^{-\lambda t_i})^{\delta_i}(e^{-\lambda t_i})^{1-\delta_i}=\prod_{i=1}^n\lambda^{\delta_i}e^{-\lambda t_i}=\lambda^{d}\exp\Bigl(-\lambda\sum_it_i\Bigr).
+\]
+
+〔3〕$W=\sum_it_i$ とおく．対数尤度とスコアは
+\[
+\ell(\lambda)=d\log\lambda-\lambda W,\qquad \ell'(\lambda)=\frac d\lambda-W .
+\]
+$\ell'(\lambda)=0$ を解いて $\lambda=d/W$．$\ell''(\lambda)=-d/\lambda^2<0$ なので最大点である．よって
+\[
+\hat\lambda=\frac{\sum_i\delta_i}{\sum_it_i},\qquad I(\lambda)=-\ell''(\lambda)=\frac{d}{\lambda^2}.
+\]
+
+〔4〕$\V[\hat\lambda_k]\approx1/I(\lambda_k)=\lambda_k^2/d_k$．$g(x)=\log x$，$g'(x)=1/x$ のデルタ法で
+$\V[\log\hat\lambda_k]\approx(1/\lambda_k)^2\cdot\lambda_k^2/d_k=1/d_k$．2群は独立なので
+\[
+\V[\log\hat\lambda_1-\log\hat\lambda_2]\approx\frac1{d_1}+\frac1{d_2},\qquad
+Z=\frac{\log\hat\lambda_1-\log\hat\lambda_2}{\sqrt{1/d_1+1/d_2}}
+\]
+で，$H_0$ の下で $Z$ は漸近的に $\Normal(0,1)$ に従う．
+
+〔5〕$d_1=d_2=r$ なら分母は $\sqrt{2/r}$．$\mu=\log\lambda_1-\log\lambda_2$ とすると，対立仮説の下で $Z\approx\Normal(\mu/\sqrt{2/r},1)$ で，
+検出力 $\approx\Phi\bigl(|\mu|/\sqrt{2/r}-z_{0.025}\bigr)=0.80$ より $|\mu|/\sqrt{2/r}=z_{0.025}+z_{0.20}$．
+正規分布表より $z_{0.025}=1.96$，$z_{0.20}=0.84$，対数表より $\log0.7=-0.3567$ なので，$r$ について解くと
+\[
+r=\frac{2(z_{0.025}+z_{0.20})^2}{\mu^2}=\frac{2\times(1.96+0.84)^2}{(-0.3567)^2}=\frac{2\times7.84}{0.12723}=\frac{15.68}{0.12723}=123.2 .
+\]
+切り上げて各群124イベント（両群で248イベント）．症例数ではなくイベント数であることに注意する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m01-2}
+〔1〕イベントは $3,8,12,16$ の4件で $d=4$．総観察時間は打ち切り例も含めて $W=3+6+8+12+15+16=60$ か月．
+\[
+\hat\lambda=\frac{4}{60}=\frac1{15}=0.0667\ /\text{月},\qquad
+\text{中央生存時間}=\frac{\log2}{\hat\lambda}=15\times0.6931=10.4\ \text{か月}
+\]
+（付表より $\log2=0.6931$）．
+$\SE(\log\hat\lambda)=1/\sqrt d=1/2=0.5$ なので $\log\lambda$ の95\%CI は $\log\hat\lambda\pm1.96\times0.5=\log\hat\lambda\pm0.98$．
+付表より $e^{-0.98}=0.3753$，$e^{0.98}=2.6645$ で，指数変換して
+\[
+\bigl(\hat\lambda e^{-0.98},\ \hat\lambda e^{0.98}\bigr)=(0.0667\times0.3753,\ 0.0667\times2.6645)=(0.0250,\ 0.178)\ /\text{月}.
+\]
+区間は $\hat\lambda$ に関して非対称で，イベントが4件しかないので幅が広い．
+
+〔2〕$\hat\lambda_1=30/600=0.05$，$\hat\lambda_2=45/500=0.09$（/人月）．$\widehat{\HR}=0.05/0.09=5/9=0.556$．
+\begin{align*}
+\log\widehat{\HR}&=\log5-\log9=1.6094-2.1972=-0.5878\quad\text{（付表より）},\\
+\SE&=\sqrt{\frac1{30}+\frac1{45}}=\sqrt{0.03333+0.02222}=\sqrt{0.05556}=0.2357 .
+\end{align*}
+$Z=-0.5878/0.2357=-2.49$．$|Z|>z_{0.025}=1.96$ なので有意水準5\%で $H_0:\lambda_1=\lambda_2$ を棄却する
+（正規分布表より $\Prob(Z>2.49)=0.0064$，両側 $P\approx0.013$）．\\
+95\%CI：$-0.5878\pm1.96\times0.2357=-0.5878\pm0.4620=(-1.050,\,-0.126)$ → 付表より $(e^{-1.050},e^{-0.126})=(0.350,\,0.882)$．\\
+解釈：群1のハザードは群2の約0.56倍で，区間は1を含まない．群1のほうがイベントの発生率が低い．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $h=f/S$，$H=-\log S$，$S=e^{-H}$，$f=hS$．
+\item 打ち切り尤度 $\prod f^{\delta}S^{1-\delta}=\prod h^{\delta}S$．イベントは密度，打ち切りは生存関数．独立で無情報な打ち切りが前提．
+\item 指数：$\hat\lambda=d/W$（$W$ は打ち切り例も含む総観察時間），$I=d/\lambda^2$，$\V[\log\hat\lambda]\approx1/d$．
+\item 2群：$\V[\log\widehat{\HR}]\approx1/d_1+1/d_2$，必要イベント数（各群）$2(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$．
+\end{itemize}
+\end{summarybox}
+
+% ===== m02_logrank.tex =====
+\chapter{ログランク検定}\label{ch:m02}
+
+\begin{priobox}{A}
+\kakomon{2016}{3}〔2〕では手順が文章で説明されるが，「リスク集合の数え方」「期待イベント数 $n_{1j}/n_j$」「分散 $\frac{n_{1j}}{n_j}\frac{n_{0j}}{n_j}$」「$\chi^2=U^2/V$ が自由度1」を知らないと時間内に計算を終えられない．
+群逐次デザイン（\kakomon{2017}{2}，第9章）でも検定統計量として現れる．本編の第9章9.5節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m02-gaiyo}
+2群の生存関数が等しい（$H_0:S_1(t)=S_0(t)$，すべての $t$）かを検定する．
+各イベント時点で「その直前に観察中の人（リスク集合）」を群×（イベントあり・なし）の $2\times2$ 表にまとめ，
+群1の観測イベント数 $O$ と，$H_0$ の下での期待イベント数 $E$ の差を全時点で足す．
+
+\begin{pointbox}[覚える式]
+時点 $t_{(j)}$ のリスク集合の人数を $n_{1j},n_{0j}$（計 $n_j$），イベント数を $d_{1j}$（計 $d_j$）とすると
+\[
+E_{1j}=d_j\frac{n_{1j}}{n_j},\qquad
+V_j=\frac{d_j\,n_{1j}\,n_{0j}\,(n_j-d_j)}{n_j^2(n_j-1)}\quad\Bigl(d_j=1\text{ なら }V_j=\frac{n_{1j}}{n_j}\cdot\frac{n_{0j}}{n_j}\Bigr),
+\]
+\[
+U=\sum_j(d_{1j}-E_{1j})=O_1-E_1,\qquad V=\sum_jV_j,\qquad \chi^2_{\mathrm{LR}}=\frac{U^2}{V}\ \xrightarrow{d}\ \chi^2_1\quad(H_0\text{ の下}).
+\]
+$P$ 値は $\sqrt{\chi^2}$ を標準正規分布表で引いて上側確率を2倍する．
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m02-shosai}
+\subsection{表の作り方}
+\begin{enumerate}
+\item 両群をまとめて観察時間を昇順に並べる．
+\item \textbf{イベントが起きた時点だけ}を取り出す（打ち切りだけの時点は行を作らない）．
+\item 各イベント時点 $t_{(j)}$ で，$t_{(j)}$ 以上の観察時間をもつ人を群ごとに数えて $n_{1j},n_{0j}$ とする．
+      同じ時点にイベントと打ち切りがあれば\textbf{イベントが先}（その時点の打ち切り例はリスク集合に含める）．
+\item $E_{1j}$，$V_j$ を計算して足す．一方の群のリスク集合が0人になった時点では $E_{1j}=d_j$ または0，$V_j=0$ で，検定に寄与しない．
+\end{enumerate}
+
+\subsection{期待値と分散の導出}
+時点 $t_{(j)}$ の表で周辺度数（$n_{1j},n_{0j},d_j$）を固定する．
+$H_0$ の下では，$n_j$ 人のうち誰がイベントを起こすかは群によらないので，
+$d_{1j}$ は「$n_j$ 人（うち群1が $n_{1j}$ 人）から $d_j$ 人を非復元で選んだときに含まれる群1の人数」であり，超幾何分布に従う．
+超幾何分布の平均と分散から
+\[
+\E[d_{1j}]=d_j\frac{n_{1j}}{n_j},\qquad \V[d_{1j}]=d_j\frac{n_{1j}}{n_j}\Bigl(1-\frac{n_{1j}}{n_j}\Bigr)\frac{n_j-d_j}{n_j-1}
+=\frac{d_jn_{1j}n_{0j}(n_j-d_j)}{n_j^2(n_j-1)} .
+\]
+最後の因子 $(n_j-d_j)/(n_j-1)$ は非復元抽出の有限母集団修正である．
+$d_j=1$ ならこの因子は1で，$V_j$ は「確率 $n_{1j}/n_j$ の Bernoulli 分布の分散」になる（\kakomon{2016}{3} の問題文の「二項分布の分散」はこれ）．
+\paragraph{同時イベントの小さな例}
+$n_{1j}=3$，$n_{0j}=4$，$d_j=2$ なら $E_{1j}=2\times3/7=0.857$，$V_j=\dfrac{2\times3\times4\times5}{7^2\times6}=\dfrac{120}{294}=0.408$．
+
+\subsection{時点ごとの分散を足してよい理由}
+時点ごとの表は独立ではない（前の時点のイベントが後のリスク集合を決める）．
+しかし $H_0$ の下で，時点 $t_{(j)}$ の直前までの情報（リスク集合の大きさを含む）と $d_j$ を与えると $d_{1j}-E_{1j}$ の条件付き期待値は0である．
+$i<j$ なら $d_{1i}-E_{1i}$ はその情報で決まるので，反復期待値により
+\[
+\E[(d_{1i}-E_{1i})(d_{1j}-E_{1j})]=\E\bigl[(d_{1i}-E_{1i})\,\E[d_{1j}-E_{1j}\mid\text{過去},d_j]\bigr]=0 .
+\]
+時点間の共分散が0なので $\V[U]=\sum_j\E[V_j]$ で，$V=\sum_jV_j$ はその推定量である．$\chi^2_1$ への収束はマルチンゲールの中心極限定理による（証明は略）．
+
+\subsection{性質}
+\begin{itemize}
+\item \textbf{Cox モデルのスコア検定と一致}：$h(t\mid x)=h_0(t)e^{\beta x}$（$x$ は群の指示）の $H_0:\beta=0$ のスコア検定はログランク検定になる（第3章）．
+      したがって比例ハザード型の差（ハザード比が一定で1に近い）に対して最も検出力が高い．
+\item \textbf{生存曲線が交差すると検出力を失う}：前半と後半で $O-E$ の符号が逆になり打ち消し合う．
+\item どちらの群で計算しても $\chi^2$ は同じ（両群の $O-E$ の和は0）．
+\item 層別 Cochran（CMH）検定（第7章）と同じ形：時点を層とみなしたもの．
+\end{itemize}
+
+\begin{warnbox}
+\begin{itemize}
+\item 打ち切りだけの時点にも行を作る．同時点の打ち切りを先に処理してリスク集合を1減らす．
+\item 分散を $\sum E_{1j}$（ポアソン近似）や $\sum E_{1j}+\sum E_{0j}$ で代用する．問題文の指定（二項分散・超幾何分散）に従う．
+\item $\chi^2$ を自由度2で判定する（2群なら自由度1）．
+\item 有意でないことを「生存曲線が同じ」の根拠にする．とくに曲線が交差している場合．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m02-shutsudai}
+\begin{shutsudai}{\kakomon{2016}{3}〔2〕：2群各5例のログランク検定}
+イベント時点ごとのイベント数とリスク集合の人数の表（表2）が与えられ，各時点のイベントは1例．
+スコア $u=\sum_t(d_t-n_{1t}/n_t)$ と分散 $v=\sum_t\frac{n_{1t}}{n_t}\frac{n_t-n_{1t}}{n_t}$ の作り方は文章で説明される．
+群1で $u=-2.3222$，$v=0.9591$，$\chi^2=u^2/v=5.62$，$\sqrt{5.62}=2.37$ から両側 $P=2\times0.0089=0.018$．\\
+この問題では群1の最後の2時点で群2のリスク集合が0人になり，$u,v$ への寄与が0になる．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2017}{2}：群逐次デザインの検定統計量}
+中間解析・最終解析の検定統計量としてログランク検定の $Z(t)$ が使われる．$Z(t)$ が $H_0$ の下で標準正規分布に従うことは与えられる．
+情報量（$V$）がイベント数にほぼ比例するので，情報時間を（中間解析時のイベント数）/（最終の目標イベント数）とする（第9章）．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m02-reidai}
+\begin{reidai}[\kakomon{2016}{3}〔2〕型：ログランク検定の手計算]\label{reidai:m02-1}
+2群各5人の生存時間データを次に示す（打ち切りの有無は 1：打ち切り，0：イベント）．
+\begin{center}\small
+\begin{tabular}{@{}cccc@{\qquad}cccc@{}}
+\toprule
+群 & 観察時間（週） & 打ち切り & & 群 & 観察時間（週） & 打ち切り\\
+\midrule
+1 & 3 & 1 & & 2 & 1 & 0\\
+1 & 6 & 0 & & 2 & 2 & 0\\
+1 & 8 & 1 & & 2 & 4 & 0\\
+1 & 10 & 0 & & 2 & 5 & 1\\
+1 & 12 & 0 & & 2 & 7 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item イベント時点ごとに，各群のイベント数とリスク集合の人数の表を作れ．
+\item 群1について，各イベント時点の期待イベント数と分散（各時点のイベントは1例なので Bernoulli 分散）を求め，ログランク検定の $\chi^2$ 統計量と両側 $P$ 値を求めよ．
+\item 結果を解釈せよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m02-kaisetsu}
+\begin{kaitou}{reidai:m02-1}
+〔1〕打ち切りの列は「1：打ち切り」なので，群1のイベントは6，10，12週，打ち切りは3，8週．群2のイベントは1，2，4，7週，打ち切りは5週．
+全体を並べると $1,\ 2,\ 3^+,\ 4,\ 5^+,\ 6,\ 7,\ 8^+,\ 10,\ 12$．イベント時点は 1，2，4，6，7，10，12 の7つ．
+各時点で，その時点以上の観察時間をもつ人を数える．
+\begin{center}\small
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+観察時間（週） & 1 & 2 & 4 & 6 & 7 & 10 & 12\\
+\midrule
+群1のイベント数 $d_{1j}$ & 0 & 0 & 0 & 1 & 0 & 1 & 1\\
+群2のイベント数 & 1 & 1 & 1 & 0 & 1 & 0 & 0\\
+群1のリスク集合 $n_{1j}$ & 5 & 5 & 4 & 4 & 3 & 2 & 1\\
+群2のリスク集合 $n_{0j}$ & 5 & 4 & 3 & 1 & 1 & 0 & 0\\
+リスク集合の総数 $n_j$ & 10 & 9 & 7 & 5 & 4 & 2 & 1\\
+\bottomrule
+\end{tabular}
+\end{center}
+（4週の群1は3週の打ち切りで4人．6週の群2は，1・2・4週のイベントと5週の打ち切りで1人（7週の人）．
+7週の群1は6週のイベントで3人．10週の群1は8週の打ち切りで2人．）
+
+〔2〕各時点のイベントは1例なので $E_{1j}=n_{1j}/n_j$，$V_j=n_{1j}n_{0j}/n_j^2$．
+\begin{center}\small
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+観察時間 & 1 & 2 & 4 & 6 & 7 & 10 & 12 & 計\\
+\midrule
+$d_{1j}$ & 0 & 0 & 0 & 1 & 0 & 1 & 1 & $O_1=3$\\
+$E_{1j}=n_{1j}/n_j$ & $5/10$ & $5/9$ & $4/7$ & $4/5$ & $3/4$ & $2/2$ & $1/1$ & \\
+ & 0.5000 & 0.5556 & 0.5714 & 0.8000 & 0.7500 & 1 & 1 & $E_1=5.1770$\\
+$d_{1j}-E_{1j}$ & $-0.5000$ & $-0.5556$ & $-0.5714$ & $0.2000$ & $-0.7500$ & 0 & 0 & $U=-2.1770$\\
+$V_j=n_{1j}n_{0j}/n_j^2$ & $25/100$ & $20/81$ & $12/49$ & $4/25$ & $3/16$ & 0 & 0 & \\
+ & 0.2500 & 0.2469 & 0.2449 & 0.1600 & 0.1875 & 0 & 0 & $V=1.0893$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\[
+\chi^2_{\mathrm{LR}}=\frac{U^2}{V}=\frac{(-2.1770)^2}{1.0893}=\frac{4.7393}{1.0893}=4.35 .
+\]
+$\sqrt{4.35}=2.09$ で，正規分布表より $\Prob(Z>2.09)=0.0183$，両側 $P=2\times0.0183=0.037$．
+（$\chi^2$ 分布表の $\chi^2_1(0.05)=3.841<4.35$ と比べてもよい．）有意水準5\%で $H_0$ を棄却する．
+
+〔3〕群1の観測イベント数3は期待値5.18より少なく，群1のほうが生存が良い（イベントが遅い）方向の差が有意である．
+ただし各群5人の小標本で，$\chi^2_1$ は漸近近似である．差の大きさ（ハザード比）はログランク検定からはわからないので，Cox 回帰（第3章）で推定する．
+10週と12週は群2のリスク集合が0人なので $U,V$ に寄与しない（群2が全員いなくなった後のイベントは比較の情報を持たない）．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item イベント時点ごとの $2\times2$ 表．同時点ではイベントが先．打ち切りだけの時点は行を作らない．
+\item $E_{1j}=d_jn_{1j}/n_j$，$V_j=d_jn_{1j}n_{0j}(n_j-d_j)/\{n_j^2(n_j-1)\}$（$d_j=1$ なら $n_{1j}n_{0j}/n_j^2$）．
+\item $\chi^2=(O_1-E_1)^2/V$，自由度1．Cox のスコア検定と一致し，比例ハザード型の差に強く，交差に弱い．
+\end{itemize}
+\end{summarybox}
+
+% ===== m03_cox.tex =====
+\chapter{Cox 部分尤度}\label{ch:m03}
+
+\begin{priobox}{A}
+\kakomon{2016}{3}〔3〕はハザード $h_0(t)e^{\beta x}$ だけを与えて「部分尤度 $L$ を求めよ」と問う．
+部分尤度の定義（リスク集合の中で誰がイベントを起こしたかの条件付き確率の積）を知らなければ書けない．
+\kakomon{2017}{1}，\kakomon{2022}{1} は比例ハザードモデルの性質（$S=S_0^{\exp(\beta x)}$，2重対数表現，HR の CI）を問う．本編の第10章10.1節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m03-gaiyo}
+共変量 $\bm x$ をもつ人のハザードを
+\[
+h(t\mid\bm x)=h_0(t)\exp(\bm\beta\transp\bm x)
+\]
+とする（Cox 比例ハザードモデル）．$h_0(t)$ はベースラインハザードで形を特定しない（セミパラメトリック）．
+$h_0$ を推定せずに $\bm\beta$ だけを推定するのが部分尤度である．
+
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item ハザード比 $h(t\mid\bm x_1)/h(t\mid\bm x_2)=\exp\{\bm\beta\transp(\bm x_1-\bm x_2)\}$ は $t$ によらない（比例ハザード性）．2値の $x$ なら HR $=e^\beta$．
+\item $S(t\mid\bm x)=S_0(t)^{\exp(\bm\beta\transp\bm x)}$，\quad $S_0(t)=\exp\bigl\{-\int_0^th_0(u)\dd u\bigr\}$，\quad
+      $\log\{-\log S(t\mid\bm x)\}=\log H_0(t)+\bm\beta\transp\bm x$．
+\item 部分尤度（同時点のイベントなし．$t_{(j)}$ でイベントを起こした人を $(j)$，リスク集合を $R_j$）：
+\[
+L(\bm\beta)=\prod_{j}\frac{\exp(\bm\beta\transp\bm x_{(j)})}{\sum_{l\in R_j}\exp(\bm\beta\transp\bm x_l)} .
+\]
+\item 2群（$x=0,1$）なら各因子は $\dfrac{e^{\beta x_{(j)}}}{(\text{群0のリスク人数})+(\text{群1のリスク人数})e^\beta}$．
+\item $\beta=0$ のスコア検定はログランク検定に一致する．Wald の95\%CI：$\exp\{\hat\beta\pm1.96\,\SE(\hat\beta)\}$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m03-shosai}
+\subsection{比例ハザード性と生存関数}
+$H(t\mid\bm x)=\int_0^th_0(u)e^{\bm\beta\transp\bm x}\dd u=e^{\bm\beta\transp\bm x}H_0(t)$ と $S=e^{-H}$（第1章）より
+\[
+S(t\mid\bm x)=\exp\{-e^{\bm\beta\transp\bm x}H_0(t)\}=\bigl\{e^{-H_0(t)}\bigr\}^{\exp(\bm\beta\transp\bm x)}=S_0(t)^{\exp(\bm\beta\transp\bm x)} .
+\]
+両辺の $-\log$ をとると $-\log S(t\mid\bm x)=e^{\bm\beta\transp\bm x}H_0(t)$，さらに $\log$ をとると
+\[
+\log\{-\log S(t\mid\bm x)\}=\log H_0(t)+\bm\beta\transp\bm x .
+\]
+$x$ の値によって曲線が上下に $\beta$ だけ平行移動するだけなので，比例ハザードの下では群ごとの2重対数プロット（縦軸 $\log\{-\log\hat S(t)\}$，横軸 $\log t$）が平行になる．
+横軸を $\log t$ にしても縦方向の差 $\beta$ は変わらない．
+
+\subsection{極値分布と乱数生成（\kakomon{2017}{1}）}
+\paragraph{$H(T)\sim\Ex(1)$}
+$F(T)\sim\Unif(0,1)$（確率積分変換）より $\Prob(H(T)>t)=\Prob(S(T)<e^{-t})=\Prob(F(T)>1-e^{-t})=e^{-t}$．
+\paragraph{極値分布}
+$\epsilon=\log\{-\log S(T\mid\bm x)\}=\log H(T\mid\bm x)$ とおくと，$H(T\mid\bm x)\sim\Ex(1)$ より
+\[
+\Prob(\epsilon\le u)=\Prob\bigl(H(T\mid\bm x)\le e^u\bigr)=1-\exp(-e^u).
+\]
+よって $\log H_0(T)=-\bm\beta\transp\bm x+\epsilon$ という線形変換モデルの形に書ける．
+\paragraph{乱数生成}
+$V\sim\Unif(0,1)$ なら $S(T\mid\bm x)$ と $V$ は同じ分布なので，$H(T\mid\bm x)=-\log V$ を $T$ について解けばよい：
+$T=H_0^{-1}\bigl(-e^{-\bm\beta\transp\bm x}\log V\bigr)$．共変量も確率変数なら，先に共変量の乱数を作り，それとは独立な $V$ を使う．
+
+\subsection{部分尤度の導出}
+時点 $t_{(j)}$ でリスク集合 $R_j$ の中から\textbf{ちょうど1人}がイベントを起こしたという条件の下で，それが $(j)$ である条件付き確率は
+\[
+\frac{h(t_{(j)}\mid\bm x_{(j)})}{\sum_{l\in R_j}h(t_{(j)}\mid\bm x_l)}
+=\frac{h_0(t_{(j)})e^{\bm\beta\transp\bm x_{(j)}}}{\sum_{l\in R_j}h_0(t_{(j)})e^{\bm\beta\transp\bm x_l}}
+=\frac{e^{\bm\beta\transp\bm x_{(j)}}}{\sum_{l\in R_j}e^{\bm\beta\transp\bm x_l}} .
+\]
+$h_0(t_{(j)})$ が約分されて消える．これを全イベント時点について掛けたものが部分尤度である．
+\begin{itemize}
+\item 打ち切り例は分子に現れず，打ち切り時点まで分母のリスク集合に含まれる．
+\item 分母のリスク集合は\textbf{両群を合わせた}その時点の観察中の全員．
+\item 最後の時点でリスク集合が1人なら因子は1（$e^{\beta x}/e^{\beta x}$）．同じ群の人だけが残った時点も因子は $\beta$ によらない．
+\end{itemize}
+
+\subsection{スコア・情報量とログランク検定}
+1次元の $\beta$ で，$\bar x_j(\beta)=\sum_{l\in R_j}x_le^{\beta x_l}\big/\sum_{l\in R_j}e^{\beta x_l}$（リスク集合での重み付き平均）とすると
+\[
+U(\beta)=\frac{\partial\log L}{\partial\beta}=\sum_j\{x_{(j)}-\bar x_j(\beta)\},\qquad
+I(\beta)=-\frac{\partial^2\log L}{\partial\beta^2}=\sum_j\Bigl\{\frac{\sum_{R_j}x_l^2e^{\beta x_l}}{\sum_{R_j}e^{\beta x_l}}-\bar x_j(\beta)^2\Bigr\}.
+\]
+$x\in\{0,1\}$，$\beta=0$ では $\bar x_j(0)=n_{1j}/n_j$（群1の割合）で，
+\[
+U(0)=\sum_j\Bigl(d_{1j}-\frac{n_{1j}}{n_j}\Bigr)=O_1-E_1,\qquad
+I(0)=\sum_j\frac{n_{1j}}{n_j}\Bigl(1-\frac{n_{1j}}{n_j}\Bigr)=\sum_j\frac{n_{1j}n_{0j}}{n_j^2}.
+\]
+スコア検定 $U(0)^2/I(0)$ はログランク検定（第2章，各時点のイベント1例）そのものである．
+部分尤度は通常の尤度と同様に扱え，$\hat\beta$ は漸近正規で $\SE(\hat\beta)=I(\hat\beta)^{-1/2}$，Wald 検定 $\hat\beta/\SE$ は漸近的に $\Normal(0,1)$．
+\begin{supbox}[補足：同時点のイベント]
+同時点に $d_j\ge2$ のイベントがあるときは Breslow 近似 $\prod_j e^{\bm\beta\transp\bm s_j}/\{\sum_{R_j}e^{\bm\beta\transp\bm x_l}\}^{d_j}$（$\bm s_j$ はその時点のイベント例の共変量の和）がよく使われる．過去問では出題されていない．
+\end{supbox}
+
+\subsection{ハザード比の解釈}
+\begin{itemize}
+\item HR $<1$ なら $x=1$ の群のハザードが低い（イベントが起きにくい），$>1$ なら高い．CI が1を含めば差があるとは言えない．
+\item 「HR $=0.7$」は「どの時点でも，生存している人の瞬間的なイベント発生率が30\%低い」であり，「イベント割合が30\%低い」ではない．
+      比例ハザードの下でも $t$ までのイベント割合の比 $\{1-S_0(t)^{\HR}\}/\{1-S_0(t)\}$ は HR と一致しない．
+\end{itemize}
+
+\begin{warnbox}
+\begin{itemize}
+\item 部分尤度の分母を同じ群の人だけにする．打ち切り例を分母から早く外す（打ち切り時点まではリスク集合に入る）．
+\item 打ち切り例の因子を書く（打ち切り時点はイベントがないので因子を作らない）．
+\item 対数 HR の CI $\hat\beta\pm1.96\SE$ を指数変換し忘れる．HR を「リスク比」と説明する．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m03-shutsudai}
+\begin{shutsudai}{\kakomon{2016}{3}〔3〕：部分尤度の書き下し}
+2群各5例（群1：$x=0$，群2：$x=1$）．群2の4つのイベント時点では分子 $e^\beta$，分母は（群1のリスク人数）$+$（群2のリスク人数）$e^\beta$．
+群2が全員いなくなった後の群1のイベント2件は $1/2$，$1/1$ で，
+$L=\frac{e^\beta}{5+5e^\beta}\cdot\frac{e^\beta}{5+4e^\beta}\cdot\frac{e^\beta}{3+2e^\beta}\cdot\frac{e^\beta}{2+e^\beta}\cdot\frac12\cdot\frac11$．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2017}{1}：ハザードの理論と Cox モデル}
+〔1〕〜〔3〕$\lambda=f/S$，$\Lambda=-\log S$，$\Prob(\Lambda(T)>t)=e^{-t}$．
+〔4〕$\log\{-\log S(t\mid\bm Z)\}=h(t)+\bm\beta'\bm Z$ の $h(t)=\log\Lambda_0(t)$．
+〔5〕$\epsilon(T)$ の分布 $1-\exp(-e^x)$．
+〔6〕$\lambda_0(t)=\frac32\sqrt t$，$\beta=\frac12$，年齢 $Z\sim\Unif[40,70]$ での乱数生成：$\Lambda_0=t^{3/2}$ から $T=\exp\{-Z/3+\frac23\log(-\log V)\}$．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2022}{1}：比例ハザードモデルの性質と HR の CI}
+〔1〕HR $=e^\beta$ が $t$ によらない．〔2〕$S_0(t)=\exp(-\int_0^t\lambda_0)$．〔3〕2重対数プロットが平行になる理由．
+〔4〕$\hat\beta=0.06$，SE $0.18$ から $\widehat{\HR}=1.06$，95\%CI $(0.75,\,1.51)$．〔5〕CI が1を含むので差があるとは言えない．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m03-reidai}
+\begin{reidai}[\kakomon{2016}{3}〔3〕型：部分尤度とスコア検定]\label{reidai:m03-1}
+\cref{reidai:m02-1}のデータに，群1なら $x=0$，群2なら $x=1$ の共変量で Cox モデル $h(t\mid x)=h_0(t)e^{\beta x}$ を当てはめる．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 部分尤度 $L(\beta)$ を書け．
+\item $\beta=0$ におけるスコア $U(0)$ と情報量 $I(0)$ を求め，スコア検定統計量 $U(0)^2/I(0)$ が\cref{reidai:m02-1}のログランク統計量と一致することを確かめよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2022}{1}型：比例ハザードの性質と HR の推定]\label{reidai:m03-2}
+共変量 $x$（試験群1，対照群0）をもつ人のハザードを $\lambda(t;x)=\lambda_0(t)\exp(\beta x)$ とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item このモデルが比例ハザード性を満たすことを示せ．
+\item $S(t;x)=S_0(t)^{\exp(\beta x)}$ と書けることを示し，$S_0(t)$ を $\lambda_0$ で表せ．
+\item $\log\{-\log S(t;x)\}$ を $\log t$ に対してプロットすると，比例ハザードの下では群間で平行になる理由を述べよ．
+\item ある試験でこのモデルを当てはめ，$\hat\beta=-0.35$，$\SE(\hat\beta)=0.15$ を得た．ハザード比の推定値と，対数ハザード比の正規近似による95\%信頼区間を求めよ．
+\item 治療効果を評価せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2017}{1}〔4〕〜〔6〕型：2重対数表現と乱数生成]\label{reidai:m03-3}
+$T$ が Cox モデル $\lambda(t\mid Z)=3t^2\exp(Z/3)$ に従い，共変量 $Z$ は区間 $[30,60]$ 上の一様分布に従うとする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $\log\{-\log S(t\mid Z)\}=h(t)+Z/3$ となる $h(t)$ を求めよ．
+\item $\epsilon=\log\{-\log S(T\mid Z)\}$ の分布関数が $1-\exp(-e^x)$ であることを示せ．
+\item $\Unif(0,1)$ の乱数を用いて $T$ の乱数を生成する手順を述べよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m03-kaisetsu}
+\begin{kaitou}{reidai:m03-1}
+〔1〕\cref{reidai:m02-1}の解答の表から，各イベント時点のリスク集合は（群1の人数，群2の人数）$=(5,5),(5,4),(4,3),(4,1),(3,1),(2,0),(1,0)$．
+群2（$x=1$）の人のハザードは $h_0e^\beta$，群1は $h_0$ なので，分母は（群1の人数）$+$（群2の人数）$e^\beta$．
+分子はイベントを起こした人が群2なら $e^\beta$，群1なら1．
+\begin{center}\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+時点 & イベント & リスク集合 & 因子\\
+\midrule
+1 & 群2 & 群1 5人，群2 5人 & $e^\beta/(5+5e^\beta)$\\
+2 & 群2 & 群1 5人，群2 4人 & $e^\beta/(5+4e^\beta)$\\
+4 & 群2 & 群1 4人，群2 3人 & $e^\beta/(4+3e^\beta)$\\
+6 & 群1 & 群1 4人，群2 1人 & $1/(4+e^\beta)$\\
+7 & 群2 & 群1 3人，群2 1人 & $e^\beta/(3+e^\beta)$\\
+10 & 群1 & 群1 2人 & $1/2$\\
+12 & 群1 & 群1 1人 & $1/1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\[
+L(\beta)=\frac{e^\beta}{5+5e^\beta}\cdot\frac{e^\beta}{5+4e^\beta}\cdot\frac{e^\beta}{4+3e^\beta}\cdot\frac{1}{4+e^\beta}\cdot\frac{e^\beta}{3+e^\beta}\cdot\frac12\cdot\frac11 .
+\]
+打ち切り（3，5，8週）の時点には因子がなく，打ち切り例はその時点まで分母に入っている．
+
+〔2〕$\beta=0$ では $\bar x_j(0)$ はリスク集合に占める群2の割合 $5/10,\ 4/9,\ 3/7,\ 1/5,\ 1/4,\ 0,\ 0$．
+イベントを起こした人の $x_{(j)}$ は $1,1,1,0,1,0,0$．
+\begin{align*}
+U(0)&=\sum_j\{x_{(j)}-\bar x_j(0)\}\\
+&=(1-0.5000)+(1-0.4444)+(1-0.4286)+(0-0.2000)+(1-0.2500)\\
+&=0.5000+0.5556+0.5714-0.2000+0.7500=2.1770,
+\end{align*}
+\[
+I(0)=\sum_j\bar x_j(1-\bar x_j)=0.2500+0.2469+0.2449+0.1600+0.1875=1.0893 .
+\]
+$U(0)^2/I(0)=4.7393/1.0893=4.35$．これは\cref{reidai:m02-1}の $\chi^2_{\mathrm{LR}}=4.35$ に一致する．
+$U(0)$ は群2の $O_2-E_2=4-1.8230=2.1770$ で，群1の $O_1-E_1=-2.1770$ と符号だけが逆（2乗すれば同じ）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m03-2}
+〔1〕$\dfrac{\lambda(t;1)}{\lambda(t;0)}=\dfrac{\lambda_0(t)e^\beta}{\lambda_0(t)}=e^\beta$ は $t$ によらない定数なので，比例ハザード性を満たす．
+
+〔2〕$S(t;x)=\exp\bigl\{-\int_0^t\lambda(u;x)\dd u\bigr\}=\exp\bigl\{-e^{\beta x}\int_0^t\lambda_0(u)\dd u\bigr\}=\Bigl[\exp\bigl\{-\int_0^t\lambda_0(u)\dd u\bigr\}\Bigr]^{\exp(\beta x)}$．
+よって $S_0(t)=\exp\bigl\{-\int_0^t\lambda_0(u)\dd u\bigr\}$．
+
+〔3〕$\log\{-\log S(t;x)\}=\log\{-e^{\beta x}\log S_0(t)\}=\beta x+\log\{-\log S_0(t)\}$．
+$x$ の違いは曲線を縦方向に $\beta$ だけずらすだけで，形（$t$ への依存）は共通なので，横軸を $\log t$ にしても群間で平行になる．
+
+〔4〕付表より $\widehat{\HR}=e^{-0.35}=0.705$．$1.96\times0.15=0.294$ なので対数 HR の95\%CI は $-0.35\pm0.294=(-0.644,\,-0.056)$，
+付表より HR の95\%CI は $(e^{-0.644},\,e^{-0.056})=(0.525,\,0.946)$．
+
+〔5〕HR $<1$ なので点推定では試験群のハザードが対照群の約0.7倍（約30\%低い）．95\%CI が1を含まない（上限0.946 $<1$）ので，
+試験群はイベントまでの時間を延ばすと言える（Wald 検定 $Z=-0.35/0.15=-2.33$，$|Z|>1.96$ と同じ結論）．
+「イベント割合が30\%低い」ではなく，瞬間的な発生率の比であることに注意する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m03-3}
+〔1〕$\lambda_0(t)=3t^2$ より $\Lambda_0(t)=\int_0^t3u^2\dd u=t^3$．$-\log S(t\mid Z)=\Lambda_0(t)e^{Z/3}$ の対数をとって
+$\log\{-\log S(t\mid Z)\}=\log\Lambda_0(t)+Z/3=3\log t+Z/3$．よって $h(t)=3\log t$．
+
+〔2〕$\Lambda(T\mid Z)=-\log S(T\mid Z)$ について，確率積分変換 $F(T\mid Z)\sim\Unif(0,1)$ から
+$\Prob(\Lambda(T\mid Z)>s)=\Prob(S(T\mid Z)<e^{-s})=\Prob(F(T\mid Z)>1-e^{-s})=e^{-s}$，すなわち $\Lambda(T\mid Z)\sim\Ex(1)$．
+$\epsilon=\log\Lambda(T\mid Z)$ なので
+$\Prob(\epsilon\le x)=\Prob(\Lambda(T\mid Z)\le e^x)=1-\exp(-e^x)$．
+
+〔3〕$S(T\mid Z)\sim\Unif(0,1)$ なので，$\Unif(0,1)$ 乱数 $V$ に対し $\epsilon=\log(-\log V)$ とできる．
+〔1〕より $3\log T=-Z/3+\epsilon$，$T=\exp\{-Z/9+\tfrac13\log(-\log V)\}=(-\log V)^{1/3}e^{-Z/9}$．手順は
+\begin{enumerate}[label=Step \arabic*：,leftmargin=*]
+\item $\Unif(0,1)$ 乱数 $U$ を生成し，$Z=30+30U$ とする．
+\item $U$ と独立な $\Unif(0,1)$ 乱数 $V$ を生成し，$T=(-\log V)^{1/3}e^{-Z/9}$ とする．
+\end{enumerate}
+（検算：$\Lambda(T\mid Z)=T^3e^{Z/3}=(-\log V)e^{-Z/3}e^{Z/3}=-\log V\sim\Ex(1)$．）
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $h(t\mid\bm x)=h_0(t)e^{\bm\beta\transp\bm x}$．HR $=e^\beta$ は時間によらない．$S=S_0^{\exp(\bm\beta\transp\bm x)}$，2重対数は平行．
+\item 部分尤度＝各イベント時点の「リスク集合の中でその人がイベントを起こす」条件付き確率の積．$h_0$ は約分で消える．
+\item 分母は両群を合わせたリスク集合．打ち切り例は分母にだけ入る．
+\item $\beta=0$ のスコア検定＝ログランク検定．CI は $\exp(\hat\beta\pm1.96\SE)$．
+\end{itemize}
+\end{summarybox}
+
+% ===== m04_km.tex =====
+\part*{優先度B：知識がないと時間がかかる}
+\addcontentsline{toc}{part}{優先度B：知識がないと時間がかかる}
+
+\chapter{Kaplan--Meier 推定}\label{ch:m04}
+
+\begin{priobox}{B}
+「カプラン・マイヤー法によって描け」（\kakomon{2016}{3}〔1〕，\kakomon{2021}{1}〔2〕）は推定式が与えられないが，
+準1級の範囲で式自体は易しい．落としやすいのは\textbf{同時点の打ち切りの扱い}，\textbf{リスク集合の数え間違い}，\textbf{打ち切りで曲線を下げる}誤りである．
+\kakomon{2019}{1}〔2〕では与えられた Nelson--Aalen 型推定値が KM 以上であることの証明が問われた．本編の第9章9.4・9.6節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m04-gaiyo}
+相異なるイベント時点を $t_{(1)}<\dots<t_{(r)}$，時点 $t_{(j)}$ の直前に観察中の人数（リスク集合の大きさ）を $n_j$，$t_{(j)}$ のイベント数を $d_j$ とする．
+\begin{pointbox}[覚える式]
+\[
+\hat S(t)=\prod_{j:\,t_{(j)}\le t}\Bigl(1-\frac{d_j}{n_j}\Bigr)\quad\text{（Kaplan--Meier 推定量）}
+\]
+\begin{itemize}
+\item 打ち切り時点では $\hat S$ は変わらず，次のリスク集合が減るだけ．同時点ではイベントが先（その時点の打ち切り例は $n_j$ に含める）．
+\item 中央生存時間 $=\hat S(t)\le0.5$ となる最小の $t$．
+\item Greenwood（近似）：$\widehat\V[\hat S(t)]\approx\hat S(t)^2\sum_{t_{(j)}\le t}\dfrac{d_j}{n_j(n_j-d_j)}$．
+\item Nelson--Aalen：$\tilde H(t)=\sum_{t_{(j)}\le t}d_j/n_j$，$\tilde S(t)=e^{-\tilde H(t)}\ge\hat S(t)$（$e^{-x}\ge1-x$ による）．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m04-shosai}
+\subsection{式の意味}
+$t_{(j)}\le t<t_{(j+1)}$ なら，イベントのない区間では生存確率は減らないので
+\[
+S(t)=\prod_{k\le j}\Prob\bigl(T>t_{(k)}\mid T\ge t_{(k)}\bigr)
+\]
+と条件付き確率の積に分解できる．各因子を「時点 $t_{(k)}$ のリスク集合 $n_k$ 人のうち生き残った割合」$1-d_k/n_k$ で推定したものが KM 推定量である．
+打ち切り例は打ち切り時点まではリスク集合に入り，その後の分母から外れる．打ち切り例を最初から除いたり，打ち切りをイベントとみなしたりすると偏る．
+前提は独立な打ち切り（打ち切られた人のその後のハザードが，同じ時点でリスク集合に残っている人と同じ）である．
+
+\subsection{表の作り方と曲線}
+\begin{enumerate}
+\item 観察時間を昇順に並べる．打ち切り指示変数の向き（1が打ち切りかイベントか）を確認する．
+\item 各イベント時点で $n_j$（その時点以上の観察時間をもつ人数）と $d_j$ を数える．
+\item 前の $\hat S$ に $(1-d_j/n_j)$ を掛ける．
+\item 曲線は右連続な階段関数で，イベント時点でのみ下がる．打ち切り時点には $+$ 印を付ける．
+      最長の観察が打ち切りなら曲線は0に到達しない．最長の観察がイベントなら $n=d$ で0になる．
+\end{enumerate}
+過去問の解答の表には「死亡率」の列（$1-\hat S$）や打ち切り時点の行も含まれることがある．$1-\hat S(t)$ は累積イベント割合（累積発生率）の推定値で，\kakomon{2021}{1}〔2〕はこれを描かせた．
+
+\subsection{Greenwood の公式}
+$\hat p_j=1-d_j/n_j$ とすると $\log\hat S=\sum_j\log\hat p_j$．$n_j$ を与えると $n_j-d_j\sim\Bin(n_j,p_j)$ で，
+(i) 異なる時点の $\hat p_j$ を無相関とみなし，(ii) デルタ法で $\V[\log\hat p_j]\approx(1-p_j)/(n_jp_j)$ として $p_j$ に $\hat p_j$ を代入すると $d_j/\{n_j(n_j-d_j)\}$．
+最後に $e^x$ のデルタ法で $\V[\hat S]\approx\hat S^2\V[\log\hat S]$．厳密な分散ではなく漸近近似である．
+$n_j=d_j$（最後のイベントでリスク集合が尽きる）と定義できない．
+\kakomon{2016}{3} の解答の「標準偏差」の列はこの公式による（公式自体は問われていない）．
+
+\subsection{Nelson--Aalen 推定量との比較}
+$d_j/n_j$ は時点 $t_{(j)}$ の離散ハザード（その時点でのイベントの割合）の推定値である．
+\begin{itemize}
+\item KM は離散時間の関係 $S=\prod(1-\text{離散ハザード})$ で生存関数を作る．
+\item Nelson--Aalen は累積ハザードを $\tilde H=\sum d_j/n_j$ と推定し，連続時間の関係 $S=e^{-H}$ で $\tilde S=e^{-\tilde H}=\prod e^{-d_j/n_j}$ とする．
+\end{itemize}
+\begin{meidai}[$\tilde S\ge\hat S$（\kakomon{2019}{1}〔2〕）]\label[meidai]{prop:m04-na}
+任意の $t$ で $\tilde S(t)\ge\hat S(t)$．
+\end{meidai}
+\begin{proof}
+$g(x)=e^{-x}-(1-x)$ は $g(0)=0$，$g'(x)=1-e^{-x}$ が $x<0$ で負，$x>0$ で正なので $x=0$ で最小値0をとり，すべての $x$ で $e^{-x}\ge1-x$．
+$0\le d_j/n_j\le1$ なので各因子で $e^{-d_j/n_j}\ge1-d_j/n_j\ge0$．非負の数どうしの積なので大小関係が保たれ，$\tilde S(t)\ge\hat S(t)$．
+\end{proof}
+リスク集合が大きく $d_j/n_j$ が小さい時点では両者はほぼ等しく，右端（$n_j$ が小さい）で差が開く．最後のイベントで $d_j=n_j$ なら KM は0，$\tilde S$ は0にならない．
+
+\begin{warnbox}
+\begin{itemize}
+\item 同じ時点の打ち切りをイベントより先に処理し，リスク集合を1減らす．
+\item 打ち切り時点で曲線を下げる．
+\item 中央値を「$\hat S=0.5$ を線形補間した時点」とする（定義は $\hat S(t)\le0.5$ となる最小の $t$）．
+\item 打ち切り指示変数の向きを読み違える（2016・2019年は1が打ち切り，2018・2021年は1がイベント）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m04-shutsudai}
+\begin{shutsudai}{\kakomon{2016}{3}〔1〕：2群の KM 曲線}
+群1は最初の3人が打ち切り（3，5，7週）で，曲線は9週まで1のまま，9週で $1/2$，10週で0．
+群2は1週 $4/5=0.8$，2週 $0.6$，4週の打ち切りを挟んで6週 $0.6\times1/2=0.3$，8週で0．
+「1：打ち切り，0：イベント」の向きに注意．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2019}{1}〔1〕〔2〕：KM 表と Nelson--Aalen}
+5例（10，13，$18^+$，19，$23^+$ 週）で $\hat S(10)=0.8$，$\hat S(13)=0.6$，$\hat S(19)=0.3$（19週のリスク集合は2人）．
+〔2〕は $\tilde S(t)=\prod\exp(-d_k/n_k)$ が与えられ，$\tilde S\ge\hat S$ を示す（\cref{prop:m04-na}）．
+〔3〕以降は境界内平均生存時間（RMST）．KM による RMST は曲線下の長方形の和 $10\times1+3\times0.8+6\times0.6+1\times0.3=16.3$（$\tau=20$）．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2021}{1}〔2〕：$1-\hat S(t)$ のグラフ}
+8例（打ち切り4，6，8，16年，イベント10，12，14，18年）．$\hat S$ は10年0.8，12年0.6，14年0.4，18年0．縦軸 $1-\hat S$ で描く．
+この後，打ち切りの一部が競合イベントだった場合の比較に続く（第5章）．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m04-reidai}
+\begin{reidai}[\kakomon{2019}{1}〔1〕〔2〕・\kakomon{2021}{1}〔2〕型：KM 表・曲線・Nelson--Aalen]\label{reidai:m04-1}
+6人の生存時間データ（週）を示す（イベントの有無は 0：打ち切り，1：イベント）．
+\begin{center}\small
+\begin{tabular}{@{}ccccccc@{}}
+\toprule
+被験者 & 1 & 2 & 3 & 4 & 5 & 6\\
+\midrule
+観察時間（週） & 11 & 22 & 8 & 11 & 17 & 11\\
+イベント & 1 & 0 & 1 & 0 & 1 & 1\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item KM 推定値の表（$t_{(j)}$，$n_j$，$d_j$，$\hat S$）を作り，生存曲線を描け．中央生存時間を求めよ．
+\item Greenwood の公式で $\hat S(11)$ の標準誤差を求めよ．
+\item 各イベント時点の Nelson--Aalen 型推定値 $\tilde S(t)=\prod_{t_{(k)}\le t}\exp(-d_k/n_k)$ を求めよ．また任意の $t$ で $\tilde S(t)\ge\hat S(t)$ となることを示せ．
+\item 累積イベント割合 $1-\hat S(t)$ の推定値を各イベント時点で求めよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m04-kaisetsu}
+\begin{kaitou}{reidai:m04-1}
+〔1〕「1：イベント」の向きで読むと，昇順に $8,\ 11,\ 11,\ 11^+,\ 17,\ 22^+$．
+11週にはイベント2件と打ち切り1件が同時にある．\textbf{イベントが先}なので，11週のリスク集合は打ち切りの人も含めて5人．
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$t_{(j)}$ & $n_j$ & $d_j$ & $1-d_j/n_j$ & $\hat S(t)$ & $1-\hat S(t)$\\
+\midrule
+8 & 6 & 1 & $5/6$ & $0.8333$ & $0.1667$\\
+11 & 5 & 2 & $3/5$ & $0.8333\times0.6=0.5000$ & $0.5000$\\
+17 & 2 & 1 & $1/2$ & $0.5000\times0.5=0.2500$ & $0.7500$\\
+\bottomrule
+\end{tabular}
+\end{center}
+（17週のリスク集合は，11週のイベント2件と打ち切り1件で5人から3人減って2人．）
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=90mm,height=55mm,xmin=0,xmax=24,ymin=0,ymax=1.05,
+  xlabel={時間（週）},ylabel={$\hat S(t)$},xtick={0,8,11,17,22},ytick={0,0.25,0.5,0.8333,1},
+  yticklabels={0,0.25,0.5,0.833,1},grid=major,grid style={gray!20},tick label style={font=\scriptsize}]
+\addplot[very thick,bkblue,const plot] coordinates {(0,1)(8,0.8333)(11,0.5)(17,0.25)(24,0.25)};
+\addplot[only marks,mark=+,mark size=3pt,thick,bkorange] coordinates {(11,0.5)(22,0.25)};
+\addplot[dashed,gray] coordinates {(0,0.5)(24,0.5)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+最長の観察（22週）が打ち切りなので曲線は0.25で止まる．
+中央生存時間は $\hat S(t)\le0.5$ となる最小の $t$ で，$\hat S(11)=0.5$ なので\textbf{11週}（ちょうど0.5でも「以下」に入る）．
+
+〔2〕$\sum_{t_{(j)}\le11}\dfrac{d_j}{n_j(n_j-d_j)}=\dfrac1{6\times5}+\dfrac2{5\times3}=0.03333+0.13333=0.16667$．
+$\widehat\V[\hat S(11)]\approx0.5^2\times0.16667=0.04167$，$\SE=\sqrt{0.04167}=0.204$．6人の小標本なので，この近似の SE は目安にすぎない．
+
+〔3〕$\tilde H$ は $d_j/n_j$ の累積和で，$e^{-\tilde H}$ は付表から引く：
+\begin{center}\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$t_{(j)}$ & $d_j/n_j$ & $\tilde H(t)$ & $\tilde S(t)=e^{-\tilde H}$ & $\hat S(t)$\\
+\midrule
+8 & $1/6=0.1667$ & $0.1667$ & $0.8465$ & $0.8333$\\
+11 & $2/5=0.4000$ & $0.5667$ & $0.5674$ & $0.5000$\\
+17 & $1/2=0.5000$ & $1.0667$ & $0.3442$ & $0.2500$\\
+\bottomrule
+\end{tabular}
+\end{center}
+すべての時点で $\tilde S\ge\hat S$ で，差は右へ行くほど大きい．
+証明：$g(x)=e^{-x}-(1-x)$ とおくと $g'(x)=1-e^{-x}$ は $x<0$ で負，$x>0$ で正なので，$g$ は $x=0$ で最小値 $g(0)=0$ をとり，$e^{-x}\ge1-x$．
+$x=d_k/n_k\in[0,1]$ を代入すると $\exp(-d_k/n_k)\ge1-d_k/n_k\ge0$．
+$t_{(j)}\le t<t_{(j+1)}$ では $\tilde S(t)$ と $\hat S(t)$ はそれぞれ $k=1,\dots,j$ の因子の積で，各因子が非負かつ大小関係が揃っているので積でも $\tilde S(t)\ge\hat S(t)$．
+$t<t_{(1)}$ では両方とも1．
+
+〔4〕$1-\hat S$ は8週 $0.167$，11週 $0.500$，17週 $0.750$（〔1〕の表の右端の列）．17週以降は0.75のまま．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $\hat S(t)=\prod_{t_{(j)}\le t}(1-d_j/n_j)$．同時点ではイベントが先．打ち切りで曲線は下げない．
+\item 中央値は $\hat S\le0.5$ の最小時点．最長観察が打ち切りなら曲線は0にならない．
+\item Greenwood は近似：$\hat S^2\sum d_j/\{n_j(n_j-d_j)\}$．Nelson--Aalen $\tilde S=e^{-\sum d_j/n_j}\ge\hat S$．
+\end{itemize}
+\end{summarybox}
+
+% ===== m05_compete.tex =====
+\chapter{競合リスク・累積発生関数（CIF）}\label{ch:m05}
+
+\begin{priobox}{B}
+\kakomon{2021}{1}〔3〕〔4〕，\kakomon{2025}{3}〔1〕〜〔4〕では原因別ハザード・累積発生関数の定義や推定式が問題文で与えられる．
+しかし「$f_j=\lambda_jS$」「$\lambda=\sum\lambda_j$」の導き方，推定表の埋め方，そして
+\textbf{$1-\mathrm{KM}$ が過大推定になる理由}（2021年〔5〕）と\textbf{原因別 Cox の $\beta$ を CIF への効果と読めない理由}（2025年〔5〕）は知らないと書きにくい．本編の第10章10.3節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m05-gaiyo}
+がん死を評価項目とする研究で他因死が起こると，その人のがん死は以後決して観察されない．このように，あるイベントが起きると別のイベントが起こりえなくなるとき，それらを\emphx{競合リスク}という．
+打ち切りは「イベントはいずれ起こるが観察できなかった」，競合イベントは「そのイベントは二度と起こらない」で，別物である．
+
+最初のイベントまでの時間を $T$，その種類を $J\in\{1,\dots,m\}$，$S(t)=\Prob(T>t)$（どのイベントもまだ起きていない確率）とする．
+\begin{pointbox}[覚える式]
+\begin{align*}
+&\text{原因別ハザード} & \lambda_j(t)&=\lim_{\Delta\to0}\frac{\Prob(t\le T<t+\Delta,\ J=j\mid T\ge t)}{\Delta}=\frac{f_j(t)}{S(t)},\\
+&\text{全ハザード} & \lambda(t)&=\sum_j\lambda_j(t),\qquad S(t)=\exp\Bigl\{-\sum_j\Lambda_j(t)\Bigr\},\\
+&\text{累積発生関数（CIF）} & F_j(t)&=\Prob(T\le t,\ J=j)=\int_0^t\lambda_j(u)S(u)\,\dd u .
+\end{align*}
+推定（Aalen--Johansen 型）：$\hat S$ を\textbf{全イベント}の KM として
+\[
+\hat F_j(t)=\sum_{i:\,t_{(i)}\le t}\hat S(t_{(i)}^-)\,\frac{d_{ji}}{n_i},\qquad \hat S(t)+\sum_j\hat F_j(t)=1 .
+\]
+競合イベントを打ち切りとみなした $1-\mathrm{KM}$ は $1-e^{-\Lambda_j(t)}\ \ge F_j(t)$ を推定し，\textbf{過大推定}になる．
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m05-shosai}
+\subsection{基本の関係}
+部分密度を $f_j(t)=\lim_{\Delta\to0}\Prob(t\le T<t+\Delta,J=j)/\Delta$ とする．
+\begin{itemize}
+\item \textbf{$\lambda_j=f_j/S$}：条件付き確率の定義から $\Prob(t\le T<t+\Delta,J=j\mid T\ge t)=\Prob(t\le T<t+\Delta,J=j)/S(t)$（$T$ は連続）．$\Delta$ で割って極限をとる．
+\item \textbf{$\lambda=\sum\lambda_j$}：同時には起こらないので $\{t\le T<t+\Delta\}$ は排反な $\{t\le T<t+\Delta,J=j\}$（$j=1,\dots,m$）の和．条件付き確率を足して極限をとる．
+\item \textbf{$S=\exp(-\sum\Lambda_j)$}：$S=\exp(-\int_0^t\lambda)$（第1章）に $\lambda=\sum\lambda_j$ を代入．
+\item \textbf{$F_j=\int_0^t\lambda_jS$}：$f_j=\lambda_jS$ を積分．「$u$ まで何も起きず（確率 $S(u)$），そこで原因 $j$ が起こる（率 $\lambda_j(u)$）」を足し上げたもの．
+      $F_j$ は $S$ を通じて\textbf{他の原因のハザードにも依存する}．
+\item $\sum_jF_j(t)=1-S(t)$，$F_j(\infty)=\Prob(J=j)<1$（他の原因の確率が正なら）．$F_j$ は分布関数ではない（1に達しない）．
+\end{itemize}
+\paragraph{$1-F_j(t)>S_j(t)$（\kakomon{2025}{3}〔2〕）}
+$S_j(t)=\Prob(T>t,J=j)$ とすると，$\{J=j\}$ は排反な $\{T\le t,J=j\}$ と $\{T>t,J=j\}$ の和なので $\Prob(J=j)=F_j(t)+S_j(t)$．
+$m\ge2$ で全原因の確率が正なら $\Prob(J=j)<1$ なので $S_j(t)=\Prob(J=j)-F_j(t)<1-F_j(t)$．
+
+\subsection{累積発生関数の推定}
+$F_j(t)=\int_0^t\lambda_j(u)S(u)\dd u$ を KM と同じく離散化する．原因を問わないイベント時点を $t_{(1)}<t_{(2)}<\cdots$，
+$n_i$ をリスク集合の大きさ（どのイベントも起こさず観察中の人数），$d_{ji}$ を時点 $t_{(i)}$ の原因 $j$ のイベント数，$d_i=\sum_jd_{ji}$ とする．
+\begin{enumerate}
+\item 全イベントの KM：$\hat S(t)=\prod_{t_{(i)}\le t}(1-d_i/n_i)$．\textbf{競合イベントも $\hat S$ を下げる}．
+\item 各時点で，直前の $\hat S(t_{(i)}^-)$ に $d_{ji}/n_i$（原因別ハザードの増分）を掛けて $\hat F_j$ に足す．
+\item 打ち切りは KM と同じくリスク集合から外れるだけ．
+\item 検算：$\hat S$ の減少分 $\hat S(t^-)d_i/n_i$ が $\hat F_j$ に $d_{ji}$ の比で配分されるので，常に $\hat S+\sum_j\hat F_j=1$．
+\end{enumerate}
+
+\subsection{\texorpdfstring{$1-\mathrm{KM}$}{1−KM} の過大推定}
+競合イベントを打ち切りとみなした原因 $j$ の KM $\hat S_j^{\mathrm{KM}}$ は，各時点の因子 $1-d_{ji}/n_i$ が原因別ハザードの増分なので，$\exp\{-\Lambda_j(t)\}$ を推定する．
+\begin{meidai}[$1-\mathrm{KM}$ の推定対象は CIF 以上]\label[meidai]{prop:m05-over}
+$F_j(t)\le1-e^{-\Lambda_j(t)}$．
+\end{meidai}
+\begin{proof}
+$S(u)=e^{-\Lambda_j(u)}\exp\{-\sum_{k\ne j}\Lambda_k(u)\}\le e^{-\Lambda_j(u)}$ なので
+$F_j(t)=\int_0^t\lambda_j(u)S(u)\dd u\le\int_0^t\lambda_j(u)e^{-\Lambda_j(u)}\dd u=\bigl[-e^{-\Lambda_j(u)}\bigr]_0^t=1-e^{-\Lambda_j(t)}$．
+\end{proof}
+\paragraph{解釈}
+打ち切り扱いは「他因死した人も，リスク集合に残った人と同じ率で将来原因 $j$ のイベントを起こす」とみなすことにあたる．
+実際には他因死した人は原因 $j$ のイベントを二度と起こさないので，原因 $j$ のイベントを起こさない確率を過小に，累積発生を過大に推定する．
+推定値で見ると，各原因 $j$ のイベント時点の増分 $d_{ji}/n_i$ は同じだが，掛ける生存確率が $\hat S_j^{\mathrm{KM}}(t^-)\ge\hat S(t^-)$ と大きい．
+
+\subsection{原因別 Cox と Fine--Gray}
+原因別ハザードに比例ハザード $\lambda_1(t\mid x)=\lambda_1^*(t)e^{\beta x}$ を仮定すると，他の原因を打ち切りとみなした通常の Cox 回帰で $\beta$ を推定できる．
+しかし $e^\beta$ は「まだどのイベントも起きていない人における原因1の発生率の比」であり，$F_1$ への効果ではない．
+\[
+F_1(t\mid x)=\int_0^t\lambda_1(u\mid x)\exp\{-\Lambda_1(u\mid x)-\Lambda_2(u\mid x)\}\dd u
+\]
+は $\lambda_2(\cdot\mid x)$ にも依存する．
+\begin{itemize}
+\item $x$ が $\lambda_2$ を大きくすれば，$\beta$ の値にかかわらず $F_1$ は小さくなりうる（他の原因で先に脱落する人が増える）．
+\item $x$ が $\lambda_2$ に影響しなくても，$F_1$ は $\beta$ の非線形な関数で，$e^\beta$ は $F_1$ の比にはならない．
+\end{itemize}
+$F_1$ への効果を直接表すには，部分分布ハザード $\tilde\lambda_1(t)=-\frac{\dd}{\dd t}\log\{1-F_1(t)\}$ に比例ハザードを仮定する \textbf{Fine--Gray モデル}を用いる．
+$\tilde\lambda_1(t\mid x)=\tilde\lambda_{10}(t)e^{\gamma x}$ なら $1-F_1(t\mid x)=\{1-F_{10}(t)\}^{\exp(\gamma x)}$ で，$\gamma>0$ なら累積発生が増えると直接読める（推定法は扱わない）．
+病因の研究には原因別ハザード，予後の予測（$t$ までに原因 $j$ を経験する確率）には CIF と Fine--Gray が対応する．
+
+\begin{warnbox}
+\begin{itemize}
+\item 競合イベントを打ち切りとして $1-\mathrm{KM}$ で累積発生を報告する．
+\item CIF の推定で，$\hat S$ を原因 $j$ だけの KM にする（正しくは全イベントの KM）．$\hat S(t^-)$ ではなく $\hat S(t)$ を掛ける．
+\item 原因別ハザード比を「累積発生の比」と解釈する．$F_j(t)\to1$ と考える（極限は $\Prob(J=j)$）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m05-shutsudai}
+\begin{shutsudai}{\kakomon{2021}{1}〔3〕〜〔5〕：CIF の表現・推定・$1-\mathrm{KM}$ との比較}
+8例のうち打ち切りだった2例（4年，6年）が実は他因死（イベント2）だった．
+〔3〕$f_j(t)=\lambda_j(t)S_2(t)$ を示して $F_j(t)=\int_0^t\lambda_j(u)S_2(u)\dd u$．
+〔4〕推定式は与えられ，表の空欄を埋める：8年のリスク集合（あ）6，10年（い）5，$\hat F_1(10)$（う）$=0.75\times1/5=0.15$，$\hat F_1(18)$（え）$0.75$，$\hat F_2(4)$（お）$0.125$，$\hat F_2(18)$（か）$0.25$．
+〔5〕〔2〕の $1-\hat S_1$（18年で1）と $\hat F_1$（18年で0.75）を重ねて描き，前者が過大推定であることを説明する．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2025}{3}：競合リスクの理論}
+〔1〕$\lambda_j=f_j/S$．〔2〕$1-F_j(t)>S_j(t)$．〔3〕$\lambda=\sum\lambda_j$．
+〔4〕Weibull 型の原因別ハザード $\lambda_k(t)=\alpha_k\gamma_k(\gamma_kt)^{\alpha_k-1}$ から $S(t)=\exp\{-(\gamma_1t)^{\alpha_1}-(\gamma_2t)^{\alpha_2}\}$．
+〔5〕原因別ハザードの比例ハザードモデルの $\beta$ で $F_1$ への効果を評価するのは適切でない（上の理由）．Fine--Gray モデルに触れるとよい．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m05-reidai}
+\begin{reidai}[\kakomon{2021}{1}型：$1-\mathrm{KM}$ と CIF の推定]\label{reidai:m05-1}
+8人を追跡した結果を示す（0：打ち切り，1：がん死，2：他因死）．
+\begin{center}\small
+\begin{tabular}{@{}ccccccccc@{}}
+\toprule
+被験者 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\
+\midrule
+観察時間（年） & 9 & 3 & 14 & 5 & 16 & 10 & 7 & 12\\
+転帰 & 1 & 2 & 0 & 1 & 1 & 2 & 0 & 1\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 他因死も打ち切りとみなし，がん死だけをイベントとして KM 推定値 $\hat S_1(t)$ を求め，$1-\hat S_1(t)$ を各がん死の時点で求めよ．
+\item がん死の累積発生関数 $F_1(t)=\Prob(T\le t,J=1)$ を，原因別ハザード $\lambda_1$ と，いずれのイベントも起きていない確率 $S(t)$ で表せ．
+\item 全イベントの KM $\hat S(t)$ と，$\hat F_j(t)=\sum_{t_{(i)}\le t}\hat S(t_{(i)}^-)d_{ji}/n_i$（$j=1,2$）の表を作れ．$\hat S+\hat F_1+\hat F_2=1$ を確かめよ．
+\item 〔1〕と〔3〕の $1-\hat S_1$ と $\hat F_1$ を比べ，違いの理由を述べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2025}{3}型：原因別ハザードの理論と数値]\label{reidai:m05-2}
+原因1・2の2種類の競合イベントを考え，記号は概要のとおりとする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $\lambda(t)=\lambda_1(t)+\lambda_2(t)$ を示せ．
+\item $\lambda_1(t)=2\gamma_1^2t$，$\lambda_2(t)=\gamma_2$（$\gamma_1,\gamma_2>0$）のとき，$S(t)$ を求めよ．
+\item 原因別ハザードが一定で $\lambda_1=0.03$，$\lambda_2=0.07$（/年）のとき，$F_1(10)$ と，原因2を打ち切りとみなした $1-\mathrm{KM}$ が推定する量 $1-e^{-\Lambda_1(10)}$ を求めよ．
+\item 共変量 $x=1$ の集団では $\lambda_1=0.03$ のまま $\lambda_2=0.17$ であった（原因1の原因別ハザード比は1）．この集団の $F_1(10)$ を求め，
+      原因別ハザードの比例ハザードモデルの係数で $F_1$ への効果を評価することの是非を述べよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m05-kaisetsu}
+\begin{kaitou}{reidai:m05-1}
+昇順に並べると $3(2),\ 5(1),\ 7(0),\ 9(1),\ 10(2),\ 12(1),\ 14(0),\ 16(1)$．
+
+〔1〕他因死（3年，10年）も打ち切りとすると，がん死の時点は5，9，12，16年．リスク集合はその時点以上の観察時間の人数．
+\begin{center}\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+時点 & $n$ & $d_1$ & $\hat S_1$ & $1-\hat S_1$\\
+\midrule
+5 & 7 & 1 & $6/7=0.8571$ & $0.1429$\\
+9 & 5 & 1 & $0.8571\times4/5=0.6857$ & $0.3143$\\
+12 & 3 & 1 & $0.6857\times2/3=0.4571$ & $0.5429$\\
+16 & 1 & 1 & $0$ & $1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+〔2〕$f_1(t)=\lim\Prob(t\le T<t+\Delta,J=1)/\Delta=\lim\{\Prob(t\le T<t+\Delta,J=1\mid T\ge t)/\Delta\}\,\Prob(T\ge t)=\lambda_1(t)S(t)$ なので
+\[
+F_1(t)=\int_0^tf_1(u)\dd u=\int_0^t\lambda_1(u)S(u)\,\dd u .
+\]
+
+〔3〕原因を問わないイベント時点は3，5，9，10，12，16年（7年と14年は打ち切りなので行を作らないが，リスク集合を減らす）．
+\begin{center}\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}cccccccc@{}}
+\toprule
+時点 & $n_i$ & $d_{1i}$ & $d_{2i}$ & $\hat S(t^-)$ & $\hat S(t)$ & $\hat F_1(t)$ & $\hat F_2(t)$\\
+\midrule
+3 & 8 & 0 & 1 & 1.000 & $1\times7/8=0.875$ & 0 & $1\times1/8=0.125$\\
+5 & 7 & 1 & 0 & 0.875 & $0.875\times6/7=0.750$ & $0.875\times1/7=0.125$ & 0.125\\
+9 & 5 & 1 & 0 & 0.750 & $0.750\times4/5=0.600$ & $0.125+0.750/5=0.275$ & 0.125\\
+10 & 4 & 0 & 1 & 0.600 & $0.600\times3/4=0.450$ & 0.275 & $0.125+0.600/4=0.275$\\
+12 & 3 & 1 & 0 & 0.450 & $0.450\times2/3=0.300$ & $0.275+0.450/3=0.425$ & 0.275\\
+16 & 1 & 1 & 0 & 0.300 & 0 & $0.425+0.300/1=0.725$ & 0.275\\
+\bottomrule
+\end{tabular}
+\end{center}
+（9年のリスク集合は7年の打ち切りで5人，12年は10年の他因死で3人，16年は14年の打ち切りで1人．）
+各時点で $\hat S+\hat F_1+\hat F_2=1$（例：12年 $0.300+0.425+0.275=1.000$，16年 $0+0.725+0.275=1$）．
+
+〔4〕
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+時点（年） & 5 & 9 & 12 & 16\\
+\midrule
+$1-\hat S_1$（他因死を打ち切り） & 0.143 & 0.314 & 0.543 & 1.000\\
+$\hat F_1$（CIF） & 0.125 & 0.275 & 0.425 & 0.725\\
+\bottomrule
+\end{tabular}
+\end{center}
+すべての時点で $1-\hat S_1>\hat F_1$ であり，差は時間とともに広がる．
+$1-\hat S_1$ は他因死した2人を「その後もがん死する可能性がある」とみなしているが，実際には他因死した人はがん死しない．
+そのため，がん死を起こさない確率を過小に（$\hat S_1(t^-)\ge\hat S(t^-)$），がん死の累積発生を過大に推定している．
+16年で $1-\hat S_1=1$ は「全員がいずれがん死する」ことを意味し，2人が他因死している事実と矛盾する．
+競合リスクがあるときの「$t$ までにがん死する確率」は $\hat F_1$ で推定する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m05-2}
+〔1〕同時には起こらないので，事象 $\{t\le T<t+\Delta\}$ は排反な $\{t\le T<t+\Delta,J=1\}$ と $\{t\le T<t+\Delta,J=2\}$ の和．よって
+$\Prob(t\le T<t+\Delta\mid T\ge t)=\sum_{j=1}^2\Prob(t\le T<t+\Delta,J=j\mid T\ge t)$．
+両辺を $\Delta$ で割り $\Delta\to0$ とすると，左辺は $\lambda(t)$，右辺は $\lambda_1(t)+\lambda_2(t)$．
+
+〔2〕$\Lambda_1(t)=\int_0^t2\gamma_1^2u\,\dd u=\gamma_1^2t^2=(\gamma_1t)^2$，$\Lambda_2(t)=\gamma_2t$．〔1〕と $S=\exp(-\int_0^t\lambda)$ より
+$S(t)=\exp\{-(\gamma_1t)^2-\gamma_2t\}$．
+（形状2の Weibull と指数の原因別ハザードの組合せ．）
+
+〔3〕全ハザードは $0.10$ で $S(u)=e^{-0.1u}$．以下，指数関数の値は付表より $e^{-1}=0.3679$，$e^{-0.3}=0.7408$，$e^{-2}=0.1353$．
+\[
+F_1(10)=\int_0^{10}0.03\,e^{-0.1u}\dd u=\frac{0.03}{0.10}\bigl(1-e^{-1}\bigr)=0.3\times(1-0.3679)=0.3\times0.6321=0.190 .
+\]
+$\Lambda_1(10)=0.3$ なので $1-e^{-0.3}=1-0.7408=0.259$．$1-\mathrm{KM}$ の推定対象は $F_1(10)$ を3割以上上回る（\cref{prop:m05-over}）．
+$F_1(\infty)=0.03/0.10=0.3$ で，原因1を経験するのは最終的に3割の人である．
+
+〔4〕全ハザードは $0.03+0.17=0.20$ で
+\[
+F_1(10)=\frac{0.03}{0.20}\bigl(1-e^{-2}\bigr)=0.15\times(1-0.1353)=0.15\times0.8647=0.130 .
+\]
+原因1の原因別ハザード比は1（$\beta=0$）なのに，$F_1(10)$ は $0.190\to0.130$ と小さくなる．
+$x=1$ の集団では原因2のハザードが大きく，原因1を起こす前に原因2で脱落する人が増えるためである．
+$F_1$ は $\lambda_2$ にも依存するので，原因別ハザードの比例ハザードモデルの $\beta$ だけで $F_1$ への効果を評価するのは適切でない．
+$\beta$ は「まだどのイベントも起きていない人での原因1の発生率」への効果として解釈し，$F_1$ への効果は Fine--Gray モデル（部分分布ハザード）の係数や CIF そのもので評価する．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $\lambda_j=f_j/S$，$\lambda=\sum\lambda_j$，$S=\exp(-\sum\Lambda_j)$，$F_j=\int_0^t\lambda_jS$．$F_j(\infty)=\Prob(J=j)<1$．
+\item 推定：$\hat F_j(t)=\sum\hat S(t^-)d_{ji}/n_i$（$\hat S$ は全イベントの KM）．$\hat S+\sum\hat F_j=1$ で検算．
+\item 競合を打ち切りとした $1-\mathrm{KM}$ は $1-e^{-\Lambda_j}\ge F_j$ を推定し過大．
+\item 原因別 Cox の $\beta$ は原因別ハザードへの効果．CIF への効果ではない（Fine--Gray）．
+\end{itemize}
+\end{summarybox}
+
+% ===== m06_mcnemar.tex =====
+\chapter{McNemar 検定}\label{ch:m06}
+
+\begin{priobox}{B}
+3回出題（\kakomon{2018}{2}，\kakomon{2019}{3}〔2〕，\kakomon{2024}{1}〔2〕〔3〕）．いずれも手法名は出ないか，ヒント付きである．
+しかし「一致ペアは差に寄与しない」「$H_0$ の下の分散は $(n_{12}+n_{21})/n$ で推定する」「不一致ペアを条件とすれば $\Bin(s,1/2)$」「$\chi^2_1$ で判定」を知っていると数分で終わる．
+本編の第4章4.6節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m06-gaiyo}
+$n$ 組のペア（または $n$ 人に2つの処置・検査）の2値の結果を次のように集計する．セル度数は多項分布 $\mathrm{Mult}(n;\pi_{11},\pi_{12},\pi_{21},\pi_{22})$ に従う．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & 処置2 陽性（有効） & 処置2 陰性（無効） & 計\\
+\midrule
+処置1 陽性 & $n_{11}$ & $n_{12}$ & $n_{1\cdot}$\\
+処置1 陰性 & $n_{21}$ & $n_{22}$ & $n_{2\cdot}$\\
+\midrule
+計 & $n_{\cdot1}$ & $n_{\cdot2}$ & $n$\\
+\bottomrule
+\end{tabular}
+\end{center}
+陽性率の差は $\pi_{1\cdot}-\pi_{\cdot1}=\pi_{12}-\pi_{21}=:\delta$ で，一致ペア（$n_{11},n_{22}$）は差に寄与しない．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item McNemar 検定（$H_0:\pi_{12}=\pi_{21}$）：$W=\dfrac{(n_{12}-n_{21})^2}{n_{12}+n_{21}}\ \xrightarrow{d}\ \chi^2_1$．
+\item 条件付き二項：不一致ペア数 $s=n_{12}+n_{21}$ を与えると $H_0$ の下で $n_{12}\sim\Bin(s,1/2)$，$z=\dfrac{n_{12}-s/2}{\sqrt{s/4}}$，$z^2=W$．
+\item 差の推定：$\hat\delta=\dfrac{n_{12}-n_{21}}{n}$，$\V[\hat\delta]=\dfrac{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2}{n}$，
+      CI $\hat\delta\pm z_{\alpha/2}\sqrt{\dfrac{n_{12}+n_{21}}{n^2}-\dfrac{(n_{12}-n_{21})^2}{n^3}}$．
+\item 尤度比検定：$G^2=2\Bigl[n_{12}\log\dfrac{2n_{12}}{n_{12}+n_{21}}+n_{21}\log\dfrac{2n_{21}}{n_{12}+n_{21}}\Bigr]$，自由度1．
+\item 条件付きオッズ比：$n_{12}/n_{21}$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m06-shosai}
+\subsection{差の平均と分散（\kakomon{2024}{1}の見方）}
+被験者 $i$ の処置1・2の結果を $X_i,Y_i\in\{0,1\}$，$\pi_{jk}=\Prob(X_i=j,Y_i=k)$ とし，$Z_i=X_i-Y_i\in\{1,0,-1\}$ とする．
+（$\pi_{10}$ が上の表の $\pi_{12}$，$\pi_{01}$ が $\pi_{21}$ に当たる．添字の付け方が年度で違うので注意．）
+\[
+\E[Z_i]=1\cdot\pi_{10}+(-1)\cdot\pi_{01}=\pi_{10}-\pi_{01},\qquad
+\E[Z_i^2]=\pi_{10}+\pi_{01},\qquad
+\V[Z_i]=(\pi_{10}+\pi_{01})-(\pi_{10}-\pi_{01})^2 .
+\]
+$\hat\pi_X-\hat\pi_Y=\bar Z$，$\sum_iZ_i=n_{10}-n_{01}$ なので $\V[\hat\pi_X-\hat\pi_Y]=\V[Z_i]/n$．
+多項分布の $\V[n_{ij}]=n\pi_{ij}(1-\pi_{ij})$，$\Cov(n_{12},n_{21})=-n\pi_{12}\pi_{21}$ から直接計算しても同じ（\kakomon{2018}{2}〔1〕）：
+\[
+\V[\hat\delta]=\frac1{n^2}\{n\pi_{12}(1-\pi_{12})+n\pi_{21}(1-\pi_{21})+2n\pi_{12}\pi_{21}\}=\frac{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2}{n}.
+\]
+
+\subsection{検定統計量}
+$H_0:\pi_{10}=\pi_{01}$（周辺の陽性率が等しい）の下では $\E[Z_i]=0$ なので $\V[Z_i]=\pi_{10}+\pi_{01}$．これを $(n_{10}+n_{01})/n$ で推定して
+\[
+W=\frac{(\hat\pi_X-\hat\pi_Y)^2}{\hat\V_0[\hat\pi_X-\hat\pi_Y]}=\frac{(n_{10}-n_{01})^2/n^2}{(n_{10}+n_{01})/n^2}=\frac{(n_{10}-n_{01})^2}{n_{10}+n_{01}} .
+\]
+中心極限定理と Slutsky の定理により，$H_0$ の下で $W$ は漸近的に $\chi^2_1$ に従う．
+\paragraph{条件付き二項検定（\kakomon{2019}{3}〔2〕）}
+不一致ペア数 $s$ を与えると，各不一致ペアが「処置1だけ陽性」である確率は $\pi_{12}/(\pi_{12}+\pi_{21})$ なので
+$n_{12}\mid s\sim\Bin(s,\ \pi_{12}/(\pi_{12}+\pi_{21}))$，$H_0$ の下で $\Bin(s,1/2)$．
+正規近似 $z=(n_{12}-s/2)/\sqrt{s/4}$ の2乗は $W$ に一致する．小標本では二項分布で正確な $P$ 値を求める．
+
+\subsection{尤度比検定（\kakomon{2018}{2}〔3〕〔4〕）}
+対数尤度 $\ell=\sum n_{ij}\log\pi_{ij}$ を $\sum\pi_{ij}=1$ の下で最大化すると $\hat\pi_{ij}=n_{ij}/n$．
+$H_0:\pi_{12}=\pi_{21}$ の制約も加えたラグランジュ関数 $\ell-\lambda(\sum\pi_{ij}-1)-\phi(\pi_{12}-\pi_{21})$ を各 $\pi_{ij}$ で微分して0とおくと
+\[
+n_{11}=\lambda\pi_{11},\quad n_{12}=(\lambda+\phi)\pi_{12},\quad n_{21}=(\lambda-\phi)\pi_{21},\quad n_{22}=\lambda\pi_{22}.
+\]
+辺々足すと $n=\lambda\sum\pi_{ij}+\phi(\pi_{12}-\pi_{21})=\lambda$．$\pi_{12}=\pi_{21}$ から $n_{12}/(n+\phi)=n_{21}/(n-\phi)$，これを解いて
+\[
+\hat\pi^{(0)}_{11}=\frac{n_{11}}n,\qquad \hat\pi^{(0)}_{12}=\hat\pi^{(0)}_{21}=\frac{n_{12}+n_{21}}{2n},\qquad \hat\pi^{(0)}_{22}=\frac{n_{22}}n .
+\]
+一致セルの推定値は両モデルで同じなので尤度比では打ち消し合い，概要の $G^2$ を得る．
+自由度は（対立仮説の自由パラメータ数3）$-$（帰無仮説の2）$=1$．
+
+\subsection{条件付きオッズ比}
+ペア $k$ ごとに異なるベースライン $\alpha_k$ をもつロジットモデル $\logit\Prob(Y_{k1}=1)=\alpha_k+\beta$，$\logit\Prob(Y_{k2}=1)=\alpha_k$ では，
+一致ペアは $\beta$ の情報を持たず，不一致ペアが「処置1だけ陽性」である条件付き確率は $e^\beta/(1+e^\beta)$ で $\alpha_k$ が消える．
+条件付き尤度は二項分布の形になり，$e^{\hat\beta}=n_{12}/n_{21}$．$H_0:\beta=0$ は条件付き二項検定そのもの．
+マッチドペアの MH オッズ比（第7章）もこの値になる．
+
+\begin{warnbox}
+\begin{itemize}
+\item ペアを独立な2群とみなして通常の $2\times2$ 表の $\chi^2$ 検定を行う（正の相関による分散の減少を無視し，通常は検出力を失う）．
+\item 一致ペア $n_{11},n_{22}$ を統計量に入れる．分母を $n$ にする．
+\item 2019年問3のように疾患群・非疾患群の表がある問題で，感度の比較なのに両方の表を使う（感度は疾患群の表だけ）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m06-shutsudai}
+\begin{shutsudai}{\kakomon{2018}{2}：マッチドペアの有効率の比較（記号のみ，数値なし）}
+〔1〕$\hat\delta=(n_{12}-n_{21})/n$ の分散．〔2〕正規近似による CI．
+〔3〕$H_0:\delta=0$ と対立仮説の下の MLE（ラグランジュ乗数法）．〔4〕尤度比検定統計量と自由度1．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2019}{3}〔2〕：2検査の感度の比較}
+疾患群90人の2検査の表で，不一致は（A陽性・B陰性）7，（A陰性・B陽性）16の計23．
+ヒントで $\Bin(23,0.5)$ が与えられ，$z=(7-11.5)/\sqrt{23/4}=-1.88$，$|z|<1.96$ で有意差なし．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2024}{1}〔2〕〔3〕：$Z_i=X_i-Y_i$ から McNemar 統計量}
+〔2-1〕$\E[Z_i]$，$\V[Z_i]$．〔2-2〕$H_0$ の下の分散推定を代入して $W=(n_{10}-n_{01})^2/(n_{10}+n_{01})$．
+〔3〕200人で $n_{10}=26$，$n_{01}=16$：$W=100/42=2.38$，$\chi^2_1$ の5\%点3.84より小さく有意でない．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m06-reidai}
+\begin{reidai}[\kakomon{2024}{1}・\kakomon{2018}{2}型：対応のある2値データ]\label{reidai:m06-1}
+ある疾患の患者250人に2種類の検査 $X$，$Y$ を行った結果を示す．
+\begin{center}\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & 検査 $Y$ 陽性 & 検査 $Y$ 陰性\\
+\midrule
+検査 $X$ 陽性 & 150 & 34\\
+検査 $X$ 陰性 & 18 & 48\\
+\bottomrule
+\end{tabular}
+\end{center}
+$X_i,Y_i$ は陽性で1，陰性で0，$\pi_{jk}=\Prob(X_i=j,Y_i=k)$，$n_{jk}$ を $(X_i,Y_i)=(j,k)$ の人数，$Z_i=X_i-Y_i$ とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $\E[Z_i]$，$\V[Z_i]$ を $\pi_{jk}$ で表せ．
+\item $H_0:\pi_X=\pi_Y$（$\pi_X=\Prob(X_i=1)$，$\pi_Y=\Prob(Y_i=1)$）の検定統計量 $W=(\hat\pi_X-\hat\pi_Y)^2/\hat\V_0[\hat\pi_X-\hat\pi_Y]$ を $n_{jk}$ で表せ．
+      分母は $H_0$ の下での分散の未知パラメータを推定値で置き換えたものとする．
+\item $W$ が $H_0$ の下で近似的に従う分布を述べ，有意水準5\%で検定せよ．
+\item 感度の差 $\delta=\pi_X-\pi_Y$ の推定値と，正規近似による95\%信頼区間を求めよ．
+\item 尤度比検定統計量を求めよ．
+\item 不一致ペアの数を与えた条件付き二項分布による $z$ 統計量を求め，$W$ との関係を述べよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m06-kaisetsu}
+\begin{kaitou}{reidai:m06-1}
+$n_{11}=150$，$n_{10}=34$，$n_{01}=18$，$n_{00}=48$，$N=250$．
+
+〔1〕$Z_i$ は $(X_i,Y_i)=(1,0)$ で1，$(0,1)$ で $-1$，一致なら0なので
+\[
+\E[Z_i]=\pi_{10}-\pi_{01},\qquad \E[Z_i^2]=\pi_{10}+\pi_{01},\qquad
+\V[Z_i]=\pi_{10}+\pi_{01}-(\pi_{10}-\pi_{01})^2 .
+\]
+
+〔2〕$\hat\pi_X-\hat\pi_Y=\frac1N\sum Z_i=\frac{n_{10}-n_{01}}{N}$．
+$\pi_X=\pi_{11}+\pi_{10}$，$\pi_Y=\pi_{11}+\pi_{01}$ なので $H_0$ は $\pi_{10}=\pi_{01}$ と同値で，その下では $\E[Z_i]=0$，$\V[Z_i]=\pi_{10}+\pi_{01}$．
+これを $(n_{10}+n_{01})/N$ で推定すると $\hat\V_0[\hat\pi_X-\hat\pi_Y]=(n_{10}+n_{01})/N^2$ で
+\[
+W=\frac{(n_{10}-n_{01})^2/N^2}{(n_{10}+n_{01})/N^2}=\frac{(n_{10}-n_{01})^2}{n_{10}+n_{01}}\quad\text{（McNemar 統計量）}.
+\]
+
+〔3〕$H_0$ の下で $W$ は近似的に自由度1の $\chi^2$ 分布に従う．
+$W=(34-18)^2/(34+18)=256/52=4.92>\chi^2_1(0.05)=3.841$ なので，有意水準5\%で $H_0$ を棄却する．
+検査 $X$ の陽性率（$184/250=0.736$）は検査 $Y$（$168/250=0.672$）より高い．
+患者だけの表なので，陽性率は感度であり，「$X$ のほうが感度が高い」と結論できる．
+
+〔4〕$\hat\delta=(34-18)/250=0.064$．
+\[
+\hat\V[\hat\delta]=\frac{n_{10}+n_{01}}{N^2}-\frac{(n_{10}-n_{01})^2}{N^3}=\frac{52}{62500}-\frac{256}{15625000}=0.000832-0.0000164=0.0008156,
+\]
+$\SE=\sqrt{0.0008156}=0.02856$．95\%CI は $0.064\pm1.96\times0.02856=0.064\pm0.0560=(0.008,\,0.120)$．
+区間が0を含まないので〔3〕と同じ結論．
+
+〔5〕制約なしの MLE は $\hat\pi_{jk}=n_{jk}/N$，$H_0$ の下では一致セルは同じで不一致セルが $\hat\pi^{(0)}_{10}=\hat\pi^{(0)}_{01}=(34+18)/(2N)=26/N$．一致セルは打ち消し合い
+\begin{align*}
+G^2&=2\Bigl[34\log\frac{34}{26}+18\log\frac{18}{26}\Bigr]=2\Bigl[34\log\frac{68}{52}+18\log\frac{36}{52}\Bigr]\\
+&=2[34\times0.2683+18\times(-0.3677)]=2(9.122-6.619)=5.01 .
+\end{align*}
+（付表より $\log(68/52)=\log1.3077=0.2683$，$\log(36/52)=\log0.6923=-0.3677$．）
+自由度1の $\chi^2$ で $5.01>3.841$，有意．McNemar の $W=4.92$ とほぼ同じ値になる．
+
+〔6〕不一致ペア $s=34+18=52$．$H_0$ の下で $n_{10}\mid s\sim\Bin(52,1/2)$，平均26，分散13．
+\[
+z=\frac{34-26}{\sqrt{13}}=\frac{8}{3.606}=2.22>1.96 .
+\]
+$z^2=64/13=4.92=W$ で，McNemar 検定は条件付き二項検定の正規近似（の2乗）である．
+なお条件付きオッズ比は $34/18=1.89$．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 一致ペアは差に寄与しない．$\delta=\pi_{12}-\pi_{21}$．
+\item $W=(n_{12}-n_{21})^2/(n_{12}+n_{21})\sim\chi^2_1$．$=z^2$，$z=(n_{12}-s/2)/\sqrt{s/4}$（条件付き $\Bin(s,1/2)$）．
+\item $\V[\hat\delta]=\{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2\}/n$．LRT は不一致セルだけが残り自由度1．条件付き OR は $n_{12}/n_{21}$．
+\end{itemize}
+\end{summarybox}
+
+% ===== m07_cmh.tex =====
+\chapter{層別 Cochran・CMH 検定}\label{ch:m07}
+
+\begin{priobox}{B}
+3回出題（\kakomon{2017}{4}，\kakomon{2021}{3}，\kakomon{2022}{2}）．統計量や推定式は問題文で与えられるか誘導されるが，
+「超幾何分布の期待値・分散」「層ごとの $O-E$ を足してから2乗する」「Peto 型推定が OR が1に近いときの近似である理由」
+「粗 OR と層別 OR の食い違いを交絡・非可縮性で説明する」「均一性の確認方法（Breslow--Day など）」は知識がないと書けない．
+本編の第4章4.7節，第7章7.2〜7.3節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m07-gaiyo}
+交絡因子などで $K$ 個の層に分けた $2\times2$ 表を考える．層 $k$ の表を次のように書く（行和 $n_{1k},n_{0k}$，列和 $m_{1k},m_{0k}$，総数 $N_k$）．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+層 $k$ & イベントあり & イベントなし & 計\\
+\midrule
+曝露あり（新治療） & $a_k$ & $b_k$ & $n_{1k}$\\
+曝露なし（既存治療） & $c_k$ & $d_k$ & $n_{0k}$\\
+\midrule
+計 & $m_{1k}$ & $m_{0k}$ & $N_k$\\
+\bottomrule
+\end{tabular}
+\end{center}
+帰無仮説は $H_0:\psi_1=\dots=\psi_K=1$（どの層でもオッズ比 $\psi_k$ が1）．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item 周辺度数を固定したときの $H_0$ の下の超幾何分布：
+      $E_k=\E[a_k]=\dfrac{n_{1k}m_{1k}}{N_k}$，\quad $V_k=\V[a_k]=\dfrac{n_{1k}n_{0k}m_{1k}m_{0k}}{N_k^2(N_k-1)}$．
+\item CMH 検定：$\chi^2_{\mathrm{CMH}}=\dfrac{\{\sum_k(a_k-E_k)\}^2}{\sum_kV_k}\approx\chi^2_1$．
+\item 層別 Cochran 検定（積二項版．\kakomon{2021}{3}）：分散を $\hat V_k=\dfrac{n_{1k}n_{0k}m_{1k}m_{0k}}{N_k^3}$ にしたもの．$a_k-E_k=\dfrac{n_{0k}a_k-n_{1k}c_k}{N_k}$．
+\item Peto 型の共通対数 OR（\kakomon{2017}{4}）：$\hat\beta=\dfrac{\sum_k(a_k-E_k)}{\sum_kV_k}$，$\V[\hat\beta]\approx\dfrac1{\sum_kV_k}$（OR が1に近いときの近似）．
+\item MH 推定量：$\widehat\OR_{\mathrm{MH}}=\dfrac{\sum_ka_kd_k/N_k}{\sum_kb_kc_k/N_k}$，\quad $\widehat\RR_{\mathrm{MH}}=\dfrac{\sum_ka_kn_{0k}/N_k}{\sum_kc_kn_{1k}/N_k}$．
+      マッチドペアでは $\widehat\OR_{\mathrm{MH}}=$ 不一致ペアの比．
+\item 1つの表の OR の CI：$\V[\log\widehat\OR]\approx\frac1a+\frac1b+\frac1c+\frac1d$（Woolf）．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m07-shosai}
+\subsection{積二項モデルからの Cochran 検定（\kakomon{2021}{3}〔2〕〔3〕）}
+1つの表で $a\sim\Bin(n_1,\pi_1)$，$c\sim\Bin(n_0,\pi_0)$ が独立とする．
+\begin{enumerate}
+\item 積二項尤度 $L(\pi_1,\pi_0)=\binom{n_1}{a}\pi_1^a(1-\pi_1)^{b}\binom{n_0}{c}\pi_0^c(1-\pi_0)^{d}$．
+\item $H_0:\pi_1=\pi_0=\pi$ の下で $\ell(\pi)=(a+c)\log\pi+(b+d)\log(1-\pi)+\text{const}$，
+      $\ell'(\pi)=\frac{a+c}{\pi}-\frac{b+d}{1-\pi}=0$ より $\hat\pi=m_1/N$（$\ell''<0$ で最大）．
+\item $\hat E[a]=n_1\hat\pi=n_1m_1/N$，\quad $a-\hat E[a]=\dfrac{Na-n_1(a+c)}{N}=\dfrac{n_0a-n_1c}{N}$．
+\item $\V[a-\hat E[a]]=\dfrac{n_0^2\V[a]+n_1^2\V[c]}{N^2}=\dfrac{n_0^2n_1+n_1^2n_0}{N^2}\pi(1-\pi)=\dfrac{n_1n_0}{N}\pi(1-\pi)$，
+      $\pi$ に $\hat\pi$ を代入して $\hat V=\dfrac{n_1n_0m_1m_0}{N^3}$．
+\item $X=(a-\hat E[a])^2/\hat V$ は $H_0$ の下で漸近的に $\chi^2_1$（Pearson の $\chi^2$ と一致する）．
+\end{enumerate}
+層ごとの $Y_k=a_k-\hat E[a_k]$ は $H_0$ の下で漸近的に $\Normal(0,\hat V_k)$，層は独立なので $Y=\sum Y_k\sim\Normal(0,\sum\hat V_k)$（正規分布の再生性）．
+よって $X_C=(\sum Y_k)^2/\sum\hat V_k\approx\chi^2_1$ が層別 Cochran 検定．
+条件付き（超幾何）版の CMH 検定とは分散が $N_k/(N_k-1)$ 倍違うだけで，層が大きければほぼ同じ．各層が小さい（ペアなど）ときは CMH を用いる．
+
+\subsection{何を検出するか・交絡の調整}
+各層の $O-E$ を\textbf{足してから2乗する}ので，効果の向きが層間で揃っているときに検出力が高い．向きが逆の層があると打ち消し合う．
+層を併合せずに検定するので，層の変数による交絡を除いた検定になる．
+\paragraph{Simpson のパラドックス（\kakomon{2021}{3}〔4〕）}
+層ごとの関連と併合した表の関連の向きが逆転することがある．
+層変数が治療の割付と関連し（層ごとに新治療の割合が違う），かつ結果とも関連する（層ごとに有効率が違う）とき，その変数は交絡因子で，併合した表は偏る．
+調整した（層別の）解析で解釈する．
+
+\subsection{Peto 型推定量（\kakomon{2017}{4}）}
+共通 OR $\psi=e^\beta$ の下で，周辺度数を与えた $a_k$ の条件付き分布は非心超幾何分布
+\[
+\Prob(a_k=a\mid\text{周辺})\propto\binom{n_{1k}}{a}\binom{n_{0k}}{m_{1k}-a}\psi^{a}
+\]
+で，層ごとのベースラインリスク（局外母数）を含まない．その積（条件付き尤度）の対数を $\beta$ で微分すると
+$U(\beta)=\sum_k(a_k-\E_\beta[a_k])$，$I(\beta)=\sum_k\V_\beta[a_k]$．$\beta=0$ では超幾何分布の $E_k,V_k$ になり
+\begin{itemize}
+\item $U(0)^2/I(0)$ は CMH 検定（条件付き尤度のスコア検定）．
+\item $\beta=0$ から Newton 法で1回だけ更新した $\hat\beta=U(0)/I(0)=\sum(a_k-E_k)/\sum V_k$ が Peto 型推定量．
+      層ごとの $(a_k-E_k)/V_k$ を重み $V_k$ で平均しても同じ式になる（2017年〔3〕の「対数オッズ比の分散の逆数 $=V_k$ を重みにした加重平均」）．
+\end{itemize}
+1回の更新で止めるので，真の OR が1から離れると近似が悪くなる（2017年〔2〕の「真のオッズ比が1に近いときには」の意味）．
+
+\subsection{Mantel--Haenszel 推定量と非可縮性（\kakomon{2022}{2}）}
+積二項モデルで $a_k$ と $d_k$ は独立なので $\E[a_kd_k]/\E[b_kc_k]=\psi_k$．共通 OR の下で $\E[a_kd_k-\psi b_kc_k]=0$ が正確に成り立ち，
+これを $1/N_k$ で重み付けて足した推定方程式を解いたものが $\widehat\OR_{\mathrm{MH}}$ である．
+ゼロセルのある層や，層が多数で各層が小さい場合（マッチドペア）にも使える．
+\paragraph{マッチドペア}
+ペアを層とすると $N_k=2$，$n_{1k}=n_{0k}=1$．$a_kd_k=1$ は「曝露ありだけイベント」のペア，$b_kc_k=1$ は「曝露なしだけイベント」のペアなので，
+$\widehat\OR_{\mathrm{MH}}=$（曝露ありだけイベントのペア数）/（曝露なしだけイベントのペア数）で，McNemar の条件付き OR（第6章）と一致する．
+$\widehat\RR_{\mathrm{MH}}=\sum a_k/\sum c_k$ は粗 RR と一致する．
+\paragraph{粗推定値との違いの切り分け}
+\begin{itemize}
+\item \textbf{交絡}：層変数が曝露と関連し，かつ結果の危険因子．マッチングでは各層に曝露あり・なしが1人ずつで層変数の分布が両群で同じなので，交絡はない．
+\item \textbf{非可縮性}：交絡がなくても，周辺（集団全体の）OR と層ごとの（条件付き）OR は一般に異なる．RR・RD は層間で共通なら集団全体の値に一致する（可縮）が，OR は一致しない．
+\end{itemize}
+2022年の「粗 RR $=$ MH RR，粗 OR $\ne$ MH OR」は非可縮性によるもので，交絡ではない．
+
+\subsection{オッズ比の均一性の確認（\kakomon{2017}{4}〔5〕）}
+共通 OR で要約する前に $H_0:\psi_1=\dots=\psi_K$ を確認する．
+\begin{itemize}
+\item \textbf{Woolf の検定}：$\hat\theta_k=\log\widehat\OR_k$，$w_k=1/(\frac1{a_k}+\frac1{b_k}+\frac1{c_k}+\frac1{d_k})$，$\hat\theta_w=\sum w_k\hat\theta_k/\sum w_k$ として
+      $Q=\sum w_k(\hat\theta_k-\hat\theta_w)^2\approx\chi^2_{K-1}$（対数 OR は近似的に正規分布なので，正規母平均の均一性の検定）．
+\item \textbf{Breslow--Day 検定}（自由度 $K-1$．ゼロセルでも計算できる）．
+\item ロジスティック回帰で曝露×層の交互作用項の尤度比検定．各層の OR と CI を並べて図示する．
+\end{itemize}
+層数が少なく各層が小さいと検出力が低いので，有意でないことは均一性の証明にならない．
+
+\begin{warnbox}
+\begin{itemize}
+\item 層ごとに $\chi^2$ を計算して足す（$O-E$ を足してから2乗するのが正しい．層ごとの $\chi^2$ の和は向きを区別しない）．
+\item 2017年のように「発症あり・なし」を列，「曝露」を行と列で取り違える．$E_k$ は（$a_k$ の行和）×（$a_k$ の列和）/$N_k$．
+\item 粗 OR と MH OR の差をすべて交絡のせいにする（非可縮性もある）．
+\item Peto 型の値を，OR が1から遠いデータでも正確な推定値とみなす．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m07-shutsudai}
+\begin{shutsudai}{\kakomon{2017}{4}：年齢層別の症例対照研究（アルコールと癌）}
+〔1〕層ごとの曝露 OR $7.71,\ 6.03,\ 3.61$．
+〔2〕超幾何の $E,V$ は与えられ，$(y_{11k}-E_k)/V_k$ による層ごとの推定 $31.92,\ 6.87,\ 3.87$（層1は実際の OR 7.71 から大きくずれる）．
+〔3〕重み $V_k$ の加重平均 $\sum(O-E)/\sum V=(96-48.18)/26.17=1.827$，$\hat\psi=e^{1.827}=6.22$，分散 $1/26.17$．
+〔4〕95\%CI $(4.24,\,9.12)$，1を含まないので関連あり．
+〔5〕均一性の確認：対数 OR の正規近似による均一性の検定，Breslow--Day 検定．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2021}{3}：観察研究の2群比較と性別による層別}
+〔1〕粗 OR $0.9$，CI $(0.55,\,1.47)$（対数 OR の分散の式は与えられる）．
+〔2〕積二項尤度，$\hat\pi$，$\hat E[n_{11}]$，$\hat V[n_{11}-\hat E[n_{11}]]$ を導き，$X=0.175$ で有意でない．
+〔3〕$Y_k$ の漸近分布と Cochran 検定統計量の導出．
+〔4〕性別で層別すると $X_C=8.94$ で有意．層別 OR $4.09,\ 2.06$ と粗 OR $0.9$ が逆向き（Simpson のパラドックス）．性別は交絡因子と考えられ，層別の結果で解釈する．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2022}{2}：シートベルトのマッチドペアデータ}
+〔1〕死亡リスク：運転者 0.0007，同乗者 0.0021．〔2〕粗 RR $2.78$，粗 OR $2.79$．
+〔3〕MH の式は与えられ，$\widehat\RR_{\mathrm{MH}}=3074/1104=2.78$，$\widehat\OR_{\mathrm{MH}}=2632/662=3.98$（不一致ペアの比）．
+〔4〕マッチングにより交絡はない．OR の違いは推定対象（周辺 OR と条件付き OR）の違い（非可縮性）．
+〔5〕両者ともベルトなしのデータで座席の効果 RR $\approx1.01$ を求め，$2.78/1.01\approx2.75$ でベルトの効果を間接的に推測する．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m07-reidai}
+\begin{reidai}[\kakomon{2021}{3}型：粗解析と層別 Cochran 検定]\label{reidai:m07-1}
+新治療と既存治療の有効率を比べる観察研究の結果を示す．$n_{11}\sim\Bin(n_{1+},\pi_1)$，$n_{21}\sim\Bin(n_{2+},\pi_2)$ は独立とする．
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & 有効 & 無効 & 計\\
+\midrule
+新治療 & 60 & 70 & 130\\
+既存治療 & 66 & 64 & 130\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item オッズ比の推定値と，対数オッズ比の正規近似による95\%信頼区間を求めよ．
+\item $H_0:\pi_1=\pi_2=\pi$ の下での $\pi$ の MLE $\hat\pi$ を積二項尤度から導き，$\hat E[n_{11}]$ と $\hat V[n_{11}-\hat E[n_{11}]]$ を示せ．
+      さらに $X=(n_{11}-\hat E[n_{11}])^2/\hat V[n_{11}-\hat E[n_{11}]]$ で有意水準5\%の検定を行え．
+\item 性別で層別すると次の結果であった．層別 Cochran 検定を有意水準5\%で行い，〔2〕と比べて考察せよ．
+\begin{center}\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & \multicolumn{3}{c}{男性} & \multicolumn{3}{c}{女性}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+ & 有効 & 無効 & 計 & 有効 & 無効 & 計\\
+\midrule
+新治療 & 24 & 6 & 30 & 36 & 64 & 100\\
+既存治療 & 60 & 40 & 100 & 6 & 24 & 30\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2017}{4}型：Peto 型の共通オッズ比]\label{reidai:m07-2}
+ある曝露と疾患の症例対照研究を年齢で3層に分けた結果を示す（$\psi_k$ は曝露オッズ比）．
+\begin{center}\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{症例} & \multicolumn{2}{c}{対照}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+層 $k$ & 曝露あり $y_{11k}$ & 曝露なし $y_{12k}$ & 曝露あり $y_{21k}$ & 曝露なし $y_{22k}$\\
+\midrule
+1 & 6 & 4 & 30 & 160\\
+2 & 40 & 50 & 60 & 250\\
+3 & 20 & 30 & 15 & 85\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 各層の曝露オッズ比を求めよ．
+\item 周辺度数を固定したときの $y_{11k}$ の超幾何分布の期待値 $E_k$ と分散 $V_k$ を求め，各層の対数 OR を $(y_{11k}-E_k)/V_k$ で推定し，OR に戻せ．
+\item 重み $V_k$ による加重平均で共通 OR を推定し，その対数の分散を求めよ．
+\item 共通 OR の95\%信頼区間を求め，解釈せよ．
+\item 〔2〕の層1の値が〔1〕と大きく異なる理由と，〔3〕の前提を確認する方法を述べよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2022}{2}型：マッチドペアの MH 推定量]\label{reidai:m07-3}
+同じ車に乗っていた「ベルトを着用した運転者」と「着用していない同乗者」を1組とした100万組の事故後の生死を示す．
+\begin{center}\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & 同乗者 死亡 & 同乗者 生存\\
+\midrule
+運転者 死亡 & 300 & 500\\
+運転者 生存 & 1{,}800 & 997{,}400\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{enumerate}[label=〔\arabic*〕]
+\item 運転者と同乗者の死亡リスクを求めよ．
+\item マッチングを無視した，同乗者の運転者に対する死亡リスク比と死亡オッズ比を求めよ（小数第3位を四捨五入）．
+\item 各組を層として，$\widehat\RR_{\mathrm{MH}}$ と $\widehat\OR_{\mathrm{MH}}$ を求めよ．
+\item 〔2〕と〔3〕の異同を，交絡の有無と推定するパラメータの違いの観点から説明せよ．
+\item 両者ともベルトを着用していない組では，同乗者だけ死亡8{,}200組，運転者だけ死亡8{,}000組，両者死亡4{,}000組であった．ベルトの効果について何が推測できるか．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m07-kaisetsu}
+\begin{kaitou}{reidai:m07-1}
+〔1〕$\widehat\OR=\dfrac{60\times64}{70\times66}=\dfrac{3840}{4620}=\dfrac{64}{77}=0.831$．
+\[
+\widehat\V[\log\widehat\OR]=\frac1{60}+\frac1{70}+\frac1{66}+\frac1{64}=0.01667+0.01429+0.01515+0.01563=0.06173,\quad \SE=0.2485 .
+\]
+付表より $\log\widehat\OR=\log0.831=-0.1849$，$1.96\times0.2485=0.487$ で対数の CI は $(-0.672,\,0.302)$，
+付表より $e^{-0.672}=0.511$，$e^{0.302}=1.353$ なので OR の95\%CI は $(0.511,\,1.353)$．1を含む．
+
+〔2〕積二項尤度は $L(\pi_1,\pi_2)=\binom{130}{n_{11}}\pi_1^{n_{11}}(1-\pi_1)^{n_{12}}\binom{130}{n_{21}}\pi_2^{n_{21}}(1-\pi_2)^{n_{22}}$．
+$H_0$ の下で二項係数を除いた対数尤度は $\ell(\pi)=(n_{11}+n_{21})\log\pi+(n_{12}+n_{22})\log(1-\pi)$，
+$\ell'(\pi)=\frac{n_{11}+n_{21}}{\pi}-\frac{n_{12}+n_{22}}{1-\pi}=0$ より $\hat\pi=\frac{n_{11}+n_{21}}{N}$（$\ell''<0$ で最大）．数値は $\hat\pi=126/260$．
+\[
+\hat E[n_{11}]=\frac{n_{1+}(n_{11}+n_{21})}{N},\qquad
+\hat V[n_{11}-\hat E[n_{11}]]=\frac{n_{1+}n_{2+}(n_{11}+n_{21})(n_{12}+n_{22})}{N^3}
+\]
+（導出は\cref{sec:m07-shosai}の手順3・4）．数値は
+$n_{11}-\hat E=\dfrac{130\times60-130\times66}{260}=\dfrac{-780}{260}=-3$，
+$\hat V=\dfrac{130\times130\times126\times134}{260^3}=\dfrac{285{,}339{,}600}{17{,}576{,}000}=16.23$．
+$X=9/16.23=0.55<3.841$ で有意でない．
+
+〔3〕層ごとに $Y_k=\dfrac{n_{2+k}n_{11k}-n_{1+k}n_{21k}}{N_k}$，$\hat V_k=\dfrac{n_{1+k}n_{2+k}m_{1k}m_{0k}}{N_k^3}$．
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+層 & $N_k$ & $Y_k$ & $\hat V_k$ & OR\\
+\midrule
+男性 & 130 & $\frac{100\times24-30\times60}{130}=\frac{600}{130}=4.615$ & $\frac{30\times100\times84\times46}{130^3}=\frac{11{,}592{,}000}{2{,}197{,}000}=5.276$ & $\frac{24\times40}{6\times60}=2.67$\\
+女性 & 130 & $\frac{30\times36-100\times6}{130}=\frac{480}{130}=3.692$ & $\frac{100\times30\times42\times88}{130^3}=\frac{11{,}088{,}000}{2{,}197{,}000}=5.047$ & $\frac{36\times24}{64\times6}=2.25$\\
+\midrule
+計 & & $8.308$ & $10.323$ & \\
+\bottomrule
+\end{tabular}
+\end{center}
+$X_C=8.308^2/10.323=69.02/10.323=6.69>3.841$ で有意．\\
+考察：粗解析では OR $0.83$（新治療がやや悪い方向）で有意でないが，性別で層別すると両層とも OR $>1$（新治療が良い）で，層別 Cochran 検定は有意である（Simpson のパラドックス）．
+新治療を受けたのは女性が多く（130人中100人），女性は男性より有効率が低い（女性 $42/130$，男性 $84/130$）．
+性別が治療の選択とも有効率とも関連する交絡因子なので，粗解析は新治療に不利に偏っている．性別で調整した層別解析で解釈するのが適切である．
+（超幾何分散を使う CMH 検定でも $6.63$ でほぼ同じ．）
+\end{kaitou}
+
+\begin{kaitou}{reidai:m07-2}
+〔1〕$\psi_k=\dfrac{y_{11k}y_{22k}}{y_{12k}y_{21k}}$：層1 $\frac{6\times160}{4\times30}=8.00$，層2 $\frac{40\times250}{50\times60}=3.33$，層3 $\frac{20\times85}{30\times15}=3.78$．
+
+〔2〕$E_k=\dfrac{(y_{11k}+y_{12k})(y_{11k}+y_{21k})}{N_k}$（症例数×曝露者数/総数），$V_k=\dfrac{(\text{症例数})(\text{対照数})(\text{曝露者数})(\text{非曝露者数})}{N_k^2(N_k-1)}$．
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+層 & $N_k$ & $E_k$ & $V_k$ & $(y_{11k}-E_k)/V_k$ & OR\\
+\midrule
+1 & 200 & $\frac{10\times36}{200}=1.800$ & $\frac{10\times190\times36\times164}{200^2\times199}=1.409$ & $\frac{4.200}{1.409}=2.980$ & $19.69$\\
+2 & 400 & $\frac{90\times100}{400}=22.50$ & $\frac{90\times310\times100\times300}{400^2\times399}=13.111$ & $\frac{17.50}{13.111}=1.335$ & $3.80$\\
+3 & 150 & $\frac{50\times35}{150}=11.667$ & $\frac{50\times100\times35\times115}{150^2\times149}=6.003$ & $\frac{8.333}{6.003}=1.388$ & $4.01$\\
+\bottomrule
+\end{tabular}
+\end{center}
+（OR の列は付表より $e^{2.980}=19.69$，$e^{1.335}=3.80$，$e^{1.388}=4.01$．）
+
+〔3〕重み $V_k$ の加重平均は
+\[
+\hat\beta=\frac{\sum_kV_k\cdot\frac{y_{11k}-E_k}{V_k}}{\sum_kV_k}=\frac{\sum_k(y_{11k}-E_k)}{\sum_kV_k}=\frac{4.200+17.50+8.333}{1.409+13.111+6.003}=\frac{30.033}{20.523}=1.463,
+\]
+付表より $\hat\psi=e^{1.463}=4.32$．$\V[y_{11k}]=V_k$ で層は独立なので $\V[\hat\beta]=\sum_kV_k/(\sum_kV_k)^2=1/\sum_kV_k=1/20.523=0.0487$．
+
+〔4〕$\SE=\sqrt{0.0487}=0.2207$，$1.463\pm1.96\times0.2207=1.463\pm0.433=(1.031,\,1.896)$，付表より $e^{1.031}=2.80$，$e^{1.896}=6.66$ で，OR の95\%CI は $(2.80,\,6.66)$．
+1を含まないので，年齢を調整しても曝露と疾患に関連がある．
+
+〔5〕Peto 型の $(y_{11k}-E_k)/V_k$ は，条件付き尤度のスコアを $\beta=0$ から Newton 法で1回だけ更新した値で，真の OR が1に近いときの近似である．
+層1は OR が8と1から遠く，しかも症例が10人と少ないので近似が悪く，$19.7$ と大きく出た．統合値 $4.32$ も，MH 推定値 $3.71$（本書で計算）より大きい．
+〔3〕は層間で OR が等しいことを前提にしているので，Woolf の均一性検定（層ごとの対数 OR の正規近似による均一性の $\chi^2_{K-1}$ 検定）や Breslow--Day 検定，各層の OR と CI の図示で確認する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m07-3}
+〔1〕$N=1{,}000{,}000$ 組．運転者の死亡 $300+500=800$，同乗者の死亡 $300+1800=2100$．
+リスクは運転者 $800/10^6=0.0008$（0.08\%），同乗者 $2100/10^6=0.0021$（0.21\%）．
+
+〔2〕$\RR_c=\dfrac{2100/10^6}{800/10^6}=2.625\approx2.63$，\quad
+$\OR_c=\dfrac{2100\times(10^6-800)}{800\times(10^6-2100)}=\dfrac{2{,}098{,}320{,}000}{798{,}320{,}000}=2.628\approx2.63$．
+
+〔3〕各組で $n_k=m_k=1$，$N_k=2$ なので，$\widehat\RR_{\mathrm{MH}}=\dfrac{\sum A_k/2}{\sum B_k/2}=\dfrac{2100}{800}=2.625\approx2.63$（$A_k$：同乗者死亡，$B_k$：運転者死亡）．
+$\widehat\OR_{\mathrm{MH}}=\dfrac{\sum A_kD_k/2}{\sum B_kC_k/2}$ で，$A_kD_k=1$ は「同乗者だけ死亡」の組，$B_kC_k=1$ は「運転者だけ死亡」の組なので
+$\widehat\OR_{\mathrm{MH}}=1800/500=3.60$．
+
+〔4〕$\RR_c=\widehat\RR_{\mathrm{MH}}$，$\OR_c\ne\widehat\OR_{\mathrm{MH}}$．
+交絡：各組（事故）に運転者と同乗者が1人ずつで，事故の状況の分布は両群でまったく同じなので，どの推定量にも事故状況による交絡はない．OR の違いを交絡とみなすことはできない．
+パラメータ：粗推定値は集団全体の（周辺）指標，MH 推定量は層（事故）ごとの指標を共通とみなした値である．
+リスク比は層間で共通なら集団全体のリスク比に一致する（可縮）ので推定値も一致するが，オッズ比は層間で共通でも一般に集団全体のオッズ比と一致しない（非可縮）ので，推定値が異なる．
+
+〔5〕〔1〕〜〔3〕の比較 (A)「運転者ベルトあり vs 同乗者ベルトなし」には座席の違いとベルトの違いが混ざっている．
+両者ベルトなしの比較 (B) では，同乗者の運転者に対するリスク比は $\dfrac{4000+8200}{4000+8000}=\dfrac{12200}{12000}=1.017$ で，座席の違いによる差はほとんどない．
+(A) の RR $2.625$ を (B) の $1.017$ で割ると $2.625/1.017=2.58$ で，運転者がベルトを着用しないと死亡リスクが約2.6倍になると推測される．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 超幾何：$E_k=n_{1k}m_{1k}/N_k$，$V_k=n_{1k}n_{0k}m_{1k}m_{0k}/\{N_k^2(N_k-1)\}$．Cochran（積二項）は分母 $N_k^3$．
+\item 層ごとの $O-E$ を足してから2乗：$\{\sum(a_k-E_k)\}^2/\sum V_k\sim\chi^2_1$．交絡を除いた検定．向きが揃っていると強い．
+\item Peto：$\sum(O-E)/\sum V$，分散 $1/\sum V$．OR が1に近いときの近似．MH：$\sum(ad/N)/\sum(bc/N)$，ペアなら不一致の比．
+\item 粗と調整の差＝交絡＋非可縮性（OR）．均一性は Woolf・Breslow--Day で確認．
+\end{itemize}
+\end{summarybox}
+
+% ===== m08_fwer.tex =====
+\part*{優先度C：保険}
+\addcontentsline{toc}{part}{優先度C：保険}
+
+\chapter{FWER・Bonferroni 法}\label{ch:m08}
+
+\begin{priobox}{C}
+\kakomon{2024}{4}，\kakomon{2025}{4} と2年続けて出題．FWER の定義・Simes 法の棄却規則などは問題文で与えられるが，
+「Bonferroni 法で」とだけ書かれた設問（各検定を $\alpha/m$），独立な検定の FWER $1-(1-\alpha)^m$，
+分散分析で保護した対比較が FWER を制御する条件（閉検定の考え方）は知っておくと確実に取れる．本編の第14章14.3〜14.5節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m08-gaiyo}
+1つの試験で複数の帰無仮説 $H_1,\dots,H_m$ を検定すると，「どれか1つでも誤って棄却する」確率が名目の $\alpha$ を超える．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item FWER（familywise error rate）$=\Prob(\text{少なくとも1つの真の帰無仮説を棄却})$．
+      真偽のどの組合せでも $\le\alpha$ なら\textbf{強い制御}，すべての帰無仮説が真のときだけなら\textbf{弱い制御}．真の帰無仮説がなければ FWER $=0$．
+\item 独立な $m$ 個の検定を各 $\alpha_0$ で行うと（全帰無仮説が真のとき）FWER $=1-(1-\alpha_0)^m$．
+\item Bonferroni 法：各検定を $\alpha/m$ で行う．依存関係によらず FWER $\le\alpha$（強い制御）．
+\item Šidák 型：独立なら各 $1-(1-\alpha)^{1/m}$ で FWER $=\alpha$ ちょうど（$m=2$ なら $1-\sqrt{1-\alpha}$）．
+\item Holm 法：$p_{(1)}\le\dots\le p_{(m)}$ を順に $p_{(k)}\le\alpha/(m-k+1)$ と比べ，成り立つ限り棄却．Bonferroni より強力で強い制御．
+\item 正の相関があると FWER は独立の場合以下：$\mathrm{FWER}(\rho)=2\alpha-\Prob(Z_1>z_\alpha,Z_2>z_\alpha)\le2\alpha-\alpha^2$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m08-shosai}
+\subsection{独立な検定の FWER}
+全帰無仮説が真で検定が独立なら，どれも棄却しない確率は $(1-\alpha_0)^m$ なので FWER $=1-(1-\alpha_0)^m$．
+$m=3$，$\alpha_0=0.05$ で $0.143$ と，名目の約3倍になる．
+$p$ 値で書けば，$H_k$ が真なら $p_k\sim\Unif(0,1)$ で $\Prob(p_k\le\alpha_0)=\alpha_0$（連続な検定統計量の場合）．
+
+\subsection{Bonferroni 法の証明}
+真の帰無仮説の集合を $I_0$（$|I_0|=m_0\le m$），$A_i$ を「$H_i$ を棄却」とすると，Boole の不等式 $\Prob(\cup A_i)\le\sum\Prob(A_i)$ より
+\[
+\mathrm{FWER}=\Prob\Bigl(\bigcup_{i\in I_0}A_i\Bigr)\le\sum_{i\in I_0}\frac\alpha m=\frac{m_0}{m}\alpha\le\alpha .
+\]
+独立性を使っていないので，依存関係によらず成り立つ．独立なら FWER は $1-(1-\alpha/m)^m$ で $\alpha$ よりわずかに小さい（保守的）．
+
+\subsection{Holm 法}
+真の帰無仮説のうち $p$ 値が最小のものが $k$ 番目に来たとすると，それより前は偽の帰無仮説だけなので $k-1\le m-m_0$，すなわち $m-k+1\ge m_0$．
+真の帰無仮説を1つでも棄却するにはこの $H_{(k)}$ を棄却する必要があり，それには $p_{(k)}\le\alpha/(m-k+1)\le\alpha/m_0$．
+よって FWER $\le\Prob(\text{ある }i\in I_0\text{ で }p_i\le\alpha/m_0)\le\alpha$．
+
+\subsection{大域帰無仮説の検定：Bonferroni と Simes（\kakomon{2025}{4}〔1-4〕）}
+$m=2$ で $H_1\cap H_2$（両方真）を棄却する規則を比べる．
+\begin{itemize}
+\item Bonferroni：$p_{(1)}\le\alpha/2$ なら棄却．
+\item Simes：$p_{(1)}\le\alpha/2$ \textbf{または} $p_{(2)}\le\alpha$ なら棄却．
+\end{itemize}
+両者の差は「$\alpha/2<p_1\le\alpha$ かつ $\alpha/2<p_2\le\alpha$」の正方形で，Simes のほうが棄却域が広い．
+独立なら Bonferroni の棄却域の確率は $1-(1-\alpha/2)^2=\alpha-\alpha^2/4$，正方形の確率は $(\alpha/2)^2$ で，Simes の第1種の過誤確率はちょうど $\alpha$．
+
+\subsection{相関がある場合（\kakomon{2025}{4}〔2〕）}
+$(Z_1,Z_2)$ が平均0・分散1・相関 $\rho\ge0$ の2変量正規で，各検定を $Z_k>z_\alpha$ で棄却するとき，和事象の確率の公式から
+\[
+\mathrm{FWER}(\rho)=\Prob(Z_1>z_\alpha)+\Prob(Z_2>z_\alpha)-\phi(\rho)=2\alpha-\phi(\rho),\qquad\phi(\rho)=\Prob(Z_1>z_\alpha,Z_2>z_\alpha).
+\]
+$\rho=0$ なら独立で $\phi(0)=\alpha^2$．$\rho\ge0$ で $\phi(\rho)\ge\alpha^2$（正の相関で同時に大きくなりやすい．試験では証明なしで使ってよいとされた）なので
+$\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$．独立を仮定した FWER は正の相関があるときの上界である．
+\paragraph{多対1比較の相関（\kakomon{2024}{4}〔4〕）}
+共通の対照群0と各群 $j$ の比較 $Z_j=(\bar Y_j-\bar Y_0)/\sqrt{\sigma^2(1/n_j+1/n_0)}$ は $\bar Y_0$ を共有するので相関する．
+全帰無仮説の下で $\Cov(\bar Y_j-\bar Y_0,\bar Y_k-\bar Y_0)=\V[\bar Y_0]=\sigma^2/n_0$（$j\ne k$，群は独立）なので
+\[
+\Corr(Z_j,Z_k)=\frac{\sigma^2/n_0}{\sigma^2\sqrt{(1/n_j+1/n_0)(1/n_k+1/n_0)}}=\sqrt{\frac{n_jn_k}{(n_j+n_0)(n_k+n_0)}} .
+\]
+全群同数なら $1/2$．この正の相関を利用して Bonferroni より緩い棄却限界を使うのが Dunnett 法である．
+
+\subsection{分散分析で保護した対比較（\kakomon{2024}{4}〔3〕）}
+「一元配置分散分析で $H_0:\mu_0=\dots=\mu_3$ が棄却されたら，各 $H_{0j}:\mu_0=\mu_j$ を水準 $\alpha$ の $z$ 検定で検定する」手順を考える．
+\begin{itemize}
+\item 全帰無仮説が真なら，誤って何かを棄却するには分散分析で棄却される必要があるので FWER $\le\alpha$（弱い制御）．
+\item 真の帰無仮説が\textbf{ちょうど1つ}なら，それを誤って棄却する確率は単独の水準 $\alpha$ の検定以下．
+\item 真の帰無仮説がない（すべて偽）なら FWER $=0$．
+\item しかし真の帰無仮説が2つ以上あり，かつ分散分析が（偽の仮説のために）ほぼ確実に棄却される状況では，残った真の帰無仮説を水準 $\alpha$ で2回以上検定することになり，FWER は $\alpha$ を超えうる．
+\end{itemize}
+したがって FWER が群の人数によらず $\alpha$ 以下になるのは「$\mu_0=\mu_1=\mu_2=\mu_3$」または「$H_{01},H_{02},H_{03}$ のうち真が1つ以下」のとき．
+閉検定手順（すべての交わりの仮説を水準 $\alpha$ で棄却できたときだけ個別の仮説を棄却する）に従えば強い制御になる．
+
+\begin{warnbox}
+\begin{itemize}
+\item Bonferroni の「強い制御」に独立性が必要だと考える（不要．Boole の不等式だけ）．
+\item 独立な検定の FWER を $m\alpha$ とする（それは Bonferroni の上界．正確には $1-(1-\alpha)^m$）．
+\item 分散分析でゲートすれば常に FWER が制御されると考える（強い制御にはならない）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m08-shutsudai}
+\begin{shutsudai}{\kakomon{2024}{4}：プラセボと3用量の比較}
+〔1〕独立な3検定を各2.5\%：FWER $=1-0.975^3=0.073$．〔2〕Bonferroni：各 $\alpha/3$．
+〔3〕分散分析をゲートにした $z$ 検定で FWER が $\alpha$ 以下になる条件：全平均が等しい，または対比較の帰無仮説のうち1つだけが真（すべて偽なら FWER $=0$）．
+〔4〕多対1比較の相関 $\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$．
+〔5〕〔6〕用量反応の線形対比 $(-3,-1,1,3)/\sqrt{20}$ と，対比 $(-3,1,1,1)$ との相関 $3/\sqrt{15}=0.775$（本編第14章14.6節）．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2025}{4}：2つの主要評価項目}
+〔1-1〕独立で各5\%：$1-0.95^2=0.0975$．〔1-2〕Bonferroni（各2.5\%）：$1-0.975^2=0.049$．
+〔1-3〕FWER $=0.05$ の制約 $(1-\alpha_1)(1-\alpha_2)=0.95$（等しくすれば $1-\sqrt{0.95}=0.0253$，Šidák）．
+〔1-4〕Simes と Bonferroni の棄却域の差（正方形）．〔2〕$\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)\le\mathrm{FWER}(0)$．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m08-reidai}
+\begin{reidai}[\kakomon{2025}{4}型：独立な $p$ 値と Simes 法]\label{reidai:m08-1}
+すべての帰無仮説が真であり，各検定の $p$ 値は互いに独立に $\Unif(0,1)$ に従うとする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 3つの主要評価項目をそれぞれ有意水準5\%で検定するときの FWER を求めよ．
+\item Bonferroni 法で FWER を5\%以下に制御するとき，各検定の有意水準と，そのときの FWER を求めよ．
+\item 評価項目が2つのとき，FWER をちょうど5\%にする有意水準 $\alpha_1,\alpha_2$ の制約式を求め，$\alpha_1=\alpha_2$ のときの値を求めよ．
+\item 評価項目が2つで $p_1=0.030$，$p_2=0.045$ であった．$\alpha=0.05$ として，$H_1\cap H_2$ を Bonferroni 法と Simes 法（$p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$ なら棄却）で検定せよ．
+      また，2つの方法の棄却域が異なる領域を $(p_1,p_2)$ 平面で示せ．
+\item 2つの検定統計量 $(Z_1,Z_2)$ が相関 $\rho\ge0$ の2変量正規分布に従い，各検定を $Z_k>z_\alpha$ で棄却するとき，$\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$ を示せ．
+      $\Prob(Z_1>z_\alpha,Z_2>z_\alpha)\ge\alpha^2$ は証明なしに用いてよい．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2024}{4}型：多対1比較]\label{reidai:m08-2}
+プラセボ（群0）と4用量（群1〜4）の比較で，$H_{0j}:\mu_0=\mu_j$（$j=1,\dots,4$）を検定する．結果変数は正規分布で分散 $\sigma^2$ は既知とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 4つの検定を各有意水準2.5\%で行い，検定統計量が独立と仮定したときの FWER を求めよ．
+\item Bonferroni 法で FWER を $\alpha$ 以下にするときの各検定の有意水準を求めよ．
+\item 4つの $p$ 値が $0.004,\ 0.009,\ 0.015,\ 0.030$ であった．$\alpha=0.05$ として Bonferroni 法と Holm 法で棄却される仮説を答えよ．
+\item 群0が40人，群1〜4が各20人のとき，全帰無仮説の下での $Z_j$ と $Z_k$（$j\ne k$）の相関係数を求めよ．
+      この相関は〔1〕の独立の仮定とどう関係するか．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m08-kaisetsu}
+\begin{kaitou}{reidai:m08-1}
+〔1〕3つとも棄却しない確率は $0.95^3=0.857375$ なので FWER $=1-0.857375=0.143$．
+
+〔2〕各検定を $0.05/3=0.0167$ で行う．FWER $=1-(1-0.05/3)^3=1-(59/60)^3=1-0.9508=0.049$．5\%以下に制御されている．
+
+〔3〕FWER $=1-(1-\alpha_1)(1-\alpha_2)$ なので，制約式は $(1-\alpha_1)(1-\alpha_2)=0.95$．
+$\alpha_1=\alpha_2=\alpha'$ なら $(1-\alpha')^2=0.95$，$\alpha'=1-\sqrt{0.95}=1-0.9747=0.0253$（Šidák 型）．Bonferroni の $0.025$ よりわずかに大きい．
+
+〔4〕$p_{(1)}=0.030$，$p_{(2)}=0.045$．
+Bonferroni：$p_{(1)}=0.030>\alpha/2=0.025$ なので $H_1\cap H_2$ を棄却しない．
+Simes：$p_{(1)}>0.025$ だが $p_{(2)}=0.045\le0.05$ なので棄却する．\\
+棄却域の差は，Simes では棄却し Bonferroni では棄却しない領域
+\[
+\{p_{(1)}>\alpha/2,\ p_{(2)}\le\alpha\}=\{0.025<p_1\le0.05\ \text{かつ}\ 0.025<p_2\le0.05\}
+\]
+の正方形である（この例の $(0.030,0.045)$ はちょうどここに入る）．独立ならこの正方形の確率は $0.025^2=0.000625$ で，Bonferroni の棄却域の確率 $1-0.975^2=0.049375$ と足すとちょうど $0.05$．
+
+〔5〕和事象の確率の公式より
+$\mathrm{FWER}(\rho)=\Prob(Z_1>z_\alpha)+\Prob(Z_2>z_\alpha)-\Prob(Z_1>z_\alpha,Z_2>z_\alpha)=2\alpha-\phi(\rho)$．
+$\rho=0$ のとき2変量正規で無相関なので独立で，$\phi(0)=\alpha^2$，$\mathrm{FWER}(0)=2\alpha-\alpha^2$．
+$\mathrm{FWER}(0)-\mathrm{FWER}(\rho)=\phi(\rho)-\alpha^2\ge0$（与えられた不等式）なので $\mathrm{FWER}(\rho)\le\mathrm{FWER}(0)$．
+正の相関があるとき，独立を仮定して計算した FWER は真の FWER を上回る（安全側）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m08-2}
+〔1〕FWER $=1-0.975^4=1-0.950625^2=1-0.9037=0.096$．
+
+〔2〕各検定を $\alpha/4$ で行う．
+
+〔3〕Bonferroni：基準 $0.05/4=0.0125$．$0.004$ と $0.009$ だけが下回るので $H_{01},H_{02}$（$p=0.004,0.009$ の仮説）を棄却．\\
+Holm：小さい順に基準 $\alpha/4,\ \alpha/3,\ \alpha/2,\ \alpha/1$ と比べる．
+\begin{center}\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+順位 $k$ & $p_{(k)}$ & 基準 $\alpha/(m-k+1)$ & 判定\\
+\midrule
+1 & 0.004 & $0.05/4=0.0125$ & 棄却\\
+2 & 0.009 & $0.05/3=0.0167$ & 棄却\\
+3 & 0.015 & $0.05/2=0.025$ & 棄却\\
+4 & 0.030 & $0.05/1=0.05$ & 棄却\\
+\bottomrule
+\end{tabular}
+\end{center}
+Holm ではすべて棄却される．Bonferroni で棄却される仮説は Holm でも必ず棄却され，Holm のほうが強力である（どちらも FWER を強く制御する）．
+
+〔4〕$n_0=40$，$n_j=n_k=20$ を代入して
+\[
+\Corr(Z_j,Z_k)=\sqrt{\frac{20\times20}{(20+40)(20+40)}}=\frac{20}{60}=\frac13 .
+\]
+（全群同数なら $1/2$．対照群を大きくすると相関は小さくなる．）
+共通の対照群 $\bar Y_0$ を使うため検定統計量は正に相関し，独立ではない．〔1〕の独立を仮定した FWER $0.096$ は，正の相関がある実際の FWER の上界になる．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 独立 $m$ 検定：FWER $=1-(1-\alpha_0)^m$．Bonferroni：各 $\alpha/m$（Boole の不等式，依存関係によらない強い制御）．
+\item Šidák：$1-(1-\alpha)^{1/m}$．Holm：$p_{(k)}\le\alpha/(m-k+1)$ を順に．Simes：$p_{(1)}\le\alpha/2$ または $p_{(2)}\le\alpha$（$m=2$）．
+\item 正の相関で FWER は減る：$2\alpha-\phi(\rho)\le2\alpha-\alpha^2$．多対1の相関 $\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$．
+\item 分散分析ゲートは弱い制御．真の帰無仮説が1つ以下なら FWER $\le\alpha$．
+\end{itemize}
+\end{summarybox}
+
+% ===== m09_spending.tex =====
+\chapter{\texorpdfstring{$\alpha$}{α} 消費関数}\label{ch:m09}
+
+\begin{priobox}{C}
+出題は\kakomon{2017}{2}の1回．$B(t)=\sqrt tZ(t)$ の平均・共分散と $\alpha(t)$ は与えられるが，
+「中間で $\alpha(t_1)$ を消費し，最終では $\Prob(Z(t_1)\le z_1,\,Z(1)>z_2)=\alpha(1)-\alpha(t_1)$ で $z_2$ を決める」という原理は知らないと〔4〕が書けない．
+本編の第14章14.2節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m09-gaiyo}
+中間解析で有効性が示されれば試験を早く止めたいが，同じ $\alpha$ で何度も検定すると第1種の過誤確率が増える．
+全体の $\alpha$ を各解析に「配分」するのが群逐次デザインで，その配分を情報時間 $t$ の関数で決めたものが $\alpha$ 消費関数である．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item 情報時間 $t=I/I_{\max}$．ログランク検定なら $t=$（その時点のイベント数）/（最終の目標イベント数）．
+\item $B(t)=\sqrt t\,Z(t)$ は $H_0$ の下で $\E[B(t)]=0$，$\Cov[B(s),B(t)]=\min(s,t)$（近似的に標準 Brown 運動）．
+\item $s<t$ なら $\Corr[Z(s),Z(t)]=\Cov[Z(s),Z(t)]=\sqrt{s/t}$．
+\item $\alpha$ 消費関数 $\alpha(t)$：$\alpha(0)=0$，$\alpha(1)=\alpha$ の非減少関数．
+      第 $k$ 回の解析で消費するのは $\alpha(t_k)-\alpha(t_{k-1})$．
+\item 第1回：$\Prob(Z(t_1)>c_1)=\alpha(t_1)$ より $c_1=z_{\alpha(t_1)}$．
+\item 第2回：$\Prob\bigl(Z(t_1)\le c_1,\ Z(t_2)>c_2\bigr)=\displaystyle\int_{-\infty}^{c_1}\int_{c_2}^{\infty}\phi_2\bigl(x_1,x_2;\sqrt{t_1/t_2}\bigr)\dd x_2\dd x_1=\alpha(t_2)-\alpha(t_1)$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m09-shosai}
+\subsection{検定統計量の相関}
+情報時間 $t$ までのデータによるスコア統計量を $S(t)$ とする（ログランクなら $U=\sum(d_{1j}-E_{1j})$）．$H_0$ の下で
+(i) $\E[S(t)]=0$，$\V[S(t)]\approx tI_{\max}$，(ii) $s<t$ なら増分 $S(t)-S(s)$ は $S(s)$ と無相関（第2章の「分散を足せる理由」と同じ）．すると
+\[
+\Cov[S(s),S(t)]=\V[S(s)]+\Cov[S(s),S(t)-S(s)]=sI_{\max}.
+\]
+$Z(t)=S(t)/\sqrt{tI_{\max}}$，$B(t)=\sqrt tZ(t)=S(t)/\sqrt{I_{\max}}$ とおくと $\Cov[B(s),B(t)]=s=\min(s,t)$ で，
+\[
+\Cov[Z(s),Z(t)]=\frac{\Cov[B(s),B(t)]}{\sqrt s\sqrt t}=\frac{s}{\sqrt{st}}=\sqrt{\frac st}.
+\]
+$\V[Z(t)]=1$ なので，これは相関係数でもある．「$Z(t)$ は $Z(s)$ の情報に新しい情報を足したもので，重なりの割合が相関」と覚える．
+
+\subsection{繰り返し検定の問題}
+$t=0.5$ と $t=1$ の2回，それぞれ片側 $z_{0.025}=1.96$ で検定すると，全体の第1種の過誤確率は $1-\Prob(Z(0.5)\le1.96,\,Z(1)\le1.96)$（相関 $\sqrt{0.5}$）で，数値計算すると約 $0.042$ と名目の $0.025$ を大きく超える．
+
+\subsection{限界値の決め方}
+各回の事象「それまで棄却されず，第 $k$ 回で初めて棄却」は互いに排反なので，それぞれの確率を $\alpha(t_k)-\alpha(t_{k-1})$ にすれば，全体の第1種の過誤確率は足して $\alpha(t_K)=\alpha$．
+\begin{enumerate}
+\item $c_1$ は正規分布表で求まる．
+\item $c_2$ 以降は多変量正規分布の数値積分が必要で，試験では「$\phi_2$ を用いた式で説明せよ」の形で問われる．
+\end{enumerate}
+$\alpha$ 消費関数法の利点は，解析の回数・時期を前もって固定しなくてよいことである．途中で解析を追加しても，消費する $\alpha$ は $\alpha(t)$ から自動的に決まる．
+
+\subsection{代表的な消費関数}
+\begin{center}\small
+\begin{tabular}{@{}llL{70mm}@{}}
+\toprule
+名称 & $\alpha(t)$ & 特徴\\
+\midrule
+O'Brien--Fleming 型 & $2-2\Phi(z_{\alpha/2}/\sqrt t)$ & 初期はほとんど消費しない．最終の限界値が名目値に近い\\
+Pocock 型 & $\alpha\log\{1+(e-1)t\}$ & 各回ほぼ同じ限界値．早期中止しやすいが最終が厳しい\\
+べき型 & $\alpha t^\rho$ & $\rho$ が大きいほど初期の消費が少ない（2017年は $\rho=2$）\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{warnbox}
+\begin{itemize}
+\item 最終解析の限界値を「$\Prob(Z(1)>c_2)=\alpha-\alpha(t_1)$」として正規分布表で引く（中間で棄却されなかったという条件が抜けている）．
+\item 相関を $t_1/t_2$ とする（正しくは $\sqrt{t_1/t_2}$）．$\Cov[B]$ と $\Cov[Z]$ を混同する．
+\item 解析を追加したときに，追加した回の消費を $\alpha(t_{\text{新}})$ とする（正しくは前回までとの差 $\alpha(t_{\text{新}})-\alpha(t_{\text{前}})$）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m09-shutsudai}
+\begin{shutsudai}{\kakomon{2017}{2}：ログランク検定の群逐次デザイン}
+片側5\%，目標1000イベント，$L=400$ で中間解析（$t=0.4$），$\alpha(t)=0.05t^2$．
+〔1〕中間で $0.05\times0.16=0.008$，最終で $0.042$．
+〔2〕$\Prob(Z(0.4)\ge z_1)=0.008$ より $z_1=2.41$．
+〔3〕$\Cov[Z(0.4),Z(1)]=\Cov[B(0.4),B(1)]/\sqrt{0.4}=0.4/\sqrt{0.4}=\sqrt{0.4}$．
+〔4〕$\int_{-\infty}^{z_1}\int_{z_2}^{\infty}\phi_2(x_1,x_2;\sqrt{0.4})\dd x_2\dd x_1=0.042$ を満たす $z_2$．
+〔5〕$L=700$ を追加：2回目 $0.05\times0.49-0.008=0.0165$，最終 $0.05-0.0245=0.0255$．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m09-reidai}
+\begin{reidai}[\kakomon{2017}{2}型：$\alpha$ 消費関数による中間解析]\label{reidai:m09-1}
+生存期間を評価項目とする2群のランダム化比較試験で，片側有意水準2.5\%のログランク検定（検定統計量が限界値より大きいとき棄却）を行う．
+最終解析の目標イベント数は両群合わせて600，中間解析を1回，イベント数 $L$ の時点で行い，情報時間を $t=L/600$ とする．
+情報時間 $t$ の検定統計量 $Z(t)$ は $H_0$ の下で標準正規分布に従い，$B(t)=\sqrt tZ(t)$ は $\E[B(t)]=0$，$\Cov[B(t_1),B(t_2)]=\min(t_1,t_2)$ を満たす．
+$\alpha$ 消費関数を $\alpha(t)=0.025t^2$ とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $L=300$ で中間解析を行うとき，中間解析と最終解析で消費する $\alpha$ を求めよ．
+\item 中間解析の棄却限界値 $z_1$ を求めよ．
+\item $\Cov[Z(0.5),Z(1)]$ を求めよ．
+\item 最終解析の棄却限界値 $z_2$ の求め方を，平均 $\bm 0$・分散1・相関 $\rho$ の2変量正規密度 $\phi_2(x_1,x_2;\rho)$ を用いて説明せよ．
+\item 計画を変更し，$L=480$ でも中間解析を行うことにした（合計3回）．2回目の中間解析と最終解析で消費する $\alpha$ を求めよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m09-kaisetsu}
+\begin{kaitou}{reidai:m09-1}
+〔1〕$t_1=300/600=0.5$．中間解析で消費する $\alpha$ は $\alpha(0.5)=0.025\times0.25=0.00625$．
+最終解析で消費するのは $\alpha(1)-\alpha(0.5)=0.025-0.00625=0.01875$．
+
+〔2〕$\Prob(Z(0.5)>z_1\mid H_0)=0.00625$ を満たす $z_1$．正規分布表で上側確率0.0064（2.49）と0.0062（2.50）の間なので $z_1\approx2.50$．
+（名目の $z_{0.025}=1.96$ よりかなり厳しい．）
+
+〔3〕$Z(0.5)=B(0.5)/\sqrt{0.5}$，$Z(1)=B(1)$ なので
+\[
+\Cov[Z(0.5),Z(1)]=\frac{1}{\sqrt{0.5}}\Cov[B(0.5),B(1)]=\frac{\min(0.5,1)}{\sqrt{0.5}}=\frac{0.5}{\sqrt{0.5}}=\sqrt{0.5}=0.707 .
+\]
+$\V[Z(t)]=1$ なのでこれは相関係数でもある．
+
+〔4〕$(Z(0.5),Z(1))$ は $H_0$ の下で平均 $\bm0$，分散1，相関 $\sqrt{0.5}$ の2変量正規分布に従う（近似）．
+最終解析で棄却するのは「中間で棄却されず（$Z(0.5)\le z_1$），最終で $Z(1)>z_2$」のときなので，$z_2$ は
+\[
+\Prob\bigl(Z(0.5)\le z_1,\ Z(1)>z_2\bigr)=\int_{-\infty}^{z_1}\int_{z_2}^{\infty}\phi_2\bigl(x_1,x_2;\sqrt{0.5}\bigr)\dd x_2\,\dd x_1=0.01875
+\]
+を満たす値として，数値積分で求める．
+全体の第1種の過誤確率は，排反な2つの事象の確率の和 $0.00625+0.01875=0.025$ になる．
+（参考：数値計算すると $z_2\approx2.02$．中間解析をしない場合の $1.96$ よりわずかに大きい．）
+
+〔5〕$t_2=480/600=0.8$．$\alpha(0.8)=0.025\times0.64=0.016$．
+2回目の中間解析で消費するのは $\alpha(0.8)-\alpha(0.5)=0.016-0.00625=0.00975$，
+最終解析で消費するのは $\alpha(1)-\alpha(0.8)=0.025-0.016=0.009$．
+（合計 $0.00625+0.00975+0.009=0.025$．）
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 情報時間 $t$＝イベント数の割合．$\Cov[B(s),B(t)]=\min(s,t)$，$\Corr[Z(s),Z(t)]=\sqrt{s/t}$．
+\item 第 $k$ 回の消費 $=\alpha(t_k)-\alpha(t_{k-1})$．$c_1=z_{\alpha(t_1)}$，$c_2$ は「それまで棄却されず第2回で棄却」の確率で決める（2変量正規の積分）．
+\item 解析を追加しても消費は $\alpha(t)$ から自動的に決まる．
+\end{itemize}
+\end{summarybox}
+
+% ===== m10_tost.tex =====
+\chapter{生物学的同等性・TOST}\label{ch:m10}
+
+\begin{priobox}{C}
+\kakomon{2016}{4}〔5〕は同等域 $(0.8,1.25)$ を与えて「信頼係数90\%の信頼区間を求め，生物学的同等性が成立するか検討せよ」と問う．
+「90\%CI が同等域に含まれれば同等」という判定規則と，クロスオーバー試験を対応のある差の $t$ 区間で扱うことは前提である．
+\kakomon{2021}{2}は2つの片側検定（TOST）と，その組合せの第1種の過誤確率が $\alpha$ 以下であることの証明を誘導付きで問う．本編の第13章．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m10-gaiyo}
+後発医薬品などで「標準製剤と効き方が同じ」ことを示すには，「差がない」ことを帰無仮説にするのではなく，「差が許容範囲を超える」ことを帰無仮説にして棄却する．
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item 対数変換：AUC などを $X$ として $Y=\log X\sim\Normal(\mu,\sigma^2)$（$X$ は対数正規）．$X$ の中央値は $e^\mu$，平均は $e^{\mu+\sigma^2/2}$，変動係数は $\sqrt{e^{\sigma^2}-1}$．
+\item 中央値（幾何平均）の比：$e^{\mu_T-\mu_R}$．対数スケールの差 $\theta=\mu_T-\mu_R$ を推定する．
+\item TOST：$H_{01}:\theta\le-\Delta$ と $H_{02}:\theta\ge\Delta$ をそれぞれ片側水準 $\alpha$ の $t$ 検定で検定し，\textbf{両方とも棄却}されたら同等．
+      \[T_1=\frac{\bar d+\Delta}{s/\sqrt n}>t_{n-1}(\alpha),\qquad T_2=\frac{\bar d-\Delta}{s/\sqrt n}<-t_{n-1}(\alpha).\]
+\item 同値な信頼区間の規則：$\theta$ の $100(1-2\alpha)\%$ CI $\bar d\pm t_{n-1}(\alpha)\,s/\sqrt n$ が $(-\Delta,\Delta)$ に含まれれば同等．$\alpha=0.05$ なら\textbf{90\%CI}．
+\item 生物学的同等性：$\Delta=\log1.25=0.2231$（$=-\log0.8$），すなわち比の90\%CI が $(0.80,\,1.25)$ に含まれれば同等．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m10-shosai}
+\subsection{対数正規分布の性質（\kakomon{2016}{4}〔1〕〜〔4〕）}
+\begin{itemize}
+\item \textbf{中央値}：$\log$ は単調増加なので $\Prob(X\le e^\mu)=\Prob(Y\le\mu)=1/2$，中央値は $e^\mu$．
+\item \textbf{密度}：$\Prob(X\le x)=\Prob(Y\le\log x)$ を $x$ で微分して $f(x)=\dfrac{1}{x\sqrt{2\pi}\sigma}\exp\Bigl[-\dfrac{(\log x-\mu)^2}{2\sigma^2}\Bigr]$（$x>0$）．
+\item \textbf{平均・分散}：$Y$ の積率母関数 $M_Y(s)=e^{\mu s+\sigma^2s^2/2}$ で $\E[X]=M_Y(1)=e^{\mu+\sigma^2/2}$，$\E[X^2]=M_Y(2)=e^{2\mu+2\sigma^2}$，
+      $\V[X]=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$．
+\item \textbf{変動係数}：$\mathrm{CV}=\sqrt{\V[X]}/\E[X]=\sqrt{e^{\sigma^2}-1}$ は $\mu$ によらない．$\sigma^2=\log(1+\mathrm{CV}^2)$．
+\end{itemize}
+
+\subsection{TOST と第1種の過誤（\kakomon{2021}{2}〔1〕）}
+$Y_1,\dots,Y_n\iid\Normal(\mu,\sigma^2)$，$\sigma^2$ 未知．
+\begin{itemize}
+\item 仮説1（$H_{01}:\mu\le-\Delta$ vs $\mu>-\Delta$）：$T_1=\sqrt n(\bar Y+\Delta)/s$，棄却域 $T_1>t_{n-1}(\alpha)$．
+      $\mu=-\Delta$ で $T_1\sim t_{n-1}$ なので棄却確率はちょうど $\alpha$，$\mu<-\Delta$ ならそれより小さい．
+\item 仮説2（$H_{02}:\mu\ge\Delta$ vs $\mu<\Delta$）：$T_2=\sqrt n(\bar Y-\Delta)/s$，棄却域 $T_2<-t_{n-1}(\alpha)$．
+\end{itemize}
+同等性の帰無仮説は $H_0=H_{01}\cup H_{02}$（どちらかが正しい），対立仮説は $H_A=H_{A1}\cap H_{A2}$（$-\Delta<\mu<\Delta$）．
+$H_0$ を棄却するのは両方を棄却したときなので，$H_0$ が正しく，たとえば $H_{01}$ が正しいなら
+\[
+\Prob(\text{両方棄却})\le\Prob(T_1\text{ が棄却域}\mid H_{01})\le\alpha .
+\]
+$H_{02}$ が正しい場合も同様で，第1種の過誤確率は最大で $\alpha$（Intersection--Union 検定）．
+各片側検定を $\alpha/2$ にする必要はない（多重性の補正は不要）．
+
+\subsection{信頼区間との同値性}
+$T_1>t_{n-1}(\alpha)\iff\bar Y-t_{n-1}(\alpha)s/\sqrt n>-\Delta$（区間の下限が $-\Delta$ より大），
+$T_2<-t_{n-1}(\alpha)\iff\bar Y+t_{n-1}(\alpha)s/\sqrt n<\Delta$（上限が $\Delta$ より小）．
+よって「両方棄却」は「$100(1-2\alpha)\%$ CI $\subset(-\Delta,\Delta)$」と同値．$\alpha=0.05$ なら90\%CI を使う．
+
+\subsection{2剤2期クロスオーバー試験}
+各被験者が両製剤を（時期を変えて）受けるので，被験者ごとの対数値の差 $d_i=\log X_i^T-\log X_i^R$ をとると被験者効果が消える．
+時期効果・持ち越し効果がなければ $d_i\iid\Normal(\mu_T-\mu_R,\sigma_d^2)$ で，対応のある差の $t$ 区間 $\bar d\pm t_{n-1}(0.05)s_d/\sqrt n$ を作り，指数変換して比の90\%CI とする．
+試験でもこの扱いだった．
+\paragraph{非劣性}
+「劣らない」ことだけを示すなら片側：$\theta$ の95\%CI の下限 $>-\Delta$（片側2.5\%）．下限が0も上回れば優越性も主張できる．
+
+\begin{warnbox}
+\begin{itemize}
+\item 優越性検定の非有意を「同等」とみなす．
+\item 同等性の判定に95\%CI を使う（片側5\%の TOST に対応するのは90\%CI）．
+\item 対数変換を忘れる，または対数スケールの CI を指数変換し忘れる．差の向き（$T-R$ か $R-T$ か）を問題文で確認する．
+\item 境界付近で丸めた比で判定を誤る（対数スケールの端点を $\pm0.2231$ と比べると確実）．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m10-shutsudai}
+\begin{shutsudai}{\kakomon{2016}{4}：対数正規分布と BE 判定}
+〔1〕中央値 $e^\mu$．〔2〕密度．〔3〕平均・分散（積率母関数は与えられる）．〔4〕CV $=1$ から $\sigma^2=\log2$．
+〔5〕10人のクロスオーバー，$Y_i=\log X_i^A-\log X_i^B$ の $\bar Y=0.1$，$s=0.5$，$t_9(0.05)=1.833$ から $0.1\pm0.29=(-0.19,0.39)$，
+比（A/B）の90\%CI $(0.83,\,1.48)$ は上限が1.25を超え，同等とは言えない．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2021}{2}：TOST と BE}
+〔1-1〕$t$ 区間．〔1-2〕2つの片側検定の統計量と棄却域．〔1-3〕$H_{01}\cup H_{02}$ の検定の第1種の過誤 $\le\alpha$．
+〔2-1〕$\log$（中央値の比）$=\mu_T-\mu_S$．〔2-2〕20人，差の平均 $-0.1$，SD $0.26$，$t_{19}(0.05)=1.729$ から90\%CI $[-0.201,\,0.001]\subset(-0.223,\,0.223)$ で同等．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m10-reidai}
+\begin{reidai}[\kakomon{2021}{2}型：TOST による同等性の判定]\label{reidai:m10-1}
+\begin{enumerate}[label=〔\arabic*〕]
+\item $Y_1,\dots,Y_n$ を $\Normal(\mu,\sigma^2)$ からの標本，$\bar Y$，$s^2$ を標本平均・不偏分散とし，$\Delta>0$ とする．
+      $H_{01}:\mu\le-\Delta$ と $H_{02}:\mu\ge\Delta$ をそれぞれ有意水準 $\alpha$ の片側検定で検定するときの検定統計量と棄却域を示せ．
+\item $H_0:H_{01}\cup H_{02}$ を，「$H_{01}$ と $H_{02}$ がともに棄却されたときに棄却する」検定の第1種の過誤確率が $\alpha$ 以下であることを示せ．
+\item 試験製剤 T と標準製剤 S の2剤2期クロスオーバー試験を16人で行い，AUC の対数の差 $\log X_i^T-\log X_i^S$ の平均が $0.08$，不偏分散が $0.20^2$ であった．
+      $\Delta=\log1.25$，各片側検定の有意水準を5\%として，生物学的同等性を判定せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2016}{4}型：対数正規分布と90\%信頼区間]\label{reidai:m10-2}
+AUC $X$ は対数正規分布に従う（$\log X\sim\Normal(\mu,\sigma^2)$）とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $X$ の中央値と，変動係数 $\mathrm{CV}=\sqrt{\V[X]}/\E[X]$ を $\mu,\sigma^2$ で表せ．$\log X$ の積率母関数 $\E[e^{s\log X}]=e^{\mu s+\sigma^2s^2/2}$ を用いてよい．
+\item 過去の試験から AUC の CV が0.5と見込まれるとき，$\sigma^2$ の見積もりを求めよ．
+\item 12人の2剤2期クロスオーバー試験で，既存薬 A と後発品 B の AUC の対数の差 $Y_i=\log X_i^A-\log X_i^B$ の標本平均が $-0.12$，標本標準偏差が $0.30$ であった．
+      AUC の中央値の比（A/B）の90\%信頼区間を求め，同等域 $(0.8,\,1.25)$ で同等性を判定せよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m10-kaisetsu}
+\begin{kaitou}{reidai:m10-1}
+〔1〕仮説1：$T_1=\dfrac{\sqrt n(\bar Y+\Delta)}{s}$，棄却域 $T_1>t_{n-1}(\alpha)$．
+$\mu=-\Delta$ のとき $T_1\sim t_{n-1}$ で棄却確率は $\alpha$，$\mu<-\Delta$ では $T_1$ の分布が左にずれて棄却確率は $\alpha$ より小さいので，水準 $\alpha$ の検定．\\
+仮説2：$T_2=\dfrac{\sqrt n(\bar Y-\Delta)}{s}$，棄却域 $T_2<-t_{n-1}(\alpha)$．同様に水準 $\alpha$．
+
+〔2〕$R_1,R_2$ をそれぞれの棄却域とする．$H_0=H_{01}\cup H_{02}$ が正しければ，$H_{01}$ と $H_{02}$ の少なくとも一方が正しい．
+$H_{01}$ が正しいとすると
+\[
+\Prob(T_1\in R_1\text{ かつ }T_2\in R_2)\le\Prob(T_1\in R_1)\le\alpha
+\]
+（2つの事象の積の確率は一方の確率以下）．$H_{02}$ が正しい場合も $\Prob(T_2\in R_2)\le\alpha$ で抑えられる．よって第1種の過誤確率は $\alpha$ 以下．
+
+〔3〕$n=16$，$\bar d=0.08$，$s=0.20$，$s/\sqrt n=0.20/4=0.05$．付表より $\Delta=\log1.25=0.2231$，$t_{15}(0.05)=1.753$．
+\[
+T_1=\frac{0.08+0.2231}{0.05}=6.06>1.753,\qquad T_2=\frac{0.08-0.2231}{0.05}=-2.86<-1.753
+\]
+で，両方の帰無仮説を棄却する．よって生物学的に同等と判定する．\\
+同じことを90\%CI で見ると，$0.08\pm1.753\times0.05=0.08\pm0.0877=(-0.0077,\,0.1677)$ は $(-0.2231,\,0.2231)$ に含まれる．
+付表より比（T/S）の90\%CI は $(e^{-0.0077},e^{0.1677})=(0.992,\,1.183)\subset(0.80,\,1.25)$．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m10-2}
+〔1〕$\Prob(X\le e^\mu)=\Prob(\log X\le\mu)=1/2$ より中央値は $e^\mu$．
+$\E[X]=\E[e^{\log X}]=e^{\mu+\sigma^2/2}$（積率母関数で $s=1$），$\E[X^2]=\E[e^{2\log X}]=e^{2\mu+2\sigma^2}$（$s=2$）．
+$\V[X]=e^{2\mu+2\sigma^2}-e^{2\mu+\sigma^2}=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$ なので
+$\mathrm{CV}=\dfrac{e^{\mu+\sigma^2/2}\sqrt{e^{\sigma^2}-1}}{e^{\mu+\sigma^2/2}}=\sqrt{e^{\sigma^2}-1}$．
+
+〔2〕$\sqrt{e^{\sigma^2}-1}=0.5$ より $e^{\sigma^2}=1.25$，付表より $\sigma^2=\log1.25=0.2231$．
+
+〔3〕$s/\sqrt{12}=0.30/3.464=0.0866$，$t$ 分布表より $t_{11}(0.05)=1.796$ で，$1.796\times0.0866=0.1555$．
+$\mu_A-\mu_B$ の90\%CI は $-0.12\pm0.1555=(-0.276,\,0.036)$．
+中央値の比は $e^{\mu_A-\mu_B}$ なので，付表より比の90\%CI は $(e^{-0.276},e^{0.036})=(0.759,\,1.037)$．\\
+下限 $0.759$ が $0.8$ を下回る（対数スケールでも $-0.276<-0.2231$）ので，同等域に含まれず，生物学的同等性は成り立つとは言えない．
+点推定 $e^{-0.12}$ は1に近いが，ばらつきが大きく人数が少ないために区間が広く，同等を示せなかった．
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item 対数正規：中央値 $e^\mu$，平均 $e^{\mu+\sigma^2/2}$，CV $=\sqrt{e^{\sigma^2}-1}$．比の推定は対数の差を指数変換．
+\item TOST：$H_{01}:\theta\le-\Delta$，$H_{02}:\theta\ge\Delta$ を各片側 $\alpha$ で検定し両方棄却で同等．第1種の過誤 $\le\alpha$（IUT）．
+\item $\iff$ $100(1-2\alpha)\%$ CI $\subset(-\Delta,\Delta)$．BE は90\%CI が $(0.80,1.25)$ に含まれるか（$\Delta=\log1.25=0.2231$）．
+\end{itemize}
+\end{summarybox}
+
+% ===== 90_summary.tex =====
+\backmatter
+\chapter*{直前確認：公式一覧}
+\addcontentsline{toc}{chapter}{直前確認：公式一覧}
+\markboth{直前確認：公式一覧}{直前確認：公式一覧}
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{@{}cL{40mm}L{108mm}@{}}
+\toprule
+章 & テーマ & 式・要点\\
+\midrule
+\endfirsthead
+\toprule
+章 & テーマ & 式・要点\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1 & ハザード & $h=f/S=-(\log S)'$，$H=-\log S$，$S=e^{-H}$，$f=hS$．指数：中央値 $\log2/\lambda$\\
+ & 打ち切り尤度 & $\prod f^{\delta}S^{1-\delta}=\prod h^{\delta}S$（イベントは密度，打ち切りは生存関数）\\
+ & 指数モデル & $\hat\lambda=d/W$，$I=d/\lambda^2$，$\V[\log\hat\lambda]\approx1/d$，$Z=\log(\hat\lambda_1/\hat\lambda_2)/\sqrt{1/d_1+1/d_2}$\\
+ & 必要イベント数 & 各群 $r=2(z_{\alpha/2}+z_\beta)^2/(\log\HR)^2$\\
+\midrule
+2 & ログランク & $E_{1j}=d_jn_{1j}/n_j$，$V_j=d_jn_{1j}n_{0j}(n_j-d_j)/\{n_j^2(n_j-1)\}$（$d_j=1$ で $n_{1j}n_{0j}/n_j^2$），$\chi^2=(O_1-E_1)^2/V$，自由度1\\
+\midrule
+3 & Cox & $h_0(t)e^{\beta x}$，HR $=e^\beta$ 一定，$S=S_0^{e^{\beta x}}$，$\log(-\log S)=\log H_0+\beta x$\\
+ & 部分尤度 & $\prod_je^{\beta x_{(j)}}/\sum_{R_j}e^{\beta x_l}$．2群：$e^{\beta x_{(j)}}/\{n_{0j}+n_{1j}e^\beta\}$．$\beta=0$ のスコア検定＝ログランク\\
+ & 理論 & $H(T)\sim\Ex(1)$，$\log H(T)$ は極値分布 $1-e^{-e^x}$，乱数 $T=H_0^{-1}(-e^{-\beta x}\log V)$\\
+\midrule
+4 & KM & $\prod(1-d_j/n_j)$，同時点はイベント先，中央値は $\hat S\le0.5$ の最小 $t$\\
+ & Greenwood・NA & $\hat S^2\sum d_j/\{n_j(n_j-d_j)\}$．$\tilde S=e^{-\sum d_j/n_j}\ge\hat S$（$e^{-x}\ge1-x$）\\
+\midrule
+5 & 競合リスク & $\lambda_j=f_j/S$，$\lambda=\sum\lambda_j$，$F_j=\int_0^t\lambda_jS$，$F_j(\infty)=\Prob(J=j)$\\
+ & CIF 推定 & $\hat F_j=\sum\hat S(t^-)d_{ji}/n_i$（$\hat S$ は全イベントの KM），$\hat S+\sum\hat F_j=1$．$1-\mathrm{KM}$ は過大\\
+ & 原因別 Cox & $\beta$ は原因別ハザードへの効果．CIF への効果ではない（Fine--Gray）\\
+\midrule
+6 & McNemar & $W=(n_{12}-n_{21})^2/(n_{12}+n_{21})\sim\chi^2_1$，$=z^2$，$n_{12}\mid s\sim\Bin(s,1/2)$\\
+ & 差の分散 & $\V[\hat\delta]=\{\pi_{12}+\pi_{21}-(\pi_{12}-\pi_{21})^2\}/n$．LRT は不一致セルだけ，自由度1．条件付き OR $n_{12}/n_{21}$\\
+\midrule
+7 & CMH・Cochran & $E_k=n_{1k}m_{1k}/N_k$，$V_k=n_{1k}n_{0k}m_{1k}m_{0k}/\{N_k^2(N_k-1)\}$（Cochran は $/N_k^3$），$\{\sum(a_k-E_k)\}^2/\sum V_k$\\
+ & 共通 OR & Peto：$\sum(O-E)/\sum V$，分散 $1/\sum V$．MH：$\sum(a_kd_k/N_k)/\sum(b_kc_k/N_k)$．Woolf：$\V[\log\OR]=\sum1/\text{セル}$\\
+ & 解釈 & Simpson・交絡（層変数が曝露とも結果とも関連）．OR は非可縮．均一性は Woolf・Breslow--Day\\
+\midrule
+8 & FWER & 独立：$1-(1-\alpha_0)^m$．Bonferroni $\alpha/m$．Šidák $1-(1-\alpha)^{1/m}$．Holm $\alpha/(m-k+1)$\\
+ & 相関 & $\mathrm{FWER}(\rho)=2\alpha-\phi(\rho)\le2\alpha-\alpha^2$．多対1：$\sqrt{n_jn_k/\{(n_j+n_0)(n_k+n_0)\}}$\\
+\midrule
+9 & $\alpha$ 消費 & $\Cov[B(s),B(t)]=\min(s,t)$，$\Corr[Z(s),Z(t)]=\sqrt{s/t}$，消費 $\alpha(t_k)-\alpha(t_{k-1})$\\
+ & 限界値 & $c_1=z_{\alpha(t_1)}$，$\Prob(Z(t_1)\le c_1,Z(t_2)>c_2)=\alpha(t_2)-\alpha(t_1)$\\
+\midrule
+10 & 同等性 & TOST：両方の片側検定を棄却で同等 $\iff$ 90\%CI $\subset(-\Delta,\Delta)$．BE は $\Delta=\log1.25=0.2231$\\
+ & 対数正規 & 中央値 $e^\mu$，平均 $e^{\mu+\sigma^2/2}$，CV $=\sqrt{e^{\sigma^2}-1}$\\
+\end{longtable}
+\end{center}
+
+\end{document}

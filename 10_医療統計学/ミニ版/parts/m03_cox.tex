@@ -1,0 +1,235 @@
+\chapter{Cox 部分尤度}\label{ch:m03}
+
+\begin{priobox}{A}
+\kakomon{2016}{3}〔3〕はハザード $h_0(t)e^{\beta x}$ だけを与えて「部分尤度 $L$ を求めよ」と問う．
+部分尤度の定義（リスク集合の中で誰がイベントを起こしたかの条件付き確率の積）を知らなければ書けない．
+\kakomon{2017}{1}，\kakomon{2022}{1} は比例ハザードモデルの性質（$S=S_0^{\exp(\beta x)}$，2重対数表現，HR の CI）を問う．本編の第10章10.1節．
+\end{priobox}
+
+% ============================================================
+\section{概要}\label{sec:m03-gaiyo}
+共変量 $\bm x$ をもつ人のハザードを
+\[
+h(t\mid\bm x)=h_0(t)\exp(\bm\beta\transp\bm x)
+\]
+とする（Cox 比例ハザードモデル）．$h_0(t)$ はベースラインハザードで形を特定しない（セミパラメトリック）．
+$h_0$ を推定せずに $\bm\beta$ だけを推定するのが部分尤度である．
+
+\begin{pointbox}[覚える式]
+\begin{itemize}
+\item ハザード比 $h(t\mid\bm x_1)/h(t\mid\bm x_2)=\exp\{\bm\beta\transp(\bm x_1-\bm x_2)\}$ は $t$ によらない（比例ハザード性）．2値の $x$ なら HR $=e^\beta$．
+\item $S(t\mid\bm x)=S_0(t)^{\exp(\bm\beta\transp\bm x)}$，\quad $S_0(t)=\exp\bigl\{-\int_0^th_0(u)\dd u\bigr\}$，\quad
+      $\log\{-\log S(t\mid\bm x)\}=\log H_0(t)+\bm\beta\transp\bm x$．
+\item 部分尤度（同時点のイベントなし．$t_{(j)}$ でイベントを起こした人を $(j)$，リスク集合を $R_j$）：
+\[
+L(\bm\beta)=\prod_{j}\frac{\exp(\bm\beta\transp\bm x_{(j)})}{\sum_{l\in R_j}\exp(\bm\beta\transp\bm x_l)} .
+\]
+\item 2群（$x=0,1$）なら各因子は $\dfrac{e^{\beta x_{(j)}}}{(\text{群0のリスク人数})+(\text{群1のリスク人数})e^\beta}$．
+\item $\beta=0$ のスコア検定はログランク検定に一致する．Wald の95\%CI：$\exp\{\hat\beta\pm1.96\,\SE(\hat\beta)\}$．
+\end{itemize}
+\end{pointbox}
+
+% ============================================================
+\section{詳細}\label{sec:m03-shosai}
+\subsection{比例ハザード性と生存関数}
+$H(t\mid\bm x)=\int_0^th_0(u)e^{\bm\beta\transp\bm x}\dd u=e^{\bm\beta\transp\bm x}H_0(t)$ と $S=e^{-H}$（第1章）より
+\[
+S(t\mid\bm x)=\exp\{-e^{\bm\beta\transp\bm x}H_0(t)\}=\bigl\{e^{-H_0(t)}\bigr\}^{\exp(\bm\beta\transp\bm x)}=S_0(t)^{\exp(\bm\beta\transp\bm x)} .
+\]
+両辺の $-\log$ をとると $-\log S(t\mid\bm x)=e^{\bm\beta\transp\bm x}H_0(t)$，さらに $\log$ をとると
+\[
+\log\{-\log S(t\mid\bm x)\}=\log H_0(t)+\bm\beta\transp\bm x .
+\]
+$x$ の値によって曲線が上下に $\beta$ だけ平行移動するだけなので，比例ハザードの下では群ごとの2重対数プロット（縦軸 $\log\{-\log\hat S(t)\}$，横軸 $\log t$）が平行になる．
+横軸を $\log t$ にしても縦方向の差 $\beta$ は変わらない．
+
+\subsection{極値分布と乱数生成（\kakomon{2017}{1}）}
+\paragraph{$H(T)\sim\Ex(1)$}
+$F(T)\sim\Unif(0,1)$（確率積分変換）より $\Prob(H(T)>t)=\Prob(S(T)<e^{-t})=\Prob(F(T)>1-e^{-t})=e^{-t}$．
+\paragraph{極値分布}
+$\epsilon=\log\{-\log S(T\mid\bm x)\}=\log H(T\mid\bm x)$ とおくと，$H(T\mid\bm x)\sim\Ex(1)$ より
+\[
+\Prob(\epsilon\le u)=\Prob\bigl(H(T\mid\bm x)\le e^u\bigr)=1-\exp(-e^u).
+\]
+よって $\log H_0(T)=-\bm\beta\transp\bm x+\epsilon$ という線形変換モデルの形に書ける．
+\paragraph{乱数生成}
+$V\sim\Unif(0,1)$ なら $S(T\mid\bm x)$ と $V$ は同じ分布なので，$H(T\mid\bm x)=-\log V$ を $T$ について解けばよい：
+$T=H_0^{-1}\bigl(-e^{-\bm\beta\transp\bm x}\log V\bigr)$．共変量も確率変数なら，先に共変量の乱数を作り，それとは独立な $V$ を使う．
+
+\subsection{部分尤度の導出}
+時点 $t_{(j)}$ でリスク集合 $R_j$ の中から\textbf{ちょうど1人}がイベントを起こしたという条件の下で，それが $(j)$ である条件付き確率は
+\[
+\frac{h(t_{(j)}\mid\bm x_{(j)})}{\sum_{l\in R_j}h(t_{(j)}\mid\bm x_l)}
+=\frac{h_0(t_{(j)})e^{\bm\beta\transp\bm x_{(j)}}}{\sum_{l\in R_j}h_0(t_{(j)})e^{\bm\beta\transp\bm x_l}}
+=\frac{e^{\bm\beta\transp\bm x_{(j)}}}{\sum_{l\in R_j}e^{\bm\beta\transp\bm x_l}} .
+\]
+$h_0(t_{(j)})$ が約分されて消える．これを全イベント時点について掛けたものが部分尤度である．
+\begin{itemize}
+\item 打ち切り例は分子に現れず，打ち切り時点まで分母のリスク集合に含まれる．
+\item 分母のリスク集合は\textbf{両群を合わせた}その時点の観察中の全員．
+\item 最後の時点でリスク集合が1人なら因子は1（$e^{\beta x}/e^{\beta x}$）．同じ群の人だけが残った時点も因子は $\beta$ によらない．
+\end{itemize}
+
+\subsection{スコア・情報量とログランク検定}
+1次元の $\beta$ で，$\bar x_j(\beta)=\sum_{l\in R_j}x_le^{\beta x_l}\big/\sum_{l\in R_j}e^{\beta x_l}$（リスク集合での重み付き平均）とすると
+\[
+U(\beta)=\frac{\partial\log L}{\partial\beta}=\sum_j\{x_{(j)}-\bar x_j(\beta)\},\qquad
+I(\beta)=-\frac{\partial^2\log L}{\partial\beta^2}=\sum_j\Bigl\{\frac{\sum_{R_j}x_l^2e^{\beta x_l}}{\sum_{R_j}e^{\beta x_l}}-\bar x_j(\beta)^2\Bigr\}.
+\]
+$x\in\{0,1\}$，$\beta=0$ では $\bar x_j(0)=n_{1j}/n_j$（群1の割合）で，
+\[
+U(0)=\sum_j\Bigl(d_{1j}-\frac{n_{1j}}{n_j}\Bigr)=O_1-E_1,\qquad
+I(0)=\sum_j\frac{n_{1j}}{n_j}\Bigl(1-\frac{n_{1j}}{n_j}\Bigr)=\sum_j\frac{n_{1j}n_{0j}}{n_j^2}.
+\]
+スコア検定 $U(0)^2/I(0)$ はログランク検定（第2章，各時点のイベント1例）そのものである．
+部分尤度は通常の尤度と同様に扱え，$\hat\beta$ は漸近正規で $\SE(\hat\beta)=I(\hat\beta)^{-1/2}$，Wald 検定 $\hat\beta/\SE$ は漸近的に $\Normal(0,1)$．
+\begin{supbox}[補足：同時点のイベント]
+同時点に $d_j\ge2$ のイベントがあるときは Breslow 近似 $\prod_j e^{\bm\beta\transp\bm s_j}/\{\sum_{R_j}e^{\bm\beta\transp\bm x_l}\}^{d_j}$（$\bm s_j$ はその時点のイベント例の共変量の和）がよく使われる．過去問では出題されていない．
+\end{supbox}
+
+\subsection{ハザード比の解釈}
+\begin{itemize}
+\item HR $<1$ なら $x=1$ の群のハザードが低い（イベントが起きにくい），$>1$ なら高い．CI が1を含めば差があるとは言えない．
+\item 「HR $=0.7$」は「どの時点でも，生存している人の瞬間的なイベント発生率が30\%低い」であり，「イベント割合が30\%低い」ではない．
+      比例ハザードの下でも $t$ までのイベント割合の比 $\{1-S_0(t)^{\HR}\}/\{1-S_0(t)\}$ は HR と一致しない．
+\end{itemize}
+
+\begin{warnbox}
+\begin{itemize}
+\item 部分尤度の分母を同じ群の人だけにする．打ち切り例を分母から早く外す（打ち切り時点まではリスク集合に入る）．
+\item 打ち切り例の因子を書く（打ち切り時点はイベントがないので因子を作らない）．
+\item 対数 HR の CI $\hat\beta\pm1.96\SE$ を指数変換し忘れる．HR を「リスク比」と説明する．
+\end{itemize}
+\end{warnbox}
+
+% ============================================================
+\section{出題例}\label{sec:m03-shutsudai}
+\begin{shutsudai}{\kakomon{2016}{3}〔3〕：部分尤度の書き下し}
+2群各5例（群1：$x=0$，群2：$x=1$）．群2の4つのイベント時点では分子 $e^\beta$，分母は（群1のリスク人数）$+$（群2のリスク人数）$e^\beta$．
+群2が全員いなくなった後の群1のイベント2件は $1/2$，$1/1$ で，
+$L=\frac{e^\beta}{5+5e^\beta}\cdot\frac{e^\beta}{5+4e^\beta}\cdot\frac{e^\beta}{3+2e^\beta}\cdot\frac{e^\beta}{2+e^\beta}\cdot\frac12\cdot\frac11$．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2017}{1}：ハザードの理論と Cox モデル}
+〔1〕〜〔3〕$\lambda=f/S$，$\Lambda=-\log S$，$\Prob(\Lambda(T)>t)=e^{-t}$．
+〔4〕$\log\{-\log S(t\mid\bm Z)\}=h(t)+\bm\beta'\bm Z$ の $h(t)=\log\Lambda_0(t)$．
+〔5〕$\epsilon(T)$ の分布 $1-\exp(-e^x)$．
+〔6〕$\lambda_0(t)=\frac32\sqrt t$，$\beta=\frac12$，年齢 $Z\sim\Unif[40,70]$ での乱数生成：$\Lambda_0=t^{3/2}$ から $T=\exp\{-Z/3+\frac23\log(-\log V)\}$．
+\end{shutsudai}
+\begin{shutsudai}{\kakomon{2022}{1}：比例ハザードモデルの性質と HR の CI}
+〔1〕HR $=e^\beta$ が $t$ によらない．〔2〕$S_0(t)=\exp(-\int_0^t\lambda_0)$．〔3〕2重対数プロットが平行になる理由．
+〔4〕$\hat\beta=0.06$，SE $0.18$ から $\widehat{\HR}=1.06$，95\%CI $(0.75,\,1.51)$．〔5〕CI が1を含むので差があるとは言えない．
+\end{shutsudai}
+
+% ============================================================
+\section{例題}\label{sec:m03-reidai}
+\begin{reidai}[\kakomon{2016}{3}〔3〕型：部分尤度とスコア検定]\label{reidai:m03-1}
+\cref{reidai:m02-1}のデータに，群1なら $x=0$，群2なら $x=1$ の共変量で Cox モデル $h(t\mid x)=h_0(t)e^{\beta x}$ を当てはめる．
+\begin{enumerate}[label=〔\arabic*〕]
+\item 部分尤度 $L(\beta)$ を書け．
+\item $\beta=0$ におけるスコア $U(0)$ と情報量 $I(0)$ を求め，スコア検定統計量 $U(0)^2/I(0)$ が\cref{reidai:m02-1}のログランク統計量と一致することを確かめよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2022}{1}型：比例ハザードの性質と HR の推定]\label{reidai:m03-2}
+共変量 $x$（試験群1，対照群0）をもつ人のハザードを $\lambda(t;x)=\lambda_0(t)\exp(\beta x)$ とする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item このモデルが比例ハザード性を満たすことを示せ．
+\item $S(t;x)=S_0(t)^{\exp(\beta x)}$ と書けることを示し，$S_0(t)$ を $\lambda_0$ で表せ．
+\item $\log\{-\log S(t;x)\}$ を $\log t$ に対してプロットすると，比例ハザードの下では群間で平行になる理由を述べよ．
+\item ある試験でこのモデルを当てはめ，$\hat\beta=-0.35$，$\SE(\hat\beta)=0.15$ を得た．ハザード比の推定値と，対数ハザード比の正規近似による95\%信頼区間を求めよ．
+\item 治療効果を評価せよ．
+\end{enumerate}
+\end{reidai}
+
+\begin{reidai}[\kakomon{2017}{1}〔4〕〜〔6〕型：2重対数表現と乱数生成]\label{reidai:m03-3}
+$T$ が Cox モデル $\lambda(t\mid Z)=3t^2\exp(Z/3)$ に従い，共変量 $Z$ は区間 $[30,60]$ 上の一様分布に従うとする．
+\begin{enumerate}[label=〔\arabic*〕]
+\item $\log\{-\log S(t\mid Z)\}=h(t)+Z/3$ となる $h(t)$ を求めよ．
+\item $\epsilon=\log\{-\log S(T\mid Z)\}$ の分布関数が $1-\exp(-e^x)$ であることを示せ．
+\item $\Unif(0,1)$ の乱数を用いて $T$ の乱数を生成する手順を述べよ．
+\end{enumerate}
+\end{reidai}
+
+% ============================================================
+\section{例題の詳しい解説}\label{sec:m03-kaisetsu}
+\begin{kaitou}{reidai:m03-1}
+〔1〕\cref{reidai:m02-1}の解答の表から，各イベント時点のリスク集合は（群1の人数，群2の人数）$=(5,5),(5,4),(4,3),(4,1),(3,1),(2,0),(1,0)$．
+群2（$x=1$）の人のハザードは $h_0e^\beta$，群1は $h_0$ なので，分母は（群1の人数）$+$（群2の人数）$e^\beta$．
+分子はイベントを起こした人が群2なら $e^\beta$，群1なら1．
+\begin{center}\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+時点 & イベント & リスク集合 & 因子\\
+\midrule
+1 & 群2 & 群1 5人，群2 5人 & $e^\beta/(5+5e^\beta)$\\
+2 & 群2 & 群1 5人，群2 4人 & $e^\beta/(5+4e^\beta)$\\
+4 & 群2 & 群1 4人，群2 3人 & $e^\beta/(4+3e^\beta)$\\
+6 & 群1 & 群1 4人，群2 1人 & $1/(4+e^\beta)$\\
+7 & 群2 & 群1 3人，群2 1人 & $e^\beta/(3+e^\beta)$\\
+10 & 群1 & 群1 2人 & $1/2$\\
+12 & 群1 & 群1 1人 & $1/1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\[
+L(\beta)=\frac{e^\beta}{5+5e^\beta}\cdot\frac{e^\beta}{5+4e^\beta}\cdot\frac{e^\beta}{4+3e^\beta}\cdot\frac{1}{4+e^\beta}\cdot\frac{e^\beta}{3+e^\beta}\cdot\frac12\cdot\frac11 .
+\]
+打ち切り（3，5，8週）の時点には因子がなく，打ち切り例はその時点まで分母に入っている．
+
+〔2〕$\beta=0$ では $\bar x_j(0)$ はリスク集合に占める群2の割合 $5/10,\ 4/9,\ 3/7,\ 1/5,\ 1/4,\ 0,\ 0$．
+イベントを起こした人の $x_{(j)}$ は $1,1,1,0,1,0,0$．
+\begin{align*}
+U(0)&=\sum_j\{x_{(j)}-\bar x_j(0)\}\\
+&=(1-0.5000)+(1-0.4444)+(1-0.4286)+(0-0.2000)+(1-0.2500)\\
+&=0.5000+0.5556+0.5714-0.2000+0.7500=2.1770,
+\end{align*}
+\[
+I(0)=\sum_j\bar x_j(1-\bar x_j)=0.2500+0.2469+0.2449+0.1600+0.1875=1.0893 .
+\]
+$U(0)^2/I(0)=4.7393/1.0893=4.35$．これは\cref{reidai:m02-1}の $\chi^2_{\mathrm{LR}}=4.35$ に一致する．
+$U(0)$ は群2の $O_2-E_2=4-1.8230=2.1770$ で，群1の $O_1-E_1=-2.1770$ と符号だけが逆（2乗すれば同じ）．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m03-2}
+〔1〕$\dfrac{\lambda(t;1)}{\lambda(t;0)}=\dfrac{\lambda_0(t)e^\beta}{\lambda_0(t)}=e^\beta$ は $t$ によらない定数なので，比例ハザード性を満たす．
+
+〔2〕$S(t;x)=\exp\bigl\{-\int_0^t\lambda(u;x)\dd u\bigr\}=\exp\bigl\{-e^{\beta x}\int_0^t\lambda_0(u)\dd u\bigr\}=\Bigl[\exp\bigl\{-\int_0^t\lambda_0(u)\dd u\bigr\}\Bigr]^{\exp(\beta x)}$．
+よって $S_0(t)=\exp\bigl\{-\int_0^t\lambda_0(u)\dd u\bigr\}$．
+
+〔3〕$\log\{-\log S(t;x)\}=\log\{-e^{\beta x}\log S_0(t)\}=\beta x+\log\{-\log S_0(t)\}$．
+$x$ の違いは曲線を縦方向に $\beta$ だけずらすだけで，形（$t$ への依存）は共通なので，横軸を $\log t$ にしても群間で平行になる．
+
+〔4〕付表より $\widehat{\HR}=e^{-0.35}=0.705$．$1.96\times0.15=0.294$ なので対数 HR の95\%CI は $-0.35\pm0.294=(-0.644,\,-0.056)$，
+付表より HR の95\%CI は $(e^{-0.644},\,e^{-0.056})=(0.525,\,0.946)$．
+
+〔5〕HR $<1$ なので点推定では試験群のハザードが対照群の約0.7倍（約30\%低い）．95\%CI が1を含まない（上限0.946 $<1$）ので，
+試験群はイベントまでの時間を延ばすと言える（Wald 検定 $Z=-0.35/0.15=-2.33$，$|Z|>1.96$ と同じ結論）．
+「イベント割合が30\%低い」ではなく，瞬間的な発生率の比であることに注意する．
+\end{kaitou}
+
+\begin{kaitou}{reidai:m03-3}
+〔1〕$\lambda_0(t)=3t^2$ より $\Lambda_0(t)=\int_0^t3u^2\dd u=t^3$．$-\log S(t\mid Z)=\Lambda_0(t)e^{Z/3}$ の対数をとって
+$\log\{-\log S(t\mid Z)\}=\log\Lambda_0(t)+Z/3=3\log t+Z/3$．よって $h(t)=3\log t$．
+
+〔2〕$\Lambda(T\mid Z)=-\log S(T\mid Z)$ について，確率積分変換 $F(T\mid Z)\sim\Unif(0,1)$ から
+$\Prob(\Lambda(T\mid Z)>s)=\Prob(S(T\mid Z)<e^{-s})=\Prob(F(T\mid Z)>1-e^{-s})=e^{-s}$，すなわち $\Lambda(T\mid Z)\sim\Ex(1)$．
+$\epsilon=\log\Lambda(T\mid Z)$ なので
+$\Prob(\epsilon\le x)=\Prob(\Lambda(T\mid Z)\le e^x)=1-\exp(-e^x)$．
+
+〔3〕$S(T\mid Z)\sim\Unif(0,1)$ なので，$\Unif(0,1)$ 乱数 $V$ に対し $\epsilon=\log(-\log V)$ とできる．
+〔1〕より $3\log T=-Z/3+\epsilon$，$T=\exp\{-Z/9+\tfrac13\log(-\log V)\}=(-\log V)^{1/3}e^{-Z/9}$．手順は
+\begin{enumerate}[label=Step \arabic*：,leftmargin=*]
+\item $\Unif(0,1)$ 乱数 $U$ を生成し，$Z=30+30U$ とする．
+\item $U$ と独立な $\Unif(0,1)$ 乱数 $V$ を生成し，$T=(-\log V)^{1/3}e^{-Z/9}$ とする．
+\end{enumerate}
+（検算：$\Lambda(T\mid Z)=T^3e^{Z/3}=(-\log V)e^{-Z/3}e^{Z/3}=-\log V\sim\Ex(1)$．）
+\end{kaitou}
+
+\begin{summarybox}
+\begin{itemize}
+\item $h(t\mid\bm x)=h_0(t)e^{\bm\beta\transp\bm x}$．HR $=e^\beta$ は時間によらない．$S=S_0^{\exp(\bm\beta\transp\bm x)}$，2重対数は平行．
+\item 部分尤度＝各イベント時点の「リスク集合の中でその人がイベントを起こす」条件付き確率の積．$h_0$ は約分で消える．
+\item 分母は両群を合わせたリスク集合．打ち切り例は分母にだけ入る．
+\item $\beta=0$ のスコア検定＝ログランク検定．CI は $\exp(\hat\beta\pm1.96\SE)$．
+\end{itemize}
+\end{summarybox}
