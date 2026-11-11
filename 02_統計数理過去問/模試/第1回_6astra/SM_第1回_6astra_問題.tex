@@ -1,0 +1,195 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{問題冊子}
+\input{sm_mock_style.tex}
+\hypersetup{pdftitle={第1回模試 統計数理 問題冊子}}
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+\vspace*{16mm}
+{\large 2026年 統計検定1級対策}\par\vspace{10mm}
+{\Huge\bfseries 第1回 模擬試験}\par\vspace{8mm}
+{\LARGE 統計数理}\par\vspace{6mm}
+{\Large 問題冊子}\par\vspace{14mm}
+{\large 試験時間 90分\qquad 5問中3問選択}
+\end{center}
+\vspace{12mm}
+\noindent\textbf{受験上の注意}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1em]
+\item 問1から問5のうち3問を選び，選択した問題番号を答案に明記すること。
+\item 解答は別紙に記述すること。答えのみでよいと明記した箇所を除き，導出または理由を示すこと。
+\item 四則演算・平方根が計算できる一般電卓を使用してよい。数値計算に必要な近似値は問題文に示してあり，別途の統計数値表は必要ない。
+\item $\log$ は自然対数を表す。各問の記号は，その問題の中だけで用いる。
+\item 本模試では各大問を30点とする。選択した3問の合計90点を100点に換算する。小問の配点は採点基準冊子に記載する。
+\end{enumerate}
+\vfill
+\begin{center}
+氏名\ \underline{\hspace{55mm}}\qquad 実施日\ \underline{\hspace{35mm}}\par\vspace{8mm}
+\small 自主学習用のオリジナル模試です。公式の問題・配点ではありません。\par
+作成日：2026年11月11日\qquad 作成識別：6astra
+\end{center}
+\newpage
+
+\qhead{1}
+ある期間内に発生する事象の個数 $N$ は，平均 $\lambda>0$ のポアソン分布に従う。
+各事象に付く値を $Z_1,Z_2,\ldots$ とし，これらは互いに独立で，$N$ とも独立であるとする。
+各 $Z_j$ の分布は
+\[
+\Prob(Z_j=1)=p,\qquad \Prob(Z_j=2)=1-p\qquad(0<p<1)
+\]
+である。観測される量は
+\[
+W=\sum_{j=1}^{N} Z_j
+\]
+だけとし，$N=0$ のときは $W=0$ と定める。以下の各問に答えよ。
+\begin{enumerate}
+\item $W$ の確率母関数 $G_W(s)=\E[s^W]$ を求めよ。ただし $0<s\leq1$ とする。
+\item 任意の整数 $k\geq0$ に対する $\Prob(W=k)$ を，有限和を用いて表せ。さらに $\Prob(W=2)$ を求めよ。
+\item $W$ の期待値 $\mu_W$ と分散 $\sigma_W^2$ を求めよ。
+\item $W$ と同じ分布に従う独立な標本 $W_1,\ldots,W_n$ に対し，
+\[
+\bar W_n=\frac1n\sum_{i=1}^nW_i,\qquad
+V_n=\frac1n\sum_{i=1}^n(W_i-\bar W_n)^2
+\]
+とおく。$\mu_W$ を $\bar W_n$，$\sigma_W^2$ を $V_n$ に置き換えるモーメント法によって，
+$\lambda,p$ の推定量を求めよ。この推定値が $\lambda>0,\ 0<p<1$ を満たすための
+$\bar W_n,V_n$ に関する必要十分条件を示せ。また，$\bar W_n=3,\ V_n=5$ のときの推定値を求めよ。
+\item $\sqrt n(\bar W_n-\mu_W)$ の $n\to\infty$ における極限分布を求め，
+用いた定理の条件が満たされることを説明せよ。さらに，〔4〕のモーメント推定量が真の母数に確率収束することを説明せよ。
+必要な条件が成立しない標本では，推定量に任意の固定値を割り当ててよい。
+\end{enumerate}
+\newpage
+
+\qhead{2}
+互いに独立な確率変数 $X_1,\ldots,X_n$ は，未知母数 $\theta>0$ に対し，確率密度関数
+\[
+f_\theta(x)=
+\begin{cases}
+2\theta x\exp(-\theta x^2),&x>0,\\
+0,&x\leq0
+\end{cases}
+\]
+をもつ。正の定数 $c$ と整数 $m$（$1\leq m<n$）は標本を取る前に決められている。
+$X_1,\ldots,X_m$ は値そのものを観測するが，残りについては
+\[
+B_i=\ind_{\{X_i>c\}}\qquad(i=m+1,\ldots,n)
+\]
+のみを観測する。$\ind_A$ は事象 $A$ が起これば1，それ以外では0となる指示変数である。
+\[
+S=\sum_{i=1}^{m}X_i^2,\qquad K=\sum_{i=m+1}^{n}B_i,\qquad r=n-m
+\]
+とおき，$S,K$ の実現値を $s,k$ とする。以下の各問に答えよ。
+\begin{enumerate}
+\item $X_i^2$ の分布と期待値，および $B_i$ の分布を求めよ。
+\item 観測データ $(X_1,\ldots,X_m,B_{m+1},\ldots,B_n)$ に基づく $\theta$ の尤度関数を求め，
+$(S,K)$ が $\theta$ の十分統計量であることを示せ。
+\item $\theta$ の最尤推定値を定める方程式を求め，任意の $s>0$ と $k\in\{0,\ldots,r\}$ に対して，
+正の最尤推定値が一意に存在することを示せ。方程式の解を陽に表示する必要はない。
+\item $X_i$ を直接1個観測する場合と，$B_i$ だけを1個観測する場合のフィッシャー情報量をそれぞれ求め，
+今回の全観測データの情報量を求めよ。
+また，$\theta c^2=\log2$ のとき，$B_i$ 1個の情報量と $X_i$ 1個の情報量の比を小数第3位まで求めよ。
+$\log2=0.6931$ を用いてよい。
+\item 基準となる母数値 $\theta_0>0$ を1つ固定する。$B_i$ 1個の情報量を $\theta=\theta_0$ で最大にする
+しきい値 $c$ を考える。$z=\theta_0c^2$ とおき，最大値を与える $z$ が満たす方程式を求めよ。
+その正の解が一意に存在し，$1<z<2$ にあることを示せ。さらに，最適な $c$ と $\theta_0$ の関係を述べよ。
+\end{enumerate}
+\newpage
+
+\qhead{3}
+4個の確率変数 $X_1,X_2,Y_1,Y_2$ は互いに独立であり，
+$X_i$ は率 $\lambda\theta$ の指数分布，$Y_i$ は率 $\lambda$ の指数分布に従う。
+未知母数は $\lambda>0$ と $\theta>0$ である。すなわち，それぞれの密度は
+\[
+f_X(x;\lambda,\theta)=\lambda\theta e^{-\lambda\theta x}\quad(x>0),
+\qquad
+f_Y(y;\lambda)=\lambda e^{-\lambda y}\quad(y>0)
+\]
+であり，それ以外では0である。以下では
+\[
+A=X_1+X_2,\qquad B=Y_1+Y_2,\qquad
+U=\frac{A}{A+B},\qquad T=A+B
+\]
+とおき，帰無仮説 $H_0:\theta=1$ を対立仮説 $H_1:\theta>1$ に対して検定する。
+$\lambda$ は両仮説の下で未知のままとする。
+\begin{enumerate}
+\item $(A,B)$ および $(U,T)$ の同時確率密度関数を求め，$U$ の周辺密度を導け。
+その結果を用いて，$H_0$ の下で $U$ と $T$ が独立であることを示せ。
+必要なら，$d>0$ に対して $\int_0^\infty t^3e^{-dt}\,dt=6/d^4$ を用いてよい。
+\item 元の4個の観測値に基づく尤度を $L(\lambda,\theta)$ とし，
+\[
+\Lambda=
+\frac{\displaystyle\sup_{\lambda>0}L(\lambda,1)}
+{\displaystyle\sup_{\lambda>0,\,\theta\geq1}L(\lambda,\theta)}
+\]
+と定める。$\Lambda$ を $U$ の関数として求めよ。ただし，尤度の最大化の過程を示すこと。
+\item 〔2〕の尤度比に基づく検定で，任意の $\lambda>0$ に対するサイズが
+$\alpha=5/32$ となる棄却域を求めよ。
+さらに，その検出力を $\theta$ の関数として求め，$\theta=3$ のときの値を示せ。
+\item $U$ だけに基づく検定，すなわち検定関数が $\varphi(U)$（$0\leq\varphi\leq1$）と書ける検定に限定する。
+この中で，〔3〕の検定は有意水準 $5/32$ の一様最強力検定であることを示せ。
+\end{enumerate}
+\newpage
+
+\qhead{4}
+$Y_1,\ldots,Y_n$（$n\geq2$）は互いに独立に正規分布 $N(\mu,\sigma^2)$ に従う。
+$\mu\in\mathbb R$ は未知，$\sigma^2>0$ は既知とする。平均が $\eta$ の同じ正規分布の密度を
+\[
+f_\eta(y)=\frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\!\left\{-\frac{(y-\eta)^2}{2\sigma^2}\right\}
+\]
+と書く。$0\leq a\leq1$ に対して，推定量 $\hat\mu_a=a\bar Y$ を考える。ただし
+\[
+\bar Y=\frac1n\sum_{i=1}^nY_i,\qquad
+V_n=\frac1n\sum_{i=1}^n(Y_i-\bar Y)^2
+\]
+である。以下の〔1〕から〔4〕では，$a$ は標本によらない定数とする。
+\begin{enumerate}
+\item $f_\mu$ から $f_\eta$ へのカルバック・ライブラー情報量 $D(f_\mu\Vert f_\eta)$ の定義を書き，
+これを $\mu,\eta,\sigma^2$ で表せ。
+\item $R_n(a)=\E[D(f_\mu\Vert f_{\hat\mu_a})]$ を求め，$R_n(a)$ を最小にする $a$ を求めよ。
+その値を未知の $\mu$ に関する情報なしに利用できるか，理由を述べよ。
+\item $i$ 番目を除いた標本から $\hat\mu_{a,(-i)}=a\bar Y_{(-i)}$ を計算する。
+2乗予測誤差に基づく一つ抜き交差検証（LOOCV）評価値 $\mathrm{CV}_n(a)$ の定義式を書き，
+これを $a,n,\bar Y,V_n$ だけを用いて表せ。評価値は $n$ 個の予測誤差の平均とする。
+\item $\E[\mathrm{CV}_n(a)]$ を求めよ。
+また，$Y_0$ を標本と独立な $N(\mu,\sigma^2)$ の確率変数として，
+この期待値と $\E[(Y_0-a\bar Y)^2]$ の差を求めよ。
+\item $n=4$ で観測値が $0,1,2,5$ のとき，$0\leq a\leq1$ の範囲で $\mathrm{CV}_4(a)$ を最小にする
+$\hat a$ を求めよ。
+一般に，このように同じ標本を使って選んだ $\hat a$ を，〔4〕の固定した $a$ に対する期待値の公式へ
+そのまま代入してよいか。理由も述べよ。
+\end{enumerate}
+\newpage
+
+\qhead{5}
+$X_1,\ldots,X_n$（$n\geq2$）は互いに独立に区間 $(0,\theta)$ の一様分布に従い，$\theta>0$ は未知である。
+\[
+\bar X=\frac1n\sum_{i=1}^nX_i,\qquad
+V_n=\frac1n\sum_{i=1}^n(X_i-\bar X)^2,\qquad
+M_n=\max_{1\leq i\leq n}X_i
+\]
+とおく。観測した $n$ 個の値から，各回独立に各添え字を確率 $1/n$ で選ぶ復元抽出を $n$ 回行い，
+ブートストラップ標本 $X_1^*,\ldots,X_n^*$ を作る。その平均と最大値を $\bar X^*,M_n^*$ とする。
+元の標本を固定した条件付きの確率・期待値・分散を，それぞれ $\Prob_*,\E_*,\Var_*$ と書く。
+\begin{enumerate}
+\item $\E_*[\bar X^*]$ と $\Var_*(\bar X^*)$ を求めよ。
+また，$\E[\Var_*(\bar X^*)]$ を求め，$\Var(\bar X)$ と比較せよ。
+\item $M_n/\theta$ の分布関数を求め，
+\[
+T_n=\frac{n(\theta-M_n)}{\theta}
+\]
+の分布関数と極限分布を求めよ。
+\item 経験分布関数 $F_n(x)=n^{-1}\sum_{i=1}^n\ind_{\{X_i\leq x\}}$ を用いて，
+$\Prob_*(M_n^*\leq x)$ を表せ。さらに $\Prob_*(M_n^*=M_n)$ とその $n\to\infty$ での極限を求めよ。
+元の標本の値はすべて異なるものとしてよい。
+\item $T_n^*=n(M_n-M_n^*)/M_n$ を用いて $T_n$ の分布を近似することを考える。
+この条件付き分布が〔2〕の連続な極限分布に近づかないことを，分布関数の $0$ における値から説明せよ。
+また，$0<\alpha<1$ とし，$M_n^*$ の条件付き分布の下側 $\alpha/2$ 分位点と下側 $1-\alpha/2$ 分位点を両端とする区間を作るとき，
+その区間が $\theta$ を含む確率を求めよ。
+\item 別の方法として，元の標本を固定した下で区間 $(0,M_n)$ の一様分布から独立に $n$ 個を生成し，
+その最大値を $M_n^\dagger$ とする。
+$n(M_n-M_n^\dagger)/M_n$ の条件付き分布関数を求め，〔2〕の有限の $n$ における分布関数と比較せよ。
+さらに，下端が $M_n$，上端が $c_\alpha M_n$（$c_\alpha$ は $n,\alpha$ だけに依存する定数）となる
+$\theta$ の信頼係数 $1-\alpha$ の信頼区間を求めよ。
+\end{enumerate}
+\vfill\begin{center}問題は以上である。\end{center}
+\end{document}

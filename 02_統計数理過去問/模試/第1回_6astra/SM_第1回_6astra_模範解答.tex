@@ -1,0 +1,533 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{模範解答}
+\input{sm_mock_style.tex}
+\hypersetup{pdftitle={第1回模試 統計数理 模範解答}}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries 第1回模試\quad 統計数理}\par\medskip
+{\Large 模範解答}\par\medskip
+2026年11月11日\quad 作成識別：6astra
+\end{center}
+\noindent 本冊子は全5問の解答を含む。受験を終えてから参照すること。
+数学的に正しい別解も同等に扱う。部分点の基準は別冊「採点基準」に示す。
+
+\qhead{1}
+\ans{1}
+$N=j$ を固定すると，独立性から
+$\E[s^W\mid N=j]=\{ps+(1-p)s^2\}^{j}$ である。したがって
+\begin{align*}
+G_W(s)
+&=\sum_{j=0}^{\infty}e^{-\lambda}\frac{\lambda^j}{j!}
+  \{ps+(1-p)s^2\}^{j}\\
+&=\boxed{\exp\!\left[\lambda\{ps+(1-p)s^2-1\}\right]}.
+\end{align*}
+問題で指定された $0<s\leq1$ では絶対収束する。この式は実際にはすべての実数 $s$ で有限である。
+
+\ans{2}
+$W=k$ で，値2を取った事象が $j$ 個あれば，値1を取った事象は $k-2j$ 個，
+全事象数は $k-j$ 個である。ゆえに
+\begin{align*}
+\Prob(W=k)
+&=\sum_{j=0}^{\lfloor k/2\rfloor}
+ e^{-\lambda}\frac{\lambda^{k-j}}{(k-j)!}
+ \binom{k-j}{j}(1-p)^jp^{k-2j}\\
+&=\boxed{e^{-\lambda}\sum_{j=0}^{\lfloor k/2\rfloor}
+\frac{(\lambda p)^{k-2j}\{\lambda(1-p)\}^{j}}
+{(k-2j)!j!}}.
+\end{align*}
+$k=0$ でもこの式は $e^{-\lambda}$ を与える。特に
+\[
+\boxed{\Prob(W=2)=e^{-\lambda}\left\{\frac{(\lambda p)^2}{2}+\lambda(1-p)\right\}}.
+\]
+
+\ans{3}
+$\E[Z_j]=2-p$，$\Var(Z_j)=p(1-p)$ である。条件付き期待値と全分散の公式より
+\[
+\boxed{\mu_W=\lambda(2-p)},\qquad
+\sigma_W^2=\lambda p(1-p)+\lambda(2-p)^2
+=\boxed{\lambda(4-3p)}.
+\]
+確率母関数を微分しても同じ結果になる。
+\newpage
+\continued{1}
+\ans{4}
+$\mu=\lambda(2-p),\ v=\lambda(4-3p)$ を解くと
+\[
+3\mu-v=2\lambda,\qquad
+2\mu-v=\lambda p.
+\]
+よってモーメント推定量は
+\[
+\boxed{\hat\lambda=\frac{3\bar W_n-V_n}{2}},\qquad
+\boxed{\hat p=\frac{2(2\bar W_n-V_n)}{3\bar W_n-V_n}}.
+\]
+母数空間内では $\mu>0$ であり，
+\[
+v-\mu=2\lambda(1-p)>0,\qquad 2\mu-v=\lambda p>0.
+\]
+逆に $\bar W_n>0$，$\bar W_n<V_n<2\bar W_n$ なら，
+$3\bar W_n-V_n>\bar W_n>0$ であり，上の式は $\hat\lambda>0$，$0<\hat p<1$ を満たす。
+したがって必要十分条件は
+\[
+\boxed{\bar W_n>0,\qquad \bar W_n<V_n<2\bar W_n}.
+\]
+$\bar W_n=3,\ V_n=5$ では
+\[
+\boxed{\hat\lambda=2,\qquad\hat p=\tfrac12}.
+\]
+標本では上記条件に反する場合もあり，そのとき母数空間内にモーメント方程式の解はない。
+
+\ans{5}
+$W_i$ は独立同分布で，〔3〕より有限な正の分散をもつ。中心極限定理から
+\[
+\boxed{\sqrt n\{\bar W_n-\lambda(2-p)\}
+\xrightarrow{d}N\!\left(0,\lambda(4-3p)\right)}.
+\]
+また $\E[W^2]<\infty$ なので大数の法則により
+\[
+\bar W_n\xrightarrow{p}\mu_W,\qquad
+V_n=\frac1n\sum_{i=1}^nW_i^2-\bar W_n^2\xrightarrow{p}\sigma_W^2.
+\]
+真の母数が $\lambda>0,\ 0<p<1$ にあるため，
+$\mu_W>0,\ \mu_W<\sigma_W^2<2\mu_W$ はすべて厳密な不等式である。
+したがって〔4〕の条件を満たす確率は1に近づく。
+さらに分母の極限は $3\mu_W-\sigma_W^2=2\lambda>0$ なので，連続写像定理から
+\[
+\boxed{\hat\lambda\xrightarrow{p}\lambda,\qquad\hat p\xrightarrow{p}p}.
+\]
+条件外の標本に固定値を割り当てても，その事象の確率は0へ収束するため，この結論は変わらない。
+\newpage
+
+\qhead{2}
+\ans{1}
+$Q_i=X_i^2$ とおく。$q>0$ に対して，変数変換 $x=\sqrt q$ より
+\[
+f_Q(q)=2\theta\sqrt q\,e^{-\theta q}\frac{1}{2\sqrt q}
+=\theta e^{-\theta q}.
+\]
+したがって
+\[
+\boxed{Q_i\sim\mathrm{Exp}(\theta)\ \text{（率）},\qquad\E[Q_i]=1/\theta}.
+\]
+$B_i=1$ は $Q_i>c^2$ と同じ事象なので，
+\[
+q_\theta=\Prob(B_i=1)=e^{-\theta c^2},\qquad
+\boxed{B_i\sim\mathrm{Bernoulli}(q_\theta)}.
+\]
+
+\ans{2}
+観測モデルは，独立な $m$ 個の密度 $f_\theta$ に従う連続観測と，
+それらから独立な $r$ 個のベルヌーイ観測からなる。連続観測の台は $x_i>0$，
+二値観測の確率関数は
+\[
+\Prob_\theta(B_i=b_i)=q_\theta^{b_i}(1-q_\theta)^{1-b_i},\qquad b_i\in\{0,1\}.
+\]
+個々の $b_i$ を観測しているので，尤度は
+\begin{align*}
+L(\theta)
+&=\prod_{i=1}^{m}\{2\theta x_i e^{-\theta x_i^2}\}
+\prod_{i=m+1}^{n}\{e^{-\theta c^2}\}^{b_i}
+\{1-e^{-\theta c^2}\}^{1-b_i}\\
+&=\boxed{2^m\left(\prod_{i=1}^m x_i\right)\theta^m
+e^{-\theta(s+kc^2)}(1-e^{-\theta c^2})^{r-k}}.
+\end{align*}
+台の条件も $\theta$ に依存しない。母数に依存する因子のデータ依存性は $s,k$ のみなので，
+因子分解定理により $\boxed{(S,K)\text{ は十分統計量}}$。
+$K$ だけを二値部分のデータと見なす場合の $\binom rk$ は母数によらず，結論は同じである。
+
+\ans{3}
+〔2〕の観測モデルと尤度を用いる。母数によらない項を $C$ と書くと
+\[
+\ell(\theta)=C+m\log\theta-\theta(s+kc^2)+(r-k)\log(1-e^{-\theta c^2}),
+\]
+\[
+\ell'(\theta)=\frac m\theta-(s+kc^2)+\frac{(r-k)c^2}{e^{\theta c^2}-1}.
+\]
+よって最尤推定値は
+\[
+\boxed{\frac m{\hat\theta}-(s+kc^2)+\frac{(r-k)c^2}{e^{\hat\theta c^2}-1}=0}
+\]
+を満たす。なお $k=r$ では $\hat\theta=m/(s+rc^2)$ と陽に書ける。
+\newpage
+\continued{2}
+〔3〕の一意性を確認する。$\theta>0$ で
+\[
+\ell''(\theta)=-\frac m{\theta^2}
+-\frac{(r-k)c^4e^{\theta c^2}}{(e^{\theta c^2}-1)^2}<0.
+\]
+さらに
+\[
+\lim_{\theta\downarrow0}\ell'(\theta)=+\infty,\qquad
+\lim_{\theta\to\infty}\ell'(\theta)=-(s+kc^2)<0.
+\]
+スコアは連続かつ狭義単調減少だから零点が正の範囲にただ1つあり，
+その前後で尤度は増加から減少へ変わる。これが一意な大域的最大点である。
+推定量はこの解の $s,k$ を $S,K$ に置き換えたものとなる。
+
+\ans{4}
+直接観測1個の対数密度は $\log2+\log\theta+\log X-\theta X^2$ なので
+\[
+\boxed{I_X(\theta)=1/\theta^2}.
+\]
+ベルヌーイモデルでは，$q_\theta'=-c^2q_\theta$ を用いて
+\[
+I_B(\theta)=\frac{(q_\theta')^2}{q_\theta(1-q_\theta)}
+=\boxed{\frac{c^4}{e^{\theta c^2}-1}}.
+\]
+どちらも母数によらない台をもち，$\theta>0$ の近傍で必要な微分・積分の交換が可能である。
+独立性により全情報量は
+\[
+\boxed{I_{\mathrm{obs}}(\theta)=\frac m{\theta^2}
++\frac{r c^4}{e^{\theta c^2}-1}}.
+\]
+比は $z=\theta c^2$ を用いると $I_B/I_X=z^2/(e^z-1)$ である。
+$z=\log2$ なら $e^z-1=1$ であり，問題文の近似値を使って
+\[
+\frac{I_B}{I_X}=(\log2)^2\simeq0.6931\times0.6931
+=0.48038761\simeq\boxed{0.480}.
+\]
+
+\ans{5}
+$\theta_0$ を固定すると，最大化すべき関数は
+$I_B(\theta_0)=\theta_0^{-2}h(z)$，$h(z)=z^2/(e^z-1)$，$z>0$ である。
+\[
+h'(z)=\frac{z\{(2-z)e^z-2\}}{(e^z-1)^2}.
+\]
+したがって正の停留点が満たす方程式は
+\[
+\boxed{(2-z)e^z=2}.
+\]
+$g(z)=(2-z)e^z-2$ とおくと，$g(0)=0$，$g'(z)=(1-z)e^z$。
+$g$ は $(0,1)$ で増加，$(1,\infty)$ で減少し，$g(1)=e-2>0$，$g(2)=-2<0$ である。
+よって正の零点 $z_*$ は一意で，$1<z_*<2$。$h'$ はそこで正から負に変わるので最大点である。
+\[
+\boxed{c_* =\sqrt{z_*/\theta_0}}.
+\]
+基準値が大きいほど最適なしきい値は小さい。最適値は $\theta_0$ に依存し，
+すべての $\theta_0>0$ に同時に最適となる固定した $c$ はない。
+\newpage
+
+\qhead{3}
+\ans{1}
+同じ率の独立な指数分布2個の和について，畳み込みから
+\[
+f_A(a)=\int_0^a(\lambda\theta)^2e^{-\lambda\theta a}\,dx
+=(\lambda\theta)^2a e^{-\lambda\theta a},\qquad a>0.
+\]
+同様に $f_B(b)=\lambda^2b e^{-\lambda b}$（$b>0$）。独立性から
+\[
+\boxed{f_{A,B}(a,b)=\lambda^4\theta^2ab\,e^{-\lambda(\theta a+b)}
+\quad(a,b>0)}.
+\]
+逆変換は $a=ut,\ b=(1-u)t$，ヤコビアンの絶対値は $t$ である。
+したがって
+\[
+\boxed{f_{U,T}(u,t)=\lambda^4\theta^2u(1-u)t^3
+e^{-\lambda\{1+(\theta-1)u\}t}\quad(0<u<1,\ t>0)}.
+\]
+$t$ について積分すると
+\[
+\boxed{f_U(u;\theta)=\frac{6\theta^2u(1-u)}{\{1+(\theta-1)u\}^4}
+\quad(0<u<1)}.
+\]
+以上の密度はいずれも指定した台の外で0である。特に $\theta=1$ では
+\[
+f_{U,T}(u,t)=\underbrace{6u(1-u)}_{f_U(u;1)}
+\underbrace{\frac{\lambda^4}{6}t^3e^{-\lambda t}}_{f_T(t;1)}.
+\]
+台が直積で，それぞれ正規化された密度に分解されるため，
+$\boxed{U\text{ と }T\text{ は }H_0\text{ の下で独立}}$。
+$U\sim\mathrm{Beta}(2,2)$，$T\sim\mathrm{Gamma}(4,\text{率 }\lambda)$ である。
+
+\ans{2}
+確率モデルは，率 $\lambda\theta$ の独立な指数変数2個と，率 $\lambda$ の独立な指数変数2個である。
+1観測の密度は $f_X(x)=\lambda\theta e^{-\lambda\theta x}$，$f_Y(y)=\lambda e^{-\lambda y}$（$x,y>0$）で，
+台の外では0，未知母数空間は $\lambda>0,\theta>0$ である。
+元の4個の観測値に基づく尤度は，$A,B$ の実現値を $a,b>0$ として
+\[
+L(\lambda,\theta)=\boxed{\lambda^4\theta^2e^{-\lambda(\theta a+b)}}.
+\]
+対数尤度と $\lambda$ に関するスコアは
+\[
+\ell=4\log\lambda+2\log\theta-\lambda(\theta a+b),\qquad
+\frac{\partial\ell}{\partial\lambda}=\frac4\lambda-(\theta a+b).
+\]
+$\partial^2\ell/\partial\lambda^2=-4/\lambda^2<0$ より，固定した $\theta$ に対して
+$\hat\lambda(\theta)=4/(\theta a+b)$ が一意な最大点である。
+\newpage
+\continued{3}
+〔2〕の続き。$\hat\lambda(\theta)$ を代入したプロファイル対数尤度は，定数項を除き
+\[
+\ell_p(\theta)=2\log\theta-4\log(\theta a+b)+C,
+\qquad
+\ell_p'(\theta)=\frac{2(b-a\theta)}{\theta(\theta a+b)}.
+\]
+したがって無制約では $\theta=b/a$ で最大になる。
+制約 $\theta\geq1$ の下では $\hat\theta=\max\{1,b/a\}$ であり，
+帰無仮説の下では $\hat\lambda_0=4/(a+b)$ である。
+
+$a\geq b$（$u\geq1/2$）なら分子・分母の最大点は同じなので $\Lambda=1$。
+$a<b$（$u<1/2$）なら対立側の最大点は $\hat\theta=b/a,\hat\lambda=2/b$ であり，
+\[
+\Lambda=\frac{\{4/(a+b)\}^4e^{-4}}
+{(2/b)^4(b/a)^2e^{-4}}=\frac{16a^2b^2}{(a+b)^4}.
+\]
+従って，観測値を統計量に戻すと
+\[
+\boxed{\Lambda=
+\begin{cases}
+\{4U(1-U)\}^2,&0<U<1/2,\\
+1,&1/2\leq U<1.
+\end{cases}}
+\]
+分母で $\theta>1$ に限って上限を取っても値は同じだが，境界では最大値が達成されない場合がある。
+問題はその曖昧さを避けるため $\theta\geq1$ と定義している。
+
+\ans{3}
+尤度比が小さいときに棄却する。$(0,1/2)$ 上で $4u(1-u)$ は増加するので，
+棄却域は小さい $U$ の側となる。帰無仮説の下では
+\[
+\Prob_0(U\leq c)=\int_0^c6u(1-u)\,du=3c^2-2c^3.
+\]
+$c=1/4$ を代入すると $3/16-2/64=5/32$。よって
+\[
+\boxed{U\leq\tfrac14\text{ なら棄却する}}
+\]
+はすべての $\lambda>0$ でサイズ $5/32$ をもつ。$A\leq B/3$，または $\Lambda\leq9/16$ と同値である。
+
+一般の $\theta$ では $\theta A$ と $B$ は独立で，ともに形状2，率 $\lambda$ のガンマ分布に従う。
+ゆえに
+\[
+V=\frac{\theta A}{\theta A+B}
+=\frac{\theta U}{1+(\theta-1)U}\sim\mathrm{Beta}(2,2).
+\]
+この変換は $U$ について増加するため，検出力は
+\[
+\boxed{\pi(\theta)=3\left(\frac{\theta}{\theta+3}\right)^2
+-2\left(\frac{\theta}{\theta+3}\right)^3
+=\frac{\theta^2(\theta+9)}{(\theta+3)^3}}.
+\]
+$\boxed{\pi(3)=1/2}$。また $\pi(1)=5/32$，$\theta\to\infty$ で $\pi(\theta)\to1$ となる。
+\newpage
+\continued{3}
+\ans{4}
+$U$ の分布に $\lambda$ は含まれない。任意の固定した $\theta_1>1$ に対する，
+$U$ の周辺分布の尤度比は
+\[
+\frac{f_U(u;\theta_1)}{f_U(u;1)}
+=\frac{\theta_1^2}{\{1+(\theta_1-1)u\}^4}.
+\]
+これは $0<u<1$ で狭義単調減少する。
+ネイマン・ピアソンの基本定理から，$U$ だけに基づくサイズ $5/32$ 以下の検定の中で，
+小さい $U$ を棄却する〔3〕の検定が $\theta=\theta_1$ に対して最強力である。
+帰無分布は連続なので境界での確率化は不要であり，臨界値 $1/4$ は $\theta_1$ に依存しない。
+この議論は任意の $\theta_1>1$ に成立するので，指定された検定の範囲内で一様最強力である。
+
+\medskip
+\noindent\textbf{適用範囲}
+ここで証明したのは $\varphi(U)$ の形の検定に限った最適性である。
+元の4変数のあらゆる関数を使う検定の中での最適性を，この議論だけで結論してはいない。
+\newpage
+
+\qhead{4}
+\ans{1}
+定義は
+\[
+D(f_\mu\Vert f_\eta)=\int_{-\infty}^{\infty}f_\mu(y)
+\log\frac{f_\mu(y)}{f_\eta(y)}\,dy.
+\]
+このモデルでは同じ分散なので正規化定数が消え，
+\[
+\log\frac{f_\mu(y)}{f_\eta(y)}
+=\frac{(y-\eta)^2-(y-\mu)^2}{2\sigma^2}.
+\]
+$Y\sim N(\mu,\sigma^2)$ の下で期待値を取ると
+\[
+\boxed{D(f_\mu\Vert f_\eta)=\frac{(\mu-\eta)^2}{2\sigma^2}}.
+\]
+
+\ans{2}
+$\E[\bar Y]=\mu$，$\Var(\bar Y)=\sigma^2/n$ より
+\[
+\boxed{R_n(a)=\frac{(1-a)^2\mu^2+a^2\sigma^2/n}{2\sigma^2}}.
+\]
+分子を微分すると $-2(1-a)\mu^2+2a\sigma^2/n$。
+2階微分は $2(\mu^2+\sigma^2/n)>0$ なので一意な最小点は
+\[
+\boxed{a_{\mathrm{opt}}=\frac{\mu^2}{\mu^2+\sigma^2/n}
+=\frac{n\mu^2}{n\mu^2+\sigma^2}}.
+\]
+これは $[0,1)$ にあり，$\mu=0$ なら0である。
+ただし未知の $\mu^2$ に依存するので，$\mu$ の情報なしにこの値をそのまま使うことはできない。
+
+\ans{3}
+定義と $\bar Y_{(-i)}=(n\bar Y-Y_i)/(n-1)$ より
+\[
+\mathrm{CV}_n(a)=\frac1n\sum_{i=1}^n(Y_i-a\bar Y_{(-i)})^2.
+\]
+$e_i=Y_i-\bar Y$ とおくと
+\[
+Y_i-a\bar Y_{(-i)}
+=\left(1+\frac{a}{n-1}\right)e_i+(1-a)\bar Y.
+\]
+$\sum_i e_i=0$ なので，2乗して平均したときの交差項は消える。従って
+\[
+\boxed{\mathrm{CV}_n(a)=
+\left(1+\frac{a}{n-1}\right)^2V_n+(1-a)^2\bar Y^2}.
+\]
+\newpage
+\continued{4}
+\ans{4}
+$Y_i$ は $\bar Y_{(-i)}$ と独立であり，後者は平均 $\mu$，分散 $\sigma^2/(n-1)$ をもつ。
+従って各項の期待値は同じで，
+\[
+\boxed{\E[\mathrm{CV}_n(a)]=\sigma^2+(1-a)^2\mu^2
++\frac{a^2\sigma^2}{n-1}}.
+\]
+〔3〕の式に $\E[V_n]=(n-1)\sigma^2/n$ と $\E[\bar Y^2]=\mu^2+\sigma^2/n$ を代入してもよい。
+一方，新しい $Y_0$ は標本全体と独立なので
+\[
+\E[(Y_0-a\bar Y)^2]=\sigma^2+(1-a)^2\mu^2+\frac{a^2\sigma^2}{n}.
+\]
+求める差は
+\[
+\boxed{\E[\mathrm{CV}_n(a)]-\E[(Y_0-a\bar Y)^2]
+=\frac{a^2\sigma^2}{n(n-1)}}.
+\]
+固定した $a$ の交差検証は，学習標本が $n-1$ 個の場合の予測誤差を平均的に評価している。
+
+\ans{5}
+与えられたデータでは $\bar y=2$，$V_4=(4+1+0+9)/4=7/2$ である。
+したがって
+\begin{align*}
+\mathrm{CV}_4(a)
+&=\frac72\left(1+\frac a3\right)^2+4(1-a)^2\\
+&=\frac{15}{2}-\frac{17}{3}a+\frac{79}{18}a^2.
+\end{align*}
+2次の係数は正なので，微分を0とおいて
+\[
+\boxed{\hat a=\frac{51}{79}}.
+\]
+これは $[0,1]$ 内にあるので制約下でも最小点である。
+最小評価値は $448/79$ である（この値の算出は必須ではない）。
+
+固定した $a$ に対する〔4〕の期待値の公式へ，標本依存の $\hat a$ をそのまま代入することはできない。
+たとえば〔3〕の恒等式は各標本で $a=\hat a$ に対しても成り立つが，
+その期待値には $\E[\hat a V_n]$，$\E[\hat a^2 V_n]$，$\E[(1-\hat a)^2\bar Y^2]$ が現れ，
+$\hat a$ と $V_n,\bar Y$ の依存を無視できない。
+〔4〕の独立性による計算でも，$\hat a$ が除外された $Y_i$ を含む全標本に依存している点が異なる。
+
+別の表し方として，任意の定数 $a$ に対して
+$\min_{0\leq b\leq1}\mathrm{CV}_n(b)\leq\mathrm{CV}_n(a)$ が標本ごとに成り立つので
+\[
+\E\!\left[\min_{0\leq b\leq1}\mathrm{CV}_n(b)\right]
+\leq\min_{0\leq a\leq1}\E[\mathrm{CV}_n(a)].
+\]
+評価値の最小化という選択操作まで含む量には，固定した $a$ の議論をそのまま流用できない。
+\newpage
+
+\qhead{5}
+\ans{1}
+条件付きでは $X_i^*$ は経験分布に独立同分布で従うので
+\[
+\E_*[X_i^*]=\bar X,\qquad \Var_*(X_i^*)=V_n.
+\]
+従って
+\[
+\boxed{\E_*[\bar X^*]=\bar X,\qquad\Var_*(\bar X^*)=V_n/n}.
+\]
+元の一様分布の分散は $\theta^2/12$ である。
+$V_n$ の分母は $n$ であることに注意すると
+\[
+\E[V_n]=\frac{n-1}{n}\frac{\theta^2}{12},\qquad
+\boxed{\E[\Var_*(\bar X^*)]=\frac{(n-1)\theta^2}{12n^2}}.
+\]
+これは $\Var(\bar X)=\theta^2/(12n)$ の $(n-1)/n$ 倍で，有限標本では小さい。
+
+\ans{2}
+$0\leq u\leq1$ では
+\[
+\Prob(M_n/\theta\leq u)
+=\prod_{i=1}^n\Prob(X_i\leq\theta u)=u^n.
+\]
+分布関数は $u<0$ で0，$u>1$ で1である。
+よって $T_n=n(1-M_n/\theta)$ の分布関数は
+\[
+\boxed{F_{T_n}(t)=
+\begin{cases}
+0,&t<0,\\
+1-(1-t/n)^n,&0\leq t\leq n,\\
+1,&t>n.
+\end{cases}}
+\]
+任意の固定した $t\geq0$ について $(1-t/n)^n\to e^{-t}$ であり，
+$t<0$ では分布関数は0のままである。従って
+\[
+\boxed{T_n\xrightarrow{d}\mathrm{Exp}(1)\ \text{（率1）}}.
+\]
+
+\ans{3}
+条件付き独立性から
+\[
+\boxed{\Prob_*(M_n^*\leq x)=F_n(x)^n}.
+\]
+元の最大値を与える添え字は1つである。これを $n$ 回の復元抽出で一度も選ばない確率は
+$(1-1/n)^n$ なので
+\[
+\boxed{\Prob_*(M_n^*=M_n)=1-\left(1-\frac1n\right)^n
+\longrightarrow1-e^{-1}}.
+\]
+この計算で条件付けているのは元の全標本である。元の最大値の数値そのものには依存しない。
+\newpage
+\continued{5}
+\ans{4}
+常に $M_n^*\leq M_n$ なので $T_n^*\geq0$ であり，
+\[
+\Prob_*(T_n^*\leq0)=\Prob_*(M_n^*=M_n)
+\longrightarrow1-e^{-1}>0.
+\]
+これに対して〔2〕の極限分布の分布関数は0で連続であり，その値も0である。
+法則収束が成り立つなら極限分布関数の連続点で分布関数が収束するはずだが，0においてそうならない。
+よって，この条件付きブートストラップ分布は $\mathrm{Exp}(1)$ に収束しない。
+
+任意の条件付き分位点は $M_n$ 以下である。一方，連続一様分布の有限標本では
+$\Prob_\theta(M_n<\theta)=1$。
+従って，指定された分位点区間はその上端も真の $\theta$ より小さく，
+\[
+\boxed{\text{被覆確率は }0}
+\]
+である。名目上の $1-\alpha$ にはならない。
+
+\ans{5}
+元の標本を固定すると，生成した各値を $M_n$ で割ったものは独立な $U(0,1)$ に従う。
+従って $0\leq u\leq1$ で
+\[
+\Prob\!\left(\left.\frac{M_n^\dagger}{M_n}\leq u\,\right|X_1,\ldots,X_n\right)=u^n.
+\]
+よって
+\[
+\boxed{
+\Prob\!\left(\left.\frac{n(M_n-M_n^\dagger)}{M_n}\leq t\,\right|X_1,\ldots,X_n\right)
+=\begin{cases}
+0,&t<0,\\
+1-(1-t/n)^n,&0\leq t\leq n,\\
+1,&t>n
+\end{cases}}
+\]
+となり，〔2〕の $T_n$ の分布関数と有限の $n$ でも完全に一致する。
+
+区間 $[M_n,c_\alpha M_n]$ に対し，$M_n\leq\theta$ は確率1で成り立つので，
+\[
+\Prob_\theta(M_n\leq\theta\leq c_\alpha M_n)
+=\Prob_\theta\left(\frac{M_n}{\theta}\geq\frac1{c_\alpha}\right)
+=1-c_\alpha^{-n}.
+\]
+これを $1-\alpha$ に等しくすれば $c_\alpha=\alpha^{-1/n}>1$。
+従って求める区間は
+\[
+\boxed{\left[M_n,\ \frac{M_n}{\alpha^{1/n}}\right]}.
+\]
+これは有限標本で正確な信頼区間である。$n$ 乗根を数値計算する必要はなく，式のままでよい。
+上端は $M_n^\dagger$ の分位点をそのまま使ったものではなく，
+母数によらない比 $M_n/\theta$ の分布を反転して得たものである。
+\end{document}

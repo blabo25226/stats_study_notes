@@ -1,0 +1,27 @@
+% LuaLaTeX / UTF-8
+\usepackage{amsmath,amssymb,bm}
+\usepackage[margin=23mm,top=22mm,bottom=22mm]{geometry}
+\usepackage{enumitem,booktabs,array}
+\usepackage{fancyhdr}
+\usepackage[hidelinks,unicode]{hyperref}
+\setlength{\parindent}{1\zw}
+\setlength{\parskip}{0.35em}
+\setlength{\headheight}{17pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 第1回模試\quad 統計数理}
+\fancyhead[R]{\small\bookletname}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlist[enumerate,1]{label=〔\arabic*〕,leftmargin=3.5em,labelsep=0.5em,itemsep=1.1em,topsep=0.8em}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Prob}{\operatorname{P}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\qhead}[1]{\section*{問#1}}
+\newcommand{\ans}[1]{\subsection*{〔#1〕}}
+\newcommand{\points}[1]{\hfill\textnormal{（#1点）}}
+\newcommand{\continued}[1]{\noindent\textbf{問#1（続き）}\par\medskip}
+\hypersetup{pdfauthor={Codex},pdfsubject={統計検定1級対策・自主学習用模擬試験}}

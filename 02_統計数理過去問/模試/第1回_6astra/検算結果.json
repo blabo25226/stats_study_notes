@@ -1,0 +1,43 @@
+{
+  "q1": {
+    "pmf_sum_mean_variance_pgf": "passed",
+    "mom_at_3_5": [
+      2,
+      0.5
+    ]
+  },
+  "q2": {
+    "optimal_z": 1.5936242600400266,
+    "relative_information_at_optimum": 0.6476102378919149,
+    "mixed_mle_cases": 5
+  },
+  "q3": {
+    "power_by_theta": {
+      "0.2": 0.011230468750000003,
+      "1": 0.15625,
+      "1.5": 0.2592592592592593,
+      "3": 0.4999999999999999,
+      "8": 0.8174305033809165
+    },
+    "full_likelihood_maximization": "passed"
+  },
+  "q4": {
+    "cv_optimum": 0.6455696202531646,
+    "minimum_cv": 5.670886075949367,
+    "simulation_cv_mean": 2.5526777167120343,
+    "exact_cv_mean": 2.559775,
+    "mc_se": 0.0035272601912115613
+  },
+  "q5": {
+    "enumeration_size": 256,
+    "bootstrap_atom_at_n4": 0.68359375,
+    "exact_ci_simulation_coverage": 0.949385,
+    "nominal_coverage": 0.95,
+    "mc_se": 0.0004873397172404482
+  },
+  "checks": {
+    "numeric_comparisons": 391,
+    "symbolic_and_structural_assertions": "passed",
+    "seed": 20261111
+  }
+}
