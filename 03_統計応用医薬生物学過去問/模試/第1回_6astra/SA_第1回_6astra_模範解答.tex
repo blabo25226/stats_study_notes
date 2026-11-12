@@ -1,0 +1,450 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{模範解答}
+\input{sa_mock_style.tex}
+\setlength{\parskip}{0.2em}
+\hypersetup{pdftitle={第1回模試 統計応用（医薬生物学） 模範解答}}
+\begin{document}
+\setlength{\abovedisplayskip}{7pt}
+\setlength{\belowdisplayskip}{7pt}
+\noindent{\small 付表番号・数値は「統計検定1級\_付表数値表」に対応する。}
+
+\qhead{1}
+\ans{1}
+各死亡時点の直前に，既に登録され，死亡も打ち切りもされていない人を数える。
+\begin{center}
+\begin{tabular}{crrrr}
+\toprule
+$t$ & 対照群人数 $n_0(t)$ & 治療群人数 $n_1(t)$ & 対照群死亡数 & 治療群死亡数\\
+\midrule
+1 & 3 & 3 & 1 & 0\\
+2 & 2 & 3 & 0 & 1\\
+4 & 2 & 3 & 0 & 1\\
+5 & 2 & 2 & 1 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+時点2.5でC3が加わり，時点3でC2が打ち切られ，時点3.5でT3が加わる。
+各群のKM推定値は死亡のあった時点だけで減少する。したがって
+\[
+\hat S_0(5)=\left(1-\frac13\right)\left(1-\frac12\right)=\boxed{\frac13},\qquad
+\hat S_1(5)=\left(1-\frac13\right)^2=\boxed{\frac49}.
+\]
+右側打ち切りや新規登録の時点では，生存関数の推定値自体は変化しない。
+
+\ans{2}
+各群の死亡時間のモデルは $\lambda(t\mid x)=\lambda_0(t)e^{\beta x}$ である。
+$\Lambda_0(t)=\int_0^t\lambda_0(u)\,du$ とすると，死亡時間の密度は
+\[
+f(t\mid x)=\lambda_0(t)e^{\beta x}\exp\{-e^{\beta x}\Lambda_0(t)\},\quad t\geq0.
+\]
+登録時点 $a$ まで生存した条件では，$t\geq a$ でこの密度を $S(a\mid x)$ で割る。
+部分尤度には，死亡時点 $t$ のリスク集合 $\mathcal R(t)$ の中で誰が死亡するかの条件付き寄与
+\[
+\frac{e^{\beta x_i}}{\sum_{j\in\mathcal R(t)}e^{\beta x_j}}
+\]
+を用いる。これは各人のハザードをリスク集合のハザードの和で割ったものであり，$\lambda_0(t)$ が消去される。
+よって $\theta=e^\beta>0$ に対する部分尤度は
+\[
+L(\theta)=\frac1{3+3\theta}\frac{\theta}{2+3\theta}
+\frac{\theta}{2+3\theta}\frac1{2+2\theta}
+=\frac{\theta^2}{6(1+\theta)^2(2+3\theta)^2}.
+\]
+定数を除いた対数は $2\log\theta-2\log(1+\theta)-2\log(2+3\theta)$ であり，
+\[
+\frac{d\log L}{d\theta}
+=\frac2\theta-\frac2{1+\theta}-\frac6{2+3\theta}
+=\frac{2(2-3\theta^2)}{\theta(1+\theta)(2+3\theta)}.
+\]
+分母は正なので，$\sqrt{2/3}$ より左で増加，右で減少する。したがって一意の最大点は
+\[
+\boxed{\hat\theta=\sqrt{\frac23}\simeq0.816}.
+\]
+\newpage
+\continued{1}
+\ans{3}
+$\theta=e^\beta$ を代入すると
+\[
+U(\beta)=2-\frac{2\theta}{1+\theta}-\frac{6\theta}{2+3\theta},\qquad
+I(\beta)=\frac{2\theta}{(1+\theta)^2}+\frac{12\theta}{(2+3\theta)^2}.
+\]
+よって
+\[
+U(0)=2-1-\frac65=-\frac15,\qquad
+I(0)=\frac12+\frac{12}{25}=\frac{49}{50}=0.98.
+\]
+検定統計量は
+\[
+\frac{U(0)^2}{I(0)}=\frac{2}{49}\simeq0.0408.
+\]
+付表3の自由度1，上側5\%点は3.84である。これを下回るため，$H_0$ は棄却されない。
+治療群の観測死亡数は2，帰無仮説の下での期待死亡数の和は
+\[
+\frac36+\frac35+\frac35+\frac24=2.2.
+\]
+したがって $U(0)=2-2.2$ は，治療群の「観測死亡数－期待死亡数」を死亡時点について合計したログランク・スコアに一致する。
+1時点に死亡が1件なので，その分散の推定値は
+\[
+\frac12\frac12+\frac35\frac25+\frac35\frac25+\frac12\frac12=0.98
+\]
+となり，$I(0)$ とも一致する。
+
+本データは小標本であり，上の結論は設問で指定された漸近近似による。棄却されないことは，両群のハザードが等しいことの証明ではない。
+
+\ans{4}
+正しい併合リスク集合の人数は死亡時点順に6，5，5，4なので，
+\[
+\hat S_{\mathrm{正}}(5)=\frac56\frac45\frac45\frac34=\boxed{0.400}.
+\]
+全員を時間0から観察したと誤認すると，人数は8，7，5，4となる。時点3の打ち切りはどちらの計算でも除くため，
+\[
+\hat S_{\mathrm{誤}}(5)=\frac78\frac67\frac45\frac34=\boxed{0.450}.
+\]
+登録が遅い人は，登録まで生存していた人として選ばれている。登録前の期間までリスク集合に加えると，この間に死亡しなかったことが既に分かっている人を分母に加えてしまう。
+本データでは時点1，2のリスク集合が過大となり，生存確率を高く推定する。
+\newpage
+
+\qhead{2}
+\ans{1}
+両地域の観察人年の合計は6250である。粗死亡率は
+\[
+A:\ \frac{100}{6250}=\boxed{0.016},\qquad
+B:\ \frac{250}{6250}=\boxed{0.040}\quad\text{（1人年当たり）}.
+\]
+期待死亡数はAで $(50,50)$，Bで $(12.5,200)$ なので，
+\[
+\operatorname{SMR}_A=\frac{100}{100}=\boxed{1},\qquad
+\operatorname{SMR}_B=\frac{250}{212.5}=\boxed{\frac{20}{17}\simeq1.176}.
+\]
+
+\ans{2}
+年齢別死亡率の推定値は両地域とも，若年層0.008，高年層0.048である。したがって直接標準化死亡率は両地域とも
+\[
+\frac12(0.008)+\frac12(0.048)=\boxed{0.028}\quad\text{（1人年当たり）}.
+\]
+一般には
+\[
+\sum_kw_k\theta_k,\qquad w_k=\frac{Y_kr_k}{\sum_\ell Y_\ell r_\ell},\qquad \sum_kw_k=1
+\]
+という重み付き平均になる。本データの年齢別死亡率比の推定値は共通に $(0.8,1.2)$ だが，重みは
+\[
+A:\left(\frac12,\frac12\right),\qquad
+B:\left(\frac1{17},\frac{16}{17}\right)
+\]
+と異なる。BのSMRは相対死亡率の高い高年層に大きな重みを置くため，Aより大きくなる。
+
+\ans{3}
+$O_k\ (k=1,2)$ は独立に $\operatorname{Poisson}(\theta E_k)$ に従い，$E_k>0$ は既知である。
+1観測の確率関数と同時尤度は
+\[
+\Prob(O_k=o_k)=\frac{e^{-\theta E_k}(\theta E_k)^{o_k}}{o_k!},\quad o_k=0,1,\ldots,
+\qquad
+L(\theta)=\prod_{k=1}^2\frac{e^{-\theta E_k}(\theta E_k)^{o_k}}{o_k!}.
+\]
+$O=O_1+O_2$，$E=E_1+E_2$ と略記する。$o=o_1+o_2>0$ のとき，
+\[
+\ell(\theta)=o\log\theta-\theta E+\text{定数},\quad
+\ell'(\theta)=\frac{o}{\theta}-E,\quad
+\ell''(\theta)=-\frac{o}{\theta^2}<0.
+\]
+よって最大点は $o/E$。$o=0$ なら $L(\theta)=e^{-\theta E}$ は減少し，境界 $\theta=0$ で最大となる。全標本について
+\[
+\boxed{\hat\theta=\frac OE},\qquad
+\E[\hat\theta]=\theta,\qquad
+\Var(\hat\theta)=\frac{\theta}{E}
+\]
+を得る。これは $O\sim\operatorname{Poisson}(\theta E)$ による。
+\newpage
+\continued{2}
+\noindent\textbf{〔3〕の続き}
+
+$\theta>0$ で観察人年が大きくなるとき，デルタ法により
+\[
+\operatorname{avar}(\log\hat\theta)=\frac1{\theta^2}\frac\theta E=\frac1{\theta E},\qquad
+\widehat{\operatorname{se}}(\log\hat\theta)=\frac1{\sqrt O}.
+\]
+ここでは $O=100,E=100$ なので $\hat\theta=1$，対数尺度の標準誤差は0.1である。
+付表1の $Q(1.96)=0.0250$ から，信頼区間は
+\[
+\left[\exp\left\{\log\hat\theta-\frac{1.96}{\sqrt O}\right\},
+\exp\left\{\log\hat\theta+\frac{1.96}{\sqrt O}\right\}\right]
+=[e^{-0.196},e^{0.196}].
+\]
+付表5より $e^{0.19}=1.2092$，$e^{0.20}=1.2214$。線形補間で
+\[
+e^{0.196}\simeq1.2092+0.6(1.2214-1.2092)=1.21652,
+\qquad e^{-0.196}\simeq\frac1{1.21652}.
+\]
+したがって求める95\%信頼区間は $\boxed{[0.822,\ 1.217]}$ である。
+死亡総数が0の標本にこの対数近似を適用することはできない。
+
+\ans{4}
+帰無モデルの下での当てはめ値は $(50,50)$ なので
+\[
+X^2=\frac{(40-50)^2}{50}+\frac{(60-50)^2}{50}=\boxed{4}.
+\]
+独立なポアソン平均は自由なモデルでは2つあるが，帰無モデルでは共通倍率1つだけである。自由度は $2-1=1$。
+同じことは，死亡総数で条件付けたときに $O_1\mid O\sim\operatorname{Bin}(O,1/2)$ となることからも分かる。
+付表3の自由度1の上側5\%点3.84を上回るので，共通倍率モデルを棄却する。
+
+\ans{5}
+第1の主張は成り立たない。SMRが1でも，年齢別の相対死亡率がすべて1とは限らない。
+実際，地域Aの年齢別比の推定値は0.8と1.2であり，重み付き平均が1になっている。〔4〕でも共通倍率モデルは棄却されている。
+したがって，〔3〕の区間は\textbf{共通倍率モデルを仮定したときの区間}として読む必要があり，すべての年齢層の死亡率が基準と同じだという根拠にはならない。
+
+第2の主張もこの結果からは導けない。両地域の年齢別死亡率の推定値は各層で同じで，直接標準化死亡率も同じである。
+観測されたSMRの差は，地域ごとの重みの違いで説明できる。なお，年齢別の推定値が一致したことから，真の死亡率まで等しいと証明したわけではない。
+\newpage
+
+\qhead{3}
+\ans{1}
+確定診断例だけの集計では
+\[
+\text{感度}=\frac{80}{80+5}=\boxed{\frac{16}{17}\simeq0.941},\qquad
+\text{特異度}=\frac{95}{120+95}=\boxed{\frac{19}{43}\simeq0.442}.
+\]
+陽性者の構成割合は $200/300=2/3$ であり，母集団の0.20より著しく大きい。
+
+\ans{2}
+陽性者の重みは1，陰性者の重みは $800/100=8$ である。推定表は
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+ & 疾患あり & 疾患なし & 合計\\
+\midrule
+検査陽性 & 80 & 120 & 200\\
+検査陰性 & 40 & 760 & 800\\
+\midrule
+合計 & 120 & 880 & 1000\\
+\bottomrule
+\end{tabular}
+\end{center}
+となる。これから
+\begin{align*}
+\text{感度}&=\frac{80}{120}=\boxed{\frac23\simeq0.667},&
+\text{特異度}&=\frac{760}{880}=\boxed{\frac{19}{22}\simeq0.864},\\
+\text{陽性的中率}&=\frac{80}{200}=\boxed{0.400},&
+\text{陰性的中率}&=\frac{760}{800}=\boxed{0.950}
+\end{align*}
+を得る。推定表の陰性者の疾患内訳は推定値であり，全800人を確定診断した結果ではない。
+
+\ans{3}
+全確率の公式から $p=qa+(1-q)b$ である。
+独立な二項標本の割合 $\hat a=X_1/200$，$\hat b=X_0/100$ を用い，
+\[
+\hat p=q\hat a+(1-q)\hat b
+\]
+とすれば $\E[\hat p]=p$ となる。その分散は
+\[
+\Var(\hat p)=q^2\frac{a(1-a)}{200}+(1-q)^2\frac{b(1-b)}{100}.
+\]
+観測値では $\hat a=0.4$，$\hat b=0.05$，$\hat p=0.12$ なので
+\[
+\widehat{\Var}(\hat p)=0.2^2\frac{0.4\cdot0.6}{200}
++0.8^2\frac{0.05\cdot0.95}{100}=0.000352,
+\qquad \widehat{\operatorname{se}}(\hat p)=\sqrt{0.000352}\simeq0.01876.
+\]
+付表1の $Q(1.96)=0.0250$ を用い，指定された正規近似による区間は
+\[
+0.12\pm1.96\sqrt{0.000352}\simeq\boxed{[0.083,\ 0.157]}.
+\]
+$q$ は既知なので，$q$ の推定誤差の項は加えない。また，設問の二項モデルで分散を計算しており，固定された有限母集団からの超幾何抽出の分散ではない。
+\newpage
+\continued{3}
+\ans{4}
+$R\perp D\mid S$ より
+\[
+\Prob(R=1\mid S=1,D=1)=v_1,\qquad
+\Prob(R=1\mid S=0,D=1)=v_0.
+\]
+ベイズの公式で
+\[
+\boxed{\Prob(S=1\mid D=1,R=1)=\frac{v_1h}{v_1h+v_0(1-h)}}.
+\]
+したがって，$0<h<1$ で $v_1>v_0$ なら確定診断例だけの感度は真の感度より大きい。
+実際，本設定の $v_1=1$，$v_0=1/8$ と〔2〕の $h=2/3$ を代入すると
+\[
+\frac{2/3}{2/3+(1/8)(1/3)}=\frac{16}{17}
+\]
+であり，〔1〕と整合する。
+
+一方，陽性的中率については
+\[
+\Prob(D=1\mid S=1,R=1)
+=\frac{\Prob(R=1\mid S=1,D=1)\Prob(D=1\mid S=1)}{\Prob(R=1\mid S=1)}
+=\frac{v_1a}{v_1}=a.
+\]
+したがって変わらない。陰性的中率についても同様である。
+
+陰性者の中でも疾患の有無と関連する要因によって確定診断を受けやすさが変わるなら，
+$R\perp D\mid S=0$ が成立するとは限らない。この場合，確定診断した陰性者の疾患割合が，陰性者全体の割合 $b$ を代表するとはいえない。
+一律に8倍してもその偏りは解消しない。追加情報や選択の仕組みについての仮定が必要であり，〔2〕の補正をそのまま正当化することはできない。
+\newpage
+
+\qhead{4}
+\ans{1}
+独立な施設効果と個人誤差を足すので
+\[
+\Var(Y_{gij})=\sigma_B^2+\sigma_e^2.
+\]
+同一施設の異なる2人は同じ $B_{gi}$ を共有し，個人誤差は独立だから
+\[
+\Cov(Y_{gij},Y_{gi\ell})=\sigma_B^2\quad(j\ne\ell),\qquad
+\boxed{\rho=\frac{\sigma_B^2}{\sigma_B^2+\sigma_e^2}}.
+\]
+異なる施設の測定値は独立である。
+
+\ans{2}
+施設平均は
+\[
+\bar Y_{gi}=\mu+\tau g+B_{gi}+\frac1m\sum_{j=1}^m\varepsilon_{gij},\qquad
+\Var(\bar Y_{gi})=\sigma_B^2+\frac{\sigma_e^2}{m}.
+\]
+各施設の人数は等しいので $\bar Y_g=K^{-1}\sum_i\bar Y_{gi}$。各群間も独立であるため
+\[
+\boxed{\E[\hat\tau]=\tau},\qquad
+\boxed{\Var(\hat\tau)=\frac2K\left(\sigma_B^2+\frac{\sigma_e^2}{m}\right)}.
+\]
+個人の独立性を誤って仮定した分散は $V_{\mathrm{ind}}=2(\sigma_B^2+\sigma_e^2)/(Km)$ なので，
+\[
+\frac{\Var(\hat\tau)}{V_{\mathrm{ind}}}
+=\frac{m\sigma_B^2+\sigma_e^2}{\sigma_B^2+\sigma_e^2}
+=\boxed{1+(m-1)\rho}.
+\]
+同一施設内で正の相関があるため，人数だけを増やしても独立な人を増やす場合と同じ精度改善にはならない。
+
+\ans{3}
+母分散成分が既知なので，モデルの下で $\hat\tau$ は正確に正規分布に従う。
+\[
+\Var(\hat\tau)=\frac2{12}\left(4+\frac{36}{10}\right)=\frac{19}{15},\qquad
+\operatorname{se}(\hat\tau)=\sqrt{\frac{19}{15}}\simeq1.12546.
+\]
+よって $Z=3/\sqrt{19/15}\simeq2.666$。
+付表1の $Q(1.96)=0.0250$ より，両側5\%の棄却域は $|Z|>1.96$。
+$H_0$ は棄却される。95\%信頼区間は
+\[
+3\pm1.96\sqrt{\frac{19}{15}}\simeq\boxed{[0.794,\ 5.206]}.
+\]
+なお $\rho=0.1$，分散比は1.9であり，独立と誤認した分散 $2/3$ は正しい分散の $1/1.9$ に過小評価される。
+\newpage
+\continued{4}
+\ans{4}
+$s_K=\sqrt{15.2/K}$ とおくと，$Z=\hat\tau/s_K$ は $\tau=2$ の下で
+$N(2/s_K,1)$ に従う。帰無仮説内での棄却確率が最大となるのは境界 $\tau=0$ である。
+付表1の $Q(1.96)=0.0250$ より棄却域は $Z>1.96$。検出力は
+\[
+\Prob_{\tau=2}(Z>1.96)=\Phi\left(\frac2{s_K}-1.96\right).
+\]
+付表1には $Q(0.84)=0.2005$ とあり，問題文で指定された上側20\%点0.84を用いる。
+したがって設計条件は
+\[
+\frac2{\sqrt{15.2/K}}\geq1.96+0.84,
+\qquad
+K\geq\frac{15.2(1.96+0.84)^2}{2^2}=29.792.
+\]
+求める最小の各群施設数は $\boxed{K=30}$。合計60施設，600人となる。
+より細かい補間で上側20\%点を求めても，最小整数は変わらない。
+
+\ans{5}
+予算制約から $K=C/(c_0+c_1m)$ を代入すると
+\begin{align*}
+\Var(\hat\tau)
+&=\frac2C(c_0+c_1m)\left(\sigma_B^2+\frac{\sigma_e^2}{m}\right)\\
+&=\frac2C\left(c_0\sigma_B^2+c_1\sigma_e^2+c_1\sigma_B^2m+
+\frac{c_0\sigma_e^2}{m}\right).
+\end{align*}
+最後の2項だけを最小化すればよい。その導関数は
+\[
+c_1\sigma_B^2-\frac{c_0\sigma_e^2}{m^2}
+\]
+で，2階導関数は $2c_0\sigma_e^2/m^3>0$。よって一意の最小点は
+\[
+\boxed{m_* =\sqrt{\frac{c_0\sigma_e^2}{c_1\sigma_B^2}}},\qquad
+\boxed{K_* =\frac C{c_0+c_1m_*}}.
+\]
+与えられた数値では
+\[
+m_*=\sqrt{\frac{100\cdot36}{1\cdot4}}=\boxed{30},\qquad
+K_* =\frac{5200}{100+30}=\boxed{40}.
+\]
+この場合は連続変数としての最適解が整数で，予算も各群5200をちょうど満たすため，整数の計画としても最適である。
+その分散は $2(4+36/30)/40=0.26$ となる。
+\newpage
+
+\qhead{5（共通問題形式）}
+\ans{1}
+和を $A=X_1+X_2$，差を $D=X_1-X_2$ とおく。両者は同時正規分布に従い，
+\[
+A,D\sim N(0,2\sigma^2),\qquad \Cov(A,D)=\sigma^2-\sigma^2=0
+\]
+なので独立である。また $M=(A+|D|)/2$ である。
+標準正規変数 $Z$ について
+\[
+\E[|Z|]=\frac2{\sqrt{2\pi}}\int_0^\infty z e^{-z^2/2}\,dz
+=\sqrt{\frac2\pi},\qquad \E[|Z|^2]=1.
+\]
+よって $\E[|D|]=2\sigma/\sqrt\pi$，$\Var(|D|)=2\sigma^2(1-2/\pi)$ であり，
+\[
+\boxed{\E[M]=\frac\sigma{\sqrt\pi}},\qquad
+\boxed{\Var(M)=\frac14\{2\sigma^2+2\sigma^2(1-2/\pi)\}
+=\sigma^2\left(1-\frac1\pi\right)}.
+\]
+真の効果がどちらも0であっても，大きい推定値だけを選ぶと平均は正になる。
+
+\ans{2}
+独立性から
+\[
+\Prob(M\leq t)=\prod_{j=1}^4\Prob(X_j\leq t)
+=\boxed{\Phi(t/\sigma)^4},\qquad t\in\mathbb R.
+\]
+全仮説が真で，各検定が境界 $\mu_j=0$ で正確な水準0.05を持つので，1つ以上の誤棄却が起きる確率は
+\[
+\boxed{1-(1-0.05)^4=1-0.95^4=0.18549375\simeq0.185}.
+\]
+最大値だけを見て，単一の検定と同じ基準を適用しても同じ過誤が生じる。
+
+\ans{3}
+Bonferroni法では各検定を $0.05/4=0.0125$ とする。
+付表1で $Q(2.24)=0.0125$ なので，共通の棄却限界値は $\boxed{2.24\text{（約）}}$ である。
+厳密な限界値を $z$ と書けば $Q(z)=0.0125$ を満たす値であり，2.24は付表精度による近似である。
+独立性がなくても，各真の仮説の誤棄却確率を足し合わせる上界によりFWERは0.05以下となる。
+\newpage
+\continued{5}
+\ans{4}
+片側 $p$ 値は $p_j=Q(X_j/\sigma)$ である。付表1の該当する4つの値から
+\begin{center}
+\begin{tabular}{crrr}
+\toprule
+案 $j$ & $X_j/\sigma$ & $p_j$ & Holm法の比較基準\\
+\midrule
+1 & 2.58 & 0.0049 & $0.05/4=0.0125$\\
+2 & 2.10 & 0.0179 & $0.05/3\simeq0.01667$\\
+3 & 1.96 & 0.0250 & $0.05/2=0.025$\\
+4 & 0.20 & 0.4207 & $0.05$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Bonferroni法では0.0125以下の $p$ 値を持つ $\boxed{H_1\text{だけを棄却}}$ する。
+
+Holm法でも，まず $0.0049\leq0.0125$ より $H_1$ を棄却するが，次に
+$0.0179>0.05/3$ なので停止する。したがって $\boxed{H_1\text{だけを棄却}}$ する。
+$H_3$ の $p$ 値が0.025であっても，第3段階には進まない。上の表の後半の基準を個別に適用してはならない。
+
+\ans{5}
+真の帰無仮説が1つでも棄却されたとする。
+並べた $p$ 値のうち，最初の真の帰無仮説の順位を $k$ とする。これより前にある $k-1$ 個はすべて偽の帰無仮説なので
+\[
+k-1\leq m-m_0,\qquad m-k+1\geq m_0.
+\]
+Holm法は途中で停止すればその後を棄却しないから，誤棄却が起きた場合，この最初の真の仮説も棄却されている。したがって
+\[
+\min_{j\in\mathcal T}p_j=p_{(k)}\leq\frac\alpha{m-k+1}\leq\frac\alpha{m_0}.
+\]
+よって，和事象の確率の上界と設問の $p$ 値の条件から
+\begin{align*}
+\operatorname{FWER}
+&\leq\Prob\left(\min_{j\in\mathcal T}p_j\leq\frac\alpha{m_0}\right)\\
+&\leq\sum_{j\in\mathcal T}\Prob\left(p_j\leq\frac\alpha{m_0}\right)
+\leq m_0\frac\alpha{m_0}=\boxed\alpha.
+\end{align*}
+独立性は一度も用いていない。どの仮説が真でも成立するため，強い意味でFWERを制御している。$m_0=0$ の場合は誤棄却が起こらずFWERは0である。
+\end{document}
