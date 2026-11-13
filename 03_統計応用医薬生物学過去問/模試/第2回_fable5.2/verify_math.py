@@ -316,29 +316,81 @@ ratios = [ratio(0.01, kk) for kk in (10, 100, 200, 400, 800)]
 check_true("Q5[5] k を大きくしすぎると分散比は再び増大", min(ratios) < ratios[0] and ratios[-1] > ratios[0] and ratios[-1] > ratios[-2],
            str([round(v, 4) for v in ratios]))
 check("Q5[5] 全プール陽性の確率 (p=0.01,k=400,n=50)", (1 - 0.99 ** 400) ** 50, 0.406, tol=5e-3)
-# [5](b) 分散は (e^u-1)/u^2 に比例し，(u-2)e^u+2=0 の正の解で最小
-phi = lambda u: (u - 2) * math.exp(u) + 2
-u_star = optimize.brentq(phi, 1.0, 3.0)
-check_true("Q5[5b] 1.5 < u* < 1.6", 1.5 < u_star < 1.6, f"u*={u_star:.6f}")
-check_true("Q5[5b] φ(1.5)<0<φ(1.6)", phi(1.5) < 0 < phi(1.6), f"{phi(1.5):.4f}, {phi(1.6):.4f}")
-check("Q5[5b] e^1.5（付表: 2.7183×1.6487）", 2.7183 * 1.6487, math.exp(1.5), tol=5e-4)
-check("Q5[5b] e^1.6（付表: 2.7183×1.8221）", 2.7183 * 1.8221, math.exp(1.6), tol=5e-4)
-check("Q5[5b] φ(1.5)（付表）", -0.5 * 2.7183 * 1.6487 + 2, -0.241, tol=1e-3)
-check("Q5[5b] φ(1.6)（付表）", -0.4 * 2.7183 * 1.8221 + 2, 0.019, tol=1e-3)
-us = np.linspace(0.01, 1.0, 400)
-check_true("Q5[5b] φ<0 on (0,1]", np.all([phi(v) < 0 for v in us]))
-us = np.linspace(1.0, 12, 4000)
-check_true("Q5[5b] φ は u>1 で単調増加", np.all(np.diff([phi(v) for v in us]) > 0))
-for p in (0.01, 0.05, 0.2):
-    q = 1 - p
-    n = 50
-    var_k = lambda k: (1 - q ** k) * q ** (2 - k) / (k * k * n)
-    k_opt = optimize.minimize_scalar(var_k, bounds=(0.5, 5000), method="bounded", options={"xatol": 1e-9}).x
-    check(f"Q5[5b] 分散最小の k は u*/(-log q) (p={p})", k_opt, u_star / (-math.log(q)), tol=1e-4, kind="rel")
-    for k in (3.0, 10.0, 57.5):
-        u = -k * math.log(q)
-        check(f"Q5[5b] 比例式 (p={p},k={k})", var_k(k), q * q * math.log(q) ** 2 / n * (math.exp(u) - 1) / u ** 2, tol=1e-12, kind="rel")
-check("Q5[5c] 最適な k での陰性確率 e^{-u*}", math.exp(-u_star), 0.2, tol=5e-3)
+# [3] X=0, n のとき：尤度は p について単調で，0<p<1 では最大値をとらず，0<=p<=1 では端点で最大
+pg = np.linspace(1e-6, 1 - 1e-6, 2001)
+check_true("Q5[3] X=0 の尤度 q^(kn) は p の減少関数", bool(np.all(np.diff((1 - pg) ** (10 * 50)) <= 0)))
+check_true("Q5[3] X=n の尤度 (1-q^k)^n は p の増加関数", bool(np.all(np.diff((1 - (1 - pg) ** 10) ** 50) >= 0)))
+check("Q5[3] X=0 で式の値は 0", 1 - (1 - 0 / 50) ** (1 / 10), 0.0, tol=0)
+check("Q5[3] X=n で式の値は 1", 1 - (1 - 50 / 50) ** (1 / 10), 1.0, tol=0)
+for xx in (1, 5, 25, 49):
+    ll = lambda pp: xx * math.log(1 - (1 - pp) ** 10) + (50 - xx) * 10 * math.log(1 - pp)
+    inner = 1 - (1 - xx / 50) ** (1 / 10)
+    check_true(f"Q5[3] 0<x<n では内点で最大 (x={xx})", ll(inner) > max(ll(1e-9), ll(1 - 1e-9), ll(inner * 0.9), ll(min(inner * 1.1, 1 - 1e-9))))
+
+
+# [5](b) p^ は上に偏る（g は下に凸）。偏りの2次近似
+def exact_moments(n, k, p):
+    """p^ = 1-(1-X/n)^(1/k), X ~ Bin(n, 1-(1-p)^k) の厳密な平均と分散。"""
+    th = 1 - (1 - p) ** k
+    xs = np.arange(n + 1)
+    pm = stats.binom.pmf(xs, n, th)
+    ph = 1 - (1 - xs / n) ** (1 / k)
+    m = float(np.sum(pm * ph))
+    return m, float(np.sum(pm * (ph - m) ** 2))
+
+
+bias_approx = lambda n, k, p: (k - 1) * (1 - (1 - p) ** k) * (1 - p) ** (1 - k) / (2 * k * k * n)
+var_approx = lambda n, k, p: (1 - (1 - p) ** k) * (1 - p) ** (2 - k) / (k * k * n)
+min_bias = min(exact_moments(n, k, p)[0] - p
+               for n in (20, 50, 200, 1000) for k in (2, 5, 10, 20) for p in (0.005, 0.01, 0.05, 0.2))
+check_true("Q5[5b] E[p^] > p（二項分布の厳密計算，64通り）", min_bias > 0, f"min bias={min_bias:.3e}")
+check("Q5[5b] k=1 では不偏", exact_moments(50, 1, 0.03)[0], 0.03, tol=1e-12)
+for (n, k, p) in ((5000, 10, 0.01), (5000, 2, 0.05), (2000, 5, 0.02)):
+    check(f"Q5[5b] 偏りの近似式 (n={n},k={k},p={p})", exact_moments(n, k, p)[0] - p, bias_approx(n, k, p), tol=5e-3, kind="rel")
+    check(f"Q5[5b] 偏り/分散 = (k-1)/(2q) (n={n},k={k},p={p})", bias_approx(n, k, p) / var_approx(n, k, p), (k - 1) / (2 * (1 - p)), tol=1e-12, kind="rel")
+y_s, k_s = sp.symbols("y k", positive=True)
+g_s = 1 - (1 - y_s) ** (1 / k_s)
+d2 = sp.diff(g_s, y_s, 2) - (k_s - 1) / k_s ** 2 * (1 - y_s) ** (1 / k_s - 2)
+check("Q5[5b] g''(y) = (k-1)/k^2 (1-y)^(1/k-2)（記号微分を数値代入）",
+      max(abs(float(d2.subs({y_s: yy, k_s: kk}))) for yy in (0.1, 0.5, 0.9) for kk in (2, 7, 10)), 0.0, tol=1e-12)
+for kk in (2, 5, 10):
+    for th in (0.01, 0.5, 0.99):
+        gq = lambda y: 1 - (1 - y) ** (1 / kk)
+        tangent = lambda y: gq(th) + (1 / kk) * (1 - th) ** (1 / kk - 1) * (y - th)
+        ys = np.linspace(0, 1, 2001)
+        gap = np.array([gq(v) - tangent(v) for v in ys])
+        check_true(f"Q5[5b] 接線より上 (k={kk},θ={th})", np.all(gap > -1e-12) and gap[-1] > 0 and gap[0] > 0,
+                   f"min gap={gap.min():.2e}, y=1 での差={gap[-1]:.3f}")
+        check(f"Q5[5b] y=1 での接線の値 (k={kk},θ={th})", tangent(1.0), 1 - (1 - 1 / kk) * (1 - th) ** (1 / kk), tol=1e-12)
+check("Q5[5b] 〔4〕の数値での偏り（手計算 9/(2×0.98946)×2.176e-5）", 9 / (2 * 0.98946) * 2.176e-5, 0.0001, tol=5e-6)
+check("Q5[5b] 〔4〕の数値での偏り（式に p^ を代入）", bias_approx(50, 10, p_hat), 0.0001, tol=5e-6)
+# [5](c) 近似式は k とともに限りなく大きくなるが，実際の量は有界
+kgrid = (200, 400, 800, 1600)
+vs = [var_approx(50, kk, 0.01) for kk in kgrid]
+bs = [bias_approx(50, kk, 0.01) for kk in kgrid]
+check_true("Q5[5c] k が大きいと分散の近似式は増大", bool(np.all(np.diff(vs) > 0)), str([f"{v:.2e}" for v in vs]))
+check_true("Q5[5c] k が大きいと偏りの近似式は増大", bool(np.all(np.diff(bs) > 0)), str([f"{v:.2e}" for v in bs]))
+check("Q5[5c] 分散の近似式 = q^2(q^-k - 1)/(k^2 n)", var_approx(50, 10, 0.01), 0.99 ** 2 * (0.99 ** -10 - 1) / (100 * 50), tol=1e-12, kind="rel")
+check_true("Q5[5c] 近似式は限りなく大きくなる (k=3000 で分散の近似式 > 1)", var_approx(50, 3000, 0.01) > 1)
+m_big, v_big = exact_moments(50, 3000, 0.01)
+check("Q5[5c] k=3000, p=0.01, n=50：厳密な偏り → 1-p", m_big - 0.01, 0.99, tol=1e-9)
+check("Q5[5c] k=3000：厳密な分散 → 0", v_big, 0.0, tol=1e-9)
+check("Q5[5c] k=3000：全プール陽性の確率 → 1", (1 - 0.99 ** 3000) ** 50, 1.0, tol=1e-9)
+all_var = [exact_moments(50, kk, pp)[1] for kk in (2, 10, 100, 400, 3000) for pp in (0.01, 0.2)]
+check_true("Q5[5c] 実際の分散は有界（1/4 以下）", max(all_var) <= 0.25, f"max={max(all_var):.4f}")
+m400, v400 = exact_moments(50, 400, 0.01)
+check_true("Q5[5c] k=400, p=0.01, n=50 ではデルタ法の近似が成り立たない（厳密な分散は近似式の1000倍以上）",
+           v400 > 1000 * var_approx(50, 400, 0.01), f"exact={v400:.3e}, approx={var_approx(50, 400, 0.01):.3e}, bias={m400 - 0.01:.3f}")
+check("Q5[5c] k=400, p=0.01 でプール検体が陰性となる確率", 0.99 ** 400, 0.018, tol=5e-4)
+check_true("Q5[5c] k=400, n=50：実際の偏りも大きい（0.3 以上）", m400 - 0.01 > 0.3, f"bias={m400 - 0.01:.3f}")
+check_true("Q5[5c] k=400, n=50：X<n のときの推定値は 1 より十分小さい（0.02 未満）",
+           1 - (1 - 49 / 50) ** (1 / 400) < 0.02, f"max={1 - (1 - 49 / 50) ** (1 / 400):.4f}")
+m100, v100 = exact_moments(50, 100, 0.01)
+check_true("Q5[5c] n=50, p=0.01：実際の偏りは k=100 → 400 → 3000 で増大", (m100 < m400 < m_big), f"{m100 - 0.01:.4f}, {m400 - 0.01:.4f}, {m_big - 0.01:.4f}")
+check_true("Q5[5c] n=50, p=0.01：実際の分散は途中で大きくなり，その後 0 に近づく", v100 < v400 and v_big < v100, f"{v100:.2e}, {v400:.2e}, {v_big:.2e}")
+m_ln, v_ln = exact_moments(100000, 400, 0.01)
+check("Q5[5c] n q^k が大きければ θ が 1 に近くても分散の近似は合う (n=1e5,k=400)", v_ln, var_approx(100000, 400, 0.01), tol=1e-2, kind="rel")
+check("Q5[5c] 同じ条件で偏りの近似も合う", m_ln - 0.01, bias_approx(100000, 400, 0.01), tol=1e-2, kind="rel")
 
 # ---------------------------------------------------------------- まとめ
 n_fail = sum(1 for r in results if not r["ok"])
