@@ -1,0 +1,277 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{採点基準}
+\input{sm_mock_style.tex}
+\setlength{\parskip}{0.2em}
+\setlist[itemize]{itemsep=0.15em,parsep=0pt,topsep=0.3em,leftmargin=1.5em}
+\renewcommand{\ans}[1]{\par\medskip\noindent\textbf{〔#1〕}\quad}
+\renewcommand{\points}[1]{\hfill\textnormal{（#1点）}\par\nobreak}
+\hypersetup{pdftitle={第2回模試 統計数理 採点基準}}
+\begin{document}
+\begin{center}
+{\Large\bfseries 第2回模試\quad 統計数理}\par\medskip
+{\large 採点基準・部分点}
+\end{center}
+\section*{採点の共通方針}
+各大問30点，選択した3問の合計90点とする。100点換算値は
+\[
+\text{換算点}=\frac{\text{選択した3問の得点の合計}}{90}\times100
+\]
+とする。公式の配点・合否判定を再現するものではない。
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=0.6em]
+\item 模範解答と異なる方法でも，数学的に正しく，設問で指定された方法に対応していれば同じ点を与える。結論が一致していても，必要な導出や理由がない場合は該当する結論点だけとする。
+\item 前の小問の計算誤りをそのまま用いた後続の答案では，正しい方法による部分を評価し，同じ数値誤りを繰り返し減点しない。ただし，別の概念上の誤りは別途扱う。
+\item 数値は四則演算・平方根・付表で再現できる計算を基準とする。付表の補間や途中の丸めの差だけでは減点しない。数値が多少異なっても，検定などの判断に影響せず方法が正しければ評価する。
+\item 「示せ」という設問では，結論の式を書くだけでは点を与えない。途中の論理（用いた定理・仮定・式変形）を採点する。
+\item 採点単位の中で一部だけ正しい場合は，0.5点刻みの部分点を付けてよい。各小問・大問の上限は超えない。
+\end{enumerate}
+\section*{配点一覧}
+\begin{center}
+\begin{tabular}{crrrrrrr}
+\toprule
+大問 & 〔1〕 & 〔2〕 & 〔3〕 & 〔4〕 & 〔5〕 & 〔6〕 & 合計\\
+\midrule
+問1 & 4 & 5 & 5 & 7 & 9 & -- & 30\\
+問2 & 4 & 7 & 7 & 7 & 5 & -- & 30\\
+問3 & 6 & 9 & 5 & 4 & 6 & -- & 30\\
+問4 & 5 & 5 & 6 & 6 & 8 & -- & 30\\
+問5 & 5 & 4 & 5 & 4 & 7 & 5 & 30\\
+\bottomrule
+\end{tabular}
+\end{center}
+\newpage
+
+\qhead{1}
+\ans{1}\points{4}
+\begin{itemize}
+\item 事象の書き換え $\{X\le x\}=\{U\le e^x/(1+e^x)\}$ と $F(x)=1/(1+e^{-x})$：2点。
+\item $f(x)=e^{-x}/(1+e^{-x})^2$：1点。$e^{x}/(1+e^{x})^2$ の形でも可。
+\item $f=F(1-F)$ と $f(-x)=f(x)$ の確認：1点（片方のみの場合は0.5点）。
+\end{itemize}
+定義域（実数全体）に触れていなくても減点しない。
+
+\ans{2}\points{5}
+\begin{itemize}
+\item $F(q)=3/4$ から $q=\log3$：1点。
+\item 付表5（常用対数）を用いた数値 $1.099$：1点。$1.098\sim1.099$ は可。
+\item 対称性から $\E[|X|]=2\int_0^\infty xf(x)\,dx$：1点。
+\item 積分の計算と $\E[|X|]=2\log2$：2点。数値（$1.386$）はなくてもよい。
+\end{itemize}
+下側25\%点 $-\log3$ を答えた場合は，分位点の2点のうち1点とする。
+$\int_0^\infty xf(x)\,dx$ を $u=F(x)$ の置換や級数展開で求めた解答も同点とする。
+
+\ans{3}\points{5}
+\begin{itemize}
+\item $\Prob(W\le w)=\Prob(Y_1\le e^wY_2)$ と書き，条件付け（または同時密度の積分）で式を立てる：2点。
+\item 積分の計算：2点。
+\item $F(w)$ と一致することから結論を述べる：1点。
+\end{itemize}
+変数変換で $W$ の密度を直接求めた解答，$Y_1/(Y_1+Y_2)$ が $(0,1)$ 上の一様分布に従うことを示して定義に帰着させた解答も同点とする。
+後者で一様性を証明なしに使った場合は3点までとする。
+
+\ans{4}\points{7}
+\begin{itemize}
+\item $M(t)=\int_0^1u^t(1-u)^{-t}\,du$：2点。
+\item 収束条件 $|t|<1$ の確認：1点。
+\item 公式の適用と $M(t)=\Gamma(1+t)\Gamma(1-t)$：1点。
+\item $\pi t/\sin(\pi t)$ の $t=0$ のまわりの展開（2次の係数 $\pi^2/6$）：2点。
+\item $\Var(X)=\pi^2/3$：1点。
+\end{itemize}
+$M''(0)$ を極限として直接計算した解答も同点とする。$\E[X]=0$ は，〔2〕で対称性から述べるか，〔4〕で展開の1次の係数が0であることから述べていればよい。どちらにも触れていない場合は分散の1点を与えない。
+
+\ans{5}\points{9}
+\begin{itemize}
+\item (a) $\Prob(M_n\le x+\log n)=\{F(x+\log n)\}^n=(1+e^{-x}/n)^{-n}$：2点。
+\item (a) 極限 $\exp(-e^{-x})$：1点。
+\item (b) $M_2$ の密度 $2F(x)f(x)$ と，置換 $u=F(x)$ などによる計算可能な形への変形：1点。
+\item (b) 積分の計算と $\E[M_2]=1$：2点。
+\item (c) $\E[M_n]$ を $u$ の積分で表し，$n\int_0^1u^{n-1}\log u\,du=-1/n$：1点。
+\item (c) $n\int_0^1u^{n-1}\log(1-u)\,du=-\sum_{k=1}^n1/k$ の導出と結論：2点。
+\end{itemize}
+(b) で $M_2=\{X_1+X_2+|X_1-X_2|\}/2$ などの別の方法を用いた場合も，正しく $1$ に到達していれば満点とする。
+(c) は $n$ についての帰納法（$\E[M_n]-\E[M_{n-1}]=1/(n-1)$ を示す）や級数展開による解答も可。(c) を先に示して $n=2$ とした場合は (b) も満点とする。
+\newpage
+
+\qhead{2}
+\ans{1}\points{4}
+\begin{itemize}
+\item 1観測の密度（分散が $c^2\mu^2$ であること）と尤度関数：2点。
+\item 指数部を $(\bar x,t)$ で表し，分解定理により十分性を結論：2点。
+\end{itemize}
+十分統計量を $(\sum X_i,\sum X_i^2)$ で述べても可。
+
+\ans{2}\points{7}
+\begin{itemize}
+\item 対数尤度：1点。
+\item スコア関数と尤度方程式 $c^2\mu^2+\bar x\mu-t=0$：3点。
+\item 正の解 $\hat\mu=\{-\bar X+\sqrt{\bar X^2+4c^2T}\}/(2c^2)$：1点。
+\item 正の解が一意であること，および $\ell'$ の符号変化（または同等の議論）による最大性の確認：2点。
+\end{itemize}
+負の解を捨てる理由（$\mu>0$）に触れていない場合は最後の2点のうち1点とする。
+分散を $\mu$ によらない定数として微分した場合は，この小問は2点までとする。
+
+\ans{3}\points{7}
+\begin{itemize}
+\item スコア $\partial\log f/\partial\mu$ の計算：2点。
+\item 分散（または $-\E[\partial^2\log f/\partial\mu^2]$）の計算：2点。
+\item $I(\mu)=(1+2c^2)/(c^2\mu^2)$：1点。
+\item $\bar X$ の不偏性と $\Var(\bar X)=c^2\mu^2/n$：1点。
+\item 下限 $1/\{nI(\mu)\}$ との比較：1点。
+\end{itemize}
+2階微分の期待値で求めた解答も同点とする。$I(\mu)=1/(c^2\mu^2)$（分散を定数とみなした誤り）の場合，後半の比較が論理的に成立しないので，この小問は2点までとする。
+
+\ans{4}\points{7}
+\begin{itemize}
+\item $\tilde\mu$ の不偏性：1点。
+\item $\E[S^2]=c^2\mu^2$ を用いた $\Var(\tilde\mu)=(1-a_n^2)\mu^2/a_n^2$：2点。
+\item $\bar X$ と $S$ の独立性に言及し，$\Var(\hat\mu_w)=w^2V_1+(1-w)^2V_2$：2点。
+\item $w^*=V_2/(V_1+V_2)$ と $V^*=V_1V_2/(V_1+V_2)$：2点。$a_n,c,n$ による表示まで整理していなくても，$V_1,V_2$ が正しく与えられていれば可。
+\end{itemize}
+独立性に触れず共分散を0とした場合は該当の2点のうち1点とする。
+
+\ans{5}\points{5}
+\begin{itemize}
+\item (a) $(\bar X,T)$ の関数で期待値が恒等的に0となる例を挙げ，そのことを確かめる：2点。
+例：$h=\bar X-S/(a_nc)$（$S$ が $(\bar X,T)$ の関数であることに触れる），$h=T/(1+c^2)-n\bar X^2/(n+c^2)$ など。
+\item (a) $\Prob(h=0)<1$ の理由：1点。
+\item (b) $nV^*\to c^2\mu^2/(1+2c^2)$：1点。
+\item (b) $1/I(\mu)$ に一致すること（漸近的に下限を達成）を述べる：1点。
+\end{itemize}
+〔3〕〔4〕の誤りを引き継いだ極限は，計算方法が正しければ極限の1点を与える。
+\newpage
+
+\qhead{3}
+\ans{1}\points{6}
+\begin{itemize}
+\item $\bar R=\bar Q=(n+1)/2$ と $\sum_i(R_i-\bar R)^2=\sum_i(Q_i-\bar Q)^2=n(n^2-1)/12$：3点。
+\item $D$ を展開して積和 $\sum_i(R_i-\bar R)(Q_i-\bar Q)$ と結び付ける：2点。
+\item 結論の式：1点。
+\end{itemize}
+$\sum k^2$ の公式は既知としてよい。
+
+\ans{2}\points{9}
+\begin{itemize}
+\item $\E[Q_i]=(n+1)/2$，$\Var(Q_i)=(n^2-1)/12$：2点。
+\item $\Cov(Q_i,Q_j)=-(n+1)/12$（$\sum_iQ_i$ が定数であること，または直接計算による）：2点。
+\item $r_S$ を $Q_i$ の1次式で表し，$\E[r_S]=0$：2点。
+\item $\Var(r_S)=1/(n-1)$ の計算：3点（共分散の項の処理 $\sum_{i\ne j}a_ia_j=-\sum_ia_i^2$ に2点，結論に1点）。
+\end{itemize}
+条件付きの結果から無条件の結果へ移る説明がなくても減点しない。
+$D$ の期待値・分散を経由する方法も可。共分散を0として計算した場合は分散の3点を与えない。
+
+\ans{3}\points{5}
+\begin{itemize}
+\item 順位付けと $D=2$，$r_S=0.9$：2点。
+\item 正確な片側 $p$ 値 $5/120=1/24$（$D=0$ が1通り，$D=2$ が4通りであることの理由を含む）：2点。理由がなく値だけの場合は1点。
+\item 正規近似 $Q(1.80)=0.0359$ と比較のコメント：1点。
+\end{itemize}
+
+\ans{4}\points{4}
+\begin{itemize}
+\item 周辺分布がともに $(0,1)$ 上の一様分布：2点。
+\item $\E[X_1Y_1]=1/4+\theta/36$ と相関係数 $\theta/3$：2点。
+\end{itemize}
+
+\ans{5}\points{6}
+\begin{itemize}
+\item $n=2$ では $r_S=\pm1$ であり，$\E[r_S]=2\pi_c-1$（$\pi_c$ は大小の向きが一致する確率）：2点。
+\item $\pi_c=2\Prob(X_1<X_2,Y_1<Y_2)$ とし，積分で表す：2点。
+\item 積分の計算と $\E[r_S]=2\theta/9$：2点。
+\end{itemize}
+4重積分を直接計算した解答も同点とする。$\pi_c$ の式まで正しく，計算だけ誤った場合は4点。
+\newpage
+
+\qhead{4}
+\ans{1}\points{5}
+\begin{itemize}
+\item $M_1$ の最尤推定値 $\hat p=x/n$（最大であることの確認を含む）と $\hat\ell_1$，$\hat\ell_0$：2点。最大性の確認がない場合は1点。
+\item $\Lambda$ の式：1点。
+\item AIC の条件 $\Lambda>2$：1点。
+\item BIC の条件 $\Lambda>\log n$：1点。
+\end{itemize}
+AIC の定義 $-2\hat\ell+2k$ を誤った場合は AIC の1点を与えない。不等号に等号を含めても可。
+
+\ans{2}\points{5}
+\begin{itemize}
+\item 付表5（常用対数）を用いた $\Lambda\simeq4.03$：2点。$4.02\sim4.04$ は可。立式が正しく数値だけ誤った場合は1点。
+\item AIC は $M_1$：1点。
+\item $\log100=4.605$ との比較により BIC は $M_0$：1点。
+\item 自由度1，$\chi^2_{0.05}(1)=3.84$ との比較により棄却：1点。
+\end{itemize}
+
+\ans{3}\points{6}
+\begin{itemize}
+\item AIC の誤選択の事象 $\{\Lambda>2\}$ と極限 $\Prob(\chi^2_1>2)=2Q(\sqrt2)$：2点。
+\item 付表1による数値 $0.16$：1点。$0.157\sim0.158$ も可。
+\item BIC：事象 $\{\Lambda>\log n\}$ と $\log n\to\infty$ に着目：1点。
+\item 任意の $K$ に対する上からの評価など，極限が0であることの論証：2点。
+\end{itemize}
+「$\log n\to\infty$ だから確率は0に近づく」とだけ述べた場合，論証の2点のうち1点とする。
+片側確率 $Q(\sqrt2)$ のみとした場合は数値の1点を与えない。
+
+\ans{4}\points{6}
+\begin{itemize}
+\item $m_1(x)=\int_0^1\binom nxp^x(1-p)^{n-x}dp$ と立式：2点。
+\item ベータ関数（または階乗）による計算と $m_1(x)=1/(n+1)$：2点。
+\item $m_0(x)=\binom nx2^{-n}$ と $B_{10}=2^n/\{(n+1)\binom nx\}$：2点。
+\end{itemize}
+
+\ans{5}\points{8}
+\begin{itemize}
+\item $m_0(x)$ を $e^{-\Lambda/2}$ と近似式で表す：2点。
+\item $2\log B_{10}\approx\Lambda-\log n+\log\{2\pi\hat p(1-\hat p)\}$：2点。$(n+1)$ を残した形でも可。
+\item BIC の差 $\Lambda-\log n$ と有界な項だけ異なることを述べる：1点。
+\item 数値 $B_{10}\simeq0.91$：2点。$0.90\sim0.92$ は可。立式が正しく数値だけ誤った場合は1点。
+\item 考察（検定・AIC は $M_1$ 側，BIC・ベイズファクターは $M_0$ 側であること，および $n$ が大きいと同じ有意性でもベイズファクターは小さくなること等）：1点。
+\end{itemize}
+\newpage
+
+\qhead{5}
+\ans{1}\points{5}
+\begin{itemize}
+\item $\E[(X_1-aX_3)^2]=1-2a\rho_{13}+a^2$ と $a=\rho_{13}$：2点。
+\item $(e_1,e_2,X_3)$ が1次変換により多変量正規分布に従うこと：1点。
+\item $\Cov(e_1,X_3)=\Cov(e_2,X_3)=0$：1点。
+\item 多変量正規分布では無相関から独立が従うことを用いた結論：1点。
+\end{itemize}
+同時正規性に触れずに「無相関だから独立」とした場合は，最後の1点と同時正規性の1点を与えない。
+
+\ans{2}\points{4}
+\begin{itemize}
+\item $\Var(e_1)=1-\rho_{13}^2$，$\Var(e_2)=1-\rho_{23}^2$：1点。
+\item $\Cov(e_1,e_2)=\rho_{12}-\rho_{13}\rho_{23}$：2点。
+\item $\rho_{12\cdot3}$ の式：1点。
+\end{itemize}
+
+\ans{3}\points{5}
+\begin{itemize}
+\item 条件付き密度の定義，または $(X_1,X_2)=(\rho_{13}X_3+e_1,\ \rho_{23}X_3+e_2)$ と独立性に基づく導出の方針：2点。
+\item 条件付き分布が2変量正規分布であることと，期待値 $(\rho_{13}x_3,\rho_{23}x_3)$：2点。
+\item 分散・共分散が $x_3$ によらず〔2〕と同じであること，相関係数が $\rho_{12\cdot3}$ であること：1点。
+\end{itemize}
+3変量正規密度から直接計算した解答，多変量正規分布の条件付き分布の公式を正しく適用した解答も同点とする。
+
+\ans{4}\points{4}
+\begin{itemize}
+\item (a) $\rho_{12\cdot3}=0$：1点。
+\item (a) の説明（周辺では正の相関，$X_3$ を固定すると無相関・条件付き独立）：1点。
+\item (b) $\rho_{12\cdot3}=-0.5625$（$-9/16$，$-0.563$ も可）：1点。
+\item (b) の説明（周辺では無相関・独立，$X_3$ を固定すると負の相関）：1点。
+\end{itemize}
+「条件付き独立」「独立」の語がなく相関の有無だけを述べた場合も，説明の点を与える。
+
+\ans{5}\points{7}
+\begin{itemize}
+\item $X_1-\beta_2X_2-\beta_3X_3$ を $e_1,e_2,X_3$ で表し，2乗の期待値を2つの項に分解する（または正規方程式を立てる）：2点。
+\item $\beta_2=(\rho_{12}-\rho_{13}\rho_{23})/(1-\rho_{23}^2)$：2点。
+\item 符号が $\rho_{12\cdot3}$ と一致する理由：1点。
+\item 最小値 $(1-\rho_{13}^2)(1-\rho_{12\cdot3}^2)$ の導出：2点。
+\end{itemize}
+$\beta_2,\beta_3$ で偏微分して連立方程式を解いた解答も同点とする。
+
+\ans{6}\points{5}
+\begin{itemize}
+\item 正定値性の条件を式で表す（$(e_1,e_2)$ の分散共分散行列の正定値性，$|\rho_{12\cdot3}|<1$，または $\det\Sigma>0$ と主小行列式の条件）：3点。
+\item 数値の代入と $0<\rho_{12}<0.96$：2点。
+\end{itemize}
+$\det\Sigma=1+2\rho_{12}\rho_{13}\rho_{23}-\rho_{12}^2-\rho_{13}^2-\rho_{23}^2>0$ を直接解いた解答（$-\rho_{12}^2+0.96\rho_{12}>0$）も満点とする。端点を含めた場合（$0\le\rho_{12}\le0.96$）は1点減点する。
+\end{document}

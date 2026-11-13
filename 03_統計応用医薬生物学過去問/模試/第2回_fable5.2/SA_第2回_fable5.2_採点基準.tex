@@ -1,0 +1,260 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{採点基準}
+\input{sa_mock_style.tex}
+\setlength{\parskip}{0.2em}
+\setlist[itemize]{itemsep=0.15em,parsep=0pt,topsep=0.3em,leftmargin=1.5em}
+\renewcommand{\ans}[1]{\par\medskip\noindent\textbf{〔#1〕}\quad}
+\renewcommand{\points}[1]{\hfill\textnormal{（#1点）}\par\nobreak}
+\hypersetup{pdftitle={第2回模試 統計応用（医薬生物学） 採点基準}}
+\begin{document}
+\begin{center}
+{\Large\bfseries 第2回模試\quad 統計応用（医薬生物学）}\par\medskip
+{\large 採点基準・部分点}
+\end{center}
+\section*{採点の共通方針}
+各大問30点，選択した3問の合計90点とする。100点換算値は
+\[
+\text{換算点}=\frac{\text{選択した3問の得点の合計}}{90}\times100
+\]
+とする。公式の配点・合否判定を再現するものではない。
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=0.6em]
+\item 模範解答と異なる方法でも，数学的に正しく，設問で指定された方法に対応していれば同じ点を与える。結論が一致していても，必要な導出や理由がない場合は該当する結論点だけとする。
+\item 前の小問の計算誤りをそのまま用いた後続の答案では，正しい方法による部分を評価し，同じ数値誤りを繰り返し減点しない。ただし，別の概念上の誤りは別途扱う。
+\item 数値は四則演算・平方根・付表で再現できる計算を基準とする。付表の補間や途中の丸めの差だけでは減点しない。数値が多少異なっても，検定などの判断に影響せず方法が正しければ評価する。
+\item 「示せ」という設問では，結論の式を書くだけでは点を与えない。途中の論理（用いた定理・仮定・式変形）を採点する。
+\item 採点単位の中で一部だけ正しい場合は，0.5点刻みの部分点を付けてよい。各小問・大問の上限は超えない。
+\end{enumerate}
+\section*{配点一覧}
+\begin{center}
+\begin{tabular}{crrrrrr}
+\toprule
+大問 & 〔1〕 & 〔2〕 & 〔3〕 & 〔4〕 & 〔5〕 & 合計\\
+\midrule
+問1 & 4 & 7 & 6 & 5 & 8 & 30\\
+問2 & 5 & 8 & 5 & 7 & 5 & 30\\
+問3 & 4 & 8 & 7 & 5 & 6 & 30\\
+問4 & 4 & 6 & 7 & 7 & 6 & 30\\
+問5 & 4 & 5 & 7 & 6 & 8 & 30\\
+\bottomrule
+\end{tabular}
+\end{center}
+\newpage
+
+\qhead{1}
+\ans{1}\points{4}
+\begin{itemize}
+\item （ア）9，（イ）0.80，（ウ）0.48：各1点，計3点。
+\item 中央値の推定値9か月：1点。
+\end{itemize}
+
+\ans{2}\points{7}
+\begin{itemize}
+\item $\log\hat S(t)=\sum\log(1-\hat q_j)$ と $\Var(\hat q_j)=q_j(1-q_j)/n_j$：2点。
+\item デルタ法による $\Var[\log(1-\hat q_j)]\approx q_j/\{n_j(1-q_j)\}$：2点。
+\item 無相関性から和の分散とし，$\hat q_j$ を代入して $d_j/\{n_j(n_j-d_j)\}$ の和を得る：1点。
+\item $\hat S=\exp(\log\hat S)$ に再度デルタ法を用いて $\hat S(t)^2$ を掛ける：2点。
+\end{itemize}
+多変数のデルタ法で $\hat S(t)$ を直接扱った解答も同点とする。
+
+\ans{3}\points{6}
+\begin{itemize}
+\item （エ）0.0250，（オ）0.1583：各1点，計2点。
+\item 標準誤差 0.126，0.191：各1点，計2点。
+\item 信頼区間 $(0.552,1.048)$，$(0.106,0.854)$：各1点，計2点。
+\end{itemize}
+小数第3位の $\pm0.002$ 程度の差は許容する。上限を1で打ち切って $(0.552,1]$ と答えた場合も，計算過程が示されていれば可。
+（エ）（オ）や標準誤差を誤った場合でも，その値を用いた以降の計算（信頼区間，〔5〕の計算）が正しく行われていれば，その部分の点は与える。
+
+\ans{4}\points{5}
+\begin{itemize}
+\item 打ち切りがないことから $n_{j+1}=n_j-d_j$，$\hat S(t)=n_{k+1}/n$：2点。
+\item 部分分数分解 $d_j/\{n_j(n_j-d_j)\}=1/(n_j-d_j)-1/n_j$ と和の打ち消し：2点。
+\item 結論の式：1点。
+\end{itemize}
+具体的な数値例での確認だけの場合は1点とする。
+
+\ans{5}\points{8}
+\begin{itemize}
+\item $h(s)=\log(-\log s)$ の微分とデルタ法による分散の推定量 $G/\{\log\hat S(t)\}^2$：2点。
+\item $S(t)$ の区間への変換（$\hat S^{\exp(\pm1.96\sigma_h)}$，または同等の手順）：1点。端点の対応（大小の逆転）を誤った場合は与えない。
+\item $\log0.8=-0.2231$，$\sigma_h=0.709$：1点。
+\item $e^{1.389}\simeq4.01$：1点。
+\item 区間 $(0.409,\ 0.946)$：2点（下限・上限各1点）。$\pm0.005$ 程度の差は許容する。
+\item 優れている点（区間が必ず0と1の間に収まる，など）：1点。
+\end{itemize}
+付表5の補間を行わず近い値で代用した場合も，区間が上の許容範囲内であれば減点しない。
+\newpage
+
+\qhead{2}
+\ans{1}\points{5}
+\begin{itemize}
+\item 期待度数 $40,30,30$：1点。
+\item $X^2=11.67$：2点。
+\item 自由度2と $\chi^2_{0.05}(2)=5.99$：1点。
+\item 棄却の結論：1点。
+\end{itemize}
+
+\ans{2}\points{8}
+\begin{itemize}
+\item 等式 $n_{1j}-e_{1j}=(m_1m_2/N)(\hat p_{1j}-\hat p_{2j})$ の導出：2点。
+\item 独立な二項分布の分散を用いた $\Var(n_{1j}-e_{1j})=(m_1m_2/N)\pi_j(1-\pi_j)$：3点（立式2点，整理1点）。
+\item $\pi_j$ を $c_j/N$ で置き換えた分散が $e_{1j}(1-m_1/N)(1-c_j/N)$ に等しいこと：1点。
+\item $r_{1j}=z_j$ の確認：2点。
+\end{itemize}
+$e_{1j}$ を定数とみなして $\Var(n_{1j})$ だけを計算した場合は，分散の3点のうち1点とする。
+
+\ans{3}\points{5}
+\begin{itemize}
+\item $r_{11}=2.89$，$r_{12}=0$，$r_{13}=-3.09$：各1点，計3点。$\pm0.01$ の差は許容する。
+\item 標準正規分布の両側5\%点1.96（または同等の基準）との比較：1点。
+\item 「改善」が多く「悪化」が少ないことが寄与し，「不変」には差がないことを述べる：1点。
+\end{itemize}
+
+\ans{4}\points{7}
+\begin{itemize}
+\item ポアソン分布の確率関数に基づく尤度・対数尤度関数：2点。
+\item $\lambda,\alpha_2,\beta_2,\beta_3$ についての尤度方程式：2点。
+\item 行和・列和・総和の当てはめ値が観測値に一致すること：1点。
+\item $\mu_{ij}$ が積の形であることから $\hat\mu_{ij}=m_ic_j/N$ を導く：2点。
+\end{itemize}
+$\hat\mu_{ij}=e_{ij}$ が尤度方程式を満たすことを代入で確かめた解答は，積の形（モデルに属すること）にも触れていれば満点とする。
+
+\ans{5}\points{5}
+\begin{itemize}
+\item $G^2$ の立式（0でない4項）：1点。
+\item 付表5を用いた数値 $G^2\simeq11.9$：2点。$11.8\sim11.9$ は可。立式が正しく数値だけ誤った場合は1点。
+\item 自由度2とその理由（セル数6から自由母数4を引く，または $(r-1)(c-1)$ とその根拠）：1点。
+\item $5.99$ との比較による棄却の結論：1点。
+\end{itemize}
+\newpage
+
+\qhead{3}
+\ans{1}\points{4}
+\begin{itemize}
+\item (a) $81/132=0.614$：2点。
+\item (b) $89/200=0.445$：2点。
+\end{itemize}
+分母・分子の取り方が正しく，計算だけ誤った場合は各1点。
+
+\ans{2}\points{8}
+\begin{itemize}
+\item ベイズの定理（または条件付き確率の定義）とMARを用いた $\Prob(Y_2=1\mid Y_1=y,R=1)=\mu_y$ の証明：3点。
+\item $\theta_{\mathrm{CC}}=(p_1\pi_1\mu_1+p_0\pi_0\mu_0)/(p_1\pi_1+p_0\pi_0)$：2点。
+\item 差の式の導出：2点。
+\item 一致推定量になる条件（$\pi_1=\pi_0$ すなわちMCAR，または $\mu_1=\mu_0$）：1点。MCARだけを挙げた場合も可。
+\end{itemize}
+確率収束の根拠（大数の法則）に触れていなくても減点しない。
+
+\ans{3}\points{7}
+\begin{itemize}
+\item $\hat\theta_{\mathrm S}=0.53$：2点。
+\item $\hat\theta_{\mathrm{IPW}}=\hat\theta_{\mathrm S}$ の証明：3点。表1の数値で一致を確かめただけの場合は1点。
+\item $\E[RY_2/\pi_{Y_1}]=\theta$ の証明（条件付き期待値を用いる。$Y_1$ の値で場合分けして直接計算してもよい）：2点。
+\end{itemize}
+
+\ans{4}\points{5}
+\begin{itemize}
+\item $\theta_{\mathrm{LOCF}}=p_1\pi_1\mu_1+p_0\pi_0\mu_0+p_1(1-\pi_1)$：2点。
+\item $\theta_{\mathrm{LOCF}}-\theta=p_1(1-\pi_1)(1-\mu_1)-p_0(1-\pi_0)\mu_0$：1点。
+\item 説明（4週後に無効であった脱落者が多く，その一部は8週後に有効になるはずなのに全員無効として扱われる）：2点。数値 $-0.085$ の確認だけの場合は1点。
+\end{itemize}
+
+\ans{5}\points{6}
+\begin{itemize}
+\item $\theta$ を $k$ と観測可能な量で表す：1点。
+\item $\hat\theta(k)=0.405+0.125k$：2点。
+\item $k=1$ がMAR，$k=0$ が「脱落者は全員無効」に対応：1点（両方で1点）。
+\item $k$ は推定できないことと，その理由（脱落者の $Y_2$ は観測されず，観測データの分布が $k$ によらない）：2点。結論だけの場合は1点。
+\end{itemize}
+\newpage
+
+\qhead{4}
+\ans{1}\points{4}
+\begin{itemize}
+\item リスク差0.15，リスク比0.625，オッズ比0.5，NNT 6.67：各1点。
+\end{itemize}
+比の向きを逆（1.6，2.0）に答えた場合は，定義と異なるので各0.5点とする。
+
+\ans{2}\points{6}
+\begin{itemize}
+\item 標準誤差の式と値0.0654：2点。
+\item リスク差の95\%信頼区間 $(0.022,\ 0.278)$：1点。
+\item NNTの信頼区間 $(3.6,\ 46)$（端点の逆数を入れ替える）：1点。上限は $45\sim46$ を可とする。
+\item 0を含む場合の説明（逆数が無限大をまたぎ，利益側「ある値以上」と害側「ある値以上」の2つの部分になり，有限な1つの区間にならない）：2点。
+「計算できない」「負の値が出る」だけの場合は1点。
+\end{itemize}
+併合した割合による分散を用いた場合は標準誤差の2点のうち1点とする。
+
+\ans{3}\points{7}
+\begin{itemize}
+\item $\Var(\hat p_g)$ とデルタ法による $\Var(\log\hat p_g)\approx(1-p_g)/(n_gp_g)$：2点。
+\item 独立性による和 $\dfrac{1-p_1}{n_1p_1}+\dfrac{1-p_0}{n_0p_0}$：1点。
+\item 分散の推定値0.045（標準誤差0.212）と，付表5による $\log0.625=-0.470$：1点（片方のみは0.5点）。
+\item 対数尺度の区間 $(-0.886,\ -0.054)$：1点。
+\item 指数変換した区間 $(0.412,\ 0.947)$：2点（下限・上限各1点）。$\pm0.005$ 程度の差は許容する。
+\end{itemize}
+リスク比を $p_0/p_1$ として $(1.06,\ 2.43)$ を得た場合は，方法が正しければ区間の2点のうち1点を与える。
+
+\ans{4}\points{7}
+\begin{itemize}
+\item ベイズの定理による $\Prob(D=1\mid x,S=1)$ の式：2点。
+\item オッズが $f_1/f_0$ 倍になること，傾き $\beta$ が不変であること：2点。
+\item 切片が $\alpha+\log(f_1/f_0)$ になること：1点。
+\item オッズ比だけが推定でき，リスク差・リスク比・NNTは推定できないこととその理由：2点。結論だけの場合は1点。
+\end{itemize}
+
+\ans{5}\points{6}
+\begin{itemize}
+\item $p_1=\psi p_0/(1-p_0+\psi p_0)$ と，NNTの式 $(2-p_0)/\{p_0(1-p_0)\}$（同値な形で可）：1点。
+\item $p_0=0.4$ で6.67，$p_0=0.05$ で41.05：各1点。$41\sim41.1$ は可。
+\item 微分（または同等の方法）により最小点の方程式 $p_0^2-4p_0+2=0$ を得る：1点。
+\item $p_0=2-\sqrt2\simeq0.586$ と最小値 $3+2\sqrt2\simeq5.83$：1点（最小であることの確認がない場合は0.5点）。
+\item 注意点（NNTはベースラインリスクに依存し，そのまま他の集団に当てはめられない）：1点。
+\end{itemize}
+\newpage
+
+\qhead{5（共通問題形式）}
+\ans{1}\points{4}
+\begin{itemize}
+\item 全員非感染の確率 $q^k$：1点。
+\item 検査回数の分布（確率 $q^k$ で1回，$1-q^k$ で $k+1$ 回）と期待値 $1+k(1-q^k)$：2点。
+\item $k$ で割って $h(k)$ を得る：1点。
+\end{itemize}
+
+\ans{2}\points{5}
+\begin{itemize}
+\item $0.99^{10}=0.9044$ の計算：1点。
+\item $h(10)=0.196$：1点。
+\item 近似式 $h(k)\approx1/k+kp$：1点。
+\item 最小点 $k=1/\sqrt p$ と最小値 $2\sqrt p$（微分または相加相乗平均による）：2点。
+\end{itemize}
+$0.99^{10}\approx1-10\times0.01=0.9$ として $h(10)=0.2$ とした場合は，前半2点のうち1点とする。
+
+\ans{3}\points{7}
+\begin{itemize}
+\item $X\sim\mathrm{Bin}(n,1-q^k)$：2点。
+\item 尤度（または対数尤度）と，最大化による $\hat p=1-(1-X/n)^{1/k}$：3点。
+$\hat\theta=X/n$ と最尤推定量の不変性から導いた解答も可。最大であることの確認または不変性への言及がない場合は2点。
+\item $g'(\theta)=\frac1k(1-\theta)^{1/k-1}$ とデルタ法による分散 $(1-q^k)q^{2-k}/(k^2n)$：2点。$\theta$ で表した同値な式でも可。
+\end{itemize}
+
+\ans{4}\points{6}
+\begin{itemize}
+\item $\hat p=1-0.9^{0.1}$ と，付表5を用いた数値 $0.0105$：3点（立式1点，$0.9^{0.1}\simeq0.9895$ の計算1点，結果1点）。$0.0104\sim0.0106$ は可。
+\item 標準誤差 $0.0047$：2点。$0.0046\sim0.0047$ は可。
+\item 95\%信頼区間 $(0.0014,\ 0.0197)$：1点。端点の $\pm0.0003$ 程度の差は許容する。
+\end{itemize}
+$\theta$ の信頼区間 $0.1\pm1.96\sqrt{0.0018}$ を求めて $p$ に変換した解答も，方法が正しく示されていれば信頼区間の点を与える。
+
+\ans{5}\points{8}
+\begin{itemize}
+\item (a) 個別検査の分散 $pq/n$ と比 $(1-q^k)q^{1-k}/(k^2p)$：1点。
+\item (a) $1-q^k\approx kp$ などを用いて比が約 $1/k$ となることを示す：1点。
+\item (b) 分散が $(e^u-1)/u^2$ に比例することの導出：1点。
+\item (b) 微分して方程式 $(u-2)e^u+2=0$ を得る：1点。
+\item (b) 正の解がただ1つであり，そこで最小となることの論証（$\varphi'(u)=(u-1)e^u$ の符号など）：1点。
+\item (b) 付表5による $e^{1.5}=4.48$，$e^{1.6}=4.95$ と，$\varphi(1.5)<0<\varphi(1.6)$：2点。
+\item (c) $k$ を大きくしすぎた場合の問題（分散がかえって増大する，ほとんどのプールが陽性になり情報が失われる，全プール陽性で推定値が1になる，など）：1点。
+\end{itemize}
+(b) の一意性の論証がなく符号の確認だけの場合も，符号の確認の2点は与える。
+\end{document}

@@ -1,0 +1,191 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{問題冊子}
+\input{sm_mock_style.tex}
+\hypersetup{pdftitle={第2回模試 統計数理 問題冊子}}
+
+\begin{document}
+
+\thispagestyle{empty}
+\begin{center}
+\vspace*{12mm}
+{\large 2026年 統計検定1級対策}\par\vspace{8mm}
+{\Huge\bfseries 第2回 模擬試験}\par\vspace{7mm}
+{\LARGE 統計数理}\par\vspace{6mm}
+{\Large 問題冊子}\par\vspace{12mm}
+{\large 試験時間 90分\qquad 5問中3問選択}
+\end{center}
+\vspace{8mm}
+\noindent\textbf{受験上の注意}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=0.8em]
+\item 問1から問5のうち3問を選び，選択した問題番号を答案に明記すること。解答は別紙に記述すること。
+\item 答えのみでよいと明記した箇所を除き，導出または理由を示すこと。各問の記号はその問題の中だけで用いる。
+\item 四則演算・平方根が計算できる一般電卓と，別添の「統計検定1級\_付表数値表」（付表1〜5）を使用してよい。本冊子には付表を再録していない。
+\item $\log$ は自然対数を表す。数値は特に指定がなければ小数第3位程度まで求め，付表の丸めや補間による差は許容する。
+\item 本模試では各大問を30点とする。選択した3問の合計90点を100点に換算する。小問の配点は採点基準冊子に記載する。
+\end{enumerate}
+\vfill
+\begin{center}
+氏名\ \underline{\hspace{55mm}}\qquad 実施日\ \underline{\hspace{35mm}}\par\vspace{8mm}
+\small 自主学習用のオリジナル模試です。公式の問題・配点ではありません。\par
+作成日：2026年11月12日\qquad 作成識別：fable5.2
+\end{center}
+\newpage
+
+\qhead{1}
+確率変数 $U$ が区間 $(0,1)$ 上の一様分布に従うとき，
+\[
+X=\log\frac{U}{1-U}
+\]
+の従う分布を標準ロジスティック分布という。以下の各問に答えよ。
+\begin{enumerate}
+\item $X$ の累積分布関数 $F(x)$ と確率密度関数 $f(x)$ を求めよ。
+また，すべての実数 $x$ に対して $f(x)=F(x)\{1-F(x)\}$ および $f(-x)=f(x)$ が成り立つことを示せ。
+\item $X$ の上側25\%点を求めよ。数値は小数第3位まで求めること。また，$\E[|X|]$ を求めよ（$\log$ を含む式でよい）。
+\item 確率変数 $Y_1,Y_2$ が互いに独立に，いずれも確率密度関数 $g(y)=e^{-y}$（$y>0$）の指数分布に従うとき，
+$W=\log(Y_1/Y_2)$ は $X$ と同じ分布に従うことを示せ。
+\item $X$ の積率母関数 $M(t)=\E[e^{tX}]$ は $|t|<1$ の範囲で存在し，
+\[
+M(t)=\Gamma(1+t)\,\Gamma(1-t)
+\]
+と表されることを示せ。ただし $\Gamma(a)=\int_0^\infty y^{a-1}e^{-y}\,dy$（$a>0$）はガンマ関数であり，
+$a>0,\ b>0$ に対して $\int_0^1u^{a-1}(1-u)^{b-1}\,du=\Gamma(a)\Gamma(b)/\Gamma(a+b)$ が成り立つことを用いてよい。
+
+さらに，$0<|t|<1$ で成り立つ等式 $\Gamma(1+t)\,\Gamma(1-t)=\dfrac{\pi t}{\sin(\pi t)}$ を用いて，$X$ の分散を求めよ。
+\item $X_1,\ldots,X_n$ は互いに独立に $X$ と同じ分布に従うとし，$M_n=\max(X_1,\ldots,X_n)$ とおく。
+\begin{enumerate}[label=(\alph*),leftmargin=2em,itemsep=0.3em,topsep=0.3em]
+\item 各実数 $x$ に対して，$n\to\infty$ のときの $\Prob(M_n-\log n\le x)$ の極限を求めよ。
+\item $\E[M_2]$ を求めよ。
+\item 一般の $n\ge2$ に対して，$\E[M_n]=\displaystyle\sum_{k=1}^{n-1}\frac1k$ が成り立つことを示せ。
+\end{enumerate}
+\end{enumerate}
+\newpage
+
+\qhead{2}
+$X_1,\ldots,X_n$（$n\ge2$）は互いに独立に正規分布 $N(\mu,c^2\mu^2)$ に従うとする。
+ここで $\mu>0$ は未知母数であり，$c>0$ は既知の定数（変動係数）である。
+\[
+\bar X=\frac1n\sum_{i=1}^nX_i,\qquad
+T=\frac1n\sum_{i=1}^nX_i^2,\qquad
+S^2=\frac1{n-1}\sum_{i=1}^n(X_i-\bar X)^2,\qquad S=\sqrt{S^2}
+\]
+とおく。以下の各問に答えよ。
+\begin{enumerate}
+\item $\mu$ の尤度関数を求め，$(\bar X,T)$ が $\mu$ に関する十分統計量であることを示せ。
+\item $\mu$ の最尤推定量 $\hat\mu$ を求めよ。尤度が最大になることも確認すること。
+\item 1個の観測値 $X_1$ がもつ $\mu$ に関するフィッシャー情報量 $I(\mu)$ を求めよ。
+また，$\bar X$ は $\mu$ の不偏推定量であるが，その分散はクラメール・ラオの不等式の下限より大きいことを示せ。
+\item $n$ だけで定まる定数 $a_n$（$0<a_n<1$）が存在して $\E[S]=a_nc\mu$ が成り立つ。
+このことを用いて，$\tilde\mu=S/(a_nc)$ が $\mu$ の不偏推定量であることを確かめ，その分散を求めよ。
+さらに，定数 $w$（$0\le w\le1$）に対して
+\[
+\hat\mu_w=w\bar X+(1-w)\tilde\mu
+\]
+とおくとき，$\hat\mu_w$ の分散を最小にする $w$ の値 $w^*$ と，そのときの分散 $V^*$ を求めよ。
+\item 次の (a)，(b) に答えよ。
+\begin{enumerate}[label=(\alph*),leftmargin=2em,itemsep=0.3em,topsep=0.3em]
+\item $(\bar X,T)$ の関数 $h(\bar X,T)$ で，すべての $\mu>0$ に対して $\E[h(\bar X,T)]=0$ を満たすが，
+$\Prob(h(\bar X,T)=0)<1$ であるものを1つ挙げ，それがこの条件を満たすことを示せ。
+\item $a_n^2=1-\dfrac{1}{2n}+O(n^{-2})$（$n\to\infty$）であることを用いて $\displaystyle\lim_{n\to\infty}nV^*$ を求め，$1/I(\mu)$ と比較せよ。
+\end{enumerate}
+\end{enumerate}
+\newpage
+
+\qhead{3}
+$(X_1,Y_1),\ldots,(X_n,Y_n)$（$n\ge2$）は，互いに独立に同一の連続型2変量分布に従う観測である。
+同じ値の観測（同順位）はないものとする。
+$X_1,\ldots,X_n$ を小さい順に並べたときの $X_i$ の順位を $R_i$，$Y_1,\ldots,Y_n$ を小さい順に並べたときの $Y_i$ の順位を $Q_i$ とする。
+スピアマンの順位相関係数 $r_S$ を，順位の組 $(R_i,Q_i)$（$i=1,\ldots,n$）の標本相関係数
+\[
+r_S=\frac{\sum_{i=1}^n(R_i-\bar R)(Q_i-\bar Q)}{\sqrt{\sum_{i=1}^n(R_i-\bar R)^2\,\sum_{i=1}^n(Q_i-\bar Q)^2}},
+\qquad \bar R=\frac1n\sum_{i=1}^nR_i,\quad \bar Q=\frac1n\sum_{i=1}^nQ_i
+\]
+と定める。以下の各問に答えよ。
+\begin{enumerate}
+\item $D=\sum_{i=1}^n(R_i-Q_i)^2$ とおくとき，
+\[
+r_S=1-\frac{6D}{n(n^2-1)}
+\]
+が成り立つことを示せ。
+\item $X_i$ と $Y_i$ が独立であるという帰無仮説 $H_0$ の下では，$(R_1,\ldots,R_n)$ を与えたときの $(Q_1,\ldots,Q_n)$ の条件付き分布は，
+$(1,\ldots,n)$ の $n!$ 通りの順列の上の一様分布になる。このことを用いて，$H_0$ の下での
+$\E[Q_i]$，$\Var(Q_i)$，$\Cov(Q_i,Q_j)$（$i\ne j$）を求め，
+\[
+\E[r_S]=0,\qquad \Var(r_S)=\frac{1}{n-1}
+\]
+を示せ。
+\item $n=5$ の観測値 $(x_i,y_i)$（$i=1,\ldots,5$）が
+\[
+(5.2,\ 21),\quad(3.1,\ 12),\quad(8.0,\ 30),\quad(4.5,\ 15),\quad(6.8,\ 19)
+\]
+であった。$r_S$ の値を求めよ。また，$H_0$ の下で $r_S$ がこの観測値以上になる確率（片側 $p$ 値）を，
+上問〔2〕の条件付き分布に基づいて正確に求めよ。さらに，$\sqrt{n-1}\,r_S$ が近似的に標準正規分布に従うとして片側 $p$ 値を求め，正確な値と比較せよ。
+\end{enumerate}
+以下の〔4〕〔5〕では，$(X_i,Y_i)$ の同時確率密度関数が，定数 $\theta$（$-1\le\theta\le1$）を用いて
+\[
+h(x,y)=1+\theta(1-2x)(1-2y)\qquad(0<x<1,\ 0<y<1)
+\]
+（それ以外では0）で与えられるとする。
+\begin{enumerate}[resume]
+\item $X_1$ と $Y_1$ の周辺分布を求め，$X_1$ と $Y_1$ の相関係数を $\theta$ で表せ。
+\item $n=2$ のとき，$\E[r_S]$ を $\theta$ で表せ。
+\end{enumerate}
+\newpage
+
+\qhead{4}
+確率変数 $X$ は二項分布 $\mathrm{Bin}(n,p)$ に従い，その実現値を $x$ とする。ただし $0<x<n$ とする。
+成功確率 $p$ に関する次の2つのモデルを比較する。
+\[
+M_0:\ p=\frac12\quad(\text{自由母数なし}),\qquad\qquad
+M_1:\ 0<p<1\ \text{は未知}\quad(\text{自由母数1個}).
+\]
+モデル $M_j$ の最大対数尤度を $\hat\ell_j$（$j=0,1$）とし，$\Lambda=2(\hat\ell_1-\hat\ell_0)$ とおく。
+自由母数の個数が $k$ で最大対数尤度が $\hat\ell$ のモデルに対し，ベイズ情報量規準を
+\[
+\mathrm{BIC}=-2\hat\ell+k\log n
+\]
+と定める。BIC は AIC と同様に，値の小さいモデルを選択する規準である。以下の各問に答えよ。
+\begin{enumerate}
+\item $\Lambda$ を $n$ と $x$ で表せ。また，AIC によって $M_1$ が選択されるための条件と，BIC によって $M_1$ が選択されるための条件を，
+それぞれ $\Lambda$ と $n$ を用いて表せ。
+\item $n=100$，$x=60$ のとき，$\Lambda$ の値を小数第2位まで求め，AIC と BIC がそれぞれどちらのモデルを選択するかを答えよ。
+また，帰無仮説 $p=1/2$ を対立仮説 $p\ne1/2$ に対して，$\Lambda$ を用いた有意水準5\%の尤度比検定で検定せよ。
+\item $M_0$ が正しい（真の $p$ が $1/2$ である）とする。$X=0$ または $X=n$ のときは $0\log0=0$ と約束して $\Lambda$ を定める。
+このとき，$n\to\infty$ で $\Lambda$ が自由度1のカイ二乗分布に分布収束することを用いて，
+AIC が誤って $M_1$ を選択する確率の極限値を小数第2位まで求めよ。
+また，BIC が誤って $M_1$ を選択する確率は0に収束することを示せ。
+\item $M_1$ の下で，$p$ の事前分布として区間 $(0,1)$ 上の一様分布を仮定する。モデル $M_j$ の下での $X$ の周辺確率関数を $m_j(x)$ とする。
+すなわち，$m_0(x)$ は $p=1/2$ のときの確率関数であり，$m_1(x)$ は確率関数を事前分布で平均したものである。
+$m_1(x)$ を求めよ。また，ベイズファクター $B_{10}=m_1(x)/m_0(x)$ を $n$ と $x$ で表せ。
+\item $n$ が大きいとき，$\hat p=x/n$ に対して近似式
+\[
+\binom nx\hat p^{\,x}(1-\hat p)^{n-x}\approx\frac{1}{\sqrt{2\pi n\hat p(1-\hat p)}}
+\]
+が成り立つ。これを用いて $2\log B_{10}$ を $\Lambda$，$n$，$\hat p$ で近似的に表し，BIC の差 $\mathrm{BIC}_0-\mathrm{BIC}_1$（$\mathrm{BIC}_j$ は $M_j$ の BIC）との関係を述べよ。
+さらに，上問〔2〕のデータに対する $B_{10}$ の近似値を小数第2位まで求め，上問〔2〕の検定の結果と比較して考察せよ。
+必要であれば $\pi=3.1416$ を用いてよい。
+\end{enumerate}
+\newpage
+
+\qhead{5}
+3次元の確率ベクトル $(X_1,X_2,X_3)$ は3変量正規分布に従い，各成分の期待値は0，分散は1であるとする。
+$X_i$ と $X_j$ の相関係数を $\rho_{ij}$（$i\ne j$）とし，分散共分散行列は正則であるとする（したがって $|\rho_{ij}|<1$ である）。
+以下の各問に答えよ。
+\begin{enumerate}
+\item 定数 $a$ に対して $\E[(X_1-aX_3)^2]$ を最小にする $a$ を求めよ。
+また，この $a$ を用いた $e_1=X_1-aX_3$ と，同様に $\E[(X_2-bX_3)^2]$ を最小にする定数 $b$ を用いた $e_2=X_2-bX_3$ について，
+確率ベクトル $(e_1,e_2)$ が $X_3$ と独立であることを示せ。
+\item $e_1$ と $e_2$ の相関係数を $\rho_{12},\rho_{13},\rho_{23}$ で表せ。
+この相関係数を，$X_3$ の影響を除いた $X_1$ と $X_2$ の偏相関係数といい，以下 $\rho_{12\cdot3}$ と書く。
+\item $X_3=x_3$ を与えたときの $(X_1,X_2)$ の条件付き分布を求め，その相関係数が $x_3$ の値によらず $\rho_{12\cdot3}$ に等しいことを示せ。
+\item 次の (a)，(b) のそれぞれの場合について $\rho_{12\cdot3}$ の値を求め，$X_1$ と $X_2$ の関係が，$X_3$ を考慮しない場合と $X_3$ の値を固定した場合とでどのように異なるかを述べよ。
+\[
+\text{(a)}\ \ \rho_{12}=0.48,\ \rho_{13}=0.6,\ \rho_{23}=0.8\qquad\qquad
+\text{(b)}\ \ \rho_{12}=0,\ \rho_{13}=0.6,\ \rho_{23}=0.6
+\]
+\item 定数 $\beta_2,\beta_3$ に対して $\E[(X_1-\beta_2X_2-\beta_3X_3)^2]$ を最小にする $\beta_2$ を求め，その符号が $\rho_{12\cdot3}$ の符号と一致することを示せ。
+また，このときの最小値が $(1-\rho_{13}^2)(1-\rho_{12\cdot3}^2)$ に等しいことを示せ。
+\item $\rho_{13}=0.6$，$\rho_{23}=0.8$ であるとき，$\rho_{12}$ のとり得る値の範囲を求めよ。
+\end{enumerate}
+\vfill
+\begin{center}（問題は以上）\end{center}
+\end{document}

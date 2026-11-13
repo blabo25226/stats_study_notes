@@ -1,0 +1,28 @@
+% LuaLaTeX / UTF-8  第2回模試 共通スタイル（統計応用（医薬生物学））
+\usepackage{amsmath,amssymb,bm}
+\usepackage[margin=20mm,top=20mm,bottom=19mm]{geometry}
+\usepackage{enumitem,booktabs,array,multirow}
+\usepackage{fancyhdr}
+\usepackage[hidelinks,unicode]{hyperref}
+\setlength{\parindent}{1\zw}
+\setlength{\parskip}{0.25em}
+\setlength{\headheight}{17pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 第2回模試\quad 統計応用（医薬生物学）}
+\fancyhead[R]{\small\bookletname}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlist[enumerate,1]{label=〔\arabic*〕,leftmargin=3.5em,labelsep=0.5em,itemsep=0.55em,topsep=0.5em}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Corr}{\operatorname{Corr}}
+\newcommand{\Prob}{\operatorname{P}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\qhead}[1]{\section*{問#1}}
+\newcommand{\ans}[1]{\subsection*{〔#1〕}}
+\newcommand{\points}[1]{\hfill\textnormal{（#1点）}}
+\newcommand{\continued}[1]{\noindent\textbf{問#1（続き）}\par\medskip}
+\hypersetup{pdfauthor={Claude Fable 5.2},pdfsubject={統計検定1級対策・自主学習用模擬試験}}

@@ -1,0 +1,595 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+\newcommand{\bookletname}{模範解答}
+\input{sa_mock_style.tex}
+\setlength{\parskip}{0.2em}
+\hypersetup{pdftitle={第2回模試 統計応用（医薬生物学） 模範解答}}
+\begin{document}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\noindent{\small 付表番号・数値は「統計検定1級\_付表数値表」に対応する。数値計算は四則演算・平方根・付表だけで再現できる形で示し，付表から引いた値を明記している。}
+
+\qhead{1}
+\ans{1}
+リスク集合は，その時点の直前まで死亡も打ち切りもされていない人の集まりである。
+$t_2=3$ の直前には，時点2で死亡した1人を除く9人が残っているので（ア）$=\boxed{9}$。
+\[
+\text{（イ）}\ \hat S(3)=0.90\times\left(1-\frac19\right)=\boxed{0.80},\qquad
+\text{（ウ）}\ \hat S(9)=0.64\times\left(1-\frac14\right)=\boxed{0.48}.
+\]
+（確認：$t_3=7$ の直前のリスク集合は，死亡2人と打ち切り3人（4+，5+，6+）を除いた5人，$t_5=12$ の直前は $t_4=9$ の死亡1人と打ち切り1人（10+）を除いた2人で，表1と合う。）
+
+$\hat S(t)$ は死亡時点でだけ値が下がる階段関数で，$\hat S(7)=0.64>0.5$，$\hat S(9)=0.48\le0.5$ であるから，
+生存時間の中央値の推定値は $\boxed{9\text{ か月}}$ である。
+
+\ans{2}
+$\log\hat S(t)=\sum_{j:\,t_j\le t}\log(1-\hat q_j)$ である。$d_j\sim\mathrm{Bin}(n_j,q_j)$ より
+\[
+\E[\hat q_j]=q_j,\qquad \Var(\hat q_j)=\frac{q_j(1-q_j)}{n_j}.
+\]
+$g(q)=\log(1-q)$ とおくと $g'(q)=-1/(1-q)$ であるから，デルタ法により
+\[
+\Var\bigl[\log(1-\hat q_j)\bigr]\approx\{g'(q_j)\}^2\Var(\hat q_j)=\frac{1}{(1-q_j)^2}\cdot\frac{q_j(1-q_j)}{n_j}=\frac{q_j}{n_j(1-q_j)}.
+\]
+$\hat q_j$ は互いに無相関とみなせるので，和の分散は分散の和で近似でき，
+\[
+\Var\bigl[\log\hat S(t)\bigr]\approx\sum_{j:\,t_j\le t}\frac{q_j}{n_j(1-q_j)}.
+\]
+$q_j$ を $\hat q_j=d_j/n_j$ で置き換えると
+\[
+\frac{\hat q_j}{n_j(1-\hat q_j)}=\frac{d_j/n_j}{n_j\,(n_j-d_j)/n_j}=\frac{d_j}{n_j(n_j-d_j)}
+\]
+となる。さらに $\hat S(t)=\exp\{\log\hat S(t)\}$ に対してもう一度デルタ法を用いると（$(e^y)'=e^y$），
+\[
+\Var\bigl[\hat S(t)\bigr]\approx S(t)^2\,\Var\bigl[\log\hat S(t)\bigr].
+\]
+$S(t)$ を $\hat S(t)$ で置き換えて
+\[
+\widehat{\Var}\bigl[\hat S(t)\bigr]=\hat S(t)^2\sum_{j:\,t_j\le t}\frac{d_j}{n_j(n_j-d_j)}
+\]
+を得る（グリーンウッドの公式）。
+
+\ans{3}
+\begin{align*}
+\text{（エ）}\ \ G_2&=\frac{1}{10\times9}+\frac{1}{9\times8}=0.0111+0.0139=\boxed{0.0250},\\
+\text{（オ）}\ \ G_4&=G_3+\frac{1}{4\times3}=0.0750+0.0833=\boxed{0.1583}.
+\end{align*}
+標準誤差は $\hat S(t_j)\sqrt{G_j}$ である。
+\begin{align*}
+\mathrm{SE}\bigl[\hat S(3)\bigr]&=0.80\times\sqrt{0.0250}=0.80\times0.1581=\boxed{0.126},\\
+\mathrm{SE}\bigl[\hat S(9)\bigr]&=0.48\times\sqrt{0.1583}=0.48\times0.3979=\boxed{0.191}.
+\end{align*}
+付表1より $Q(1.96)=0.0250$ であるから，標準正規分布の上側2.5\%点は1.96である。95\%信頼区間は
+\begin{align*}
+S(3):&\quad 0.80\pm1.96\times0.1265=0.80\pm0.248\ \Longrightarrow\ \boxed{(0.552,\ 1.048)},\\
+S(9):&\quad 0.48\pm1.96\times0.1910=0.48\pm0.374\ \Longrightarrow\ \boxed{(0.106,\ 0.854)}.
+\end{align*}
+
+\ans{4}
+$t$ 以下の死亡時点を $t_1<\cdots<t_k$ とする。$t$ までに打ち切りがないので，リスク集合の人数は死亡によってのみ減り，
+\[
+n_1=n,\qquad n_{j+1}=n_j-d_j\quad(j=1,\ldots,k)
+\]
+が成り立つ（$n_{k+1}$ は $t_k$ の直後に生存している人数）。このとき
+\[
+\hat S(t)=\prod_{j=1}^k\frac{n_j-d_j}{n_j}=\prod_{j=1}^k\frac{n_{j+1}}{n_j}=\frac{n_{k+1}}{n}
+\]
+であり，$\hat S(t)>0$ より $n_{k+1}>0$ である。また
+\[
+\frac{d_j}{n_j(n_j-d_j)}=\frac{1}{n_j-d_j}-\frac{1}{n_j}=\frac{1}{n_{j+1}}-\frac{1}{n_j}
+\]
+であるから，和は順に打ち消し合って
+\[
+\sum_{j=1}^k\frac{d_j}{n_j(n_j-d_j)}=\frac{1}{n_{k+1}}-\frac{1}{n_1}=\frac{1}{n\hat S(t)}-\frac1n=\frac{1-\hat S(t)}{n\hat S(t)}.
+\]
+よって
+\[
+\widehat{\Var}\bigl[\hat S(t)\bigr]=\hat S(t)^2\cdot\frac{1-\hat S(t)}{n\hat S(t)}=\frac{\hat S(t)\{1-\hat S(t)\}}{n}.
+\]
+これは，$n$ 人中 $t$ を超えて生存した人の割合に対する二項分布の分散の推定量である。
+（確認：$t=3$ までに打ち切りはなく，$0.80\times0.20/10=0.016=0.1265^2$ で〔3〕と一致する。）
+
+\ans{5}
+$h(s)=\log(-\log s)$（$0<s<1$）とおくと
+\[
+h'(s)=\frac{1}{-\log s}\cdot\left(-\frac1s\right)=\frac{1}{s\log s}
+\]
+である。デルタ法と〔2〕の結果より
+\[
+\widehat{\Var}\bigl[\log\{-\log\hat S(t)\}\bigr]=\{h'(\hat S(t))\}^2\,\widehat{\Var}\bigl[\hat S(t)\bigr]
+=\boxed{\frac{1}{\{\log\hat S(t)\}^2}\sum_{j:\,t_j\le t}\frac{d_j}{n_j(n_j-d_j)}}.
+\]
+この平方根を $\sigma_h$ とすると，$\log\{-\log S(t)\}$ の95\%信頼区間は $\log\{-\log\hat S(t)\}\pm1.96\,\sigma_h$ である。
+$s=\exp(-e^{y})$ は $y=\log(-\log s)$ の減少関数であるから，$S(t)$ の信頼区間は
+\[
+\Bigl(\hat S(t)^{\exp(1.96\sigma_h)},\ \ \hat S(t)^{\exp(-1.96\sigma_h)}\Bigr)
+\]
+となる。$t=3$ では $\hat S(3)=0.80$，$G_2=0.0250$ である。付表5より $\log_{10}0.8=-0.0969$ であるから
+\begin{gather*}
+\log0.8=2.3026\times(-0.0969)=-0.2231,\\
+\sigma_h=\frac{\sqrt{0.0250}}{0.2231}=\frac{0.1581}{0.2231}=0.7087,\qquad 1.96\,\sigma_h=1.389 .
+\end{gather*}
+付表5より $e^{1.00}=2.7183$，$e^{0.38}=1.4623$，$e^{0.39}=1.4770$ なので，線形補間により $e^{0.389}\simeq1.4755$，
+\[
+e^{1.389}=2.7183\times1.4755=4.011 .
+\]
+下限：$0.8^{4.011}=\exp(4.011\times(-0.2231))=\exp(-0.895)$。付表5より $e^{0.89}=2.4351$，$e^{0.90}=2.4596$ なので $e^{0.895}\simeq2.447$，
+よって下限は $1/2.447=0.409$。
+
+上限：$0.8^{1/4.011}=\exp(-0.2231/4.011)=\exp(-0.0556)$。付表5より $e^{0.05}=1.0513$，$e^{0.06}=1.0618$ なので $e^{0.0556}\simeq1.0572$，
+よって上限は $1/1.0572=0.946$。
+
+以上より，$S(3)$ の95\%信頼区間は $\boxed{(0.409,\ 0.946)}$ である。
+
+【優れている点】上問〔3〕で求めた $S(3)$ の区間 $(0.552,\ 1.048)$ は上限が1を超えており，生存確率の区間として不合理である。
+$\log\{-\log S\}$ は $(0,1)$ を実数全体に写す変換なので，逆変換して得られる区間は必ず $(0,1)$ の中に収まる。
+〔3〕の方法では，$\hat S(t)$ が1や0に近いときや例数が少ないときに，区間が1を超えたり0を下回ったりする。
+また，$\hat S(t)$ の分布は1や0の近くで非対称になるが，変換した尺度の方が正規近似がよく当てはまり，得られる区間は $\hat S(t)$ に関して非対称になる。
+\newpage
+
+\qhead{2}
+\ans{1}
+$H_0$ の下での期待度数は $e_{ij}=m_ic_j/N$ であり，両群とも
+\[
+e_{i1}=\frac{100\times80}{200}=40,\qquad e_{i2}=\frac{100\times60}{200}=30,\qquad e_{i3}=30 .
+\]
+ピアソンのカイ二乗統計量は
+\[
+X^2=\sum_{i,j}\frac{(n_{ij}-e_{ij})^2}{e_{ij}}
+=\frac{10^2}{40}+\frac{0^2}{30}+\frac{10^2}{30}+\frac{10^2}{40}+\frac{0^2}{30}+\frac{10^2}{30}
+=2.5+3.333+2.5+3.333=\boxed{11.67}.
+\]
+$H_0$ の下で $X^2$ は近似的に自由度 $(2-1)(3-1)=2$ のカイ二乗分布に従う。付表3より $\chi^2_{0.05}(2)=5.99$ であり，
+$X^2=11.67>5.99$ であるから，有意水準5\%で $H_0$ は棄却される。2群で3カテゴリの分布は異なるといえる。
+
+\ans{2}
+$c_j=n_{1j}+n_{2j}$，$N=m_1+m_2$ より
+\[
+n_{1j}-e_{1j}=n_{1j}-\frac{m_1}{N}(n_{1j}+n_{2j})=\frac{m_2}{N}n_{1j}-\frac{m_1}{N}n_{2j}
+=\frac{m_1m_2}{N}\left(\frac{n_{1j}}{m_1}-\frac{n_{2j}}{m_2}\right)=\frac{m_1m_2}{N}(\hat p_{1j}-\hat p_{2j}).
+\]
+$n_{1j}$ と $n_{2j}$ は独立で，$\Var(n_{ij})=m_i\pi_j(1-\pi_j)$ であるから，上の2番目の表現を用いて
+\begin{align*}
+\Var(n_{1j}-e_{1j})&=\frac{m_2^2}{N^2}m_1\pi_j(1-\pi_j)+\frac{m_1^2}{N^2}m_2\pi_j(1-\pi_j)\\
+&=\frac{m_1m_2(m_1+m_2)}{N^2}\pi_j(1-\pi_j)=\boxed{\frac{m_1m_2}{N}\pi_j(1-\pi_j)}.
+\end{align*}
+$\pi_j$ を $\hat\pi_j=c_j/N$ で置き換えた分散の推定値は
+\[
+\frac{m_1m_2}{N}\cdot\frac{c_j}{N}\left(1-\frac{c_j}{N}\right)
+=\frac{m_1c_j}{N}\cdot\frac{m_2}{N}\left(1-\frac{c_j}{N}\right)
+=e_{1j}\left(1-\frac{m_1}{N}\right)\left(1-\frac{c_j}{N}\right)
+\]
+であり（$m_2/N=1-m_1/N$），$r_{1j}$ の分母の根号の中に一致する。したがって
+\[
+r_{1j}=\frac{\dfrac{m_1m_2}{N}(\hat p_{1j}-\hat p_{2j})}{\sqrt{\dfrac{m_1m_2}{N}\hat\pi_j(1-\hat\pi_j)}}
+=\frac{\hat p_{1j}-\hat p_{2j}}{\sqrt{\hat\pi_j(1-\hat\pi_j)\dfrac{N}{m_1m_2}}}
+=\frac{\hat p_{1j}-\hat p_{2j}}{\sqrt{\hat\pi_j(1-\hat\pi_j)\left(\dfrac1{m_1}+\dfrac1{m_2}\right)}}=z_j .
+\]
+最後の等号は $N/(m_1m_2)=1/m_1+1/m_2$ による。
+
+\ans{3}
+$1-m_1/N=0.5$ であり，$1-c_j/N$ は順に $0.6,\ 0.7,\ 0.7$ である。
+\begin{align*}
+r_{11}&=\frac{50-40}{\sqrt{40\times0.5\times0.6}}=\frac{10}{\sqrt{12}}=\frac{10}{3.464}=\boxed{2.89},\\
+r_{12}&=\frac{30-30}{\sqrt{30\times0.5\times0.7}}=\boxed{0},\\
+r_{13}&=\frac{20-30}{\sqrt{30\times0.5\times0.7}}=\frac{-10}{\sqrt{10.5}}=\frac{-10}{3.240}=\boxed{-3.09}.
+\end{align*}
+$H_0$ の下で調整済み残差は近似的に標準正規分布に従う。標準正規分布の両側5\%点は1.96（付表1より $Q(1.96)=0.0250$）であり，
+「改善」（$2.89$）と「悪化」（$-3.09$）は絶対値が1.96を超えるが，「不変」（$0$）は超えない。
+したがって，上問〔1〕の有意な結果は，治療群で「改善」が期待度数より多く「悪化」が少ないことによるものであり，「不変」の割合には2群で差がない。
+（上問〔2〕より，これは各カテゴリについて「そのカテゴリか否か」の割合を2群で比較した検定に当たる。対照群の調整済み残差は符号が逆になるだけである。
+3つのカテゴリを同時に見ているので，厳密には検定の多重性に注意が必要である。）
+
+\ans{4}
+確率モデルは，$n_{ij}$（$i=1,2;\ j=1,2,3$）が互いに独立に期待値 $\mu_{ij}=\exp(\lambda+\alpha_i+\beta_j)$ のポアソン分布に従う，というものである。
+未知母数は $\lambda,\alpha_2,\beta_2,\beta_3$ の4個である。$n_{ij}$ の確率関数は $e^{-\mu_{ij}}\mu_{ij}^{n_{ij}}/n_{ij}!$ であるから，尤度関数は
+\[
+L=\prod_{i=1}^2\prod_{j=1}^3\frac{e^{-\mu_{ij}}\mu_{ij}^{\,n_{ij}}}{n_{ij}!},
+\]
+対数尤度関数は
+\[
+\ell=\sum_{i,j}\bigl(n_{ij}\log\mu_{ij}-\mu_{ij}\bigr)-\sum_{i,j}\log n_{ij}!
+=\sum_{i,j}\bigl\{n_{ij}(\lambda+\alpha_i+\beta_j)-e^{\lambda+\alpha_i+\beta_j}\bigr\}-\sum_{i,j}\log n_{ij}!
+\]
+である。各母数で偏微分して0とおくと（$\partial\mu_{ij}/\partial\lambda=\mu_{ij}$ などを用いる），尤度方程式は
+\begin{align*}
+\frac{\partial\ell}{\partial\lambda}&=\sum_{i,j}(n_{ij}-\mu_{ij})=0,&
+\frac{\partial\ell}{\partial\alpha_2}&=\sum_{j}(n_{2j}-\mu_{2j})=0,&
+\frac{\partial\ell}{\partial\beta_j}&=\sum_{i}(n_{ij}-\mu_{ij})=0\quad(j=2,3)
+\end{align*}
+となる。これらは
+\[
+\sum_{i,j}\mu_{ij}=N,\qquad \sum_j\mu_{2j}=m_2,\qquad \sum_i\mu_{ij}=c_j\ (j=2,3)
+\]
+を意味し，差をとると $\sum_j\mu_{1j}=m_1$，$\sum_i\mu_{i1}=c_1$ も成り立つ。すなわち，行和・列和の当てはめ値が観測値に一致する。
+
+一方，モデルから $\mu_{ij}=A_iB_j$（$A_i=e^{\lambda+\alpha_i}$，$B_j=e^{\beta_j}$）と積の形に書けるので，
+\[
+\sum_j\mu_{ij}=A_i\sum_jB_j,\qquad \sum_i\mu_{ij}=B_j\sum_iA_i,\qquad \sum_{i,j}\mu_{ij}=\sum_iA_i\sum_jB_j
+\]
+より，$\mu_{ij}=\bigl(\sum_j\mu_{ij}\bigr)\bigl(\sum_i\mu_{ij}\bigr)\big/\sum_{i,j}\mu_{ij}$ が成り立つ。尤度方程式の解を代入して
+\[
+\hat\mu_{ij}=\frac{m_ic_j}{N}=e_{ij}
+\]
+を得る。（このとき $\hat\lambda=\log e_{11}$，$\hat\alpha_2=\log(m_2/m_1)$，$\hat\beta_j=\log(c_j/c_1)$ である。）
+
+\ans{5}
+$\hat\mu_{ij}=e_{ij}$ より，$n_{ij}=e_{ij}$ のセル（「不変」の2セル）は $\log1=0$ で寄与しない。
+\[
+\frac{G^2}{2}=50\log\frac{50}{40}+20\log\frac{20}{30}+30\log\frac{30}{40}+40\log\frac{40}{30}
+=50\log\frac54+20\log\frac23+30\log\frac34+40\log\frac43 .
+\]
+$\log2,\log3,\log5$ で整理すると
+\[
+\frac{G^2}{2}=50\log5+(-100+20-60+80)\log2+(-20+30-40)\log3=50\log5-60\log2-30\log3 .
+\]
+付表5より $\log_{10}5=0.6990$，$\log_{10}2=0.3010$，$\log_{10}3=0.4771$ であるから
+\begin{gather*}
+\log5=2.3026\times0.6990=1.6095,\qquad\log2=2.3026\times0.3010=0.6931,\\
+\log3=2.3026\times0.4771=1.0986,
+\end{gather*}
+\[
+\frac{G^2}{2}=80.475-41.586-32.958=5.931,\qquad G^2=11.86\simeq\boxed{11.9}.
+\]
+（正確な値は $11.849$ である。付表の丸めの影響で，計算の経路によって $11.8$ または $11.9$ となるが，どちらでもよい。）
+
+自由度は，セルの数6から上問〔4〕のモデルの自由母数の個数4（$\lambda,\alpha_2,\beta_2,\beta_3$）を引いた $\boxed{2}$ である
+（一般の $r\times c$ 表では $rc-\{1+(r-1)+(c-1)\}=(r-1)(c-1)$）。
+付表3より $\chi^2_{0.05}(2)=5.99$ であり，$G^2\simeq11.9>5.99$ であるから，有意水準5\%でこのモデル（群とカテゴリが独立であるモデル）の適合は棄却される。
+これは上問〔1〕の検定と同じ仮説を調べており，$G^2$ と $X^2=11.67$ は近い値となり，結論も一致する。
+\newpage
+
+\qhead{3}
+\ans{1}
+(a) $Y_2$ が観測された患者は $72+60=132$ 人，そのうち $Y_2=1$ は $63+18=81$ 人であるから
+\[
+\hat\theta_{\mathrm{CC}}=\frac{81}{132}=\boxed{0.614}.
+\]
+(b) 欠測の患者に $Y_1$ を代入すると，$Y_1=1$ の脱落者8人が有効，$Y_1=0$ の脱落者60人が無効となるから
+\[
+\hat\theta_{\mathrm{LOCF}}=\frac{81+8}{200}=\frac{89}{200}=\boxed{0.445}.
+\]
+
+\ans{2}
+ベイズの定理より
+\[
+\Prob(Y_2=1\mid Y_1=y,R=1)=\frac{\Prob(R=1\mid Y_1=y,Y_2=1)\,\Prob(Y_2=1\mid Y_1=y)}{\Prob(R=1\mid Y_1=y)}.
+\]
+MARの下では $\Prob(R=1\mid Y_1=y,Y_2=y_2)=\pi_y$（$y_2=0,1$）であるから，分母は
+\[
+\Prob(R=1\mid Y_1=y)=\sum_{y_2=0}^{1}\pi_y\,\Prob(Y_2=y_2\mid Y_1=y)=\pi_y
+\]
+となり，
+\[
+\Prob(Y_2=1\mid Y_1=y,R=1)=\frac{\pi_y\mu_y}{\pi_y}=\mu_y .
+\]
+次に，完全ケース解析の推定量は「$R=1$ かつ $Y_2=1$ の人数」$\div$「$R=1$ の人数」であり，大数の法則により分子・分母を $N$ で割ったものはそれぞれ
+$\Prob(R=1,Y_2=1)$，$\Prob(R=1)$ に確率収束する。$Y_1$ の値で場合分けすると
+\[
+\Prob(R=1,Y_2=1)=\sum_yp_y\mu_y\pi_y,\qquad \Prob(R=1)=\sum_yp_y\pi_y
+\]
+であるから
+\[
+\theta_{\mathrm{CC}}=\boxed{\frac{p_1\pi_1\mu_1+p_0\pi_0\mu_0}{p_1\pi_1+p_0\pi_0}}.
+\]
+$\theta=p_1\mu_1+p_0\mu_0$ との差の分子は，$1-p_1=p_0$，$1-p_0=p_1$ を用いて
+\begin{align*}
+&p_1\pi_1\mu_1+p_0\pi_0\mu_0-(p_1\mu_1+p_0\mu_0)(p_1\pi_1+p_0\pi_0)\\
+&\quad=p_1\pi_1\mu_1(1-p_1)-p_1p_0\mu_1\pi_0+p_0\pi_0\mu_0(1-p_0)-p_0p_1\mu_0\pi_1\\
+&\quad=p_1p_0(\pi_1\mu_1-\pi_0\mu_1+\pi_0\mu_0-\pi_1\mu_0)=p_1p_0(\pi_1-\pi_0)(\mu_1-\mu_0)
+\end{align*}
+となる。よって
+\[
+\theta_{\mathrm{CC}}-\theta=\frac{p_1p_0(\pi_1-\pi_0)(\mu_1-\mu_0)}{p_1\pi_1+p_0\pi_0}.
+\]
+$0<p_1<1$ であるから，これが0になるのは $\pi_1=\pi_0$（欠測がMCAR）または $\mu_1=\mu_0$（$Y_2$ の分布が $Y_1$ によらない）の場合に限られる。
+このいずれかの場合には完全ケース解析の推定量は一致推定量であるが，それ以外では，MARであっても $\theta$ とは異なる値に収束する。
+（表1では $\hat\pi_1=0.9>\hat\pi_0=0.5$，$\hat\mu_1=0.875>\hat\mu_0=0.3$ であり，完全ケース解析は過大評価の方向に偏る。）
+
+\ans{3}
+MARの下では上問〔2〕より $\mu_y=\Prob(Y_2=1\mid Y_1=y,R=1)$ であるから，$\mu_y$ は $Y_2$ が観測された患者の中での有効割合で推定できる。
+\[
+\hat p_1=\frac{80}{200}=0.4,\quad\hat p_0=0.6,\quad\hat\mu_1=\frac{63}{72}=0.875,\quad\hat\mu_0=\frac{18}{60}=0.3,
+\]
+\[
+\hat\theta_{\mathrm S}=0.4\times0.875+0.6\times0.3=0.35+0.18=\boxed{0.53}.
+\]
+次に，$Y_1=y$ の患者数を $N_y$，そのうち $Y_2$ が観測された人数を $M_y$，さらにそのうち $Y_2=1$ の人数を $A_y$ とすると，
+$\hat\pi_y=M_y/N_y$ である。$\sum_iR_iY_{2i}/\hat\pi_{Y_{1i}}$ において，$Y_1=y$ の患者からの寄与は $A_y/\hat\pi_y$ であるから
+\[
+\hat\theta_{\mathrm{IPW}}=\frac1N\sum_{y}\frac{A_y}{M_y/N_y}=\sum_y\frac{N_y}{N}\cdot\frac{A_y}{M_y}=\sum_y\hat p_y\hat\mu_y=\hat\theta_{\mathrm S}.
+\]
+（数値でも $\hat\pi_1=72/80=0.9$，$\hat\pi_0=60/120=0.5$ より $(63/0.9+18/0.5)/200=(70+36)/200=0.53$。）
+
+最後に，$(Y_1,Y_2)$ で条件付けると，MARより $\E[R\mid Y_1,Y_2]=\pi(Y_1,Y_2)=\pi_{Y_1}$ であるから，繰り返し期待値の法則により
+\[
+\E\!\left[\frac{RY_2}{\pi_{Y_1}}\right]=\E\!\left[\frac{Y_2}{\pi_{Y_1}}\,\E[R\mid Y_1,Y_2]\right]=\E\!\left[\frac{Y_2}{\pi_{Y_1}}\,\pi_{Y_1}\right]=\E[Y_2]=\theta .
+\]
+
+\ans{4}
+LOCFで用いる値は $Y_2^{*}=RY_2+(1-R)Y_1$ であり，推定量は $Y_2^*$ の標本平均である。大数の法則により
+\[
+\theta_{\mathrm{LOCF}}=\E[Y_2^*]=\Prob(R=1,Y_2=1)+\Prob(R=0,Y_1=1)=\boxed{p_1\pi_1\mu_1+p_0\pi_0\mu_0+p_1(1-\pi_1)}
+\]
+に確率収束する。一方 $\theta=\sum_yp_y\mu_y=\sum_yp_y\pi_y\mu_y+\sum_yp_y(1-\pi_y)\mu_y$ であるから
+\[
+\theta_{\mathrm{LOCF}}-\theta=p_1(1-\pi_1)-p_1(1-\pi_1)\mu_1-p_0(1-\pi_0)\mu_0
+=\boxed{p_1(1-\pi_1)(1-\mu_1)-p_0(1-\pi_0)\mu_0}.
+\]
+第1項は「4週後に有効であった脱落者をすべて8週後も有効とみなす」ことによる過大評価，
+第2項は「4週後に無効であった脱落者をすべて8週後も無効とみなす」ことによる過小評価を表す。
+表1の標本割合を代入すると
+\[
+0.4\times0.1\times0.125-0.6\times0.5\times0.3=0.005-0.090=-0.085
+\]
+であり，$\hat\theta_{\mathrm{LOCF}}-\hat\theta_{\mathrm S}=0.445-0.53=-0.085$ に一致する。
+このデータでは脱落者の大半（68人中60人）が4週後に無効であった患者であり，同じく4週後に無効で試験を続けた患者の30\%は8週後に有効になっている。
+LOCFはこの脱落者を全員無効のままとするため，第2項が大きく，推定値が小さくなった。
+
+\ans{5}
+$m_y=\Prob(Y_2=1\mid Y_1=y,R=1)$，$\gamma_y=\Prob(R=1\mid Y_1=y)$ とおく。仮定より $\Prob(Y_2=1\mid Y_1=y,R=0)=km_y$ であるから
+\[
+\Prob(Y_2=1\mid Y_1=y)=\gamma_ym_y+(1-\gamma_y)km_y,\qquad
+\theta=\sum_yp_ym_y\{\gamma_y+(1-\gamma_y)k\}.
+\]
+$p_y,\gamma_y,m_y$ は表1の標本割合（$\hat p_1=0.4$，$\hat\gamma_1=0.9$，$\hat\gamma_0=0.5$，$\hat m_1=0.875$，$\hat m_0=0.3$）で推定できるので，
+\[
+\hat\theta(k)=0.4\times0.875\times(0.9+0.1k)+0.6\times0.3\times(0.5+0.5k)=\boxed{0.405+0.125k}.
+\]
+\begin{itemize}
+\item $k=1$：脱落者の8週後の有効割合が，同じ $Y_1$ の値をもつ継続者と等しいという仮定で，MARに対応する（$\hat\theta(1)=0.53=\hat\theta_{\mathrm S}$）。
+\item $k=0$：脱落者は8週後に全員無効であるという仮定に対応する（$\hat\theta(0)=0.405=81/200$）。
+\end{itemize}
+$k$ をデータから推定することはできない。脱落者の $Y_2$ は1人も観測されていないので，観測されるデータ（$Y_1$，$R$，および $R=1$ のときの $Y_2$）の分布は
+$p_y,\gamma_y,m_y$ だけで決まり，$k$ を含まない。したがって $0\le k\le1$ のどの値も表1のデータと同じように整合し，データからは区別できない。
+$k$ の値（欠測の仕組み）は外部の知識や仮定に頼るほかなく，$k$ を動かして結論がどの程度変わるかを調べる感度分析が必要になる
+（ここでは $\hat\theta$ は $0.405$ から $0.53$ の範囲を動く）。
+\newpage
+
+\qhead{4}
+\ans{1}
+$\hat p_0=40/100=0.40$，$\hat p_1=25/100=0.25$ である。
+\begin{align*}
+\text{リスク差}&:\ \hat p_0-\hat p_1=\boxed{0.15},&
+\text{リスク比}&:\ \frac{\hat p_1}{\hat p_0}=\frac{0.25}{0.40}=\boxed{0.625},\\
+\text{オッズ比}&:\ \frac{0.25/0.75}{0.40/0.60}=\frac{25\times60}{75\times40}=\boxed{0.5},&
+\text{NNT}&:\ \frac{1}{0.15}=\boxed{6.67}.
+\end{align*}
+（NNTは，約7人を治療すると1人のイベントを防げることを表す。）
+
+\ans{2}
+2群は独立で，$\Var(\hat p_g)=p_g(1-p_g)/n_g$ であるから，リスク差の標準誤差の推定値は
+\[
+\mathrm{SE}=\sqrt{\frac{0.40\times0.60}{100}+\frac{0.25\times0.75}{100}}=\sqrt{0.0024+0.001875}=\sqrt{0.004275}=\boxed{0.0654}.
+\]
+付表1より $Q(1.96)=0.0250$ なので，95\%信頼区間は
+\[
+0.15\pm1.96\times0.0654=0.15\pm0.128\ \Longrightarrow\ \boxed{(0.022,\ 0.278)}.
+\]
+区間全体が正であり，$u\mapsto1/u$ は $u>0$ で減少関数であるから，NNTの95\%信頼区間は端点の逆数を入れ替えて
+\[
+\left(\frac{1}{0.27815},\ \frac{1}{0.02185}\right)=(3.60,\ 45.8)\simeq\boxed{(3.6,\ 46)}
+\]
+となる（端点には丸める前の値 $0.15\pm1.96\times0.06538=0.02185,\ 0.27815$ を用いた。小数第3位に丸めた $0.022$ の逆数は $45.5$ であり，この程度の差は許容する）。
+
+リスク差の信頼区間が0を含む場合，たとえば $(-a,b)$（$a,b>0$）であれば，リスク差が $(0,b)$ にある部分はNNTが $1/b$ より大きいことに対応し，
+$(-a,0)$ にある部分は逆数が $-1/a$ より小さい負の値，すなわち治療によって害が生じる方向（害必要数が $1/a$ より大きい）に対応する。
+リスク差0は逆数が無限大に対応するので，NNTの範囲は「$1/b$ から無限大まで」と「害の方向で $1/a$ から無限大まで」という，
+無限大をはさんでつながった2つの部分からなり，有限の両端をもつ1つの区間にはならない。
+
+\ans{3}
+$\hat p_g$（$g=0,1$）は $n_g\hat p_g\sim\mathrm{Bin}(n_g,p_g)$ より $\E[\hat p_g]=p_g$，$\Var(\hat p_g)=p_g(1-p_g)/n_g$ を満たす。
+$g(p)=\log p$ とおくと $g'(p)=1/p$ であるから，デルタ法により
+\[
+\Var(\log\hat p_g)\approx\frac{1}{p_g^2}\cdot\frac{p_g(1-p_g)}{n_g}=\frac{1-p_g}{n_gp_g}.
+\]
+$\log(\hat p_1/\hat p_0)=\log\hat p_1-\log\hat p_0$ であり，2群は独立であるから
+\[
+\Var\!\left(\log\frac{\hat p_1}{\hat p_0}\right)\approx\boxed{\frac{1-p_1}{n_1p_1}+\frac{1-p_0}{n_0p_0}}.
+\]
+$p_g$ に $\hat p_g$ を代入すると
+\[
+\frac{0.75}{25}+\frac{0.60}{40}=0.030+0.015=0.045,\qquad \mathrm{SE}=\sqrt{0.045}=0.2121 .
+\]
+対数リスク比の推定値は $\log0.625=\log(5/8)=\log5-3\log2$ である。付表5より $\log_{10}5=0.6990$，$\log_{10}2=0.3010$ なので
+\begin{gather*}
+\log5=2.3026\times0.6990=1.6095,\qquad\log2=2.3026\times0.3010=0.6931,\\
+\log0.625=1.6095-3\times0.6931=1.6095-2.0793=-0.470 .
+\end{gather*}
+対数リスク比の95\%信頼区間は
+\[
+-0.470\pm1.96\times0.2121=-0.470\pm0.416\ \Longrightarrow\ (-0.886,\ -0.054).
+\]
+付表5より $e^{0.88}=2.4109$，$e^{0.89}=2.4351$ なので補間して $e^{0.886}\simeq2.4254$，
+また $e^{0.05}=1.0513$，$e^{0.06}=1.0618$ なので $e^{0.054}\simeq1.0555$ である。よってリスク比の95\%信頼区間は
+\[
+\left(\frac{1}{2.4254},\ \frac{1}{1.0555}\right)=\boxed{(0.412,\ 0.947)}.
+\]
+（区間は1を含まず，有意水準5\%で治療群の発生割合は対照群より低い。）
+
+\ans{4}
+$\Prob(S=1\mid D=1,x)=f_1$，$\Prob(S=1\mid D=0,x)=f_0$ である。ベイズの定理より
+\[
+\Prob(D=1\mid x,S=1)=\frac{f_1\,\Prob(D=1\mid x)}{f_1\,\Prob(D=1\mid x)+f_0\,\Prob(D=0\mid x)}.
+\]
+同様に $\Prob(D=0\mid x,S=1)$ は分子を $f_0\Prob(D=0\mid x)$ に置き換えたものであるから，オッズは
+\[
+\frac{\Prob(D=1\mid x,S=1)}{\Prob(D=0\mid x,S=1)}=\frac{f_1}{f_0}\cdot\frac{\Prob(D=1\mid x)}{\Prob(D=0\mid x)}=\frac{f_1}{f_0}\,e^{\alpha+\beta x}
+\]
+となる。したがって
+\begin{gather*}
+\log\frac{\Prob(D=1\mid x,S=1)}{\Prob(D=0\mid x,S=1)}=\alpha+\log\frac{f_1}{f_0}+\beta x,\\
+\Prob(D=1\mid x,S=1)=\boxed{\frac{\exp(\alpha^*+\beta x)}{1+\exp(\alpha^*+\beta x)}},\qquad \alpha^*=\alpha+\log\frac{f_1}{f_0}.
+\end{gather*}
+すなわち，抽出されたデータでも傾きが同じ $\beta$ のロジスティックモデルが成り立ち，切片だけが $\log(f_1/f_0)$ だけずれる。
+
+$e^\beta$ は治療のオッズ比であるから，\fbox{オッズ比} はケース・コントロール研究のデータから推定できる。
+一方，$f_1/f_0$ が未知では $\alpha$ が定まらず，$p_0=\Prob(D=1\mid x=0)$ や $p_1=\Prob(D=1\mid x=1)$ そのものは推定できない。
+リスク差，リスク比，NNTは $p_0,p_1$ の値に依存するので，これらは推定できない
+（ただしイベントがまれな場合は，オッズ比がリスク比の近似になる）。
+
+\ans{5}
+オッズ比が $\psi$ であるから $\dfrac{p_1}{1-p_1}=\psi\,\dfrac{p_0}{1-p_0}$，すなわち
+\[
+p_1=\frac{\psi p_0}{1-p_0+\psi p_0}
+\]
+である。リスク差は
+\[
+p_0-p_1=\frac{p_0(1-p_0+\psi p_0)-\psi p_0}{1-p_0+\psi p_0}=\frac{p_0(1-p_0)(1-\psi)}{1-p_0+\psi p_0}
+\]
+となり，
+\[
+\mathrm{NNT}=\frac{1-p_0+\psi p_0}{p_0(1-p_0)(1-\psi)}\ \overset{\psi=0.5}{=}\ \boxed{\frac{2-p_0}{p_0(1-p_0)}}.
+\]
+\[
+p_0=0.4:\ \ \frac{1.6}{0.24}=\boxed{6.67},\qquad\qquad
+p_0=0.05:\ \ \frac{1.95}{0.0475}=\boxed{41.05}.
+\]
+（$p_0=0.4$ の値は上問〔1〕の推定値と一致する。$p_0=0.05$ のとき $p_1=0.025/0.975=0.0256$，リスク差は $0.0244$。）
+
+次に，NNTが最小になるのはリスク差 $d(p_0)=p_0(1-p_0)/(2-p_0)$ が最大になるときである。$0<p_0<1$ で
+\[
+d'(p_0)=\frac{(1-2p_0)(2-p_0)+p_0(1-p_0)}{(2-p_0)^2}=\frac{p_0^2-4p_0+2}{(2-p_0)^2}
+\]
+であり，$p_0^2-4p_0+2=0$ の解は $p_0=2\pm\sqrt2$ である。$0<p_0<1$ にあるのは $2-\sqrt2$ だけで，
+$d'(p_0)$ は $p_0<2-\sqrt2$ で正，$p_0>2-\sqrt2$ で負となるから，$d(p_0)$ はここで最大，NNTは最小となる。
+\[
+p_0=2-\sqrt2\simeq\boxed{0.586},\qquad
+\mathrm{NNT}=\frac{2-p_0}{p_0(1-p_0)}=\frac{\sqrt2}{(2-\sqrt2)(\sqrt2-1)}=\frac{\sqrt2}{3\sqrt2-4}=3+2\sqrt2\simeq\boxed{5.83}.
+\]
+（$\sqrt2=1.4142$ を用いた。NNTは $p_0\to0$ および $p_0\to1$ で限りなく大きくなる。）
+
+【注意点】オッズ比で測った治療効果が同じであっても，NNTは対照群のイベント発生割合（ベースラインリスク）に強く依存し，
+発生割合が低い集団（および極端に高い集団）では1人のイベントを防ぐために必要な治療人数がはるかに多くなる。
+したがって，ある試験で得られたNNTを，ベースラインリスクの異なる集団にそのまま当てはめてはならない。
+当てはめる場合は，その集団のベースラインリスクと相対的な効果指標（オッズ比やリスク比）から計算し直す必要がある。
+\newpage
+
+\qhead{5（共通問題形式）}
+\ans{1}
+$k$ 人が全員非感染である確率は，独立性より $q^k$ である。1つのグループに必要な検査回数を $T$ とすると，
+プール検体が陰性（確率 $q^k$）なら $T=1$，陽性（確率 $1-q^k$）なら $T=1+k$ であるから
+\[
+\E[T]=1\cdot q^k+(1+k)(1-q^k)=\boxed{1+k(1-q^k)}.
+\]
+1人当たりの期待検査回数は
+\[
+h(k)=\frac{\E[T]}{k}=\frac1k+1-q^k=1+\frac1k-q^k .
+\]
+
+\ans{2}
+$q=0.99$ である。電卓で $0.99^2=0.9801$，$0.9801^2=0.960596$，$0.960596^2=0.922745$，
+$0.99^{10}=0.99^8\times0.99^2=0.922745\times0.9801=0.904382$ と計算できるので
+\[
+h(10)=1+0.1-0.904382=\boxed{0.196}.
+\]
+すなわち，全員を個別に検査する場合（1人当たり1回）に比べて，検査回数は約2割で済む。
+
+次に，$q^k\approx1-kp$ とすると
+\[
+h(k)\approx1+\frac1k-(1-kp)=\frac1k+kp .
+\]
+$k>0$ で微分すると $-1/k^2+p$ であり，$k<1/\sqrt p$ で負，$k>1/\sqrt p$ で正となるから，
+\[
+k=\boxed{\frac{1}{\sqrt p}}\ \text{で最小となり，最小値は}\ \sqrt p+\sqrt p=\boxed{2\sqrt p}
+\]
+である（相加相乗平均の不等式 $1/k+kp\ge2\sqrt p$ からも分かる）。
+$p=0.01$ では $k=10$，$h\approx0.2$ となり，上で求めた $h(10)=0.196$ に近い。
+
+\ans{3}
+1つのプール検体が陽性となるのは，$k$ 人の中に感染者が少なくとも1人いる場合で，その確率は $\theta=1-q^k$ である。
+グループは互いに独立であるから，
+\[
+X\sim\boxed{\mathrm{Bin}(n,\theta),\quad\theta=1-(1-p)^k}.
+\]
+確率関数は $\Prob(X=x)=\binom nx\theta^x(1-\theta)^{n-x}$（$x=0,1,\ldots,n$）であるから，尤度関数は $q=1-p$ を用いて
+\[
+L(p)=\binom nx(1-q^k)^x(q^k)^{n-x},
+\]
+対数尤度は $\ell=\log\binom nx+x\log(1-q^k)+(n-x)k\log q$ である。$0<x<n$ のとき，$q$ で微分すると
+\[
+\frac{d\ell}{dq}=-\frac{xkq^{k-1}}{1-q^k}+\frac{(n-x)k}{q}=\frac kq\left\{(n-x)-\frac{xq^k}{1-q^k}\right\}.
+\]
+$q^k/(1-q^k)$ は $q$ の増加関数であるから，中括弧の中は $q$ について単調に減少し，
+$(n-x)(1-q^k)=xq^k$，すなわち $q^k=1-x/n$ となる点で正から負に変わる。よって $\ell$ はこの点で最大となり，
+\[
+\hat q=\left(1-\frac Xn\right)^{1/k},\qquad \boxed{\hat p=1-\left(1-\frac Xn\right)^{1/k}}.
+\]
+（$x=0$ のとき $\hat p=0$，$x=n$ のとき $\hat p=1$ で尤度が最大となり，同じ式で表される。
+これは $\theta$ の最尤推定量 $\hat\theta=X/n$ を $p=1-(1-\theta)^{1/k}$ に代入したものでもある。）
+
+次に，$\hat p=g(\hat\theta)$，$g(\theta)=1-(1-\theta)^{1/k}$ と書ける。$\Var(\hat\theta)=\theta(1-\theta)/n$ であり，
+\[
+g'(\theta)=\frac1k(1-\theta)^{\frac1k-1}=\frac1k\,q^{1-k}\qquad(1-\theta=q^k)
+\]
+であるから，デルタ法により
+\[
+\Var(\hat p)\approx\{g'(\theta)\}^2\,\frac{\theta(1-\theta)}{n}=\frac{q^{2-2k}}{k^2}\cdot\frac{(1-q^k)q^k}{n}
+=\boxed{\frac{(1-q^k)\,q^{2-k}}{k^2n}}.
+\]
+
+\ans{4}
+$\hat\theta=5/50=0.1$ であるから $\hat p=1-0.9^{0.1}$ である。
+付表5より $\log_{10}0.9=-0.0458$ なので $\log0.9=2.3026\times(-0.0458)=-0.10546$，
+\[
+0.9^{0.1}=\exp(0.1\times\log0.9)=\exp(-0.010546)=\frac{1}{e^{0.010546}}.
+\]
+付表5の $e^{0.01}=1.0101$，$e^{0.02}=1.0202$ を線形補間して $e^{0.010546}\simeq1.0101+0.0546\times0.0101=1.01065$。よって
+\[
+0.9^{0.1}\simeq\frac{1}{1.01065}=0.98946,\qquad \hat p=1-0.98946=\boxed{0.0105}.
+\]
+標準誤差は，上問〔3〕の式に推定値を代入して求める。$\hat q^{k}=0.9$，$\hat q=0.98946$ より
+\[
+g'(\hat\theta)=\frac1k\cdot\frac{\hat q}{\hat q^{k}}=\frac{1}{10}\times\frac{0.98946}{0.9}=0.10994,
+\]
+\begin{gather*}
+\widehat{\Var}(\hat p)=0.10994^2\times\frac{0.1\times0.9}{50}=0.012087\times0.0018=2.176\times10^{-5},\\
+\mathrm{SE}=\sqrt{2.176\times10^{-5}}=0.00466\simeq\boxed{0.0047}.
+\end{gather*}
+付表1より $Q(1.96)=0.0250$ であるから，95\%信頼区間は
+\[
+0.01054\pm1.96\times0.00466=0.01054\pm0.00913\ \Longrightarrow\ \boxed{(0.0014,\ 0.0197)}.
+\]
+（付表の丸めの影響があり，正確な値は $\hat p=0.01048$，標準誤差 $0.00466$，信頼区間 $(0.0013,\ 0.0196)$ である。）
+
+\ans{5}
+(a) $n$ 人を個別に検査したときの陽性者数を $Y$ とすると $Y\sim\mathrm{Bin}(n,p)$ であり，推定量 $Y/n$ の分散は $pq/n$ である。
+上問〔3〕の分散との比は
+\[
+\frac{(1-q^k)q^{2-k}/(k^2n)}{pq/n}=\boxed{\frac{(1-q^k)\,q^{1-k}}{k^2p}}.
+\]
+$p$ が小さいとき，$1-q^k=1-(1-p)^k\approx kp$，$q^{1-k}\approx1$ であるから
+\[
+\frac{(1-q^k)\,q^{1-k}}{k^2p}\approx\frac{kp}{k^2p}=\frac1k
+\]
+となる。すなわち，同じ検査回数でも，プール検体を用いると（調べる人数が $k$ 倍になるので）分散は約 $1/k$ 倍に小さくなる。
+
+(b) $u=-k\log q>0$ とおくと $q^{-k}=e^{u}$，$k=u/(-\log q)$ であるから
+\[
+\frac{(1-q^k)\,q^{2-k}}{k^2n}=\frac{q^2(q^{-k}-1)}{k^2n}=\frac{q^2(\log q)^2}{n}\cdot\frac{e^u-1}{u^2}
+\]
+となる。$q^2(\log q)^2/n$ は $k$ によらない正の定数であるから，分散は $\psi(u)=(e^u-1)/u^2$ に比例する。
+\[
+\psi'(u)=\frac{u^2e^u-2u(e^u-1)}{u^4}=\frac{(u-2)e^u+2}{u^3}
+\]
+であるから，$\varphi(u)=(u-2)e^u+2$ とおくと，$u>0$ で $\psi'(u)$ の符号は $\varphi(u)$ の符号に等しい。
+$\varphi(0)=0$，$\varphi'(u)=(u-1)e^u$ より，$\varphi$ は $0<u<1$ で減少し，$u>1$ で増加する。
+したがって $0<u\le1$ では $\varphi(u)<0$ であり，$u>1$ では狭義単調増加で $\varphi(u)\to\infty$（$u\to\infty$）となるから，
+$\varphi(u)=0$ の正の解 $u^*$ はただ1つ存在する。$0<u<u^*$ で $\psi'<0$，$u>u^*$ で $\psi'>0$ となるので，$\psi$ は $u=u^*$ で最小となる。
+
+付表5より $e^{1.00}=2.7183$，$e^{0.50}=1.6487$，$e^{0.60}=1.8221$ であるから
+\[
+e^{1.5}=2.7183\times1.6487=4.4817,\qquad e^{1.6}=2.7183\times1.8221=4.9530,
+\]
+\[
+\varphi(1.5)=-0.5\times4.4817+2=-0.241<0,\qquad \varphi(1.6)=-0.4\times4.9530+2=0.019>0 .
+\]
+$\varphi$ は $u>1$ で連続かつ単調増加であるから，$\boxed{1.5<u^*<1.6}$ である。
+
+(c) (b) より，分散を最小にする $k$ は $-k\log q=u^*\approx1.6$ を満たす値（$p$ が小さいときおよそ $k\approx1.6/p$）であり，
+このときプール検体が陰性となる確率は $q^k=e^{-u^*}\approx0.2$ である。$k$ をこれより大きくすると分散はかえって増大し，
+$(e^u-1)/u^2$ は $u$ とともに急速に（指数関数的に）大きくなる。(a) の「分散が約 $1/k$ 倍」という関係は $kp$ が小さいときにしか成り立たない。
+これは，$k$ が大きいとほとんどのプール検体が陽性になり，陽性という結果からは「感染者が1人以上いる」ことしか分からないため，
+1回の検査から得られる $p$ についての情報が失われるからである。
+さらに，すべてのプール検体が陽性（$X=n$）になる確率 $(1-q^k)^n$ が無視できなくなり，その場合は $\hat p=1$ という意味のない推定値になる。
+$p$ は未知であり，想定より $p$ が大きいとこの状況に陥るので，$k$ は予想される $p$ に対して $kp$ が大きくなりすぎないように選ぶ必要がある。
+\end{document}
