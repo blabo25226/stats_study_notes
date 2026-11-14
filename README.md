@@ -66,4 +66,4 @@
 
 ## AIアシスタントの利用
 
-教材処理・採点・Vault整理にAI（Claude Code、Gemini）を使っています。共通ルールは [AGENTS.md](AGENTS.md) と `.agents/`、Claude専用のVault管理ルールは `.claude/` にあります。AIはGit commit / pushを自動では行いません。
+教材処理・採点・Vault整理にAI（Codex、Claude、Gemini）を使っています。教材処理・採点・Vault管理の共通ルールは [AGENTS.md](AGENTS.md) と `.agents/` にあります。AIはGit commit / pushを自動では行いません。

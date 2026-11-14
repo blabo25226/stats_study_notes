@@ -11,27 +11,15 @@
 
 AIは学習アシスタントとして、数学的正確性を最優先する。
 
-## AI roles
+## 共通の担当範囲
 
-| AI | 担当範囲 | 読むルール |
-|---|---|---|
-| Claude（Claude Code） | すべての作業（教材処理・採点 + Obsidian Vault管理） | `AGENTS.md`、`.agents/`、`.claude/` |
-| Gemini | 教材処理・採点のみ | `AGENTS.md`、`.agents/` |
+Codex・Claude・Geminiなど、このリポジトリで作業するAIは共通して `AGENTS.md` と `.agents/` を参照する。
+教材処理・採点・模試作成・レビュー・Obsidian Vault管理を、ユーザーが依頼した範囲で担当する。AI名による担当制限は設けない。
 
-Geminiの担当:
-- 手書き答案 → 問題ノート（`answer-photo-to-markdown`）
-- 教科書スクリーンショット → TeX（`textbook-screenshot-to-tex`）
-- 公式解答PDF → 章別TeX（`official-answer-to-tex`）
-- 数学的採点
-- `daily_report.md` への追記（`update-daily-report`）
-
-Geminiが行わないこと（Claudeの担当）:
-- `.claude/` 以下の編集
-- 内部リンク、MOC、Bases（`00_学習管理/`）、Daily Note（`00_学習管理/Daily/`）の作成・編集
-- 復習Properties（`review-count`, `last-reviewed`, `next-review`）の更新
-- Vault全体の整理（ノートの移動・改名、重複・孤立ノートの整理）
-
-これらが必要になった場合、Geminiは作業せずユーザーに「Claudeの担当」と伝える。
+- レビュー依頼では、指摘の報告を行う。修正依頼がない限り対象の原稿・PDFを変更しない。
+- 他のAIやユーザーによる作業中の変更は保持し、自分の変更と区別する。
+- Git commit / pushは、その作業についてユーザーから明示指示がある場合のみ行う。
+- 作業環境と指示ファイルの読み方は `.agents/references/environment.md` を参照する。
 
 ## Instruction structure
 
@@ -89,6 +77,19 @@ Geminiが行わないこと（Claudeの担当）:
 
 - `.agents/skills/official-answer-to-tex/SKILL.md`
 
+### Obsidian Vault管理
+
+該当作業では `.agents/rules/obsidian.md`、`safe-editing.md`、`note-routing.md` を読み、リンク・Properties・Bases・Daily Noteには同名の個別ルールも適用する。各ルールの `paths` は適用対象の目安であり、自動読込を前提にしない。
+
+| 作業 | スキル |
+|---|---|
+| 概念ノートの作成 | `.agents/skills/create-concept-note/SKILL.md` |
+| 内部リンク整理 | `.agents/skills/link-related-notes/SKILL.md` |
+| ダッシュボード・MOC・Bases | `.agents/skills/build-dashboard/SKILL.md` |
+| Daily Note・学習計画 | `.agents/skills/daily-study/SKILL.md` |
+| 復習Properties | `.agents/skills/update-review/SKILL.md` |
+| Vault全体の整理 | `.agents/skills/organize-vault/SKILL.md` |
+
 ## Critical rules
 
 1. AIはGit commit / pushを勝手に行わない。
@@ -113,6 +114,6 @@ Geminiが行わないこと（Claudeの担当）:
     - 目次、採点・判定理由、解説・模範解答、講評、関連知識・発展事項は書かない。
     - 採点結果はfrontmatterの `status` のみ。判定理由はユーザーへの報告と `daily_report.md` に書く。
     - 回答なしの答案は `答案未提出` の1行とする。
-16. 問題ノートの内部リンクは、frontmatterの `concepts` Property（`[[概念ノート名]]` のリスト）でのみ表す。本文（`## 問題の要約`・`## 答案`）に `[[...]]` を書かず、`## 関連` 節も作らない。`concepts` の付与・更新はClaudeの担当で、Geminiは追加しない。
+16. 問題ノートの内部リンクは、frontmatterの `concepts` Property（`[[概念ノート名]]` のリスト）でのみ表す。本文（`## 問題の要約`・`## 答案`）に `[[...]]` を書かず、`## 関連` 節も作らない。`concepts` の付与・更新は内部リンク整理の依頼範囲で行う（`.agents/rules/internal-links.md`）。
 17. AIが解答例・解説を作るときの数値計算は、四則演算・平方根・付表・問題文で与えられた値だけでできる形で書き、付表を使った箇所ではどの値を引いたかを書く（`.agents/rules/math.md` §6）。統計検定1級では関数電卓が使えないため。
 18. AIが最尤推定量を導くときは、確率モデル（どの確率変数がどの分布に従うか）→ 確率（密度）関数 → 尤度関数 → 対数尤度・スコア → 最大化の確認、の順に書く（`.agents/rules/math.md` §7）。

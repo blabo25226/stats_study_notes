@@ -5,9 +5,9 @@
 AIの作業内容をリポジトリ直下の `daily_report.md` に記録する。
 
 `daily_report.md` はAI作業ログであり、Obsidian Daily Note（`00_学習管理/Daily/YYYY-MM-DD.md`）とは別物。
-Daily Noteの内容をここにコピーしない。Daily Noteの作成・更新はClaudeのみの担当（`AGENTS.md` の「AI roles」）。
+Daily Noteの内容をここにコピーしない。Daily Noteの作成・更新には `.agents/skills/daily-study/SKILL.md` を用いる。
 
-Claude・Geminiのどちらも、このスキルに従って `daily_report.md` に追記する。
+すべてのAIが、このスキルに従って `daily_report.md` に追記する。
 
 `daily_report.md` は `.gitignore` で除外されている。
 
@@ -32,7 +32,7 @@ Claude・Geminiのどちらも、このスキルに従って `daily_report.md` �
 # 2026
 ## 09
 ### 26
-- **作業AI**: Claude / Gemini
+- **作業AI**: Codex / Claude / Gemini（実際に作業したAI名）
 - **学習・作業内容**:
   - （何をしたか）
 - **作成・更新ファイル**:

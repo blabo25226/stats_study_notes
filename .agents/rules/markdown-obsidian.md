@@ -29,7 +29,7 @@
 
 - 問題ノートの内部リンクは、frontmatterの `concepts` Property（`frontmatter.md` §2, §4）でのみ表す。
   本文には `[[...]]` を書かず、`## 関連` 節も作らない。
-- 内部リンクの整備はClaudeの担当（`AGENTS.md` の「AI roles」）。Geminiは内部リンクを追加しない。
+- 内部リンクの整備は依頼範囲で行い、`.agents/rules/internal-links.md` に従う。
 
 ## 4. frontmatter
 

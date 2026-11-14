@@ -16,5 +16,4 @@
 - `01_`〜`15_`: 学習コンテンツ
 - `00_学習管理/`: ダッシュボード、MOC、Daily、Templates、Bases
 - `.obsidian/`: Obsidianアプリ設定
-- `.agents/`: 教材処理・採点仕様
-- `.claude/`: ClaudeによるVault管理仕様
+- `.agents/`: 教材処理・採点・Vault管理の共通仕様

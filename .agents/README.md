@@ -1,10 +1,9 @@
 # .agents
 
-AIアシスタント向けの、教材処理・採点のルールとスキル。入口は `AGENTS.md`。
+教材処理・採点・模試作成・レビュー・Obsidian Vault管理の共通ルールとスキル。入口は `AGENTS.md`。
 
-ClaudeとGeminiの両方がこのディレクトリのルールに従う。
-Obsidian Vaultの管理（内部リンク・MOC・Bases・Daily Note・復習管理）はClaudeのみの担当で、ルールは `.claude/` にある。
-担当範囲の詳細は `AGENTS.md` の「AI roles」を参照する。
+Codex・Claude・Geminiなど、利用するAIにかかわらず同じルールを使う。
+現在の作業環境と読み込み方は `references/environment.md` を参照する。
 
 ## 基準となるファイル
 
@@ -20,4 +19,4 @@ Obsidian Vaultの管理（内部リンク・MOC・Bases・Daily Note・復習管
 
 ## 構成
 
-構成の一覧は `references/repository-map.md` §4 を参照する。
+全ファイルの役割と参照する場面は [指示ファイルの解説](references/repository-map.md#4-指示ファイルの解説) を参照する。
